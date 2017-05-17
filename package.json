@@ -1,0 +1,22 @@
+{
+  "name": "quanteconlib",
+  "version": "0.1.0",
+  "description": "Code for the site QuantEconLib",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jstac/QuantEconLib.git"
+  },
+  "author": "Trevor Lyon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jstac/QuantEconLib/issues"
+  },
+  "homepage": "https://github.com/jstac/QuantEconLib#readme",
+  "dependencies": {
+    "mongodb": "^2.2.26"
+  }
+}
