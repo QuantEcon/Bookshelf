@@ -20,7 +20,7 @@
  * }
  *
  * comment = {
- *   author : string
+ *   author : string (_id field of an user object)
  *   timestamp : string
  *   replies : array of comment objects
  *   flagged: boolean
@@ -51,9 +51,7 @@
  *
  */
 
-var Promise = require('rsvp').Promise;
 var MongoClient = require('mongodb').MongoClient;
-var assert = require('assert');
 //this points to where the database is being run
 var url = "mongodb://localhost:27017/QuantEconLib";
 
@@ -88,8 +86,8 @@ module.exports = {
         var collection = database.collection('users');
         //check to see if user already exists
         return collection.updateOne(
-            //check for matching username
-            {"username": user.username},
+            //check for matching name
+            {"username": user.name},
             //only use this if it was created
             {$setOnInsert: user},
             //if not exist, create
@@ -99,13 +97,24 @@ module.exports = {
         });
     },
 
-    updateUser: function (oldUser, newUser) {
-
+    updateUser: function (oldUserID, newUser) {
+        var usersCollection = database.collection("users");
+        return usersCollection.updateOne({_id: oldUserID}, newUser).then(function (result) {
+            if (result.modifiedCount) {
+                return true;
+            } else {
+                return {
+                    error: "Error occurred updating the user",
+                    //do I want this?
+                    object: console.dir(result)
+                }
+            }
+        })
     },
 
     /*
      * @param submission: submission object according to specification above
-     * @param user: user object according to specification above
+     * @param userID: _id field of a user object. Should be set when a user authenticates on the server
      *
      * Method adds a submission to the submissions collection then appends
      * the title of the submission to the user's 'submissions' array.
@@ -114,12 +123,13 @@ module.exports = {
      * 'error' attribute will be returned.
      * Else, true is returned
      * */
-    addSubmission: function (submission, user) {
+    addSubmission: function (submission, userID) {
         var submissionsCollection = database.collection("submissions");
         //add submission. If submission already exists, don't add, return error
+        //**ASSUMPTION** A given author can only have one submission with a _specific_ name
         return submissionsCollection.updateOne({
                 "title": submission.title,
-                'author': user.username
+                'author': userID
             },
             submission, {upsert: true})
 
@@ -129,69 +139,97 @@ module.exports = {
                 }
                 var usersCollection = database.collection("users");
                 //Update user's 'submissions' array
-                return usersCollection.updateOne({"username": user.username}, {
-                    $addToSet: {
-                        "submissions": submission.title
+                return usersCollection.updateOne(
+                    {"_id": userID},
+                    {$addToSet: {"submissions": result.upsertedId._id}}
+                ).then(function (result) {
+                    if (!result.modifiedCount) {
+                        if (!result.matchedCount) {
+                            return {error: "Couldn't find a matching user!"};
+                        }
+                        return {error: "Couldn't add submission to user's list"};
+                    } else {
+                        return true;
                     }
-                }).then(function () {
-                    return true;
                 });
             });
     },
 
-    editSubmission: function (submission, user) {
+    editSubmission: function (submissionID, newSubmission, user) {
 
     },
 
-    deleteSubmission: function (submission) {
+    deleteSubmission: function (submissionID) {
 
     },
 
-    submitComment: function (submissionTitle, user, comment) {
+    submitComment: function (submissionID, comment) {
+        var submissionCollection = database.collection("submissions");
+        return submissionCollection.updateOne(
+            {"_id": submissionID},
+            {$addToSet: {"comments": comment}}
+        ).then(function (result) {
+            if (!result.modifiedCount) {
+                return {error: "Could not submit comment"}
+            } else {
+                return true;
+            }
+        });
+    },
+
+    submitReply: function (submissionID, comment, inReplyToID) {
 
     },
 
-    submitReply: function (submissionTitle, user, comment, inReplyTo) {
-
-    },
-
-    deleteComment: function (submissionTitle, user, comment) {
+    deleteComment: function (submissionID, comment) {
 
     },
 
     // Voting
-    upvote: function (submission, user) {
+    upvote: function (submission, userID) {
 
     },
 
-    revokeUpvote: function (submission, user) {
+    revokeUpvote: function (submission, userID) {
 
     },
 
-    downvote: function (submission, user) {
+    downvote: function (submission, userID) {
 
     },
 
-    revokeDownvote: function (submission, user) {
+    revokeDownvote: function (submission, userID) {
 
     },
 
     // GET methods
 
-    getSubmission: function (submissionTitle) {
-
+    getSubmission: function (query) {
+        var collection = database.collection('submissions');
+        return collection.find(query).toArray();
     },
 
     getAllSubmissions: function () {
-
+        return database.collection('submissions').find({}).toArray();
     },
 
-    getUser: function (uname) {
+    getUser: function (query) {
         var collection = database.collection('users');
-        return collection.find({username: uname}).toArray();
+        return collection.find(query).toArray();
     },
 
     getAllUsers: function () {
+        return database.collection('users').find({}).toArray();
+    },
 
+    /*
+    * TEMPORARY. ONLY FOR TESTING
+    * */
+    resetDB: function () {
+        database.collection('users').drop().then(function (result) {
+            database.collection('submissions').drop().then(function (result) {
+                return true;
+            });
+        });
     }
 };
