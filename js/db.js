@@ -43,6 +43,7 @@
  *   published: string
  *   lastUpdated: string
  *   flagged: boolean
+ *   deleted: boolean
  * }
  *
  * notebook = {
@@ -150,46 +151,45 @@ module.exports = {
                 "title": submission.title,
                 'author': userID
             },
-            submission, {upsert: true})
-
-            .then(function (result) {
-                if (!result.upsertedCount) {
-                    return {
-                        error: "submission already exists",
-                        addSubInfo: result
-                    };
-                }
-                var addSubResult = result;
-                var subID = result.upsertedId;
-                var usersCollection = database.collection("users");
-                //Update user's 'submissions' array
-                return usersCollection.updateOne(
-                    {"_id": userID},
-                    {$addToSet: {"submissions": result.upsertedId._id}}
-                ).then(function (result) {
-                    // check to make sure sub._id was added to users submissions list
-                    if (!result.modifiedCount) {
-                        //todo: delete submission?
-                        if (!result.matchedCount) {
-                            // couldn't find user with 'userID'
-                            return {
-                                error: "Couldn't find a matching user!",
-                                subInfo: addSubResult,
-                                authorInfo: result
-                            };
-                        }
-                        // found user, but couldn't add to list
+            submission, {upsert: true}
+        ).then(function (result) {
+            if (!result.upsertedCount) {
+                return {
+                    error: "submission already exists",
+                    addSubInfo: result
+                };
+            }
+            var addSubResult = result;
+            var subID = result.upsertedId;
+            var usersCollection = database.collection("users");
+            //Update user's 'submissions' array
+            return usersCollection.updateOne(
+                {"_id": userID},
+                {$addToSet: {"submissions": result.upsertedId._id}}
+            ).then(function (result) {
+                // check to make sure sub._id was added to users submissions list
+                if (!result.modifiedCount) {
+                    //todo: delete submission?
+                    if (!result.matchedCount) {
+                        // couldn't find user with 'userID'
                         return {
-                            error: "Couldn't add submission to user's list",
+                            error: "Couldn't find a matching user!",
                             subInfo: addSubResult,
                             authorInfo: result
-
                         };
-                    } else {
-                        return subID._id;
                     }
-                });
+                    // found user, but couldn't add to list
+                    return {
+                        error: "Couldn't add submission to user's list",
+                        subInfo: addSubResult,
+                        authorInfo: result
+
+                    };
+                } else {
+                    return subID._id;
+                }
             });
+        });
     },
 
     /*
@@ -209,17 +209,51 @@ module.exports = {
         return submissionsCollection.updateOne({_id: submissionID}, newSubmission).then(function (result) {
             if (result.modifiedCount) {
                 return true;
-            } else {
-                return {
-                    error: "Couldn't update submission",
-                    info: result
-                };
             }
+            if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission",
+                    info: result
+                }
+            }
+            return {
+                error: "Couldn't update submission",
+                info: result
+            };
         });
     },
 
+    /*
+     * Adds 'deleted' tag to submission
+     *
+     * @param {ObjectID} submissionID - the id of the submission to be deleted
+     *
+     * @return - On success: true
+     *           On failure: object with 'error' and 'info' field. The 'error' is a short description
+     *           of what happened. 'info' is the object returned from the mongo transaction
+     * */
     deleteSubmission: function (submissionID) {
+        // add deleted tag to submission
+        var submissionsCollection = database.collection("submissions");
 
+        return submissionsCollection.updateOne(
+            {_id: submissionID},
+            {$set: {"deleted": true}}
+        ).then(function (result) {
+            if (result.modifiedCount) {
+                return true;
+            } else if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission for id",
+                    info: result
+                }
+            } else {
+                return {
+                    error: "Couldn't add deleted tag to submission",
+                    info: result
+                }
+            }
+        })
     },
 
     /*
@@ -261,6 +295,13 @@ module.exports = {
         });
     },
 
+    /*
+     * Adds a comment to the database and adds its id to the 'replies' array of the comment
+     * it is replying to
+     *
+     *  @param {ObjectID} inReplyToID - id of the comment that is being replied to
+     *  @param {JSONObject} comment - object of the comment according to specs above
+     * */
     submitReply: function (inReplyToID, comment) {
         //add to comments collection
         var commentsCollection = database.collection("comments");
@@ -290,11 +331,21 @@ module.exports = {
         });
     },
 
+    /*
+     * Adds 'deleted' tag to the comment with the corresponding 'commentID'
+     *
+     * @param {ObjectID} commentID - id of the comment to delete
+     *
+     * @return - On success: true
+     *           On failure: object with 'error' and 'info' fields.
+     *           'error' is a short description of what went wrong.
+     *           'info' is the object returned from the mongo transaction
+     * */
     deleteComment: function (commentID) {
         // add 'deleted' field
         var commentsCollection = database.collection("comments");
 
-        commentsCollection.updateOne(
+        return commentsCollection.updateOne(
             {_id: commentID},
             {$set: {'deleted': true}}
         ).then(function (result) {
@@ -317,42 +368,226 @@ module.exports = {
     },
 
     // Voting
-    upvote: function (submission, userID) {
+    /*
+     * Increments the 'votes' field for the submission and adds 'userID' to the 'upvotedUsers' array
+     *
+     * @param {ObjectID} submissionID - id of the submission being upvoted
+     * @param {ObjectID} userID - id of the user doing the up-voting
+     *
+     * @return - On success: true
+     *           On failure: JSONObject with 'error' and 'info' fields.
+     *                       'error' is a short description of what went wrong
+     *                       'info' is JSONObject returned by the mongo transaction
+     * */
+    upvote: function (submissionID, userID) {
+        var submissionsCollection = database.collection("submissions");
 
+        return submissionsCollection.updateOne(
+            {_id: submissionID}, {$inc: {"votes": 1}}
+        ).then(function (result) {
+            if (result.modifiedCount) {
+                return submissionsCollection.updateOne(
+                    {_id: submissionID},
+                    {$addToSet: {"upvotedUsers": userID}}
+                ).then(function (addResult) {
+                    if (addResult.modifiedCount) {
+                        return true;
+                    } else {
+                        return {
+                            // todo: decrement upvote?
+                            error: "Couldn't add user to upvotedUsers",
+                            info: addResult
+                        }
+                    }
+                });
+            } else if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission",
+                    info: result
+                }
+            } else {
+                return {
+                    error: "Couldn't increment votes",
+                    info: result
+                }
+            }
+        })
     },
 
-    revokeUpvote: function (submission, userID) {
+    /*
+     * Decrements 'votes' and removes 'userID' from 'upvotedUsers'
+     *
+     * @param {ObjectID} submissionID - id of the submission to revoke upvote
+     * @param {ObjectID} userID - id of the user revoking his/her upvote
+     *
+     * @return - On success: true
+     *           On failure: JSONObject with 'error' and 'info' fields.
+     *                       'error' is a short description of what went wrong
+     *                       'info' is JSONObject returned by the mongo transaction
+     * */
+    revokeUpvote: function (submissionID, userID) {
+        var submissionsCollection = database.collection("submissions");
 
+        return submissionsCollection.updateOne(
+            {_id: submissionID},
+            {$inc: {"votes": -1}}
+        ).then(function (result) {
+            if (result.modifiedCount) {
+                // remove userID from 'upvotedUsers'
+                return submissionsCollection.updateOne(
+                    {_id: submissionID},
+                    {$pull: {"upvotedUsers": userID}}
+                ).then(function (removeResult) {
+                    if (removeResult.modifiedCount) {
+                        return true;
+                    } else {
+                        return {
+                            error: "Couldn't remove user from 'upvotedUsers'",
+                            info: removeResult
+                        }
+                    }
+                })
+            } else if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission for id",
+                    info: result
+                }
+            } else {
+                return {
+                    error: "Couldn't revoke upvote",
+                    info: result
+                }
+            }
+        });
     },
 
-    downvote: function (submission, userID) {
+    /*
+     * Decrements the 'votes' field for the submission and adds 'userID' to the 'downvotedUsers' array
+     *
+     * @param {ObjectID} submissionID - id of the submission being downvoted
+     * @param {ObjectID} userID - id of the user doing the down-voting
+     *
+     * @return - On success: true
+     *           On failure: JSONObject with 'error' and 'info' fields.
+     *                       'error' is a short description of what went wrong
+     *                       'info' is JSONObject returned by the mongo transaction
+     * */
+    downvote: function (submissionID, userID) {
+        var submissionsCollection = database.collection("submissions");
 
+        return submissionsCollection.updateOne(
+            {_id: submissionID}, {$inc: {"votes": -1}}
+        ).then(function (result) {
+            if (result.modifiedCount) {
+                return submissionsCollection.updateOne(
+                    {_id: submissionID},
+                    {$addToSet: {"downvotedUsers": userID}}
+                ).then(function (addResult) {
+                    if (addResult.modifiedCount) {
+                        return true;
+                    } else {
+                        return {
+                            // todo: increment votes?
+                            error: "Couldn't add user to downvotedUsers",
+                            info: addResult
+                        }
+                    }
+                });
+            } else if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission",
+                    info: result
+                }
+            } else {
+                return {
+                    error: "Couldn't decrement votes",
+                    info: result
+                }
+            }
+        })
     },
 
-    revokeDownvote: function (submission, userID) {
+    /*
+     * Increments 'votes' and removes 'userID' from 'downvotedUsers'
+     *
+     * @param {ObjectID} submissionID - id of the submission to revoke downvote
+     * @param {ObjectID} userID - id of the user revoking his/her downvote
+     *
+     * @return - On success: true
+     *           On failure: JSONObject with 'error' and 'info' fields.
+     *                       'error' is a short description of what went wrong
+     *                       'info' is JSONObject returned by the mongo transaction
+     * */
+    revokeDownvote: function (submissionID, userID) {
+        var submissionsCollection = database.collection("submissions");
 
+        return submissionsCollection.updateOne(
+            {_id: submissionID},
+            {$inc: {"votes": 1}}
+        ).then(function (result) {
+            if (result.modifiedCount) {
+                // remove userID from 'upvotedUsers'
+                return submissionsCollection.updateOne(
+                    {_id: submissionID},
+                    {$pull: {"downvotedUsers": userID}}
+                ).then(function (removeResult) {
+                    if (removeResult.modifiedCount) {
+                        return true;
+                    } else {
+                        return {
+                            // todo: decrement votes?
+                            error: "Couldn't remove user from 'downvotedUsers'",
+                            info: removeResult
+                        }
+                    }
+                })
+            } else if (!result.matchedCount) {
+                return {
+                    error: "Couldn't find matching submission for id",
+                    info: result
+                }
+            } else {
+                return {
+                    error: "Couldn't revoke downvote",
+                    info: result
+                }
+            }
+        });
     },
 
     // GET methods
 
+    /*
+     * Returns an array of submissions that match the query
+     *
+     * @param {JSONObject} query - object with fields used to query the database
+     *
+     * @return - array of documents that matched the query
+     * */
     getSubmission: function (query) {
         var collection = database.collection('submissions');
         return collection.find(query).toArray();
     },
 
-    getAllSubmissions: function () {
-        return database.collection('submissions').find({}).toArray();
-    },
-
+    /*
+     * Queries the database and returns corresponding user documents
+     *
+     * @param {JSONObject} query - object with fields used to query the database
+     *
+     * @return - array of documents that matched the query
+     * */
     getUser: function (query) {
         var collection = database.collection('users');
         return collection.find(query).toArray();
     },
 
-    getAllUsers: function () {
-        return database.collection('users').find({}).toArray();
-    },
-
+    /*
+     * Queries the database and returns corresponding comment documents
+     *
+     * @param {JSONObject} query - object with fields used to query the database
+     *
+     * @return - array of documents that matched the query
+     * */
     getComment: function (query) {
         return database.collection("comments").find(query).toArray();
     },
@@ -361,10 +596,8 @@ module.exports = {
      * TEMPORARY. ONLY FOR TESTING
      * */
     resetDB: function () {
-        database.collection('users').drop().then(function (result) {
-            database.collection('submissions').drop().then(function (result) {
-                return true;
-            });
-        });
+        database.collection('users').drop();
+        database.collection('submissions').drop();
+        database.collection('comments').drop();
     }
 };
