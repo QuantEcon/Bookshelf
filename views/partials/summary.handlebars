@@ -1,0 +1,19 @@
+<div class="notebook-summary">
+    <div class="specs">
+        <h3 class="title"><a href="/notebook/{{submissionID}}/">{{title}}</a></h3>
+        <!-- todo: get fuzzy timestamp -->
+        <p class="date">Published 2 hours ago by <a href="/user/{{authorID}}/">{{authorName}}</a> in <a
+                href="/">{{language}}</a></p>
+        <p class="short">{{summary}}</p>
+    </div>
+    <p class="avatar"><a href="/user/{{authorID}}/"><img src={{authorPic}}></a></p>
+    <div class="stats">
+        <a href="/notebook/{{submissionID}}/">
+            <ul>
+                <li class="views"><span class="count">{{views}}</span> Views</li>
+                <li class="comments"><span class="count">{{numComments}}</span> Comments</li>
+                <li class="votes"><span class="count">{{votes}}</span> Votes</li>
+            </ul>
+        </a>
+    </div>
+</div>

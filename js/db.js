@@ -25,6 +25,7 @@
  *   replies : array of comment object _id's
  *   flagged: boolean
  *   deleted: boolean
+ *   content: string
  * }
  *
  * submission = {
@@ -35,7 +36,7 @@
  *   coAuthors: array of user objects
  *   summary: string
  *   notebook: notebook object
- *   comments: array of comment objects
+ *   comments: array of comment _id's
  *   votes: integer
  *   upvotedUsers: array of user objects
  *   downvotedUsers: array of user objects

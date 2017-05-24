@@ -1,0 +1,173 @@
+<div class="row">
+    <div class="column">
+
+        <div class="details">
+
+            <div class="details-side">
+
+                <div class="vote">
+
+                    <a class="fi-like"></a>
+
+                    <span class="score">{{data.n.votes}}</span>
+
+                    <a class="fi-dislike"></a>
+
+                </div>
+
+                <ul class="admin-options">
+                    <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
+                            class="fi-flag"></span></a></li>
+                    <li><a href="#" title="Delete notebook" data-open="deleteContentModal"><span
+                            class="fi-x"></span></a></li>
+                </ul>
+
+            </div>
+
+            <div class="details-main">
+
+                <div class="details-header">
+
+                    <div class="details-title">
+
+                        <h1 class="title">{{data.n.title}}</h1>
+
+                        <ul class="topics">
+                            {{#each data.n.topicList}}
+                                <li><a href="/">{{this}}</a></li>
+                            {{/each}}
+                        </ul>
+
+                    </div>
+
+                    <div class="details-counts">
+
+                        <div class="counts">
+                            <ul>
+                                <li class="views"><span class="count">{{data.n.views}}</span> Views</li>
+                                <li class="comments"><span class="count">{{data.n.comments.length}}</span> Comments</li>
+                                <li class="votes"><span class="count">{{data.n.votes}}</span> Votes</li>
+                            </ul>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="details-body">
+
+                    <div class="details-primary">
+
+                        <p>{{data.n.summary}}</p>
+
+                    </div>
+
+                    <div class="details-secondary">
+
+                        <div class="side">
+
+                            <p class="avatar"><a href="/user/{{data.u._id}}/"><img src={{data.u.avatar}}></a></p>
+
+                        </div>
+
+                        <div class="main">
+
+                            <ul class="specs">
+                                <li><span>Author:</span> <a href="/user/{{data.n.author}}/">{{data.u.name}}</a></li>
+                                <li><span>Co-authors:</span>
+                                    {{#if data.coAuthors.length}}
+                                        {{#each data.coAuthors}}
+                                            <a href="/user/{{this._id}}">{{this.name}}</a><br>
+                                        {{/each}}
+                                    {{else}}
+                                        None<br>
+                                    {{/if}}
+                                </li>
+                                <li><span>Language:</span> <a href="/">{{data.n.language}}</a></li>
+                                <li><span>Published:</span> {{data.n.published}}</li>
+                                <li><span>Last update:</span> {{data.n.lastUpdated}}</li>
+                            </ul>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="tile">
+
+            <!--Notebook-->
+            <div class="tile-header">
+
+                <h2 class="tile-title">Notebook</h2>
+
+                <!--<ul class="tile-options">-->
+                <!--<li><a class="active" href="/notebook/{{data.n._id}}/">Notebook</a></li>-->
+                <!--<li><a href="/notebook/{{data.n._id}}/comments/">Comments {{data.n.comments.length}}</a></li>-->
+                <!--<li><a class="alt"-->
+                <!--href="https://github.com/QuantEcon/QuantEcon.notebooks/raw/master/chase_nelder_mead.ipynb">Download</a>-->
+                <!--</li>-->
+                <!--</ul>-->
+
+            </div>
+
+            <!--todo: insert notebook html here-->
+
+            <!--Comments-->
+            <div class="tile-header">
+
+                <h2 class="tile-title">Comments</h2>
+
+                <!--<ul class="tile-options">-->
+                <!--<li><a href="/notebook/{{data.n._id}}/">Notebook</a></li>-->
+                <!--<li><a class="active"-->
+                <!--href="/notebook/{{data.n._id}}/comments/">Comments {{data.n.comments.length}}</a></li>-->
+                <!--<li><a class="alt"-->
+                <!--href="https://github.com/QuantEcon/QuantEcon.notebooks/raw/master/chase_nelder_mead.ipynb">Download</a>-->
+                <!--</li>-->
+                <!--</ul>-->
+
+            </div>
+
+            <div class="comments">
+
+                <div class="comments-thread">
+
+                    <!-- .comment -->
+                    {{#each data.comments}}
+                        <!--main comment-->
+                        {{comment this ../data.replies ../data.commentUsers }}
+                        <!--replies-->
+                        {{#if this.replies.length}}
+                            <!--todo: style the comment-nested-->
+                            <div class="comment-nested" style="margin-left: 75px;">
+                                {{#each this.replies}}
+                                    {{reply this ../../data.replies ../../data.commentUsers}}
+                                {{/each}}
+                            </div>
+                        {{/if}}
+
+                    {{/each}}
+
+                    <div class="comments-post">
+
+                        <label for="">Post a comment</label>
+
+                        <textarea></textarea>
+
+                        <div class="submit-comment"><a href="#">Submit</a></div>
+
+                    </div>
+
+                </div>
+
+                <!--todo: figure out how to display either the comments or notebook-->
+
+
+            </div>
+        </div>
+    </div>
