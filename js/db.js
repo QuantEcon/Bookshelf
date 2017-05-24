@@ -17,6 +17,8 @@
  *   email: string
  *   submissions: array of string
  *   summary: string
+ *   upvotes: array of _id
+ *   downvotes: array of _id
  *   flagged: boolean
  * }
  *
@@ -371,33 +373,41 @@ module.exports = {
 
     // Voting
     /*
-     * Increments the 'votes' field for the submission and adds 'userID' to the 'upvotedUsers' array
+     * Increments the 'votes' field for the submission/comment and adds the id of the
+     * submission/comment to the users 'upvoted' array
      *
      * @param {ObjectID} submissionID - id of the submission being upvoted
      * @param {ObjectID} userID - id of the user doing the up-voting
+     * @param {boolean} isNotebook - true if item is a submission, false if item is comment
      *
      * @return - On success: true
      *           On failure: JSONObject with 'error' and 'info' fields.
      *                       'error' is a short description of what went wrong
      *                       'info' is JSONObject returned by the mongo transaction
      * */
-    upvote: function (submissionID, userID) {
-        var submissionsCollection = database.collection("submissions");
-
-        return submissionsCollection.updateOne(
-            {_id: submissionID}, {$inc: {"votes": 1}}
+    upvote: function (id, userID, isSubmission) {
+        var collection;
+        if (isSubmission) {
+            collection = database.collection("submissions");
+        } else {
+            collection = database.collection("comments");
+        }
+        return collection.updateOne(
+            {_id: id}, {$inc: {"votes": 1}}
         ).then(function (result) {
             if (result.modifiedCount) {
-                return submissionsCollection.updateOne(
-                    {_id: submissionID},
-                    {$addToSet: {"upvotedUsers": userID}}
+                var usersCollection = database.collection("users");
+
+                return usersCollection.updateOne(
+                    {_id: userID},
+                    {$addToSet: {"upvoted": id}}
                 ).then(function (addResult) {
                     if (addResult.modifiedCount) {
                         return true;
                     } else {
                         return {
                             // todo: decrement upvote?
-                            error: "Couldn't add user to upvotedUsers",
+                            error: "Couldn't add id to user.upvoted",
                             info: addResult
                         }
                     }
@@ -421,30 +431,37 @@ module.exports = {
      *
      * @param {ObjectID} submissionID - id of the submission to revoke upvote
      * @param {ObjectID} userID - id of the user revoking his/her upvote
+     * @param {boolean} isNotebook - true if item is a submission, false if item is comment
      *
      * @return - On success: true
      *           On failure: JSONObject with 'error' and 'info' fields.
      *                       'error' is a short description of what went wrong
      *                       'info' is JSONObject returned by the mongo transaction
      * */
-    revokeUpvote: function (submissionID, userID) {
-        var submissionsCollection = database.collection("submissions");
+    revokeUpvote: function (id, userID, isSubmission) {
+        var collection;
+        if (isSubmission) {
+            collection = database.collection("submissions");
+        } else {
+            collection = database.collection("comments");
+        }
 
-        return submissionsCollection.updateOne(
-            {_id: submissionID},
+        return collection.updateOne(
+            {_id: id},
             {$inc: {"votes": -1}}
         ).then(function (result) {
             if (result.modifiedCount) {
-                // remove userID from 'upvotedUsers'
-                return submissionsCollection.updateOne(
-                    {_id: submissionID},
-                    {$pull: {"upvotedUsers": userID}}
+                // remove id from user.upvoted
+                var usersCollection = database.collection("users");
+                return usersCollection.updateOne(
+                    {_id: userID},
+                    {$pull: {"upvoted": id}}
                 ).then(function (removeResult) {
                     if (removeResult.modifiedCount) {
                         return true;
                     } else {
                         return {
-                            error: "Couldn't remove user from 'upvotedUsers'",
+                            error: "Couldn't remove id from user.upvoted",
                             info: removeResult
                         }
                     }
@@ -464,33 +481,41 @@ module.exports = {
     },
 
     /*
-     * Decrements the 'votes' field for the submission and adds 'userID' to the 'downvotedUsers' array
+     * Decrements the 'votes' field for the submission/comment and adds 'id' to the user's
+     * 'downvoted' array
      *
      * @param {ObjectID} submissionID - id of the submission being downvoted
      * @param {ObjectID} userID - id of the user doing the down-voting
+     * @param {boolean} isNotebook - true if item is a submission, false if item is comment
      *
      * @return - On success: true
      *           On failure: JSONObject with 'error' and 'info' fields.
      *                       'error' is a short description of what went wrong
      *                       'info' is JSONObject returned by the mongo transaction
      * */
-    downvote: function (submissionID, userID) {
-        var submissionsCollection = database.collection("submissions");
+    downvote: function (id, userID, isSubmission) {
+        var collection;
+        if (isSubmission) {
+            collection = database.collection("submissions");
+        } else {
+            collection = database.collection("comments");
+        }
 
-        return submissionsCollection.updateOne(
-            {_id: submissionID}, {$inc: {"votes": -1}}
+        return collection.updateOne(
+            {_id: id}, {$inc: {"votes": -1}}
         ).then(function (result) {
             if (result.modifiedCount) {
-                return submissionsCollection.updateOne(
-                    {_id: submissionID},
-                    {$addToSet: {"downvotedUsers": userID}}
+                var usersCollection = database.collection("users");
+                return usersCollection.updateOne(
+                    {_id: userID},
+                    {$addToSet: {"downvoted": id}}
                 ).then(function (addResult) {
                     if (addResult.modifiedCount) {
                         return true;
                     } else {
                         return {
                             // todo: increment votes?
-                            error: "Couldn't add user to downvotedUsers",
+                            error: "Couldn't add id to user.downvoted",
                             info: addResult
                         }
                     }
@@ -514,31 +539,38 @@ module.exports = {
      *
      * @param {ObjectID} submissionID - id of the submission to revoke downvote
      * @param {ObjectID} userID - id of the user revoking his/her downvote
+     * @param {boolean} isNotebook - true if item is a submission, false if item is comment
      *
      * @return - On success: true
      *           On failure: JSONObject with 'error' and 'info' fields.
      *                       'error' is a short description of what went wrong
      *                       'info' is JSONObject returned by the mongo transaction
      * */
-    revokeDownvote: function (submissionID, userID) {
-        var submissionsCollection = database.collection("submissions");
+    revokeDownvote: function (id, userID, isSubmission) {
+        var collection;
+        if (isSubmission) {
+            collection = database.collection("submissions");
+        } else {
+            collection = database.collection("comments");
+        }
 
-        return submissionsCollection.updateOne(
-            {_id: submissionID},
+        return collection.updateOne(
+            {_id: id},
             {$inc: {"votes": 1}}
         ).then(function (result) {
             if (result.modifiedCount) {
                 // remove userID from 'upvotedUsers'
-                return submissionsCollection.updateOne(
-                    {_id: submissionID},
-                    {$pull: {"downvotedUsers": userID}}
+                var usersCollection = database.collection("users");
+                return collection.updateOne(
+                    {_id: userID},
+                    {$pull: {"downvoted": id}}
                 ).then(function (removeResult) {
                     if (removeResult.modifiedCount) {
                         return true;
                     } else {
                         return {
                             // todo: decrement votes?
-                            error: "Couldn't remove user from 'downvotedUsers'",
+                            error: "Couldn't remove id from user.downvoted",
                             info: removeResult
                         }
                     }
