@@ -85,13 +85,19 @@ var app = express();
 app.engine('handlebars', handlebars.engine);
 app.set('view engine', 'handlebars');
 
+//set location of assets
+app.use(express.static(__dirname + "/public"));
+
 // middleware
 app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
     next();
 });
 
+
+
 // routes
+// GET
 app.get('/', function (req, res) {
     db.getSubmission({'deleted': false}).then(function (result) {
         db.getUser({}).then(function (userResult) {
@@ -168,8 +174,28 @@ app.get('/notebook/:nbID', function (req, res) {
     });
 });
 
-app.use(express.static(__dirname + "/public"));
+app.get('/user/:userID', function (req, res) {
+    //todo: get user
+    console.log("req.params: ", req.params.userID);
+    db.getUser({_id: mdb.ObjectID(req.params.userID)}).then(function (userResult) {
+        console.log("user result: ", userResult);
+        //todo: get submissions
+        db.getSubmission({_id: {$in: userResult[0].submissions}}).then(function (submissionResult) {
+           var data = {
+               submissions: submissionResult,
+               user: userResult[0],
+               userAr: userResult
+           };
+            res.render('user', {
+                data: data,
+                layout: 'user',
+                title: userResult[0].name
+            })
+        });
+    });
 
+
+});
 
 app.use(function (req, res) {
     res.contentType('text/html');

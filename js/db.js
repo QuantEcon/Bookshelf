@@ -16,6 +16,7 @@
  *   linkedIn: string
  *   email: string
  *   submissions: array of string
+ *   summary: string
  *   flagged: boolean
  * }
  *
