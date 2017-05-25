@@ -20,7 +20,9 @@
   "dependencies": {
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "fuzzy-time": "^1.0.7",
     "handlebars": "^4.0.10",
-    "mongodb": "^2.2.26"
+    "mongodb": "^2.2.26",
+    "social-login": "^0.2.8"
   }
 }

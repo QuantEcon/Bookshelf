@@ -70,7 +70,7 @@
     <div class="column">
 
         <div class="tile">
-            {{>searchbar}}
+            {{>searchbar numSubmissions=data.user.submissions.length}}
             <div class="summaries">
                 {{#each data.submissions}}
                     {{subSummary this ../data.userAr}}

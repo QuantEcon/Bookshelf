@@ -92,6 +92,7 @@ module.exports = {
      */
     addUser: function (user) {
         var collection = database.collection('users');
+        user.joinDate = new Date();
         //check to see if user already exists
         return collection.updateOne(
             //check for matching name
@@ -149,6 +150,9 @@ module.exports = {
      * */
     addSubmission: function (submission, userID) {
         var submissionsCollection = database.collection("submissions");
+        submission.timestamp = new Date();
+        submission.published = new Date();
+        submission.lastUpdated = new Date();
         //add submission. If submission already exists, don't add, return error
         //**ASSUMPTION** A given author can only have one submission with a _specific_ name
         return submissionsCollection.updateOne({
@@ -209,6 +213,7 @@ module.exports = {
      * */
     editSubmission: function (submissionID, newSubmission) {
         var submissionsCollection = database.collection("submissions");
+        newSubmission.lastUpdated = new Date();
 
         return submissionsCollection.updateOne({_id: submissionID}, newSubmission).then(function (result) {
             if (result.modifiedCount) {
@@ -271,6 +276,7 @@ module.exports = {
     submitComment: function (submissionID, comment) {
         // add to comments collection
         var commentsCollection = database.collection("comments");
+        comment.timestamp = new Date();
 
         return commentsCollection.insertOne(comment).then(function (result) {
             if (result.insertedCount) {
@@ -309,6 +315,7 @@ module.exports = {
     submitReply: function (inReplyToID, comment) {
         //add to comments collection
         var commentsCollection = database.collection("comments");
+        comment.timestamp = new Date();
 
         return commentsCollection.insertOne(comment).then(function (result) {
             if (result.insertedCount) {

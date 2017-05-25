@@ -3,3 +3,8 @@ node_modules/
 dist/
 js/testDB.js
 public/
+
+#testing
+app/
+config/
+server.js

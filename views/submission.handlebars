@@ -1,17 +1,20 @@
-<div class="row">
+<head>
+    <script src="/assets/js/submission.js"></script>
+</head>
+<div class="row" ng-app="myApp">
     <div class="column">
 
         <div class="details">
 
             <div class="details-side">
+                <div class="vote" ng-controller="voteCtrl">
+                    <!--todo: get submission id somehow...-->
+                    <a class="fi-like" id="submission-upvote-button" ng-click="upvoteClicked(submissionID, true)"></a>
 
-                <div class="vote">
+                    <span class="score" id="submission-score">{{data.n.votes}}</span>
 
-                    <a class="fi-like"></a>
-
-                    <span class="score">{{data.n.votes}}</span>
-
-                    <a class="fi-dislike"></a>
+                    <a class="fi-dislike" id="submission-downvote-button"
+                       ng-click="downvoteClicked(submissionID, true)"></a>
 
                 </div>
 
@@ -45,7 +48,7 @@
                         <div class="counts">
                             <ul>
                                 <li class="views"><span class="count">{{data.n.views}}</span> Views</li>
-                                <li class="comments"><span class="count">{{data.n.comments.length}}</span> Comments</li>
+                                <li class="comments"><span class="count">{{data.numTotalComments}}</span> Comments</li>
                                 <li class="votes"><span class="count">{{data.n.votes}}</span> Votes</li>
                             </ul>
                         </div>
@@ -116,6 +119,11 @@
             </div>
 
             <!--todo: insert notebook html here-->
+            {{#if data.n.notebook.file}}
+                <h4>Notebook html goes here</h4>
+            {{else}}
+                <p>Wow, such empty</p>
+            {{/if}}
 
             <!--Comments-->
             <div class="tile-header">
@@ -133,7 +141,7 @@
 
             </div>
 
-            <div class="comments">
+            <div class="comments" ng-controller="commentCtrl">
 
                 <div class="comments-thread">
 
@@ -159,7 +167,7 @@
 
                         <textarea></textarea>
 
-                        <div class="submit-comment"><a href="#">Submit</a></div>
+                        <div class="submit-comment"><a ng-click="submitClicked(true)">Submit</a></div>
 
                     </div>
 
@@ -171,3 +179,4 @@
             </div>
         </div>
     </div>
+</div>
