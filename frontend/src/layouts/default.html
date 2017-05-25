@@ -1,0 +1,313 @@
+{{!-- This is the base layout for your project, and will be used on every page. --}}
+
+<!doctype html>
+<html class="no-js" lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+<!--     <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <title>{{title}}</title>
+    <link rel="stylesheet" href="{{root}}assets/css/app.css">
+
+	<link href="https://fonts.googleapis.com/css?family=Exo:200,400|Raleway:400,700" rel="stylesheet">
+
+  </head>
+  <body>
+	  
+	  
+  	<div class="qe-nav">
+	  	<p class="qe-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src="/assets/img/qe-logo-horizontal.png" alt="QuantEcon logo"> Quant<span>Econ</span></a></p>
+	  	<ul class="qe-menu">
+		  	<li><a href="#">Home</a></li>
+		  	<li><a href="#">Lectures</a></li>
+		  	<li><a href="#">QuantEcon.Py</a></li>
+		  	<li><a href="#">QuantEcon.jl</a></li>
+		  	<li><a href="#">QuantEconLib</a></li>
+		  	<li><a href="#">Cheatsheets</a></li>
+		  	<li><a href="#">Forum</a></li>
+		  	<li><a href="#">Repository</a></li>
+	  	</ul>
+  	</div>
+
+	<header class="header">
+		
+		<div class="row columns">
+			
+			<div class="header-container">
+		
+				
+				<div class="site-title">
+					<a href="/">
+						<h2 class="site-name">QuantEconLib</h2>
+						<p class="site-tag">Open notebook library for economic modeling</p>
+					</a>
+				</div>
+
+				<p class="qe-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src="/assets/img/qe-logo-horizontal.png" alt="QuantEcon logo"> Quant<span>Econ</span></a></p>
+				
+				<ul class="site-menu">
+					{{#ifequal signedin true}}
+ 					<li class="menu-user"><a href="/u/my-profile/"><div class="avatar"><img src="/assets/img/avatar/9.jpg"></div> <span>My Profile</span></a></li>
+ 					{{/ifequal}}
+					{{#ifequal signedin false}}
+					<li class="menu-signin"><a href="#" data-open="signInModal">Sign In</a></li>
+ 					{{/ifequal}}
+					{{#ifequal signedin true}}
+ 					<li class="menu-submit"><a href="/submit/">Submit Notebook</a></li>
+ 					{{/ifequal}}
+					{{#ifequal signedin false}}
+					<li class="menu-submit"><a href="#" data-open="signInModal">Submit Notebook</a></li>
+ 					{{/ifequal}}
+				</ul>
+				
+			</div>
+		
+		</div>
+		
+	</header>
+
+	{{#ifequal callout 'error'}}
+
+	<div data-abide-error class="alert callout">
+		<div class="row columns">
+			<p class="callout-message"><i class="fi-alert"></i> There are some errors in your submission.</p>
+		</div>
+	</div>
+ 					
+ 	{{/ifequal}}
+
+	{{#unless home}}
+	
+	<div class="row columns">
+	
+		<ul class="breadcrumbs">
+			<li><a href="/">Home</a></li>
+			<li>{{title}}</li>
+		</ul>
+		
+	</div>
+	
+	{{/unless}}
+
+	
+    {{!-- Pages you create in the src/pages/ folder are inserted here when the flattened page is created. --}}
+    {{> body}}
+    
+    <footer class="footer">
+	    
+	    <div class="row columns">
+		    		    
+		    <div class="row">
+			    
+			    <div class="columns medium-4">
+				    
+				    <ul>
+					    <li><big>Economics Notebook Archive</big><br><br></li>
+					    <li><a href="#">Publish a Notebook</a></li>
+					    <li><a href="#">About the site</a></li>
+					    <li><a href="#">Contact Us</a></li>
+					    <li><a href="#">Privacy</a></li>
+					    <li><a href="#">Terms</a></li>
+				    </ul>
+				    
+			    </div>
+			    
+			    <div class="columns medium-4">
+				    
+				    <ul>
+					    <li><big>QuantEcon Sites</big><br><br></li>
+					    <li><a href="#">www.quantecon.org</a></li>
+					    <li><a href="#">lectures.quantecon.org</a></li>
+					    <li><a href="#">notebooks.quantecon.org</a></li>
+					    <li><a href="#">cheatsheets.quantecon.org</a></li>
+				    </ul>
+				    
+			    </div>
+			    
+			    <div class="columns medium-4">
+				    
+				    <ul>
+					    <li><big>&nbsp;</big><br><br></li>
+					    <li><a href="#">Jupyter</a></li>
+					    <li><a href="#">NumFOCUS</a></li>
+					    <li><a href="#">Alfred P. Sloan Foundation</a></li>
+				    </ul>
+				    
+			    </div>
+			    
+		    </div>
+		    
+		    <p><br>&copy; 2017 Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		    
+	    </div>
+	    
+    </footer>
+
+	<div class="reveal modal" id="signInModal" data-reveal>
+		
+		<div class="modal-header">
+		
+			<h1 class="modal-title">Sign In</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+	  
+			<p><strong>Sign in</strong> using a social media account.</p>
+			
+			<p>We won't share any of your personal data without your permission.</p>
+			
+			<ul class="social-login">
+			  <li><a href="/signin/"><span class="fi-social-github"></span> GitHub</a></li>
+			  <li><a href="/signin/"><span class="fi-social-google-plus"></span> Google</a></li>
+			  <li><a href="/signin/"><span class="fi-social-linkedin"></span> LinkedIn</a></li>
+			  <li><a href="/signin/"><span class="fi-social-twitter"></span> Twitter</a></li>
+			  <li><a href="/signin/"><span class="fi-social-facebook"></span> Facebook</a></li>
+			</ul>
+			
+			<p>Singing in allows you to <strong>Vote</strong>, <strong>Comment</strong> and <strong>Submit</strong> Notebooks.</p>
+			
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+	<div class="reveal modal" id="deleteProfileModal" data-reveal>
+		
+		<div class="modal-header">
+		
+			<h1 class="modal-title">Delete profile</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+
+			<p><strong>Are you sure you want to delete your profile?</strong></p>
+	  						
+			<p>All notebooks, comments and votes associated with this profile will be removed.</p>
+			
+			<ul class="options">
+				<li><a class="alt" href="#">Yes, delete my profile</a></li>
+				<li><a href="#">No, get me out of here!</a></li>
+			</ul>
+						
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+	<div class="reveal modal" id="flagNotebookModal" data-reveal>
+		
+		<div class="modal-header"> 
+		
+			<h1 class="modal-title">Flag notebook</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+	  						
+			<p>QuantEcon staff will be alerted to review the content of the notebook. Please contact us at <a href="#">email@domain.com</a> if you feel this requires urgent attention.</p>
+
+			<p><strong>Do you feel this notebook is inappropriate?</strong></p>
+			
+			<ul class="options">
+				<li><a class="alt" href="#">Yes, flag this notebook</a></li>
+				<li><a href="#">No, the notebook is fine</a></li>
+			</ul>
+						
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+	<div class="reveal modal" id="flagUserModal" data-reveal>
+		
+		<div class="modal-header"> 
+		
+			<h1 class="modal-title">Flag user</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+	  						
+			<p>QuantEcon staff will be alerted to review this user's profile. Please contact us at <a href="#">email@domain.com</a> if you feel this requires urgent attention.</p>
+
+			<p><strong>Do you feel this user's profile is inappropriate?</strong></p>
+			
+			<ul class="options">
+				<li><a class="alt" href="#">Yes, flag this user</a></li>
+				<li><a href="#">No, this user is fine</a></li>
+			</ul>
+						
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+	<div class="reveal modal" id="flagCommentModal" data-reveal>
+		
+		<div class="modal-header"> 
+		
+			<h1 class="modal-title">Flag comment</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+	  						
+			<p>QuantEcon staff will be alerted to review this comment. Please contact us at <a href="#">email@domain.com</a> if you feel this requires urgent attention.</p>
+
+			<p><strong>Do you feel this comment is inappropriate?</strong></p>
+			
+			<ul class="options">
+				<li><a class="alt" href="#">Yes, flag this comment</a></li>
+				<li><a href="#">No, this comment is fine</a></li>
+			</ul>
+						
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+	<div class="reveal modal" id="deleteContentModal" data-reveal>
+		
+		<div class="modal-header"> 
+		
+			<h1 class="modal-title">Delete content</h1>
+			
+		</div>
+		
+		<div class="modal-body">
+			
+			<p><strong>As administrator, do you wish to delete this content?</strong>
+			
+			<ul class="options">
+				<li><a class="alt" href="#">Yes, I'm sure</a></li>
+				<li><a href="#">No, go back</a></li>
+			</ul>
+						
+		</div>
+	  
+	  <button class="close-button" data-close aria-label="Close modal" type="button">
+	    <span aria-hidden="true">&times;</span>
+	  </button>
+	  
+	</div>
+
+    <script src="{{root}}assets/js/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+---
+title: Edit Profile
+signedin: true
+---
+
+<form action="/u/my-profile/">
+
+	<div class="row columns">
+			
+		<div class="edit-profile">
+	
+			<h1 class="page-title">Edit Profile</h1>
+								
+			<div class="edit-profile-header">
+				
+				<p class="avatar"><img src="/assets/img/avatar/9.jpg"></p>
+				
+				<div class="edit-profile-title">
+						
+					<label class="section-title" for="name">Name <span class="mandatory">*</span></label>
+	
+					<input type="text" placeholder="Your name" id="name" value="Bruce Wayne">
+					
+				</div>
+					
+			</div>
+			
+			<div class="edit-profile-primary">
+				
+				<div class="edit-profile-primary-group1">
+	
+					<label class="section-title" for="position">Position/Job Description</label>
+					
+					<p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a> here.</p>
+										
+					<textarea placeholder="Notebook summary" id="position">Batman's secret identity is Bruce Wayne, an American billionaire, playboy, philanthropist, and owner of Wayne Enterprises.</textarea>
+					
+					<p class="input-hint input-hint-after"><a href="#">Preview</a></p>
+					
+					<hr>
+					
+					<label class="section-title" for="website">Website</label>
+	
+					<input type="url" placeholder="Website URL" id="website" value="http://en.wikipedia.org/wiki/Batman">
+					
+				</div>
+					
+				<div class="edit-profile-primary-group2">
+	
+					<label class="section-title" for="github">GitHub ID</label>
+	
+					<input type="text" placeholder="GitHub ID" id="website" value="b4tm4n">
+					
+					<hr>
+	
+					<label class="section-title" for="linkedin">LinkedIn URL</label>
+	
+					<input type="url" placeholder="LinkedIn URL" id="linkedin" value="">
+					
+					<hr>
+	
+					<label class="section-title" for="email">Email</label>
+	
+					<input type="email" placeholder="Email" id="email" value="bruce-wayne@gmail.com">
+					
+				</div>
+				
+			</div>
+	
+			<ul class="button-row">
+				<li><a class="alt" href="/u/my-profile/">Cancel</a></li>
+				<li><button name="submit" type="submit">Save Profile</button></li>
+			</ul>
+			
+		</div>
+							
+			
+	</div>
+	
+</form>	
+	
+	
