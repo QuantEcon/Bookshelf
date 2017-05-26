@@ -4,6 +4,9 @@ dist/
 js/testDB.js
 public/
 
+#config
+_config.js
+
 #testing
 app/
 config/

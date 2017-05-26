@@ -20,9 +20,17 @@
   "dependencies": {
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.3",
     "fuzzy-time": "^1.0.7",
-    "handlebars": "^4.0.10",
+    "mongo-cursor-pagination": "^5.0.0",
     "mongodb": "^2.2.26",
-    "social-login": "^0.2.8"
+    "mongoose": "^4.10.2",
+    "passport": "^0.3.2",
+    "passport-facebook": "^2.1.1",
+    "passport-github": "^1.1.0",
+    "passport-google-oauth2": "^0.1.6",
+    "passport-linkedin-oauth2": "^1.5.0",
+    "passport-twitter": "^1.0.4",
+    "passport-youtube-v3": "^2.0.0"
   }
 }

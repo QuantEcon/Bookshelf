@@ -58,20 +58,21 @@
  */
 
 var MongoClient = require('mongodb').MongoClient;
+var MongoPaging = require('mongo-cursor-pagination');
 //this points to where the database is being run
 var url = "mongodb://localhost:27017/QuantEconLib";
 
-var database = null;
+var db = null;
 
 //Database facade
 module.exports = {
     initConnection: function (callback) {
-        MongoClient.connect(url, function (err, db) {
+        MongoClient.connect(url, function (err, database) {
             if (err) {
                 console.log("Error connecting to database: ", err);
             } else {
                 console.log("Connected to database");
-                database = db;
+                db = database;
                 callback();
             }
         });
@@ -79,7 +80,7 @@ module.exports = {
 
     closeConnection: function () {
         console.log("Closing db connection");
-        database.close();
+        db.close();
     },
 
     // POST methods
@@ -91,7 +92,7 @@ module.exports = {
      *           On failure: returns object with 'error' field
      */
     addUser: function (user) {
-        var collection = database.collection('users');
+        var collection = db.collection('users');
         user.joinDate = new Date();
         //check to see if user already exists
         return collection.updateOne(
@@ -124,7 +125,7 @@ module.exports = {
      *         On failure: returns object with 'error' field and the result from the mongo transaction
      * */
     updateUser: function (oldUserID, newUser) {
-        var usersCollection = database.collection("users");
+        var usersCollection = db.collection("users");
         return usersCollection.updateOne({_id: oldUserID}, newUser).then(function (result) {
             if (result.modifiedCount) {
                 return true;
@@ -149,7 +150,7 @@ module.exports = {
      *           On failure: object with 'error' field
      * */
     addSubmission: function (submission, userID) {
-        var submissionsCollection = database.collection("submissions");
+        var submissionsCollection = db.collection("submissions");
         submission.timestamp = new Date();
         submission.published = new Date();
         submission.lastUpdated = new Date();
@@ -169,7 +170,7 @@ module.exports = {
             }
             var addSubResult = result;
             var subID = result.upsertedId;
-            var usersCollection = database.collection("users");
+            var usersCollection = db.collection("users");
             //Update user's 'submissions' array
             return usersCollection.updateOne(
                 {"_id": userID},
@@ -212,7 +213,7 @@ module.exports = {
      *   User provides 'publishedDate' and 'lastUpdated' fields or db generates them?
      * */
     editSubmission: function (submissionID, newSubmission) {
-        var submissionsCollection = database.collection("submissions");
+        var submissionsCollection = db.collection("submissions");
         newSubmission.lastUpdated = new Date();
 
         return submissionsCollection.updateOne({_id: submissionID}, newSubmission).then(function (result) {
@@ -243,7 +244,7 @@ module.exports = {
      * */
     deleteSubmission: function (submissionID) {
         // add deleted tag to submission
-        var submissionsCollection = database.collection("submissions");
+        var submissionsCollection = db.collection("submissions");
 
         return submissionsCollection.updateOne(
             {_id: submissionID},
@@ -275,13 +276,13 @@ module.exports = {
      * */
     submitComment: function (submissionID, comment) {
         // add to comments collection
-        var commentsCollection = database.collection("comments");
+        var commentsCollection = db.collection("comments");
         comment.timestamp = new Date();
 
         return commentsCollection.insertOne(comment).then(function (result) {
             if (result.insertedCount) {
                 // add to submission replies
-                var submissionsCollection = database.collection("submissions");
+                var submissionsCollection = db.collection("submissions");
 
                 return submissionsCollection.updateOne(
                     {_id: submissionID},
@@ -314,7 +315,7 @@ module.exports = {
      * */
     submitReply: function (inReplyToID, comment) {
         //add to comments collection
-        var commentsCollection = database.collection("comments");
+        var commentsCollection = db.collection("comments");
         comment.timestamp = new Date();
 
         return commentsCollection.insertOne(comment).then(function (result) {
@@ -354,7 +355,7 @@ module.exports = {
      * */
     deleteComment: function (commentID) {
         // add 'deleted' field
-        var commentsCollection = database.collection("comments");
+        var commentsCollection = db.collection("comments");
 
         return commentsCollection.updateOne(
             {_id: commentID},
@@ -395,15 +396,15 @@ module.exports = {
     upvote: function (id, userID, isSubmission) {
         var collection;
         if (isSubmission) {
-            collection = database.collection("submissions");
+            collection = db.collection("submissions");
         } else {
-            collection = database.collection("comments");
+            collection = db.collection("comments");
         }
         return collection.updateOne(
             {_id: id}, {$inc: {"votes": 1}}
         ).then(function (result) {
             if (result.modifiedCount) {
-                var usersCollection = database.collection("users");
+                var usersCollection = db.collection("users");
 
                 return usersCollection.updateOne(
                     {_id: userID},
@@ -448,9 +449,9 @@ module.exports = {
     revokeUpvote: function (id, userID, isSubmission) {
         var collection;
         if (isSubmission) {
-            collection = database.collection("submissions");
+            collection = db.collection("submissions");
         } else {
-            collection = database.collection("comments");
+            collection = db.collection("comments");
         }
 
         return collection.updateOne(
@@ -459,7 +460,7 @@ module.exports = {
         ).then(function (result) {
             if (result.modifiedCount) {
                 // remove id from user.upvoted
-                var usersCollection = database.collection("users");
+                var usersCollection = db.collection("users");
                 return usersCollection.updateOne(
                     {_id: userID},
                     {$pull: {"upvoted": id}}
@@ -503,16 +504,16 @@ module.exports = {
     downvote: function (id, userID, isSubmission) {
         var collection;
         if (isSubmission) {
-            collection = database.collection("submissions");
+            collection = db.collection("submissions");
         } else {
-            collection = database.collection("comments");
+            collection = db.collection("comments");
         }
 
         return collection.updateOne(
             {_id: id}, {$inc: {"votes": -1}}
         ).then(function (result) {
             if (result.modifiedCount) {
-                var usersCollection = database.collection("users");
+                var usersCollection = db.collection("users");
                 return usersCollection.updateOne(
                     {_id: userID},
                     {$addToSet: {"downvoted": id}}
@@ -556,9 +557,9 @@ module.exports = {
     revokeDownvote: function (id, userID, isSubmission) {
         var collection;
         if (isSubmission) {
-            collection = database.collection("submissions");
+            collection = db.collection("submissions");
         } else {
-            collection = database.collection("comments");
+            collection = db.collection("comments");
         }
 
         return collection.updateOne(
@@ -567,7 +568,7 @@ module.exports = {
         ).then(function (result) {
             if (result.modifiedCount) {
                 // remove userID from 'upvotedUsers'
-                var usersCollection = database.collection("users");
+                var usersCollection = db.collection("users");
                 return collection.updateOne(
                     {_id: userID},
                     {$pull: {"downvoted": id}}
@@ -606,7 +607,7 @@ module.exports = {
      * @return - array of documents that matched the query
      * */
     getSubmission: function (query) {
-        var collection = database.collection('submissions');
+        var collection = db.collection('submissions');
         return collection.find(query).toArray();
     },
 
@@ -618,7 +619,7 @@ module.exports = {
      * @return - array of documents that matched the query
      * */
     getUser: function (query) {
-        var collection = database.collection('users');
+        var collection = db.collection('users');
         return collection.find(query).toArray();
     },
 
@@ -630,15 +631,20 @@ module.exports = {
      * @return - array of documents that matched the query
      * */
     getComment: function (query) {
-        return database.collection("comments").find(query).toArray();
+        return db.collection("comments").find(query).toArray();
     },
 
     /*
      * TEMPORARY. ONLY FOR TESTING
      * */
     resetDB: function () {
-        database.collection('users').drop();
-        database.collection('submissions').drop();
-        database.collection('comments').drop();
+        db.collection('users').drop();
+        db.collection('submissions').drop();
+        db.collection('comments').drop();
+    },
+
+    //pagination
+    getPageNum: function (pageNum) {
+
     }
 };
