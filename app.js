@@ -10,13 +10,16 @@ var fuzzyTime = require('fuzzy-time');
 // passport modules
 var passport = require('passport');
 var passportInit = require('./js/auth/init');
-var fbPassport = require('./js/auth/facebook');
-var twitterPassport = require('./js/auth/twitter');
-var githubPassport = require('./js/auth/github');
-var linkedinPassport = require('./js/auth/linkedin');
-// var googlePassport = require('./js/auth/google');
+require('./js/auth/facebook');
+require('./js/auth/twitter');
+require('./js/auth/github');
+require('./js/auth/linkedin');
+require('./js/auth/google');
+// var logout = require('express-passport-logout');
 
 var session = require('express-session');
+
+//db
 var mongoose = require('./js/db/mongoose');
 // db Models ================
 var User = require('./js/db/models/User');
@@ -130,34 +133,6 @@ app.use(passport.session());
 // passport setup =======================================================
 passportInit();
 
-// routes =================================================================
-// GET ========================================
-app.get('/', function (req, res) {
-    // db.getSubmission({'deleted': false}).then(function (result) {
-    //     db.getUser({}).then(function (userResult) {
-    //         var data = {
-    //             n: result,
-    //             u: userResult
-    //         };
-    //         res.render('home', {
-    //             data: data,
-    //             numSubmissions: result.length
-    //         });
-    //     });
-    // });
-    Submission.find({deleted: false}, function (err, submissions) {
-        User.find({deleted: false}, function (err, users) {
-            var data = {
-                n: submissions,
-                u: users
-            };
-            res.render('home', {
-                data: data,
-                numSubmissions: submissions.length
-            })
-        });
-    });
-});
 
 // app.get('/notebook/:nbID', function (req, res) {
 //     db.getSubmission({_id: new mdb.ObjectID(req.params.nbID)}).then(function (result) {
@@ -223,56 +198,135 @@ app.get('/', function (req, res) {
 //     });
 // });
 
+var getNBInfo = function (notebookID) {
+    Submission.findOne({_id: mdb.ObjectId(req.params.nbID)}, function (err, notebook) {
+        if (err) {
+            res.render('500');
+        } else if (notebook) {
+            //todo: get author
+            //todo: get co-authors
+            //todo: get comments
+            //todo: get replies
+        } else {
+            res.render('404');
+        }
+    });
+};
+
 var isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated()) {
+        console.log("Is Authenticated!");
         return next();
     } else {
-        //todo: redirect to correct page
+        //not authenticated
+        if (/^\/user\/my-profile/.test(req.url)) {
+            res.redirect('/login');
+        }
+        else if (/^\/user\//.test(req.url)) {
+            User.findOne({_id: mdb.ObjectId(req.params.userID)}, function (err, user) {
+                if (err) {
+                    res.render('500');
+                } else if (user) {
+                    res.render('user', {
+                        data: {
+                            user: user,
+                            currentUser: null
+                        },
+                        layout: 'breadcrumbs',
+                        title: user.name
+                    });
+                } else {
+                    res.render('400', {
+                        title: "User Not Found"
+                    });
+                }
+            });
+        } else if (/^\/notebook\//.test(req.url)) {
+            //get notebook info
+            res.render('submission', {
+                data: getNBInfo(req.params.nbID),
+                currentUser: null
+            });
+        } else {
+            res.render('home', {
+                //todo: get submissions and users
+                currentUser: null
+            });
+        }
     }
 };
+
+// routes =================================================================
+// GET ========================================
+app.get('/', isAuthenticated, function (req, res) {
+    Submission.find({deleted: false}, function (err, submissions) {
+        User.find({deleted: false}, function (err, users) {
+            var data = {
+                n: submissions,
+                u: users,
+                currentUser: req.user
+            };
+            res.render('home', {
+                data: data,
+                numSubmissions: submissions.length
+            })
+        });
+    });
+});
 
 //authenticated user middle-ware
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
     res.send("you are authenticated");
+    //todo: get nb info
 });
 
-app.get('/notebook/:nbID#', function (req, res) {
-    res.send("NOT AUTHENTICATED");
-});
-
-app.get('/user/:userID', isAuthenticated, function (req, res) {
-    if(req.params.userID.equals(req.user._id)){
-        res.redirect('/user/my-profile');
+app.get('/user/my-profile/edit', isAuthenticated, function (req, res) {
+    if (req.user.new) {
+        res.redirect('/complete-registration');
     }
-    //get user with userID from database
-    res.render('user', {
+    res.render('edit-profile', {
         data: {
-            user: req.user
+            user: req.user,
+            currentUser: req.user
+        },
+        layout: 'breadcrumbs',
+        title: 'Edit Profile'
+    })
+});
+
+app.get('/user/my-profile', isAuthenticated, function (req, res) {
+    if (req.user.new) {
+        res.redirect('/complete-registration');
+    }
+    res.render('user', {
+        title: 'My Profile',
+        data: {
+            user: req.user,
+            currentUser: req.user,
+            myPage: true
         }
     })
 });
 
-// app.get('/user/:userID', function (req, res) {
-//     //get user
-//     db.getUser({_id: mdb.ObjectID(req.params.userID)}).then(function (userResult) {
-//         //et submissions
-//         db.getSubmission({_id: {$in: userResult[0].submissions}}).then(function (submissionResult) {
-//             //todo: use actual avatar
-//             userResult[0].avatar = "/assets/img/avatar/8.png";
-//             var data = {
-//                 submissions: submissionResult,
-//                 user: userResult[0],
-//                 userAr: userResult
-//             };
-//             res.render('user', {
-//                 data: data,
-//                 layout: 'breadcrumbs',
-//                 title: userResult[0].name
-//             })
-//         });
-//     });
-// });
-
+app.get('/user/:userID', isAuthenticated, function (req, res) {
+    if (req.params.userID.equals(req.user._id)) {
+        res.redirect('/user/my-profile');
+    }
+    User.findOne({_id: req.params.userID}, function (err, user) {
+        if (err) {
+            res.render('500');
+        } else if (user) {
+            res.render('user', {
+                data: {
+                    user: user,
+                    currentUser: req.user
+                },
+                layout: 'breadcrumbs',
+                title: user.name
+            });
+        }
+    });
+});
 
 app.get('/submit', function (req, res) {
     res.render('submit', {
@@ -281,9 +335,25 @@ app.get('/submit', function (req, res) {
     });
 });
 
+app.get('/complete-registration', function (req, res) {
+    res.render('edit-profile', {
+        title: "Complete Registration",
+        data: {
+            user: req.user,
+            registration: true,
+            currentUser: req.user
+        }
+    })
+});
+
+// logout ===================================
+app.get('/logout', function (req, res, next) {
+    console.log("logging out...");
+    req.logout();
+    res.redirect('/');
+});
+
 // login ====================================
-
-
 app.get('/login', function (req, res, next) {
     res.render('login', {
         layout: 'breadcrumbs',
@@ -298,51 +368,88 @@ app.get('/auth/success', function (req, res) {
 });
 
 // fb login ================
+// add fb to existing user
+app.get('/auth/fb/add', isAuthenticated, passport.authenticate('addFB', {scope: 'email'}));
+app.get('/auth/fb/callback/add',
+    passport.authenticate('addFB', {
+        successRedirect: '/user/my-profile/edit',
+        failureRedirect: '/user/my-profile/add-failed'
+    })
+);
+// register new user with fb
 app.get('/auth/fb', passport.authenticate('facebook', {scope: 'email'}));
 app.get('/auth/fb/callback',
-    passport.authenticate('facebook', {
-        //todo: change these once figure out how to set current user
-        successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
-    })
-);
-// github login ============
-app.get('/auth/github', passport.authenticate('github', {scope: 'email'}));
-app.get('/auth/github/callback',
-    passport.authenticate('github', {
-        //todo: change these once figure out how to set current user
-        successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
-    })
-);
-// google login ===========
-app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
-app.get('/auth/google/callback',
-    passport.authenticate('google', {
-        //todo: change these once figure out how to set current user
-        successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
-    })
+    passport.authenticate('facebook', {failureRedirect: '/auth/failure'}),
+    function (req, res) {
+        if (req.user.new) {
+            res.redirect('/complete-registration');
+        } else {
+            res.redirect('/user/my-profile');
+        }
+    }
 );
 
+// github login ============
+
+// add github to profile
+app.get('/auth/github/add', isAuthenticated, passport.authenticate('addGithub', {scope: 'email'}));
+app.get('/auth/github/callback/add',
+    passport.authenticate('addGithub', {
+        successRedirect: '/user/my-profile/edit',
+        failureRedirect: '/user/my-profile/add-failed'
+    })
+);
+// register with github
+app.get('/auth/github', passport.authenticate('github', {scope: 'email'}));
+app.get('/auth/github/callback',
+    passport.authenticate('github', {failureRedirect: '/auth/failure'}),
+    function (req, res) {
+        if (req.user.new) {
+            res.redirect('/complete-registration');
+        } else {
+            res.redirect('/user/my-profile');
+        }
+    }
+);
+
+// google login ===========
+// app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
+// app.get('/auth/google/callback',
+//     passport.authenticate('google', {
+//         successRedirect: '/user/my-profile',
+//         failureRedirect: '/auth/failure'
+//     })
+// );
+
 // twitter login ==========
+
+// add twitter to existing profile
+app.get('/auth/twitter/add', passport.authenticate('addTwitter', {scope: 'email'}));
+app.get('/auth/twitter/callback/add', passport.authenticate('addTwitter', {
+        successRedirect: '/user/my-profile/edit',
+        failureRedirect: '/user/my-profile/add-failed'
+    })
+);
+// register new user with twitter
 app.get('/auth/twitter', passport.authenticate('twitter', {scope: 'email'}));
 app.get('/auth/twitter/callback',
-    passport.authenticate('twitter', {
-        //todo: change these once figure out how to set current user
-        successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
-    })
+    passport.authenticate('twitter', {failureRedirect: '/auth/failure'}),
+    function (req, res) {
+        if (req.user.new) {
+            res.redirect('/complete-registration');
+        } else {
+            res.redirect('/user/my-profile');
+        }
+    }
 );
 // linkedin login =========
-app.get('/auth/linkedin', passport.authenticate('linkedin', {scope: 'email'}));
-app.get('/auth/linkedin/callback',
-    passport.authenticate('linkedin', {
-        //todo: change these one figure out how to set current user
-        successRedirect: '/auth/success',
-        failureRedirect: '/auth/failure'
-    })
-);
+// app.get('/auth/linkedin', passport.authenticate('linkedin', {scope: 'email'}));
+// app.get('/auth/linkedin/callback',
+//     passport.authenticate('linkedin', {
+//         successRedirect: '/user/my-profile',
+//         failureRedirect: '/auth/failure'
+//     })
+// );
 
 // POST ======================================
 

@@ -27,6 +27,7 @@ passport.use('linkedin', new LIStrategy({
                         console.log("Creating new user");
                         var newUser = new User();
 
+                        console.log("Linkedin profile: ", profile);
                         //set LinkedIn info
                         newUser.linkedin.id = profile.id;
                         newUser.linkedin.access_token = access_token;

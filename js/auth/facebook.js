@@ -9,7 +9,8 @@ var User = require('../db/models/User');
 passport.use('facebook', new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
-        callbackURL: config.facebook.callbackURL
+        callbackURL: config.facebook.callbackURL,
+        profileFields: ['email', 'link', 'displayName']
     },
     function (access_token, refresh_token, profile, done) {
         process.nextTick(function () {
@@ -24,11 +25,13 @@ passport.use('facebook', new FacebookStrategy({
                         // no user with matching facebook id
                         // create new User
                         var newUser = new User();
-
+                        console.log("Facebook profile: ", profile);
                         //set all fb info
                         newUser.fb.id = profile.id;
                         newUser.fb.access_token = access_token;
-
+                        newUser.fb.url = profile.profileUrl;
+                        newUser.fb.displayName = profile.displayName;
+                        newUser.fb.hidden = false;
                         //set all other info
                         newUser.name = profile.displayName;
                         newUser.views = 0;
@@ -40,12 +43,15 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.upvotes = [];
                         newUser.downvotes = [];
                         newUser.avatar = '/assets/img/default-avatar.png';
-
                         newUser.website = '';
-                        newUser.email = '';
+                        if(profile.emails[0].value){
+                            newUser.email = profile.emails[0].value;
+                        }
 
                         newUser.flagged = false;
                         newUser.deleted = false;
+
+                        newUser.new = true;
 
                         //save user to db
                         newUser.save(function (err) {
@@ -55,6 +61,7 @@ passport.use('facebook', new FacebookStrategy({
                             } else {
                                 //return user on success
                                 console.log("New facebook user created");
+                                //todo: redirect to complete-registration
                                 return done(null, newUser);
                             }
                         });
@@ -65,5 +72,43 @@ passport.use('facebook', new FacebookStrategy({
     }));
 
 //todo: addFB passport strategy
+passport.use('addFB', new FacebookStrategy({
+        clientID: config.facebook.clientID,
+        clientSecret: config.facebook.clientSecret,
+        callbackURL: config.facebook.addCallbackURL,
+        profileFields: ['email', 'link', 'displayName'],
+        passReqToCallback: true
+    },
+    function (req, access_token, refresh_token, profile, done) {
+        process.nextTick(function () {
+            //find user
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if (err) {
+                    return done(err);
+                } else if (user) {
+                    //found user, add fb details to user
+                    console.log("Facebook displayName: ", profile.displayName);
+                    user.fb.id = profile.id;
+                    user.fb.access_token = access_token;
+                    user.fb.url = profile.profileUrl;
+                    user.fb.displayName = profile.displayName;
+                    user.fb.hidden = false;
+                    if(!user.email && profile.emails[0].value){
+                        user.email = profile.emails[0].value;
+                    }
 
+                    user.save(function (err) {
+                        if (err) {
+                            return done(err);
+                        } else {
+                            return done(null, user);
+                        }
+                    })
+                } else {
+                    return done("Couldn't find matching user with _id");
+                }
+            });
+        })
+    })
+);
 module.exports = passport;

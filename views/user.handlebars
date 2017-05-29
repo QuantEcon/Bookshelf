@@ -7,6 +7,7 @@
 
             <p class="avatar"><a href="#"><img src={{data.user.avatar}}></a></p>
 
+            <!--todo: restrict admin option-->
             <ul class="admin-options">
                 <li><a href="#" title="Flag user" data-open="flagUserModal"><span class="fi-flag"></span></a></li>
                 <li><a href="#" title="Delete user" data-open="deleteContentModal"><span class="fi-x"></span></a></li>
@@ -21,6 +22,12 @@
                 <div class="details-title">
 
                     <h1 class="title">{{data.user.name}}</h1>
+                    {{#if data.myPage}}
+                        <ul class="details-options">
+                            <li><a href="/user/my-profile/edit/" title="Edit Profile"><span class="fi-widget"></span></a></li>
+                            <li><a href="/logout"><span class="fi-x-circle"></span> <span>Sign Out</span></a></li>
+                        </ul>
+                    {{/if}}
 
                     <p class="date">Joined {{data.user.joinDate}}</p>
 
@@ -49,10 +56,21 @@
                     <p class="web"><a href="http://{{data.user.website}}/">{{data.user.website}}</a>
 
                     <ul class="networks">
-                        <li><a href="{{data.user.github}}"><span class="fi-social-github"></span>
-                            <span>GitHub</span></a></li>
-                        <li><a href="{{user.linkedIn}}"><span class="fi-social-linkedin"></span> <span>LinkedIn</span></a></li>
-                        <li><a href="{{data.user.email}}"><span class="fi-mail"></span> <span>Email</span></a></li>
+                        {{#if data.user.github.url}}
+                            <li><a href="{{data.user.github.url}}"><span class="fi-social-github"></span>
+                                <span>GitHub</span></a></li>
+                        {{/if}}
+                        {{#if data.user.fb.url}}
+                            <li><a href="{{data.user.fb.url}}"><span class="fi-social-facebook"></span>
+                                <span>Facebook</span></a></li>
+                        {{/if}}
+                        {{#if data.user.linkedIn.url}}
+                            <li><a href="{{user.linkedIn.url}}"><span class="fi-social-linkedin"></span>
+                                <span>LinkedIn</span></a></li>
+                        {{/if}}
+                        {{#if data.user.email}}
+                            <li><a href="mailto:{{data.user.email}}"><span class="fi-mail"></span> <span>Email</span></a></li>
+                        {{/if}}
                     </ul>
 
                 </div>
@@ -73,6 +91,7 @@
             {{>searchbar numSubmissions=data.user.submissions.length}}
             <div class="summaries">
                 {{#each data.submissions}}
+                    <!--todo: pass in current user-->
                     {{subSummary this ../data.userAr}}
                 {{/each}}
             </div>

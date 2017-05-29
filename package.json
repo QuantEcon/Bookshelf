@@ -20,6 +20,7 @@
   "dependencies": {
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
+    "express-passport-logout": "^0.1.0",
     "express-session": "^1.15.3",
     "fuzzy-time": "^1.0.7",
     "mongo-cursor-pagination": "^5.0.0",

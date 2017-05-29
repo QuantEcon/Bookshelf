@@ -1,0 +1,151 @@
+<div class="row columns">
+
+    <div class="edit-profile">
+
+        <h1 class="page-title">Edit Profile</h1>
+
+        <div class="edit-profile-header">
+            <!--todo: be able to edit avatar-->
+            <p class="avatar"><img src='{{data.user.avatar}}'></p>
+
+            <div class="edit-profile-title">
+
+                <label class="section-title" for="name">Name <span class="mandatory">*</span></label>
+
+                <input type="text" placeholder="Your name" id="name" value='{{data.user.name}}'>
+
+            </div>
+
+        </div>
+
+        <div class="edit-profile-primary">
+
+            <div class="edit-profile-primary-group1">
+
+                <label class="section-title" for="position">Position/Job Description</label>
+
+                <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a>
+                    here.</p>
+
+                <textarea placeholder="Notebook summary" id="position">{{data.user.summary}}</textarea>
+
+                <p class="input-hint input-hint-after"><a href="#">Preview</a></p>
+
+                <hr>
+
+                <label class="section-title" for="website">Website</label>
+
+                <input type="url" placeholder="Website URL" id="website" value='{{data.user.website}}'>
+
+            </div>
+
+            <div class="edit-profile-primary-group2">
+
+                <!--todo: style the add buttons-->
+                {{#if data.user.github.url}}
+                    <label class="section-title" for="github">
+                        GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
+                    </label>
+                    <br>
+                    <!--todo: style-->
+                    <a href="{{data.user.github.url}}">{{data.user.github.username}}</a>
+                    <!--todo: remove/hide/show from db-->
+                    <p class="input-hint input-hint-after">
+                        <a href="#">Remove | </a>
+                        {{#if data.user.fb.hidden}}
+                            <a href="#">Show</a>
+                        {{else}}
+                            <a href="#">Hide</a>
+                        {{/if}}
+                    </p>
+                    <hr>
+                {{else}}
+                    <label class="section-title" for="github">GitHub Profile</label>
+                    <br>
+                    <ul class="button-row">
+                        <li class="menu-submit"><a href="/auth/github/add">Add Github</a></li>
+                    </ul>
+                    <hr>
+                {{/if}}
+
+                <!--todo: style the add buttons-->
+                {{#if data.user.twitter.username}}
+                    <label class="section-title" for="twitter">
+                        Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
+                    </label>
+                    <br>
+                    <!--todo: style-->
+                    <a>{{data.user.twitter.username}}</a>
+                    <!--todo: remove/hide/show from db-->
+                    <p class="input-hint input-hint-after">
+                        <a href="#">Remove | </a>
+                        {{#if data.user.fb.hidden}}
+                            <a href="#">Show</a>
+                        {{else}}
+                            <a href="#">Hide</a>
+                        {{/if}}
+                    </p>
+                    <hr>
+                {{else}}
+                    <label class="section-title" for="twitter">Twitter Profile</label>
+                    <br>
+                    <ul class="button-row">
+                        <li class="menu-submit"><a href="/auth/twitter/add">Add Twitter</a></li>
+                    </ul>
+                    <hr>
+                {{/if}}
+
+                <!--todo: style the add buttons-->
+                {{#if data.user.fb.url}}
+                    <label class="section-title" for="github">
+                        Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
+                    </label>
+                    <br>
+                    <!--todo: style-->
+                    <a href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
+                    <!--todo: remove/hide/show from db-->
+                    <p class="input-hint input-hint-after">
+                        <a href="#">Remove | </a>
+                        {{#if data.user.fb.hidden}}
+                            <a href="#">Show</a>
+                        {{else}}
+                            <a href="#">Hide</a>
+                        {{/if}}
+                    </p>
+
+                    <hr>
+                {{else}}
+                    <label class="section-title" for="facebook">Facebook Profile</label>
+                    <br>
+                    <ul class="button-row">
+                        <li class="menu-submit"><a href="/auth/fb/add">Add Facebook</a></li>
+                    </ul>
+                    <hr>
+                {{/if}}
+
+                <!--todo: google-->
+
+                <!--todo: linkedin?-->
+
+                <label class="section-title" for="email">Email</label>
+
+                <input type="email" placeholder="Email" id="email" value={{data.user.email}}>
+
+            </div>
+
+        </div>
+
+        <ul class="button-row">
+            <!--todo: delete profile from db-->
+            <li>
+                <a class="alt" href="/user/my-profile/">Cancel</a>
+            </li>
+            <!--todo: save changes to db-->
+            <li>
+                <button name="submit" type="submit">Save Profile</button>
+            </li>
+        </ul>
+
+    </div>
+
+</div>

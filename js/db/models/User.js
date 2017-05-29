@@ -24,26 +24,31 @@ var userSchema = new Schema({
     github: {
         id: String,
         access_token: String,
-        url: String
+        url: String,
+        username: String,
+        hidden: Boolean
     },
     fb: {
         id: String,
         access_token: String,
-        first_name: String,
-        last_name: String,
-        url: String
+        displayName: String,
+        url: String,
+        hidden: Boolean
     },
     linkedin: {
         id: String,
         access_token: String,
-        url: String
+        url: String,
+        displayName: String,
+        hidden: Boolean
     },
     google: {
         id: String
     },
     twitter: {
         id: String,
-        access_token: String
+        access_token: String,
+        username: String
     },
     // meta
     flagged: Boolean,
