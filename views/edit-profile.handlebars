@@ -1,6 +1,7 @@
 <head>
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <script>
+        //todo: change this once not running on local host
         var url = 'http://localhost:8080';
         var app = angular.module('myApp', []);
 
@@ -11,6 +12,7 @@
 
         app.controller('editProfileCtrl', function ($scope, $http, $window) {
             $scope.formModel = {};
+            $scope.activeAvatar = '{{data.user.activeAvatar}}';
             //set default values
             $scope.formModel.name = '{{data.user.name}}';
             $scope.formModel.email = '{{data.user.email}}';
@@ -19,7 +21,7 @@
             $scope.oneSocial = {{data.user.oneSocial}};
             //todo: make avatar changeable
 
-            $scope.onSubmit = function (valid) {
+            $scope.onProfileSubmit = function (valid) {
                 if (valid) {
                     if ($scope.editProfileForm.$pristine) {
                         $window.location.href = url + '/user/my-profile';
@@ -76,13 +78,28 @@
                 console.log("reloading...");
                 $window.location.reload()
             };
+
+            $scope.useFBPhoto = function () {
+                $http.get(url + '/edit-profile/use-photo/fb');
+                $window.location.reload();
+            };
+            $scope.useTwitterPhoto = function () {
+                $http.get(url + '/edit-profile/use-photo/twitter');
+                $window.location.reload();
+            };
+            $scope.useGithubPhoto = function () {
+                $http.get(url + '/edit-profile/use-photo/github');
+                $window.location.reload();
+            };
+
+
         });
     </script>
 </head>
 <form ng-app="myApp"
       ng-controller="editProfileCtrl"
       novalidate="novalidate"
-      ng-submit="onSubmit(editProfileForm.$valid)"
+      ng-submit="onProfileSubmit(editProfileForm.$valid)"
       name="editProfileForm">
 
     <div class="row columns">
@@ -148,93 +165,7 @@
                            id="website"
                            name="website">
 
-                </div>
-
-                <div class="edit-profile-primary-group2">
-
-                    {{#if data.user.github.url}}
-                        <label class="section-title" for="github">
-                            GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
-                        </label>
-                        <br>
-                        <a href="{{data.user.github.url}}">{{data.user.github.username}}</a>
-                        <!--todo: remove/hide/show from db-->
-                        <p class="input-hint input-hint-after">
-                            <a ng-click="removeGithub()" ng-disabled="oneSocial">Remove</a>
-                            |
-                            {{#if data.user.github.hidden}}
-                                <a href="#" ng-click="toggleGithub()">Show</a>
-                            {{else}}
-                                <a href="#" ng-click="toggleGithub()">Hide</a>
-                            {{/if}}
-                        </p>
-                        <hr>
-                    {{else}}
-                        <label class="section-title" for="github">GitHub Profile</label>
-                        <br>
-                        <ul class="button-row">
-                            <li class="menu-submit"><a href="/auth/github/add">Add Github</a></li>
-                        </ul>
-                        <hr>
-                    {{/if}}
-
-                    {{#if data.user.twitter.username}}
-                        <label class="section-title" for="twitter">
-                            Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
-                        </label>
-                        <br>
-                        <a>{{data.user.twitter.username}}</a>
-                        <!--todo: remove/hide/show from db-->
-                        <p class="input-hint input-hint-after">
-                            <a ng-click="removeTwitter()" ng-disabled="oneSocial">Remove</a>
-                            |
-                            {{#if data.user.fb.hidden}}
-                                <a ng-click="toggleTwitter()">Show</a>
-                            {{else}}
-                                <a  ng-click="toggleTwitter()">Hide</a>
-                            {{/if}}
-                        </p>
-                        <hr>
-                    {{else}}
-                        <label class="section-title" for="twitter">Twitter Profile</label>
-                        <br>
-                        <ul class="button-row">
-                            <li class="menu-submit"><a href="/auth/twitter/add">Add Twitter</a></li>
-                        </ul>
-                        <hr>
-                    {{/if}}
-
-                    {{#if data.user.fb.url}}
-                        <label class="section-title" for="github">
-                            Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
-                        </label>
-                        <br>
-                        <!--todo: style-->
-                        <a href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
-                        <!--todo: remove/hide/show from db-->
-                        <p class="input-hint input-hint-after">
-                            <a ng-click="removeFB()" ng-disabled="oneSocial">Remove</a>
-                            |
-                            {{#if data.user.fb.hidden}}
-                                <a ng-click="toggleFB()">Show</a>
-                            {{else}}
-                                <a ng-click="toggleFB()">Hide</a>
-                            {{/if}}
-                        </p>
-
-                        <hr>
-                    {{else}}
-                        <label class="section-title" for="facebook">Facebook Profile</label>
-                        <br>
-                        <ul class="button-row">
-                            <li class="menu-submit"><a href="/auth/fb/add">Add Facebook</a></li>
-                        </ul>
-                        <hr>
-                    {{/if}}
-
-                    <!--todo: google-->
-
-                    <!--todo: linkedin?-->
+                    <hr>
 
                     <label class="section-title"
                            for="email"
@@ -252,6 +183,112 @@
                        ng-show="editProfileForm.email.$error.email">
                         Please enter a valid email
                     </p>
+
+                </div>
+
+                <div class="edit-profile-primary-group2">
+
+                    {{#if data.user.github.url}}
+                        <label class="section-title" for="github">
+                            GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <div class="edit-profile-header">
+
+                            <div class="avatar">
+                                <a href="{{data.user.github.url}}"><img src="{{data.user.github.avatarURL}}"></a>
+                            </div>
+
+                            <span><a class="profile-link"
+                                     href="{{data.user.github.url}}">{{data.user.github.username}}</a></span>
+                        </div>
+                        <p class="input-hint input-hint-after">
+                            <a ng-click="removeGithub()" ng-disabled="oneSocial">Remove</a>
+                            |
+                            {{#if data.user.github.hidden}}
+                                <a href="#" ng-click="toggleGithub()">Show</a>
+                            {{else}}
+                                <a href="#" ng-click="toggleGithub()">Hide</a>
+                            {{/if}}
+                            |
+                            <a ng-click="useGithubPhoto()" ng-disabled="activeAvatar == 'github'">Use this photo</a>
+                        </p>
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="github">GitHub Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/github/add">Add Github</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    {{#if data.user.twitter.username}}
+                        <label class="section-title" for="twitter">
+                            Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <div class="edit-profile-header">
+                            <div class="avatar"><img src="{{data.user.twitter.avatarURL}}"></div>
+                            <span><a class="profile-link"
+                                     href="{{data.user.twitter.url}}">{{data.user.twitter.username}}</a>
+                        </div>
+                        <p class="input-hint input-hint-after">
+                            <a ng-click="removeTwitter()" ng-disabled="oneSocial">Remove</a>
+                            |
+                            {{#if data.user.twitter.hidden}}
+                                <a ng-click="toggleTwitter()">Show</a>
+                            {{else}}
+                                <a ng-click="toggleTwitter()">Hide</a>
+                            {{/if}}
+                            |
+                            <a ng-click="useTwitterPhoto()" ng-disabled="activeAvatar == 'twitter'">Use this photo</a>
+                        </p>
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="twitter">Twitter Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/twitter/add">Add Twitter</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    {{#if data.user.fb.url}}
+                        <label class="section-title" for="github">
+                            Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <!--todo: style-->
+                        <div class="edit-profile-header">
+                            <div class="avatar"><img src="{{data.user.fb.avatarURL}}"></div>
+                            <span><a class="profile-link" href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
+                        </div>
+                        <p class="input-hint input-hint-after">
+                            <a ng-click="removeFB()" ng-disabled="oneSocial">Remove</a>
+                            |
+                            {{#if data.user.fb.hidden}}
+                                <a ng-click="toggleFB()">Show</a>
+                            {{else}}
+                                <a ng-click="toggleFB()">Hide</a>
+                            {{/if}}
+                            |
+                            <a ng-click="useFBPhoto()" ng-disabled="activeAvatar == 'fb'">Use this photo</a>
+                        </p>
+
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="facebook">Facebook Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/fb/add">Add Facebook</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    <!--todo: google-->
+
+                    <!--todo: linkedin?-->
                 </div>
 
             </div>

@@ -532,6 +532,37 @@ app.get('/edit-profile/toggle/:social', isAuthenticated, function (req, res) {
     }
 });
 
+app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) {
+    var type = req.params.social;
+    if (typeof type === 'string') {
+        User.findOne({_id: req.user._id}, function (err, user) {
+            if (type == 'github') {
+                user.avatar = user.github.avatarURL;
+                user.activeAvatar = 'github';
+
+            } else if (type == 'fb') {
+                user.avatar = user.fb.avatarURL;
+                user.activeAvatar = 'fb';
+
+            } else if (type == 'twitter') {
+                user.avatar = user.twitter.avatarURL;
+                user.activeAvatar = 'twitter';
+            }
+            //todo: add google
+
+            user.save(function (err) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.redirect('/user/my-profile/edit')
+                }
+            })
+        })
+    } else {
+        res.render('404');
+    }
+});
+
 // POST ======================================
 app.post('/edit-profile', isAuthenticated, function (req, res) {
     console.log('Received /edit-profile post request');

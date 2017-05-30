@@ -27,6 +27,14 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.twitter.id = profile.id;
                         newUser.twitter.access_token = access_token;
                         newUser.twitter.username = profile.username;
+                        newUser.activeAvatar = 'twitter';
+                        if (profile._json.profile_image_url) {
+                            newUser.twitter.avatarURL = profile._json.profile_image_url;
+                        } else {
+                            newUser.twitter.avatarURL = '/assets/img/default-avatar.png';
+                        }
+
+
                         newUser.oneSocial = true;
 
                         //set all other info
@@ -44,8 +52,8 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.upvotes = [];
                         newUser.downvotes = [];
 
-                        if (profile.profile_image_url) {
-                            newUser.avatar = profile.profile_image_url;
+                        if (profile._json.profile_image_url) {
+                            newUser.avatar = profile._json.profile_image_url;
                         } else {
                             newUser.avatar = '/assets/img/default-avatar.png';
                         }
@@ -69,7 +77,6 @@ passport.use('twitter', new TwitterStrategy({
                                 console.log("Error creating new twitter user: ", err);
                                 return done(err);
                             } else {
-                                //todo: redirect to complete-registration
                                 return done(null, newUser);
                             }
                         });
@@ -95,10 +102,15 @@ passport.use('addTwitter', new TwitterStrategy({
                     return done(err);
                 } else if (user) {
                     // add twitter details to user
-
+                    // console.log("Add twitter profile: ", profile);
                     user.twitter.id = profile.id;
                     user.twitter.access_token = access_token;
                     user.twitter.username = profile.username;
+                    if (profile._json.profile_image_url) {
+                        user.twitter.avatarURL = profile._json.profile_image_url;
+                    } else {
+                        user.twitter.avatarURL = '/assets/img/default-avatar.png';
+                    }
 
                     user.oneSocial = (user.github == {}) && (user.fb == {});
 

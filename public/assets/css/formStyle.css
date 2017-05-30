@@ -6,12 +6,26 @@ label.success {
     color: #00a000;
 }
 
+p.has-error{
+    color: #d84d0a !important;
+}
+
 p.error-help-text {
     color: #d84d0a;
     font-style: italic;
 }
 
 input.has-error {
+    border-color: #d84d0a !important;
+    border-radius: 5px !important;
+}
+
+input.ng-invalid {
+    border-color: #d84d0a;
+    border-radius: 5px;
+}
+
+select.has-error {
     border-color: #d84d0a;
     border-radius: 5px;
 }
@@ -26,4 +40,10 @@ button[disabled]{
 a:disabled, a[disabled] {
     color: lightgrey !important;
     pointer-events: none !important;
+}
+
+a.profile-link{
+    color: #d84d0a;
+    font-family: Raleway, sans-serif;
+    font-size: large;
 }

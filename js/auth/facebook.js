@@ -10,7 +10,7 @@ passport.use('facebook', new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
         callbackURL: config.facebook.callbackURL,
-        profileFields: ['email', 'link', 'displayName']
+        profileFields: ['email', 'link', 'displayName', 'photos']
     },
     function (access_token, refresh_token, profile, done) {
         process.nextTick(function () {
@@ -32,6 +32,12 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.fb.url = profile.profileUrl;
                         newUser.fb.displayName = profile.displayName;
                         newUser.fb.hidden = false;
+                        newUser.activeAvatar = 'fb';
+                        if (profile.photos[0].value) {
+                            newUser.fb.avatarURL = profile.photos[0].value;
+                        } else {
+                            newUser.fb.avatarURL = '/assets/img/default-avatar.png';
+                        }
                         newUser.oneSocial = true;
                         //set all other info
                         newUser.twitter = {};
@@ -47,7 +53,11 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.submissions = [];
                         newUser.upvotes = [];
                         newUser.downvotes = [];
-                        newUser.avatar = '/assets/img/default-avatar.png';
+                        if (profile.photos[0].value) {
+                            newUser.avatar = profile.photos[0].value;
+                        } else {
+                            newUser.avatar = '/assets/img/default-avatar.png';
+                        }
                         newUser.website = '';
                         if (profile.emails[0].value) {
                             newUser.email = profile.emails[0].value;
@@ -68,7 +78,6 @@ passport.use('facebook', new FacebookStrategy({
                             } else {
                                 //return user on success
                                 console.log("New facebook user created");
-                                //todo: redirect to complete-registration
                                 return done(null, newUser);
                             }
                         });
@@ -78,12 +87,11 @@ passport.use('facebook', new FacebookStrategy({
         })
     }));
 
-//todo: addFB passport strategy
 passport.use('addFB', new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
         callbackURL: config.facebook.addCallbackURL,
-        profileFields: ['email', 'link', 'displayName'],
+        profileFields: ['email', 'link', 'displayName', 'photos'],
         passReqToCallback: true
     },
     function (req, access_token, refresh_token, profile, done) {
@@ -95,13 +103,19 @@ passport.use('addFB', new FacebookStrategy({
                     return done(err);
                 } else if (user) {
                     //found user, add fb details to user
-                    console.log("Facebook displayName: ", profile.displayName);
+                    // console.log("Add fb profile: ", profile);
+
                     user.fb.id = profile.id;
                     user.fb.access_token = access_token;
                     user.fb.url = profile.profileUrl;
                     user.fb.displayName = profile.displayName;
                     user.fb.hidden = false;
-
+                    user.fb.avatarActive = false;
+                    if (profile.photos[0].value) {
+                        user.fb.avatarURL = profile.photos[0].value;
+                    } else {
+                        user.fb.avatarURL = '/assets/img/default-avatar.png';
+                    }
                     user.oneSocial = (user.twitter == {}) && (user.github == {});
 
                     if (!user.email && profile.emails[0].value) {

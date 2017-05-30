@@ -31,6 +31,13 @@ passport.use('github', new GithubStrategy({
                         newUser.github.url = profile.profileUrl;
                         newUser.github.username = profile.username;
                         newUser.github.hidden = false;
+                        newUser.activeAvatar = "github";
+                        if (profile._json.avatar_url) {
+                            newUser.github.avatarURL = profile._json.avatar_url;
+                        } else {
+                            newUser.github.avatarURL = '/assets/img/default-avatar.png';
+                        }
+
                         newUser.oneSocial = true;
 
                         //set all other info
@@ -76,7 +83,6 @@ passport.use('github', new GithubStrategy({
                                 return done(err);
                             } else {
                                 console.log("New github user created");
-                                //todo: redirect to complete-registration
                                 return done(null, newUser);
                             }
                         });
@@ -102,11 +108,19 @@ passport.use('addGithub', new GithubStrategy({
                 } else {
                     if (user) {
                         //add github credentials to user
+                        // console.log("Add github profile: ", profile);
+
                         user.github.id = profile.id;
                         user.github.access_token = access_token;
                         user.github.url = profile.profileUrl;
                         user.github.username = profile.username;
                         user.github.hidden = false;
+                        user.github.avatarActive = false;
+                        if (profile._json.avatar_url) {
+                            user.github.avatarURL = profile._json.avatar_url;
+                        } else {
+                            user.github.avatarURL = '/assets/img/default-avatar.png';
+                        }
 
                         user.oneSocial = (user.twitter == {}) && (user.fb == {});
 

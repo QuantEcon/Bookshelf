@@ -22,34 +22,40 @@ var userSchema = new Schema({
     website: String,
     email: String,
     summary: String,
+    activeAvatar: String,
     github: {
         id: String,
         access_token: String,
         url: String,
         username: String,
-        hidden: Boolean
+        hidden: Boolean,
+        avatarURL: String,
     },
     fb: {
         id: String,
         access_token: String,
         displayName: String,
         url: String,
-        hidden: Boolean
+        hidden: Boolean,
+        avatarURL: String,
     },
     linkedin: {
         id: String,
         access_token: String,
         url: String,
         displayName: String,
-        hidden: Boolean
+        hidden: Boolean,
+        avatarURL: String,
     },
     google: {
-        id: String
+        id: String,
+        avatarURL: String,
     },
     twitter: {
         id: String,
         access_token: String,
-        username: String
+        username: String,
+        avatarURL: String,
     },
     oneSocial: Boolean,
     // meta

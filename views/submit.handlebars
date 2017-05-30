@@ -1,4 +1,44 @@
-<form action="/submit/2.html" novalidate ng-app="myApp" ng-controller="submitCtrl" ng-submit="onSubmit">
+<head>
+    <link rel="stylesheet" href="/assets/css/formStyle.css">
+    <script>
+        //todo: change this once not running on local host
+        var url = 'http://localhost:8080';
+        var app = angular.module('myApp', []);
+        app.config(function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[{');
+            $interpolateProvider.endSymbol('}]}');
+        });
+
+        app.controller('submitCtrl', function ($scope, $http, $window) {
+            $scope.submissionFormModel = {};
+
+            $scope.onSubmissionSubmit = function (valid) {
+                if (valid) {
+                    console.log("Valid Form!");
+                    console.log("FormModel: ", $scope.submissionFormModel);
+                    $http.post(url + '/new-submission', $scope.submissionFormModel)
+                            .success(function (data) {
+                                console.log("Submitted, redirecting to preview page");
+                                //todo: redirect to preview
+                            })
+                            .error(function (data) {
+                                console.log("Error submitting");
+                            });
+                } else {
+                    console.log("Form is invalid");
+                }
+            }
+
+        })
+    </script>
+</head>
+
+
+<form novalidate="novalidate"
+      ng-app="myApp"
+      ng-controller="submitCtrl"
+      ng-submit="onSubmissionSubmit(submitForm.$valid)"
+      name="submitForm">
 
     <div class="row columns">
 
@@ -11,9 +51,13 @@
 
                 <h2 class="section-title">Notebook File <span class="mandatory">*</span></h2>
 
-                <p class="input-hint">You will be able to preview the rendered Notebook before publishing. A published Notebook can be modified by uploading an updated version.</p>
+                <p class="input-hint">You will be able to preview the rendered Notebook before publishing. A published
+                    Notebook can be modified by uploading an updated version.</p>
 
-                <div id="dZUploadNB" class="dropzone">
+                <!--todo: get file uploading working-->
+                <div id="dZUploadNB"
+                     class="dropzone"
+                     ng-model="submissionFormModel.file">
 
                     <div class="dz-default dz-message">
                         <p class="hint">Drop Notebook file here or <strong>click</strong> to browse</p>
@@ -28,9 +72,23 @@
 
                 <div class="submit-title">
 
-                    <label class="section-title" for="title">Title <span class="mandatory">*</span></label>
+                    <label class="section-title"
+                           for="title"
+                           ng-class="{'has-error': !submitForm.title.$valid}">
+                        Title <span class="mandatory">*</span>
+                    </label>
 
-                    <input type="text" placeholder="Notebook Title" id="title" ng-model="title">
+                    <input type="text"
+                           placeholder="Notebook Title"
+                           id="title"
+                           ng-model="submissionFormModel.title"
+                           ng-class="{'has-error': !submitForm.title.$valid}"
+                           name="title"
+                           required="required">
+                    <p class="error-help-text"
+                       ng-show="submitForm.title.$error.required">
+                        Title is required
+                    </p>
 
                 </div>
 
@@ -42,13 +100,14 @@
 
                     <h2 class="section-title">Co-authors</h2>
 
-                    <p class="input-hint">An email will be sent to each co-author requesting their permission to be acknowledged.</p>
+                    <p class="input-hint">An email will be sent to each co-author requesting their permission to be
+                        acknowledged.</p>
 
                     <div class="coauthor-emails">
-                        <input type="email" placeholder="Email address" ng-model="coAuthor1">
-                        <input type="email" placeholder="Email address" ng-model="coAuthor2">
-                        <input type="email" placeholder="Email address" ng-model="coAuthor3">
-                        <input type="email" placeholder="Email address" ng-model="coAuthor4">
+                        <input type="email" placeholder="Email address" ng-model="submissionFormModel.coAuthor1">
+                        <input type="email" placeholder="Email address" ng-model="submissionFormModel.coAuthor2">
+                        <input type="email" placeholder="Email address" ng-model="submissionFormModel.coAuthor3">
+                        <input type="email" placeholder="Email address" ng-model="submissionFormModel.coAuthor4">
                     </div>
                     <!--todo: add this functionality-->
                     <p class="input-hint input-hint-after"><a href="#">Add more</a></p>
@@ -91,49 +150,78 @@
                     <h2 class="section-title">Topic</h2>
 
                     <p class="input-hint">The Notebook will be grouped under each selected topic.</p>
+
                     <!--todo: figure out efficient way to bind to ng-model-->
                     <ul class="submit-topics">
-                        <li><input id="topic1" type="checkbox"><label for="topic1">General Economics and Teaching</label></li>
-                        <li><input id="topic2" type="checkbox"><label for="topic2" title="History of Economic Thought, Methodology, and Heterodox Approaches">History of Economic Thought, Methodology, and Heterodox Approaches</label></li>
-                        <li><input id="topic3" type="checkbox"><label for="topic3">Mathematical and Quantitative Methods</label></li>
+                        <li><input id="topic1" type="checkbox"><label for="topic1">General Economics and
+                            Teaching</label></li>
+                        <li><input id="topic2" type="checkbox"><label for="topic2"
+                                                                      title="History of Economic Thought, Methodology, and Heterodox Approaches">History
+                            of Economic Thought, Methodology, and Heterodox Approaches</label></li>
+                        <li><input id="topic3" type="checkbox"><label for="topic3">Mathematical and Quantitative
+                            Methods</label></li>
                         <li><input id="topic4" type="checkbox"><label for="topic4">Microeconomics</label></li>
-                        <li><input id="topic5" type="checkbox"><label for="topic5">Macroeconomics and Monetary Economics</label></li>
+                        <li><input id="topic5" type="checkbox"><label for="topic5">Macroeconomics and Monetary
+                            Economics</label></li>
                         <li><input id="topic6" type="checkbox"><label for="topic6">International Economics</label></li>
                         <li><input id="topic7" type="checkbox"><label for="topic7">Financial Economics</label></li>
                         <li><input id="topic8" type="checkbox"><label for="topic8">Public Economics</label></li>
-                        <li><input id="topic9" type="checkbox"><label for="topic9">Health, Education, and Welfare</label></li>
-                        <li><input id="topic10" type="checkbox"><label for="topic10">Labor and Demographic Economics</label></li>
+                        <li><input id="topic9" type="checkbox"><label for="topic9">Health, Education, and
+                            Welfare</label></li>
+                        <li><input id="topic10" type="checkbox"><label for="topic10">Labor and Demographic
+                            Economics</label></li>
                         <li><input id="topic11" type="checkbox"><label for="topic11">Law and Economics</label></li>
-                        <li><input id="topic12" type="checkbox"><label for="topic12">Industrial Organization</label></li>
-                        <li><input id="topic13" type="checkbox"><label for="topic13" title="Business Administration and Business Economics">Business Administration and Business Economics</label></li>
+                        <li><input id="topic12" type="checkbox"><label for="topic12">Industrial Organization</label>
+                        </li>
+                        <li><input id="topic13" type="checkbox"><label for="topic13"
+                                                                       title="Business Administration and Business Economics">Business
+                            Administration and Business Economics</label></li>
                         <li><input id="topic14" type="checkbox"><label for="topic14">Economic History</label></li>
-                        <li><input id="topic15" type="checkbox"><label for="topic15" title="Economic Development, Innovation, Technological Change, and Growth">Economic Development, Innovation, Technological Change, and Growth</label></li>
+                        <li><input id="topic15" type="checkbox"><label for="topic15"
+                                                                       title="Economic Development, Innovation, Technological Change, and Growth">Economic
+                            Development, Innovation, Technological Change, and Growth</label></li>
                         <li><input id="topic16" type="checkbox"><label for="topic16">Economic Systems</label></li>
-                        <li><input id="topic17" type="checkbox"><label for="topic17">Agricultural and Natural Resource Economics</label></li>
-                        <li><input id="topic18" type="checkbox"><label for="topic18" title="Urban, Rural, Regional, Real Estate, and Transportation Economics">Urban, Rural, Regional, Real Estate, and Transportation Economics</label></li>
+                        <li><input id="topic17" type="checkbox"><label for="topic17">Agricultural and Natural Resource
+                            Economics</label></li>
+                        <li><input id="topic18" type="checkbox"><label for="topic18"
+                                                                       title="Urban, Rural, Regional, Real Estate, and Transportation Economics">Urban,
+                            Rural, Regional, Real Estate, and Transportation Economics</label></li>
                     </ul>
 
                 </div>
 
                 <div class="submit-secondary-group2">
 
-                    <label class="section-title" for="language">Language <span class="mandatory">*</span></label>
+                    <label class="section-title"
+                           for="language"
+                           ng-class="{'has-error':submitForm.languageSelection.$error.required}">
+                        Language <span class="mandatory">*</span>
+                    </label>
 
                     <p class="input-hint">The primary programming language used in the Notebook.</p>
 
-                    <select id="language" ng-model="language">
+                    <select id="language"
+                            ng-model="submissionFormModel.language"
+                            required="required"
+                            name="languageSelection"
+                            ng-class="{'has-error':submitForm.languageSelection.$error.required}">
                         <option value="">Select</option>
                         <option value="python">Python</option>
                         <option value="julia">Julia</option>
                         <option value="r">R</option>
                         <option value="other">Other</option>
                     </select>
+                    <p class="error-help-text"
+                       ng-show="submitForm.languageSelection.$error.required">
+                        Language is required
+                    </p>
 
                     <hr>
 
                     <label class="section-title" for="summary">Summary</label>
 
-                    <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a> here.</p>
+                    <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a>
+                        here.</p>
 
                     <textarea placeholder="Notebook summary" id="summary" ng-model="summary"></textarea>
 
@@ -145,14 +233,35 @@
 
             <div class="submit-footer">
 
-                <p class="section-title">Terms <span class="mandatory">*</span></p>
+                <p class="section-title"
+                   ng-class="{'has-error':submitForm.agreement.$error.required}">
+                    Terms <span class="mandatory">*</span>
+                </p>
 
-                <label><input type="checkbox"> I agree to the <a href="#">Terms and Conditions</a> of publishing content and sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</label>
+                <label>
+                    <input type="checkbox"
+                           required="required"
+                           ng-model="submissionFormModel.agreement"
+                           ng-class="{'has-error':submitForm.agreement.$error.required}"
+                           name="agreement">
+                    I agree to the <a href="#">Terms and Conditions</a> of publishing content
+                    and sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
+                    laborum.
+                </label>
+                <p class="error-help-text"
+                   ng-show="submitForm.agreement.$error.required">
+                    Agreement is required
+                </p>
 
             </div>
 
             <ul class="button-row">
-                <li><button name="submit" type="submit">Preview</button></li>
+                <li>
+                    <button name="submit"
+                            type="submit"
+                            ng-disabled="submitForm.$invalid">Preview
+                    </button>
+                </li>
             </ul>
 
         </div>
