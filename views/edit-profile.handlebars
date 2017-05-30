@@ -20,10 +20,14 @@
 
             $scope.onSubmit = function (valid) {
                 if (valid) {
+                    if($scope.editProfileForm.$pristine){
+                        $window.location.href = url + '/user/my-profile';
+                    }
                     console.log("CLicked on submit");
                     console.log($scope.formModel);
                     $http.post(url + '/edit-profile', $scope.formModel).success(function (data) {
                         console.log("Saved profile");
+                        $window.location.href = url + '/user/my-profile'
                     }).error(function (data) {
                         console.log("Error saving profile");
                     })
@@ -222,12 +226,14 @@
                 <li>
                     <a class="alt" ng-click="onCancel()">Cancel</a>
                 </li>
-                <!--todo: save changes to db-->
                 <li>
-                    <button name="submit" type="submit">Save Profile</button>
+                    <button name="submit"
+                            type="submit"
+                            ng-disabled="editProfileForm.$invalid">
+                        Save Profile
+                    </button>
                 </li>
             </ul>
-
         </div>
 
     </div>

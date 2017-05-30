@@ -2,6 +2,10 @@ label.has-error {
     color: #d84d0a;
 }
 
+label.success {
+    color: #00a000;
+}
+
 p.error-help-text {
     color: #d84d0a;
     font-style: italic;
@@ -10,4 +14,11 @@ p.error-help-text {
 input.has-error {
     border-color: #d84d0a;
     border-radius: 5px;
+}
+
+button:disabled,
+button[disabled]{
+    border-color: lightgrey !important;
+    color: lightgrey !important;
+    pointer-events: none !important;
 }
