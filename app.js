@@ -4,6 +4,7 @@
  */
 // modules ===============================================================
 var express = require('express');
+var bodyParser = require('body-parser');
 var fs = require("fs");
 var mdb = require('mongodb');
 var fuzzyTime = require('fuzzy-time');
@@ -113,6 +114,8 @@ var app = express();
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 // set location of assets
 app.use(express.static(__dirname + "/public"));
@@ -135,88 +138,23 @@ app.use(passport.session());
 // passport setup =======================================================
 passportInit();
 
-
-// app.get('/notebook/:nbID', function (req, res) {
-//     db.getSubmission({_id: new mdb.ObjectID(req.params.nbID)}).then(function (result) {
-//         if (result.length) {
-//             db.getUser({_id: new mdb.ObjectID(result[0].author)}).then(function (userResult) {
-//                 //get co-authors
-//                 db.getUser({_id: {$in: result[0].coAuthors}}).then(function (coAuthorResult) {
-//                     //get all comments
-//                     var comments = result[0].comments.map(function (a) {
-//                         return a;
-//                     });
-//                     db.getComment({_id: {$in: comments}}).then(function (commentsResult) {
-//                         //get all replies
-//                         var replyIDs = commentsResult.map(function (comment) {
-//                             return comment.replies.map(function (reply) {
-//                                 return reply;
-//                             });
-//                         });
-//                         var mergedReplies = [].concat.apply([], replyIDs);
-//                         db.getComment({_id: {$in: mergedReplies}}).then(function (replyResult) {
-//                             //get users from comments
-//                             var commentUsers = commentsResult.map(function (comment) {
-//                                 return comment.author;
-//                             });
-//                             var replyUsers = replyResult.map(function (reply) {
-//                                 return reply.author;
-//                             });
-//
-//                             var mergedUsers = [].concat(commentUsers).concat(replyUsers);
-//
-//                             db.getUser({_id: {$in: mergedUsers}}).then(function (getAllResult) {
-//                                 //todo: use actual avatar
-//                                 userResult[0].avatar = "/assets/img/avatar/8.png";
-//                                 var fTime = fuzzyTime(result[0].timestamp);
-//                                 //set up data object
-//                                 var data = {
-//                                     n: result[0],
-//                                     u: userResult[0],
-//                                     coAuthors: coAuthorResult,
-//                                     comments: commentsResult,
-//                                     replies: replyResult,
-//                                     numTotalComments: commentsResult.length + replyResult.length,
-//                                     commentUsers: getAllResult,
-//                                     showNotebook: true,
-//                                     fuzzyTime: fTime
-//                                 };
-//                                 // render page
-//                                 res.render('submission', {
-//                                     data: data,
-//                                     layout: 'breadcrumbs',
-//                                     title: result[0].title
-//                                 })
-//                             });
-//                         });
-//                     });
-//                 });
-//             });
-//         } else {
-//             //trigger 404
-//             res.status(404);
-//             res.render('404');
-//         }
-//     });
-// });
-
 var getNBInfo = function (notebookID) {
-    Submission.findOne({_id: mdb.ObjectId(notebookID)}, function (err, notebook) {
+    Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, function (err, notebook) {
             if (err) {
                 return null
             } else if (notebook) {
                 //get author
-                User.findOne({_id: mdb.ObjectId(notebook.author)}, function (err, author) {
+                User.findOne({_id: mdb.ObjectId(notebook.author), deleted: false}, function (err, author) {
                     if (err) {
                         return null;
                     }
                     //get co-authors
-                    User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
+                    User.find({_id: {$in: notebook.coAuthors}, deleted: false}, function (err, coAuthors) {
                         if (err) {
                             return null;
                         }
                         //get comments
-                        Comment.find({_id: {$in: notebook.comments}}, function (err, comments) {
+                        Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
                             if (err) {
                                 return null;
                             }
@@ -261,7 +199,7 @@ var getNBInfo = function (notebookID) {
                 });
             }
             else {
-                return 400;
+                return 404;
             }
         }
     );
@@ -277,7 +215,7 @@ var isAuthenticated = function (req, res, next) {
             res.redirect('/login');
         }
         else if (/^\/user\//.test(req.url)) {
-            User.findOne({_id: mdb.ObjectId(req.params.userID)}, function (err, user) {
+            User.findOne({_id: mdb.ObjectId(req.params.userID), deleted: false}, function (err, user) {
                 if (err) {
                     res.render('500');
                 } else if (user) {
@@ -290,7 +228,7 @@ var isAuthenticated = function (req, res, next) {
                         title: user.name
                     });
                 } else {
-                    res.render('400', {
+                    res.render('404', {
                         title: "User Not Found"
                     });
                 }
@@ -332,6 +270,12 @@ app.get('/', isAuthenticated, function (req, res) {
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
     // get nb info
     var data = getNBInfo(req.params.nbID);
+
+    if (data == 404) {
+        res.render('404');
+    } else if (data == null) {
+        res.render('500');
+    }
     // render notebook
     res.render('notebook', {
         data: data,
@@ -372,7 +316,7 @@ app.get('/user/:userID', isAuthenticated, function (req, res) {
     if (req.params.userID.equals(req.user._id)) {
         res.redirect('/user/my-profile');
     }
-    User.findOne({_id: req.params.userID}, function (err, user) {
+    User.findOne({_id: req.params.userID, deleted: false}, function (err, user) {
         if (err) {
             res.render('500');
         } else if (user) {
@@ -384,6 +328,8 @@ app.get('/user/:userID', isAuthenticated, function (req, res) {
                 layout: 'breadcrumbs',
                 title: user.name
             });
+        } else {
+            res.render('404');
         }
     });
 });
@@ -518,7 +464,98 @@ app.get('/auth/twitter/callback',
 //     })
 // );
 
+// profile editing ============
+app.get('/edit-profile/remove/:social', isAuthenticated, function (req, res) {
+    var type = req.params.social;
+    if (typeof type === 'string') {
+        User.findOne({_id: req.user._id, deleted: false}, function (err, user) {
+            if (err) {
+                res.render('500');
+            } else if (user) {
+                if (type == 'github') {
+                    user.github = {};
+                } else if (type == 'twitter') {
+                    user.twitter = {};
+                } else if (type == 'fb') {
+                    user.fb = {};
+                } else if (type == 'google') {
+                    user.google = {};
+                }
+                //todo: add google
+                //update one social
+                var total = (user.github.id != null) +
+                    (user.twitter.id != null) +
+                    (user.fb.id != null) +
+                    (user.google.id != null);
+                if (total == 1) {
+                    console.log("Now only have one social");
+                    user.oneSocial = true;
+                }
+                user.save(function (err) {
+                    if (err) {
+                        res.render('500');
+                    } else {
+                        console.log("Removed social");
+                        res.redirect('/user/my-profile/edit');
+                    }
+                })
+            }
+        });
+    } else {
+        res.render('404');
+    }
+});
+
+app.get('/edit-profile/toggle/:social', isAuthenticated, function (req, res) {
+    var type = req.params.social;
+    if (typeof type === 'string') {
+        User.findOne({_id: req.user._id}, function (err, user) {
+            if (type == 'github') {
+                user.github.hidden = !user.github.hidden;
+            } else if (type == 'fb') {
+                user.fb.hidden = !user.fb.hidden;
+            } else if (type == 'twitter') {
+                user.twitter.hidden = !user.twitter.hidden;
+            }
+            //todo: add google
+
+            user.save(function (err) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.redirect('/user/my-profile/edit')
+                }
+            })
+        })
+    } else {
+        res.render('404');
+    }
+});
+
 // POST ======================================
+app.post('/edit-profile', isAuthenticated, function (req, res) {
+    console.log('Received /edit-profile post request');
+    console.log("request: ", req.body);
+    //change in db
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err) {
+            res.render('500');
+        } else {
+            user.name = req.body.name;
+            user.email = req.body.email;
+            user.summary = req.body.summary;
+            user.website = req.body.website;
+            user.save(function (err) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.status(200);
+                    res.send("Saved profile");
+                }
+            })
+        }
+    });
+});
 
 app.use(function (req, res) {
     res.contentType('text/html');

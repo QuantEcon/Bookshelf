@@ -21,6 +21,7 @@ var userSchema = new Schema({
     // social media/websites
     website: String,
     email: String,
+    summary: String,
     github: {
         id: String,
         access_token: String,
@@ -50,6 +51,7 @@ var userSchema = new Schema({
         access_token: String,
         username: String
     },
+    oneSocial: Boolean,
     // meta
     flagged: Boolean,
     deleted: Boolean

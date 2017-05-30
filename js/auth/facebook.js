@@ -32,7 +32,12 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.fb.url = profile.profileUrl;
                         newUser.fb.displayName = profile.displayName;
                         newUser.fb.hidden = false;
+                        newUser.oneSocial = true;
                         //set all other info
+                        newUser.twitter = {};
+                        newUser.github = {};
+                        newUser.google = {};
+
                         newUser.name = profile.displayName;
                         newUser.views = 0;
                         newUser.numComments = 0;
@@ -44,7 +49,7 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.downvotes = [];
                         newUser.avatar = '/assets/img/default-avatar.png';
                         newUser.website = '';
-                        if(profile.emails[0].value){
+                        if (profile.emails[0].value) {
                             newUser.email = profile.emails[0].value;
                         }
 
@@ -83,6 +88,7 @@ passport.use('addFB', new FacebookStrategy({
     },
     function (req, access_token, refresh_token, profile, done) {
         process.nextTick(function () {
+            //todo: check if profile is already registered with another account
             //find user
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
@@ -95,7 +101,10 @@ passport.use('addFB', new FacebookStrategy({
                     user.fb.url = profile.profileUrl;
                     user.fb.displayName = profile.displayName;
                     user.fb.hidden = false;
-                    if(!user.email && profile.emails[0].value){
+
+                    user.oneSocial = (user.twitter == {}) && (user.github == {});
+
+                    if (!user.email && profile.emails[0].value) {
                         user.email = profile.emails[0].value;
                     }
 

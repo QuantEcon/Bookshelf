@@ -22,3 +22,8 @@ button[disabled]{
     color: lightgrey !important;
     pointer-events: none !important;
 }
+
+a:disabled, a[disabled] {
+    color: lightgrey !important;
+    pointer-events: none !important;
+}

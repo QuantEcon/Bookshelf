@@ -31,11 +31,16 @@ passport.use('github', new GithubStrategy({
                         newUser.github.url = profile.profileUrl;
                         newUser.github.username = profile.username;
                         newUser.github.hidden = false;
+                        newUser.oneSocial = true;
 
                         //set all other info
                         if (profile.displayName) {
                             newUser.name = profile.displayName;
                         }
+                        newUser.fb = {};
+                        newUser.twitter = {};
+                        newUser.google = {};
+
                         newUser.views = 0;
                         newUser.numComments = 0;
                         newUser.joinDate = new Date();
@@ -64,6 +69,7 @@ passport.use('github', new GithubStrategy({
 
                         newUser.new = true;
 
+
                         newUser.save(function (err) {
                             if (err) {
                                 console.log("Error creating new github user: ", err);
@@ -89,7 +95,7 @@ passport.use('addGithub', new GithubStrategy({
     },
     function (req, access_token, refresh_token, profile, done) {
         process.nextTick(function () {
-            //todo: what to do if github.id already exists?
+            //todo: check if profile is already registered with another account
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
                     return done(err);
@@ -101,7 +107,9 @@ passport.use('addGithub', new GithubStrategy({
                         user.github.url = profile.profileUrl;
                         user.github.username = profile.username;
                         user.github.hidden = false;
-                        console.log("In add github: ", user);
+
+                        user.oneSocial = (user.twitter == {}) && (user.fb == {});
+
                         user.save(function (err) {
                             if (err) {
                                 return done(err);

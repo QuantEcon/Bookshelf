@@ -27,8 +27,13 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.twitter.id = profile.id;
                         newUser.twitter.access_token = access_token;
                         newUser.twitter.username = profile.username;
+                        newUser.oneSocial = true;
 
                         //set all other info
+                        newUser.github = {};
+                        newUser.fb = {};
+                        newUser.google = {};
+
                         newUser.name = profile.displayName;
                         newUser.views = 0;
                         newUser.numComments = 0;
@@ -83,6 +88,7 @@ passport.use('addTwitter', new TwitterStrategy({
     },
     function (req, access_token, token_secret, profile, done) {
         process.nextTick(function () {
+            //todo: check if profile is already registered with another account
             //find user with req.user._id
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
@@ -93,6 +99,8 @@ passport.use('addTwitter', new TwitterStrategy({
                     user.twitter.id = profile.id;
                     user.twitter.access_token = access_token;
                     user.twitter.username = profile.username;
+
+                    user.oneSocial = (user.github == {}) && (user.fb == {});
 
                     user.save(function (err) {
                         if (err) {

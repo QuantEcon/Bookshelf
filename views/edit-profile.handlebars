@@ -16,11 +16,12 @@
             $scope.formModel.email = '{{data.user.email}}';
             $scope.formModel.website = '{{data.user.website}}';
             $scope.formModel.summary = '{{data.user.summary}}';
+            $scope.oneSocial = {{data.user.oneSocial}};
             //todo: make avatar changeable
 
             $scope.onSubmit = function (valid) {
                 if (valid) {
-                    if($scope.editProfileForm.$pristine){
+                    if ($scope.editProfileForm.$pristine) {
                         $window.location.href = url + '/user/my-profile';
                     }
                     console.log("CLicked on submit");
@@ -39,6 +40,41 @@
             $scope.onCancel = function () {
                 console.log("Cancel clicked!");
                 $window.location.href = url + '/user/my-profile'
+            };
+
+            $scope.removeGithub = function () {
+                $http.get(url + '/edit-profile/remove/github');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+
+            $scope.toggleGithub = function () {
+                $http.get(url + '/edit-profile/toggle/github');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+
+            $scope.removeFB = function () {
+                $http.get(url + '/edit-profile/remove/fb');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+
+            $scope.toggleFB = function () {
+                $http.get(url + '/edit-profile/toggle/fb');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+
+            $scope.removeTwitter = function () {
+                $http.get(url + '/edit-profile/remove/twitter');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+            $scope.toggleTwitter = function () {
+                $http.get(url + '/edit-profile/toggle/twitter');
+                console.log("reloading...");
+                $window.location.reload()
             };
         });
     </script>
@@ -116,21 +152,20 @@
 
                 <div class="edit-profile-primary-group2">
 
-                    <!--todo: style the add buttons-->
                     {{#if data.user.github.url}}
                         <label class="section-title" for="github">
                             GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
                         </label>
                         <br>
-                        <!--todo: style-->
                         <a href="{{data.user.github.url}}">{{data.user.github.username}}</a>
                         <!--todo: remove/hide/show from db-->
                         <p class="input-hint input-hint-after">
-                            <a href="#">Remove | </a>
-                            {{#if data.user.fb.hidden}}
-                                <a href="#">Show</a>
+                            <a ng-click="removeGithub()" ng-disabled="oneSocial">Remove</a>
+                            |
+                            {{#if data.user.github.hidden}}
+                                <a href="#" ng-click="toggleGithub()">Show</a>
                             {{else}}
-                                <a href="#">Hide</a>
+                                <a href="#" ng-click="toggleGithub()">Hide</a>
                             {{/if}}
                         </p>
                         <hr>
@@ -143,21 +178,20 @@
                         <hr>
                     {{/if}}
 
-                    <!--todo: style the add buttons-->
                     {{#if data.user.twitter.username}}
                         <label class="section-title" for="twitter">
                             Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
                         </label>
                         <br>
-                        <!--todo: style-->
                         <a>{{data.user.twitter.username}}</a>
                         <!--todo: remove/hide/show from db-->
                         <p class="input-hint input-hint-after">
-                            <a href="#">Remove | </a>
+                            <a ng-click="removeTwitter()" ng-disabled="oneSocial">Remove</a>
+                            |
                             {{#if data.user.fb.hidden}}
-                                <a href="#">Show</a>
+                                <a ng-click="toggleTwitter()">Show</a>
                             {{else}}
-                                <a href="#">Hide</a>
+                                <a  ng-click="toggleTwitter()">Hide</a>
                             {{/if}}
                         </p>
                         <hr>
@@ -170,7 +204,6 @@
                         <hr>
                     {{/if}}
 
-                    <!--todo: style the add buttons-->
                     {{#if data.user.fb.url}}
                         <label class="section-title" for="github">
                             Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
@@ -180,11 +213,12 @@
                         <a href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
                         <!--todo: remove/hide/show from db-->
                         <p class="input-hint input-hint-after">
-                            <a href="#">Remove | </a>
+                            <a ng-click="removeFB()" ng-disabled="oneSocial">Remove</a>
+                            |
                             {{#if data.user.fb.hidden}}
-                                <a href="#">Show</a>
+                                <a ng-click="toggleFB()">Show</a>
                             {{else}}
-                                <a href="#">Hide</a>
+                                <a ng-click="toggleFB()">Hide</a>
                             {{/if}}
                         </p>
 
@@ -227,9 +261,10 @@
                     <a class="alt" ng-click="onCancel()">Cancel</a>
                 </li>
                 <li>
+
                     <button name="submit"
                             type="submit"
-                            ng-disabled="editProfileForm.$invalid">
+                            ng-disabled="editProfileForm.$invalid || editProfileForm.$pristine">
                         Save Profile
                     </button>
                 </li>
