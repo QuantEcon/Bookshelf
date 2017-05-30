@@ -55,6 +55,8 @@ passport.use('github', new GithubStrategy({
                             newUser.email = '';
                         }
 
+                        newUser.summary = '';
+
                         newUser.website = '';
 
                         newUser.flagged = false;

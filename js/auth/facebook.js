@@ -48,6 +48,8 @@ passport.use('facebook', new FacebookStrategy({
                             newUser.email = profile.emails[0].value;
                         }
 
+                        newUser.summary = '';
+
                         newUser.flagged = false;
                         newUser.deleted = false;
 

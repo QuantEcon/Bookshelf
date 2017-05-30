@@ -50,6 +50,8 @@ passport.use('twitter', new TwitterStrategy({
                             newUser.email = '';
                         }
 
+                        newUser.summary = '';
+
                         newUser.website = '';
 
                         newUser.flagged = false;
