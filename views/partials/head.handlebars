@@ -20,7 +20,11 @@
                     <li class="menu-user"><a href="/user/my-profile/">
                         <div class="avatar"><img src={{data.currentUser.avatar}}></div>
                         <span>My Profile</span></a></li>
-                    <li class="menu-submit"><a href="/submit" aria-haspopup="true" tabindex="0">Submit Notebook</a></li>
+                    {{#if data.submit}}
+                    {{else}}
+                        <li class="menu-submit"><a href="/submit" aria-haspopup="true" tabindex="0">Submit Notebook</a>
+                        </li>
+                    {{/if}}
                 {{else}}
                     <li class="menu-signin"><a href="/login" aria-haspopup="true" tabindex="0">Sign In</a></li>
                 {{/if}}

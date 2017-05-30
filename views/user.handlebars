@@ -1,18 +1,18 @@
 <div class="row columns">
 
-
     <div class="details">
 
         <div class="details-side">
 
             <p class="avatar"><a href="#"><img src={{data.user.avatar}}></a></p>
 
-            <!--todo: restrict admin option-->
-            <ul class="admin-options">
-                <li><a href="#" title="Flag user" data-open="flagUserModal"><span class="fi-flag"></span></a></li>
-                <li><a href="#" title="Delete user" data-open="deleteContentModal"><span class="fi-x"></span></a></li>
-            </ul>
-
+            <!--todo: restrict admin option. make adding admin secure somehow-->
+            {{#if data.currentUser.isAdmin}}
+                <ul class="admin-options">
+                    <li><a href="#" title="Flag user" data-open="flagUserModal"><span class="fi-flag"></span></a></li>
+                    <li><a href="#" title="Delete user" data-open="deleteContentModal"><span class="fi-x"></span></a></li>
+                </ul>
+            {{/if}}
         </div>
 
         <div class="details-main">

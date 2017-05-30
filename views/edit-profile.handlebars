@@ -1,151 +1,235 @@
-<div class="row columns">
+<head>
+    <link rel="stylesheet" href="/assets/css/formStyle.css">
+    <script>
+        var url = 'http://localhost:8080';
+        var app = angular.module('myApp', []);
 
-    <div class="edit-profile">
+        app.config(function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[{');
+            $interpolateProvider.endSymbol('}]}');
+        });
 
-        <h1 class="page-title">Edit Profile</h1>
+        app.controller('editProfileCtrl', function ($scope, $http, $window) {
+            $scope.formModel = {};
+            //set default values
+            $scope.formModel.name = '{{data.user.name}}';
+            $scope.formModel.email = '{{data.user.email}}';
+            $scope.formModel.website = '{{data.user.website}}';
+            $scope.formModel.summary = '{{data.user.summary}}';
+            //todo: make avatar changeable
 
-        <div class="edit-profile-header">
-            <!--todo: be able to edit avatar-->
-            <p class="avatar"><img src='{{data.user.avatar}}'></p>
+            $scope.onSubmit = function (valid) {
+                if (valid) {
+                    console.log("CLicked on submit");
+                    console.log($scope.formModel);
+                    $http.post(url + '/edit-profile', $scope.formModel).success(function (data) {
+                        console.log("Saved profile");
+                    }).error(function (data) {
+                        console.log("Error saving profile");
+                    })
+                } else {
+                    console.log("Form is invalid!");
+                }
 
-            <div class="edit-profile-title">
+            };
+            $scope.onCancel = function () {
+                console.log("Cancel clicked!");
+                $window.location.href = url + '/user/my-profile'
+            };
+        });
+    </script>
+</head>
+<form ng-app="myApp"
+      ng-controller="editProfileCtrl"
+      novalidate="novalidate"
+      ng-submit="onSubmit(editProfileForm.$valid)"
+      name="editProfileForm">
 
-                <label class="section-title" for="name">Name <span class="mandatory">*</span></label>
+    <div class="row columns">
 
-                <input type="text" placeholder="Your name" id="name" value='{{data.user.name}}'>
+        <div class="edit-profile">
+
+            <h1 class="page-title">Edit Profile</h1>
+
+            <div class="edit-profile-header">
+                <!--todo: be able to edit avatar-->
+                <p class="avatar"><img src='{{data.user.avatar}}'></p>
+
+                <div class="edit-profile-title">
+
+                    <label class="section-title"
+                           for="name"
+                           ng-class="{'has-error': !editProfileForm.name.$valid && !editProfileForm.$pristine}">
+                        Name <span class="mandatory">*</span>
+                    </label>
+
+                    <!--user's name-->
+                    <input ng-model="formModel.name"
+                           ng-class="{'has-error': !editProfileForm.name.$valid && !editProfileForm.$pristine}"
+                           required="required"
+                           type="text"
+                           placeholder="Your name"
+                           id="name"
+                           name="name">
+                    <p class="error-help-text"
+                       ng-show="editProfileForm.name.$error.required">
+                        Name is required
+                    </p>
+
+                </div>
 
             </div>
+
+            <div class="edit-profile-primary">
+
+                <div class="edit-profile-primary-group1">
+
+                    <label class="section-title" for="position">Position/Job Description</label>
+
+                    <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a>
+                        here.</p>
+
+                    <textarea ng-model="formModel.summary"
+                              placeholder="Notebook summary"
+                              id="position"
+                              name="summary">
+                        {{data.user.summary}}
+                    </textarea>
+
+                    <p class="input-hint input-hint-after"><a href="#">Preview</a></p>
+
+                    <hr>
+
+                    <label class="section-title" for="website">Website</label>
+
+                    <input ng-model="formModel.website"
+                           type="url"
+                           placeholder="Website URL"
+                           id="website"
+                           name="website">
+
+                </div>
+
+                <div class="edit-profile-primary-group2">
+
+                    <!--todo: style the add buttons-->
+                    {{#if data.user.github.url}}
+                        <label class="section-title" for="github">
+                            GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <!--todo: style-->
+                        <a href="{{data.user.github.url}}">{{data.user.github.username}}</a>
+                        <!--todo: remove/hide/show from db-->
+                        <p class="input-hint input-hint-after">
+                            <a href="#">Remove | </a>
+                            {{#if data.user.fb.hidden}}
+                                <a href="#">Show</a>
+                            {{else}}
+                                <a href="#">Hide</a>
+                            {{/if}}
+                        </p>
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="github">GitHub Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/github/add">Add Github</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    <!--todo: style the add buttons-->
+                    {{#if data.user.twitter.username}}
+                        <label class="section-title" for="twitter">
+                            Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <!--todo: style-->
+                        <a>{{data.user.twitter.username}}</a>
+                        <!--todo: remove/hide/show from db-->
+                        <p class="input-hint input-hint-after">
+                            <a href="#">Remove | </a>
+                            {{#if data.user.fb.hidden}}
+                                <a href="#">Show</a>
+                            {{else}}
+                                <a href="#">Hide</a>
+                            {{/if}}
+                        </p>
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="twitter">Twitter Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/twitter/add">Add Twitter</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    <!--todo: style the add buttons-->
+                    {{#if data.user.fb.url}}
+                        <label class="section-title" for="github">
+                            Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <!--todo: style-->
+                        <a href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
+                        <!--todo: remove/hide/show from db-->
+                        <p class="input-hint input-hint-after">
+                            <a href="#">Remove | </a>
+                            {{#if data.user.fb.hidden}}
+                                <a href="#">Show</a>
+                            {{else}}
+                                <a href="#">Hide</a>
+                            {{/if}}
+                        </p>
+
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="facebook">Facebook Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/fb/add">Add Facebook</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
+                    <!--todo: google-->
+
+                    <!--todo: linkedin?-->
+
+                    <label class="section-title"
+                           for="email"
+                           ng-class="{'has-error': !editProfileForm.email.$valid && !editProfileForm.email.$pristine}">
+                        Email
+                    </label>
+
+                    <input ng-model="formModel.email"
+                           ng-class="{'has-error': !editProfileForm.email.$valid && !editProfileForm.email.$pristine}"
+                           type="email"
+                           placeholder="Email"
+                           id="email"
+                           name="email">
+                    <p class="error-help-text"
+                       ng-show="editProfileForm.email.$error.email">
+                        Please enter a valid email
+                    </p>
+                </div>
+
+            </div>
+            <ul class="button-row">
+                <!--todo: delete profile from db-->
+                <li>
+                    <a class="alt" ng-click="onCancel()">Cancel</a>
+                </li>
+                <!--todo: save changes to db-->
+                <li>
+                    <button name="submit" type="submit">Save Profile</button>
+                </li>
+            </ul>
 
         </div>
-
-        <div class="edit-profile-primary">
-
-            <div class="edit-profile-primary-group1">
-
-                <label class="section-title" for="position">Position/Job Description</label>
-
-                <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a>
-                    here.</p>
-
-                <textarea placeholder="Notebook summary" id="position">{{data.user.summary}}</textarea>
-
-                <p class="input-hint input-hint-after"><a href="#">Preview</a></p>
-
-                <hr>
-
-                <label class="section-title" for="website">Website</label>
-
-                <input type="url" placeholder="Website URL" id="website" value='{{data.user.website}}'>
-
-            </div>
-
-            <div class="edit-profile-primary-group2">
-
-                <!--todo: style the add buttons-->
-                {{#if data.user.github.url}}
-                    <label class="section-title" for="github">
-                        GitHub Profile {{#if data.user.github.hidden}}(hidden){{/if}}
-                    </label>
-                    <br>
-                    <!--todo: style-->
-                    <a href="{{data.user.github.url}}">{{data.user.github.username}}</a>
-                    <!--todo: remove/hide/show from db-->
-                    <p class="input-hint input-hint-after">
-                        <a href="#">Remove | </a>
-                        {{#if data.user.fb.hidden}}
-                            <a href="#">Show</a>
-                        {{else}}
-                            <a href="#">Hide</a>
-                        {{/if}}
-                    </p>
-                    <hr>
-                {{else}}
-                    <label class="section-title" for="github">GitHub Profile</label>
-                    <br>
-                    <ul class="button-row">
-                        <li class="menu-submit"><a href="/auth/github/add">Add Github</a></li>
-                    </ul>
-                    <hr>
-                {{/if}}
-
-                <!--todo: style the add buttons-->
-                {{#if data.user.twitter.username}}
-                    <label class="section-title" for="twitter">
-                        Twitter Profile {{#if data.user.twitter.hidden}}(hidden){{/if}}
-                    </label>
-                    <br>
-                    <!--todo: style-->
-                    <a>{{data.user.twitter.username}}</a>
-                    <!--todo: remove/hide/show from db-->
-                    <p class="input-hint input-hint-after">
-                        <a href="#">Remove | </a>
-                        {{#if data.user.fb.hidden}}
-                            <a href="#">Show</a>
-                        {{else}}
-                            <a href="#">Hide</a>
-                        {{/if}}
-                    </p>
-                    <hr>
-                {{else}}
-                    <label class="section-title" for="twitter">Twitter Profile</label>
-                    <br>
-                    <ul class="button-row">
-                        <li class="menu-submit"><a href="/auth/twitter/add">Add Twitter</a></li>
-                    </ul>
-                    <hr>
-                {{/if}}
-
-                <!--todo: style the add buttons-->
-                {{#if data.user.fb.url}}
-                    <label class="section-title" for="github">
-                        Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
-                    </label>
-                    <br>
-                    <!--todo: style-->
-                    <a href="{{data.user.fb.url}}">{{data.user.fb.displayName}}</a>
-                    <!--todo: remove/hide/show from db-->
-                    <p class="input-hint input-hint-after">
-                        <a href="#">Remove | </a>
-                        {{#if data.user.fb.hidden}}
-                            <a href="#">Show</a>
-                        {{else}}
-                            <a href="#">Hide</a>
-                        {{/if}}
-                    </p>
-
-                    <hr>
-                {{else}}
-                    <label class="section-title" for="facebook">Facebook Profile</label>
-                    <br>
-                    <ul class="button-row">
-                        <li class="menu-submit"><a href="/auth/fb/add">Add Facebook</a></li>
-                    </ul>
-                    <hr>
-                {{/if}}
-
-                <!--todo: google-->
-
-                <!--todo: linkedin?-->
-
-                <label class="section-title" for="email">Email</label>
-
-                <input type="email" placeholder="Email" id="email" value={{data.user.email}}>
-
-            </div>
-
-        </div>
-
-        <ul class="button-row">
-            <!--todo: delete profile from db-->
-            <li>
-                <a class="alt" href="/user/my-profile/">Cancel</a>
-            </li>
-            <!--todo: save changes to db-->
-            <li>
-                <button name="submit" type="submit">Save Profile</button>
-            </li>
-        </ul>
 
     </div>
 
-</div>
+</form>

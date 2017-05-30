@@ -1,4 +1,4 @@
-<form action="/submit/2.html" novalidate>
+<form action="/submit/2.html" novalidate ng-app="myApp" ng-controller="submitCtrl" ng-submit="onSubmit">
 
     <div class="row columns">
 
@@ -17,7 +17,7 @@
 
                     <div class="dz-default dz-message">
                         <p class="hint">Drop Notebook file here or <strong>click</strong> to browse</p>
-                        <p>You can upload an <strong>ipynb</strong> file up to 10MB.</p>
+                        <p>You can upload an <strong>.ipynb</strong> file up to 10MB.</p>
                     </div>
 
                 </div>
@@ -30,7 +30,7 @@
 
                     <label class="section-title" for="title">Title <span class="mandatory">*</span></label>
 
-                    <input type="text" placeholder="Notebook Title" id="title">
+                    <input type="text" placeholder="Notebook Title" id="title" ng-model="title">
 
                 </div>
 
@@ -45,12 +45,12 @@
                     <p class="input-hint">An email will be sent to each co-author requesting their permission to be acknowledged.</p>
 
                     <div class="coauthor-emails">
-                        <input type="email" placeholder="Email address">
-                        <input type="email" placeholder="Email address">
-                        <input type="email" placeholder="Email address">
-                        <input type="email" placeholder="Email address">
+                        <input type="email" placeholder="Email address" ng-model="coAuthor1">
+                        <input type="email" placeholder="Email address" ng-model="coAuthor2">
+                        <input type="email" placeholder="Email address" ng-model="coAuthor3">
+                        <input type="email" placeholder="Email address" ng-model="coAuthor4">
                     </div>
-
+                    <!--todo: add this functionality-->
                     <p class="input-hint input-hint-after"><a href="#">Add more</a></p>
 
                 </div>
@@ -65,16 +65,15 @@
 
                         <div class="side">
 
-                            <!--todo: figure out to set global current user-->
-                            <p class="avatar"><a href="/user/my-profile/"><img src={{currentUser.avatar}}></a></p>
+                            <p class="avatar"><a href="/user/my-profile/"><img src={{data.currentUser.avatar}}></a></p>
 
                         </div>
 
                         <div class="main">
 
-                            <p class="name"><a href="/user/my-profile/">{{currentUser.name}}</a></p>
+                            <p class="name"><a href="/user/my-profile/">{{data.currentUser.name}}</a></p>
 
-                            <!--todo: figure out how to do modals-->
+                            <!--todo: figure out how to allow different users to sign in-->
                             <p class="signout"><a href="#" data-open="signInModal">Sign in as a different user</a></p>
 
                         </div>
@@ -92,7 +91,7 @@
                     <h2 class="section-title">Topic</h2>
 
                     <p class="input-hint">The Notebook will be grouped under each selected topic.</p>
-
+                    <!--todo: figure out efficient way to bind to ng-model-->
                     <ul class="submit-topics">
                         <li><input id="topic1" type="checkbox"><label for="topic1">General Economics and Teaching</label></li>
                         <li><input id="topic2" type="checkbox"><label for="topic2" title="History of Economic Thought, Methodology, and Heterodox Approaches">History of Economic Thought, Methodology, and Heterodox Approaches</label></li>
@@ -122,7 +121,7 @@
 
                     <p class="input-hint">The primary programming language used in the Notebook.</p>
 
-                    <select id="language">
+                    <select id="language" ng-model="language">
                         <option value="">Select</option>
                         <option value="python">Python</option>
                         <option value="julia">Julia</option>
@@ -136,7 +135,7 @@
 
                     <p class="input-hint">You can use <a href="http://commonmark.org/help/" target="_blank">markdown</a> here.</p>
 
-                    <textarea placeholder="Notebook summary" id="summary"></textarea>
+                    <textarea placeholder="Notebook summary" id="summary" ng-model="summary"></textarea>
 
                     <p class="input-hint input-hint-after"><a href="#">Preview</a></p>
 

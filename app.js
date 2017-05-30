@@ -10,6 +10,7 @@ var fuzzyTime = require('fuzzy-time');
 // passport modules
 var passport = require('passport');
 var passportInit = require('./js/auth/init');
+//todo: export all routes into separate files
 require('./js/auth/facebook');
 require('./js/auth/twitter');
 require('./js/auth/github');
@@ -117,6 +118,7 @@ app.set('view engine', 'handlebars');
 app.use(express.static(__dirname + "/public"));
 
 // middleware ============================================================
+// todo: loading screen?
 app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
     next();
@@ -199,18 +201,70 @@ passportInit();
 // });
 
 var getNBInfo = function (notebookID) {
-    Submission.findOne({_id: mdb.ObjectId(req.params.nbID)}, function (err, notebook) {
-        if (err) {
-            res.render('500');
-        } else if (notebook) {
-            //todo: get author
-            //todo: get co-authors
-            //todo: get comments
-            //todo: get replies
-        } else {
-            res.render('404');
+    Submission.findOne({_id: mdb.ObjectId(notebookID)}, function (err, notebook) {
+            if (err) {
+                return null
+            } else if (notebook) {
+                //get author
+                User.findOne({_id: mdb.ObjectId(notebook.author)}, function (err, author) {
+                    if (err) {
+                        return null;
+                    }
+                    //get co-authors
+                    User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
+                        if (err) {
+                            return null;
+                        }
+                        //get comments
+                        Comment.find({_id: {$in: notebook.comments}}, function (err, comments) {
+                            if (err) {
+                                return null;
+                            }
+                            //get replyID's from all comments
+                            var replyIDs = comments.map(function (comment) {
+                                return comment.replies.map(function (reply) {
+                                    return reply;
+                                });
+                            });
+                            //get replies
+                            Comment.find({_id: {$in: replyIDs}}, function (err, replies) {
+                                if (err) {
+                                    return null;
+                                }
+                                //get authors of comments and replies
+                                var commentUsers = comments.map(function (comment) {
+                                    return comment.author;
+                                });
+                                var replyUsers = replies.map(function (reply) {
+                                    return reply.author;
+                                });
+                                var mergedUsers = [].concat(commentUsers).concat(replyUsers);
+
+                                User.find({_id: {$in: mergedUsers}}, function (err, commentAuthors) {
+                                    //todo: build data object and return
+                                    var fTime = fuzzyTime(notebook.timestamp);
+                                    return {
+                                        n: notebook,
+                                        u: author,
+                                        coAuthors: coAuthors,
+                                        comments: comments,
+                                        replies: replies,
+                                        numTotalComments: comments.length + replies.length,
+                                        commentUsers: commentAuthors,
+                                        showNotebook: true,
+                                        fuzzyTime: fTime
+                                    };
+                                });
+                            });
+                        })
+                    });
+                });
+            }
+            else {
+                return 400;
+            }
         }
-    });
+    );
 };
 
 var isAuthenticated = function (req, res, next) {
@@ -276,8 +330,14 @@ app.get('/', isAuthenticated, function (req, res) {
 
 //authenticated user middle-ware
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
-    res.send("you are authenticated");
-    //todo: get nb info
+    // get nb info
+    var data = getNBInfo(req.params.nbID);
+    // render notebook
+    res.render('notebook', {
+        data: data,
+        title: data.n.title,
+        layout: 'breadcrumbs'
+    });
 });
 
 app.get('/user/my-profile/edit', isAuthenticated, function (req, res) {
@@ -328,10 +388,14 @@ app.get('/user/:userID', isAuthenticated, function (req, res) {
     });
 });
 
-app.get('/submit', function (req, res) {
+app.get('/submit', isAuthenticated, function (req, res) {
     res.render('submit', {
         layout: 'breadcrumbs',
-        title: 'Submit Notebook'
+        title: 'Submit Notebook',
+        data: {
+            currentUser: req.user,
+            submit: true
+        }
     });
 });
 
@@ -412,6 +476,7 @@ app.get('/auth/github/callback',
     }
 );
 
+// todo: fix this. getting redirect_uri mismatch
 // google login ===========
 // app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
 // app.get('/auth/google/callback',
@@ -442,6 +507,8 @@ app.get('/auth/twitter/callback',
         }
     }
 );
+
+// todo: fix this. getting redirect_uri mismatch
 // linkedin login =========
 // app.get('/auth/linkedin', passport.authenticate('linkedin', {scope: 'email'}));
 // app.get('/auth/linkedin/callback',

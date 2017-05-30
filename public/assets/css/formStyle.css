@@ -1,0 +1,13 @@
+label.has-error {
+    color: #d84d0a;
+}
+
+p.error-help-text {
+    color: #d84d0a;
+    font-style: italic;
+}
+
+input.has-error {
+    border-color: #d84d0a;
+    border-radius: 5px;
+}
