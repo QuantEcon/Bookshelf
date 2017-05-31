@@ -1,16 +1,28 @@
-<script>
-    var app = angular.module('myApp', []);
+<head>
+    <script src="/bundle.js"></script>
+    <script>
+        var app = angular.module('myApp', ['hc.marked']);
 
-    app.config(function ($interpolateProvider) {
-        $interpolateProvider.startSymbol('{[{');
-        $interpolateProvider.endSymbol('}]}');
-    });
+        app.config(function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[{');
+            $interpolateProvider.endSymbol('}]}');
+        });
 
-    app.controller('myProfileCtrl', function ($scope) {
-        $scope.joinDate = new Date('{{data.user.joinDate}}');
-    })
+        app.config(['markedProvider', function (markedProvider) {
+            markedProvider.setOptions({
+                gfm: true
+            });
+        }]);
 
-</script>
+        app.controller('myProfileCtrl', function ($scope) {
+            $scope.joinDate = new Date('{{data.user.joinDate}}');
+
+            $scope.summary = '{{data.user.summary}}';
+        })
+
+    </script>
+
+</head>
 
 <div class="row columns" ng-app="myApp" ng-controller="myProfileCtrl">
 
@@ -67,7 +79,7 @@
 
                 <div class="details-primary">
 
-                    <p>{{data.user.summary}}</p>
+                    <p marked="summary"></p>
 
                     <p class="web"><a href="http://{{data.user.website}}/">{{data.user.website}}</a>
 

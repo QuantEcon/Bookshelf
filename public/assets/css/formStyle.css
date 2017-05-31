@@ -1,3 +1,12 @@
+div.has-error{
+    border-radius: 5px !important;
+    border-color: #d84d0a !important;
+}
+
+h2.has-error{
+    color: #d84d0a !important;
+}
+
 label.has-error {
     color: #d84d0a;
 }
@@ -46,4 +55,20 @@ a.profile-link{
     color: #d84d0a;
     font-family: Raleway, sans-serif;
     font-size: large;
+}
+
+div.dragover {
+    border-color: #00a000 !important;
+    border-radius: 5px !important;
+}
+
+div.md-summary {
+    border-radius: 5px;
+    font-size: larger;
+}
+
+div.md-summary > p.input-hint {
+    color: #d84d0a !important;
+    font-weight: bold;
+    font-size: smaller;
 }

@@ -1,17 +1,25 @@
 <head>
     <link rel="stylesheet" href="/assets/css/formStyle.css">
+    <script src="/bundle.js"></script>
     <script>
         //todo: change this once not running on local host
         var url = 'http://localhost:8080';
-        var app = angular.module('myApp', []);
+        var app = angular.module('myApp', ['hc.marked']);
 
         app.config(function ($interpolateProvider) {
             $interpolateProvider.startSymbol('{[{');
             $interpolateProvider.endSymbol('}]}');
         });
 
+        app.config(['markedProvider', function (markedProvider) {
+            markedProvider.setOptions({
+                gfm: true
+            });
+        }]);
+
         app.controller('editProfileCtrl', function ($scope, $http, $window) {
             $scope.formModel = {};
+            //todo: figure out how to export this to an external file
             $scope.activeAvatar = '{{data.user.activeAvatar}}';
             //set default values
             $scope.formModel.name = '{{data.user.name}}';
@@ -19,7 +27,12 @@
             $scope.formModel.website = '{{data.user.website}}';
             $scope.formModel.summary = '{{data.user.summary}}';
             $scope.oneSocial = {{data.user.oneSocial}};
-            //todo: make avatar changeable
+            $scope.previewSummary = false;
+
+            $scope.togglePreviewSummary = function () {
+                $scope.previewSummary = !$scope.previewSummary;
+                console.log("Toggle preview summary: ", $scope.previewSummary);
+            };
 
             $scope.onProfileSubmit = function (valid) {
                 if (valid) {
@@ -150,10 +163,27 @@
                               placeholder="Notebook summary"
                               id="position"
                               name="summary">
-                        {{data.user.summary}}
                     </textarea>
 
-                    <p class="input-hint input-hint-after"><a href="#">Preview</a></p>
+                    <p class="input-hint input-hint-after"
+                       ng-show="!previewSummary">
+                        <a ng-click="togglePreviewSummary()"
+                           ng-disabled="!formModel.summary">
+                            Preview
+                        </a>
+                    </p>
+
+                    <div ng-show="previewSummary && formModel.summary"
+                         class="md-summary">
+                        <br>
+                        <div marked="formModel.summary"></div>
+
+                        <p class="input-hint-after input-hint"
+                           ng-click="togglePreviewSummary()">
+                            Close Summary
+                        </p>
+                    </div>
+
 
                     <hr>
 
