@@ -29,7 +29,7 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.twitter.username = profile.username;
                         newUser.activeAvatar = 'twitter';
                         if (profile._json.profile_image_url) {
-                            newUser.twitter.avatarURL = profile._json.profile_image_url;
+                            newUser.twitter.avatarURL = profile._json.profile_image_url.replace('_normal','');
                         } else {
                             newUser.twitter.avatarURL = '/assets/img/default-avatar.png';
                         }
@@ -53,7 +53,7 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.downvotes = [];
 
                         if (profile._json.profile_image_url) {
-                            newUser.avatar = profile._json.profile_image_url;
+                            newUser.avatar = profile._json.profile_image_url.replace('_normal','');
                         } else {
                             newUser.avatar = '/assets/img/default-avatar.png';
                         }
@@ -107,7 +107,7 @@ passport.use('addTwitter', new TwitterStrategy({
                     user.twitter.access_token = access_token;
                     user.twitter.username = profile.username;
                     if (profile._json.profile_image_url) {
-                        user.twitter.avatarURL = profile._json.profile_image_url;
+                        user.twitter.avatarURL = profile._json.profile_image_url.replace('_normal','');
                     } else {
                         user.twitter.avatarURL = '/assets/img/default-avatar.png';
                     }

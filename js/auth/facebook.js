@@ -10,7 +10,7 @@ passport.use('facebook', new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
         callbackURL: config.facebook.callbackURL,
-        profileFields: ['email', 'link', 'displayName', 'photos']
+        profileFields: ['email', 'link', 'displayName', 'picture.type(large)']
     },
     function (access_token, refresh_token, profile, done) {
         process.nextTick(function () {
@@ -91,7 +91,7 @@ passport.use('addFB', new FacebookStrategy({
         clientID: config.facebook.clientID,
         clientSecret: config.facebook.clientSecret,
         callbackURL: config.facebook.addCallbackURL,
-        profileFields: ['email', 'link', 'displayName', 'photos'],
+        profileFields: ['email', 'link', 'displayName', 'picture.type(large)'],
         passReqToCallback: true
     },
     function (req, access_token, refresh_token, profile, done) {
