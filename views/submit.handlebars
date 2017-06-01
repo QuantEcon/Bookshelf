@@ -4,7 +4,7 @@
     <script>
         //todo: change this once not running on local host
         var url = 'http://localhost:8080';
-        var app = angular.module('myApp', ['ngFileUpload', 'hc.marked']);
+        var app = angular.module('submissionApp', ['ngFileUpload', 'hc.marked']);
 
         app.config(function ($interpolateProvider) {
             $interpolateProvider.startSymbol('{[{');
@@ -17,7 +17,7 @@
             });
         }]);
 
-        app.controller('submitCtrl', function ($scope, $http, $window) {
+        app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $http, $window) {
             // variables ============================================
             $scope.submissionFormModel = {};
             $scope.preview = false;
@@ -27,28 +27,65 @@
                 $scope.submissionFormModel.file = null;
             };
 
+            $scope.upload = function () {
+                Upload.upload({
+                    url: url + '/submit/file',
+                    data: {
+                        title: $scope.submissionFormModel.title,
+                        summary: $scope.submissionFormModel.summary,
+                        language: $scope.submissionFormModel.language,
+                        //todo: add co-authors
+                        coAuthors: [],
+                        //todo: add topic list
+                        topicList: [],
+
+                        //set default values
+                        comments: [],
+                        views: 0,
+                        votes: 0
+                    },
+                    file: $scope.submissionFormModel.file
+                }).then(
+                        //success
+                        function (res) {
+                            console.log('Success ' + res.config.data.file.name + ' uploaded. \nResponse: ' + res.data);
+                            window.location = url + '/submit/preview';
+                        },
+                        //failure
+                        function (res) {
+                            console.log('Error: ' + res.status);
+                        },
+                        //progress
+                        function (evt) {
+                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
+                            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
+                        }
+                );
+            };
+
             $scope.togglePreviewSummary = function () {
                 $scope.preview = !$scope.preview;
+                console.log("Toggle preview summary: ", $scope.preview);
             };
 
             $scope.onSubmissionSubmit = function (valid) {
                 if (valid && $scope.submissionForm.file.$valid && $scope.submissionFormModel.file) {
                     console.log("Valid Form!");
                     console.log("FormModel: ", $scope.submissionFormModel);
-
+                    $scope.upload();
                 } else {
                     console.log("Form is invalid");
                 }
             };
 
 
-        })
+        }])
     </script>
 </head>
 
 
 <form novalidate="novalidate"
-      ng-app="myApp"
+      ng-app="submissionApp"
       ng-controller="submitCtrl"
       ng-submit="onSubmissionSubmit(submissionForm.$valid)"
       name="submissionForm">
@@ -62,7 +99,8 @@
             <div class="submit-upload" ng-app="fileUpload">
 
                 <h2 class="section-title"
-                    ng-class="{'has-error': !submissionForm.file.$valid || !submissionForm.file}">
+                    ng-class="{'has-error': (!submissionForm.file.$valid || !submissionForm.file)
+                                                && submissionForm.file.$dirty}">
                     Notebook File <span class="mandatory">*</span>
                 </h2>
 
@@ -78,7 +116,7 @@
                      ng-model="submissionFormModel.file"
                      name="file"
                      required="required"
-                     ng-class="{'has-error': !submissionForm.file.$valid || !submissionForm.file}"
+                     ng-class="{'has-error': (!submissionForm.file.$valid || !submissionForm.file) && submissionForm.file.$dirty}"
                      ng-show="!submissionFormModel.file"
                      ngf-select
                      ngf-drop="uploadFiles($files)"
@@ -96,9 +134,18 @@
 
                 </div>
 
+                <p class="error-help-text"
+                   ng-show="submissionForm.file.$error.pattern">
+                    Please submit a file of type <strong>.ipynb</strong>
+                </p>
+                <p class="error-help-text"
+                   ng-show="submissionFormModel.file.$error.required && submissionFormModel.file.$dirty">
+                    File is required
+                </p>
+
                 <!--shown once file is chosen-->
                 <div ng-show="submissionFormModel.file"
-                     class="dropzone">
+                     class="dropzone valid">
                     <div class="dz-default dz-message">
                         <p class="hint">File: {[{submissionFormModel.file.name}]}</p>
                     </div>
@@ -122,7 +169,7 @@
 
                     <label class="section-title"
                            for="title"
-                           ng-class="{'has-error': !submissionForm.title.$valid}">
+                           ng-class="{'has-error': !submissionForm.title.$valid && submissionForm.title.$dirty}">
                         Title <span class="mandatory">*</span>
                     </label>
 
@@ -130,11 +177,11 @@
                            placeholder="Notebook Title"
                            id="title"
                            ng-model="submissionFormModel.title"
-                           ng-class="{'has-error': !submissionForm.title.$valid}"
+                           ng-class="{'has-error': !submissionForm.title.$valid && submissionForm.title.$dirty}"
                            name="title"
                            required="required">
                     <p class="error-help-text"
-                       ng-show="submissionForm.title.$error.required">
+                       ng-show="submissionForm.title.$error.required && submissionForm.title.$dirty">
                         Title is required
                     </p>
 
@@ -241,7 +288,7 @@
 
                     <label class="section-title"
                            for="language"
-                           ng-class="{'has-error':submissionForm.languageSelection.$error.required}">
+                           ng-class="{'has-error':submissionForm.languageSelection.$error.required && submissionForm.languageSelection.$dirty}">
                         Language <span class="mandatory">*</span>
                     </label>
 
@@ -251,15 +298,15 @@
                             ng-model="submissionFormModel.language"
                             required="required"
                             name="languageSelection"
-                            ng-class="{'has-error':submissionForm.languageSelection.$error.required}">
+                            ng-class="{'has-error':submissionForm.languageSelection.$error.required && submissionForm.languageSelection.$dirty}">
                         <option value="">Select</option>
-                        <option value="python">Python</option>
-                        <option value="julia">Julia</option>
-                        <option value="r">R</option>
-                        <option value="other">Other</option>
+                        <option value="Python">Python</option>
+                        <option value="Julia">Julia</option>
+                        <option value="R">R</option>
+                        <option value="Other">Other</option>
                     </select>
                     <p class="error-help-text"
-                       ng-show="submissionForm.languageSelection.$error.required">
+                       ng-show="submissionForm.languageSelection.$error.required && submissionForm.languageSelection.$dirty">
                         Language is required
                     </p>
 
@@ -299,7 +346,7 @@
             <div class="submit-footer">
 
                 <p class="section-title"
-                   ng-class="{'has-error':submissionForm.agreement.$error.required}">
+                   ng-class="{'has-error':submissionForm.agreement.$error.required && submissionForm.agreement.$dirty}">
                     Terms <span class="mandatory">*</span>
                 </p>
 
@@ -307,14 +354,14 @@
                     <input type="checkbox"
                            required="required"
                            ng-model="submissionFormModel.agreement"
-                           ng-class="{'has-error':submissionForm.agreement.$error.required}"
+                           ng-class="{'has-error':submissionForm.agreement.$error.required && submissionForm.agreement.$dirty}"
                            name="agreement">
                     I agree to the <a href="#">Terms and Conditions</a> of publishing content
                     and sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
                     laborum.
                 </label>
                 <p class="error-help-text"
-                   ng-show="submissionForm.agreement.$error.required">
+                   ng-show="submissionForm.agreement.$error.required && submissionForm.agreement.$dirty">
                     Agreement is required
                 </p>
 

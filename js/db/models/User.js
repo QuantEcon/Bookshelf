@@ -15,6 +15,7 @@ var userSchema = new Schema({
     voteScore: Number,
     position: String,
     submissions: [ObjectId],
+    currentSubmission: Object,
     upvotes: [ObjectId],
     downvotes: [ObjectId],
     avatar: String,

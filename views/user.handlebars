@@ -129,7 +129,6 @@
             {{>searchbar numSubmissions=data.user.submissions.length}}
             <div class="summaries">
                 {{#each data.submissions}}
-                    <!--todo: pass in current user-->
                     {{subSummary this ../data.userAr}}
                 {{/each}}
             </div>

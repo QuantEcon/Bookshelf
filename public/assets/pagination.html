@@ -1,0 +1,27 @@
+<ul class="pagination text-center">
+    <li class="pagination-previous">
+
+        <a ng-click="setCurrent(pagination.current - 1)">
+            Prev
+        </a>
+
+    </li>
+
+    <li ng-repeat="pageNumber in pages track by tracker(pageNumber, $index)"
+        ng-class="{active: pagination.current == pageNumber, disabled: pageNumber == '...'}">
+
+        <a ng-click="setCurrent(pageNumber)">
+            {[{pageNumber}]}
+        </a>
+
+    </li>
+
+    <li class="pagination-next"
+        ng-class=>
+
+        <a ng-click="setCurrent(pagination.current + 1)">
+            Next
+        </a>
+
+    </li>
+</ul>

@@ -29,11 +29,6 @@ input.has-error {
     border-radius: 5px !important;
 }
 
-input.ng-invalid {
-    border-color: #d84d0a;
-    border-radius: 5px;
-}
-
 select.has-error {
     border-color: #d84d0a;
     border-radius: 5px;
@@ -71,4 +66,8 @@ div.md-summary > p.input-hint {
     color: #d84d0a !important;
     font-weight: bold;
     font-size: smaller;
+}
+
+.submit-form.submit-upload.dropzone.valid {
+    border-style: solid !important;
 }

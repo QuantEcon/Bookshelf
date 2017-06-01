@@ -1,0 +1,54 @@
+<head>
+    <script src="/bundle.js"></script>
+    <script src="/assets/js/modules/main.js"></script>
+</head>
+
+<div class="tile">
+
+    {{>searchbar}}
+
+    <div class="summaries">
+
+        <div class="notebook-summary" dir-paginate="notebook in submissions | itemsPerPage: 10">
+
+            <div class="specs">
+                <h3 class="title"><a href="/notebook/{[{notebook._id}]}/">{[{notebook.title}]}</a></h3>
+                <p class="date">
+
+                    Published {[{notebook.published | date: 'd MMM yyyy'}]} by
+
+                    <a ng-repeat="author in authors | filter: {_id: notebook.author}"
+                       href="/user/{[{author._id}]}/">
+                        {[{author.name}]}
+                    </a>
+
+                    in <a>{[{notebook.language}]}</a></p>
+                <p class="short" marked="notebook.summary"></p>
+            </div>
+            <p class="avatar">
+                <a href="/user/{[{notebook.author}]}"
+                   ng-repeat="author in authors | filter: {_id: notebook.author}">
+
+                    <img src='{[{author.avatar}]}'>
+
+                </a>
+            </p>
+            <div class="stats">
+                <a href="/notebook/{[{notebook._id}]}/">
+                    <ul>
+                        <li class="views"><span class="count">{[{notebook.views}]}</span> Views</li>
+                        <li class="comments"><span class="count">{[{notebook.comments.length}]}</span> Comments
+                        </li>
+                        <li class="votes"><span class="count">{[{notebook.votes}]}</span> Votes</li>
+                    </ul>
+                </a>
+            </div>
+        </div>
+
+        <!--todo: implement pagination-->
+        <dir-pagination-controls on-page-change="pageChangeHandler(newPageNumber)"
+                                 template-url="/assets/pagination.html"></dir-pagination-controls>
+
+    </div>
+
+</div>

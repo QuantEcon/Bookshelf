@@ -1,7 +1,43 @@
 <head>
-    <script src="/assets/js/submission.js"></script>
+    <script src="/bundle.js"></script>
+    <script>
+        //todo: change this once not running on local host
+        var url = 'http://localhost:8080';
+        var app = angular.module('submissionApp', ['hc.marked']);
+
+        app.config(function ($interpolateProvider) {
+            $interpolateProvider.startSymbol('{[{');
+            $interpolateProvider.endSymbol('}]}');
+        });
+
+        app.config(['markedProvider', function (markedProvider) {
+            markedProvider.setOptions({
+                gfm: true
+            });
+        }]);
+
+        app.controller('submissionCtrl', function ($scope) {
+            $scope.published = new Date('{{data.n.published}}');
+            $scope.lastUpdated = new Date('{{data.n.lastUpdated}}');
+            $scope.summary = '{{data.n.summary}}';
+
+            $scope.submitCommentClicked = function () {
+                console.log("Submit comment clicked");
+            }
+        });
+
+        app.controller('voteCtrl', function ($scope) {
+            $scope.downvoteClicked = function () {
+                console.log("Downvote clicked");
+            };
+
+            $scope.upvoteClicked = function () {
+                console.log("Upvote clicked");
+            }
+        });
+    </script>
 </head>
-<div class="row" ng-app="myApp">
+<div class="row" ng-app="submissionApp">
     <div class="column">
 
         <div class="details">
@@ -57,11 +93,11 @@
 
                 </div>
 
-                <div class="details-body">
+                <div class="details-body" ng-controller="submissionCtrl">
 
                     <div class="details-primary">
 
-                        <p>{{data.n.summary}}</p>
+                        <p marked="summary"></p>
 
                     </div>
 
@@ -87,8 +123,8 @@
                                     {{/if}}
                                 </li>
                                 <li><span>Language:</span> <a href="/">{{data.n.language}}</a></li>
-                                <li><span>Published:</span> {{data.n.published}}</li>
-                                <li><span>Last update:</span> {{data.n.lastUpdated}}</li>
+                                <li><span>Published:</span> {[{published | date: 'd MMM yyyy'}]}</li>
+                                <li><span>Last update:</span> {[{lastUpdated| date: 'd MMM yyyy'}]}</li>
                             </ul>
 
                         </div>
@@ -141,7 +177,7 @@
 
             </div>
 
-            <div class="comments" ng-controller="commentCtrl">
+            <div class="comments" ng-controller="submissionCtrl">
 
                 <div class="comments-thread">
 
@@ -167,7 +203,7 @@
 
                         <textarea></textarea>
 
-                        <div class="submit-comment"><a ng-click="submitClicked(true)">Submit</a></div>
+                        <div class="submit-comment"><a ng-click="submitCommentClicked(true)">Submit</a></div>
 
                     </div>
 

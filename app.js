@@ -8,6 +8,10 @@ var bodyParser = require('body-parser');
 var fs = require("fs");
 var mdb = require('mongodb');
 var fuzzyTime = require('fuzzy-time');
+var series = require('async/series');
+var waterfall = require('async/waterfall');
+var asyncApply = require('async/apply');
+
 // passport modules
 var passport = require('passport');
 var passportInit = require('./js/auth/init');
@@ -20,6 +24,9 @@ require('./js/auth/google');
 // var logout = require('express-passport-logout');
 
 var session = require('express-session');
+
+//file uploads
+var multiparty = require('connect-multiparty');
 
 //db
 var mongoose = require('./js/db/mongoose');
@@ -42,7 +49,8 @@ var hbs = require('express-handlebars').create(
                 var user = users.filter(function (e) {
                     return (e._id.equals(submission.author));
                 })[0];
-                var fTime = fuzzyTime(submission.timestamp);
+
+                var fTime = fuzzyTime(submission.published);
                 var info = {
                     submissionID: submission._id,
                     title: submission.title,
@@ -51,9 +59,8 @@ var hbs = require('express-handlebars').create(
                     language: submission.language,
                     summary: submission.summary,
                     timestamp: fTime,
-                    authorPic: "/assets/img/avatar/8.png",
+                    authorPic: user.avatar,
                     views: submission.views,
-                    // todo: get total number of comments (comments + replies)
                     numComments: submission.comments.length,
                     votes: submission.votes
                 };
@@ -80,7 +87,8 @@ var hbs = require('express-handlebars').create(
                 };
 
                 return new hbs.handlebars.SafeString(partial(data));
-            },
+            }
+            ,
             reply: function (replyID, replies, users) {
                 var partial = hbs.handlebars.compile(fs.readFileSync(__dirname + '/views/partials/reply.handlebars', 'utf8'));
                 var reply = replies.filter(function (r) {
@@ -93,8 +101,7 @@ var hbs = require('express-handlebars').create(
                 var data = {
                     author: {
                         _id: reply.author,
-                        //todo: use actual avatar
-                        avatar: "/assets/img/avatar/8.png",
+                        avatar: author.avatar,
                         name: author.name
                     },
                     comment: {
@@ -108,7 +115,8 @@ var hbs = require('express-handlebars').create(
                 return new hbs.handlebars.SafeString(partial(data));
             }
         }
-    });
+    })
+;
 
 var app = express();
 
@@ -122,6 +130,8 @@ app.use(express.static(__dirname + "/public"));
 
 // middleware ============================================================
 // todo: loading screen?
+var multipartyMiddleware = multiparty();
+
 app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
     next();
@@ -138,112 +148,120 @@ app.use(passport.session());
 // passport setup =======================================================
 passportInit();
 
-var getNBInfo = function (notebookID) {
-    Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, function (err, notebook) {
-            if (err) {
-                return null
-            } else if (notebook) {
-                //get author
-                User.findOne({_id: mdb.ObjectId(notebook.author), deleted: false}, function (err, author) {
-                    if (err) {
-                        return null;
-                    }
-                    //get co-authors
-                    User.find({_id: {$in: notebook.coAuthors}, deleted: false}, function (err, coAuthors) {
-                        if (err) {
-                            return null;
-                        }
-                        //get comments
-                        Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
-                            if (err) {
-                                return null;
-                            }
-                            //get replyID's from all comments
-                            var replyIDs = comments.map(function (comment) {
-                                return comment.replies.map(function (reply) {
-                                    return reply;
-                                });
-                            });
-                            //get replies
-                            Comment.find({_id: {$in: replyIDs}}, function (err, replies) {
-                                if (err) {
-                                    return null;
-                                }
-                                //get authors of comments and replies
-                                var commentUsers = comments.map(function (comment) {
-                                    return comment.author;
-                                });
-                                var replyUsers = replies.map(function (reply) {
-                                    return reply.author;
-                                });
-                                var mergedUsers = [].concat(commentUsers).concat(replyUsers);
+//this isn't working...runs asynchronous
+function getNBInfo(notebookID) {
+    var notebook;
+    var commentAuthorIDs;
+    var replyIDs;
+    var replyAuthorIDs;
 
-                                User.find({_id: {$in: mergedUsers}}, function (err, commentAuthors) {
-                                    //todo: build data object and return
-                                    var fTime = fuzzyTime(notebook.timestamp);
-                                    return {
-                                        n: notebook,
-                                        u: author,
-                                        coAuthors: coAuthors,
-                                        comments: comments,
-                                        replies: replies,
-                                        numTotalComments: comments.length + replies.length,
-                                        commentUsers: commentAuthors,
-                                        showNotebook: true,
-                                        fuzzyTime: fTime
-                                    };
-                                });
+    waterfall({
+            //get notebook
+            nb: function (callback) {
+                var nbID = notebookID;
+                Submission.find({_id: notebookID, deleted: false}, function (err, submission) {
+                    if (err) callback(err);
+                    else {
+                        notebook = submission;
+                        callback(null, submission);
+                    }
+                });
+            },
+            //get author
+            auth: function (callback) {
+                User.find({_id: notebook.author}, function (err, author) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, author);
+                    }
+                })
+            },
+            //get co-authors
+            coAuth: function (callback) {
+                User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, coAuthors);
+                    }
+                })
+            },
+            //get comments
+            coms: function (callback) {
+                Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
+                    if (err) callback(err);
+                    else {
+                        commentAuthorIDs = comments.map(function (comment) {
+                            return comment.author;
+                        });
+                        replyIDs = comments.map(function (comment) {
+                            return comment.replies.map(function (reply) {
+                                return reply;
                             });
-                        })
-                    });
+                        });
+
+                        callback(null, comments)
+                    }
+                })
+            },
+            reps: function (callback) {
+                //get replies
+                Comment.find({_id: {$in: replyIDs}, deleted: false}, function (err, replies) {
+                    if (err) callback(err);
+                    else {
+                        replyAuthorIDs = replies.map(function (reply) {
+                            return reply.author;
+                        });
+                        callback(null, replies);
+                    }
+                });
+            },
+            //get comments/replies authors
+            comAuth: function (callback) {
+                var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
+                User.find({_id: {$in: mergedAuthorIDs}}, function (err, commentAuthors) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, commentAuthors);
+                    }
                 });
             }
-            else {
-                return 404;
+        },
+        //callback
+        function (err, results) {
+            console.log("Got to callback");
+            if (err) {
+                if (notebook) {
+                    return null;
+                } else {
+                    return 404;
+                }
+            }
+            var fTime = fuzzyTime(results.nb.published);
+            return {
+                n: results.nb,
+                u: results.auth,
+                coAuthors: results.coAuth,
+                comments: results.comments,
+                replies: results.reps,
+                numTotalComments: results.comments.length + results.replies.length,
+                commentUsers: commentAuthorIDs,
+                showNotebook: true,
+                fuzzyTime: fTime
             }
         }
     );
-};
+}
 
 var isAuthenticated = function (req, res, next) {
     if (req.isAuthenticated()) {
-        console.log("Is Authenticated!");
         return next();
     } else {
         //not authenticated
         if (/^\/user\/my-profile/.test(req.url)) {
             res.redirect('/login');
         }
-        else if (/^\/user\//.test(req.url)) {
-            User.findOne({_id: mdb.ObjectId(req.params.userID), deleted: false}, function (err, user) {
-                if (err) {
-                    res.render('500');
-                } else if (user) {
-                    res.render('user', {
-                        data: {
-                            user: user,
-                            currentUser: null
-                        },
-                        layout: 'breadcrumbs',
-                        title: user.name
-                    });
-                } else {
-                    res.render('404', {
-                        title: "User Not Found"
-                    });
-                }
-            });
-        } else if (/^\/notebook\//.test(req.url)) {
-            //get notebook info
-            res.render('submission', {
-                data: getNBInfo(req.params.nbID),
-                currentUser: null
-            });
-        } else {
-            res.render('home', {
-                //todo: get submissions and users
-                currentUser: null
-            });
+        else {
+            return next();
         }
     }
 };
@@ -251,6 +269,7 @@ var isAuthenticated = function (req, res, next) {
 // routes =================================================================
 // GET ========================================
 app.get('/', isAuthenticated, function (req, res) {
+    //todo: implement pagination
     Submission.find({deleted: false}, function (err, submissions) {
         User.find({deleted: false}, function (err, users) {
             var data = {
@@ -266,24 +285,156 @@ app.get('/', isAuthenticated, function (req, res) {
     });
 });
 
-//authenticated user middle-ware
-app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
-    // get nb info
-    var data = getNBInfo(req.params.nbID);
-
-    if (data == 404) {
-        res.render('404');
-    } else if (data == null) {
-        res.render('500');
+app.get('/search', function (req, res) {
+    var searchParams = {};
+    if (req.query.language != 'All') {
+        searchParams.language = req.query.language
     }
-    // render notebook
-    res.render('notebook', {
-        data: data,
-        title: data.n.title,
-        layout: 'breadcrumbs'
+    if (req.query.topic != 'All') {
+        searchParams.topic = req.query.topic
+    }
+
+    Submission.find(searchParams, function (err, submissions) {
+        if (err) {
+            console.log("Error occurred finding submissions");
+            res.status(500);
+            res.send("Error occurred finding submissions")
+        } else {
+            //get users
+            var authorIds = submissions.map(function (submission) {
+                return submission.author;
+            });
+            User.find({_id: {$in: authorIds}}, function (err, authors) {
+                if (err) {
+                    console.log("Error occurred finding authors");
+                    res.status(500);
+                    res.send("Error occurred finding authors");
+                } else {
+                    res.status(200);
+                    res.send({
+                        submissions: submissions,
+                        authors: authors
+                    })
+                }
+            })
+        }
     });
 });
 
+// notebook pages ==========================================
+app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
+    // get nb info
+    var notebook;
+    var commentAuthorIDs;
+    var replyIDs;
+    var replyAuthorIDs;
+
+    var notebookID = req.params.nbID;
+
+    series({
+            //get notebook
+            nb: function (callback) {
+                Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, function (err, submission) {
+                    if (err) callback(err);
+                    else {
+                        notebook = submission;
+                        callback(null, submission);
+                    }
+                });
+            },
+            //get author
+            auth: function (callback) {
+                User.findOne({_id: mdb.ObjectId(notebook.author)}, function (err, author) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, author);
+                    }
+                })
+            },
+            //get co-authors
+            coAuth: function (callback) {
+                User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, coAuthors);
+                    }
+                })
+            },
+            //get comments
+            coms: function (callback) {
+                Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
+                    if (err) callback(err);
+                    else {
+                        commentAuthorIDs = comments.map(function (comment) {
+                            return comment.author;
+                        });
+                        replyIDs = comments.map(function (comment) {
+                            return comment.replies.map(function (reply) {
+                                return reply;
+                            });
+                        });
+
+                        callback(null, comments)
+                    }
+                })
+            },
+            reps: function (callback) {
+                //get replies
+                Comment.find({_id: {$in: replyIDs}, deleted: false}, function (err, replies) {
+                    if (err) callback(err);
+                    else {
+                        replyAuthorIDs = replies.map(function (reply) {
+                            return reply.author;
+                        });
+                        callback(null, replies);
+                    }
+                });
+            },
+            //get comments/replies authors
+            comAuth: function (callback) {
+                var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
+                User.find({_id: {$in: mergedAuthorIDs}}, function (err, commentAuthors) {
+                    if (err) callback(err);
+                    else {
+                        callback(null, commentAuthors);
+                    }
+                });
+            }
+        },
+        //callback
+        function (err, results) {
+            if (err) {
+                if (notebook) {
+                    console.log("Server err: ", err);
+                    res.render('500');
+                } else {
+                    console.log("Couldn't find notebook");
+                    res.render('404');
+                }
+            }
+            var fTime = fuzzyTime(results.nb.published);
+            var data = {
+                n: results.nb,
+                u: results.auth,
+                coAuthors: results.coAuth,
+                comments: results.comments,
+                replies: results.reps,
+                numTotalComments: results.coms.length + results.reps.length,
+                commentUsers: commentAuthorIDs,
+                showNotebook: true,
+                fuzzyTime: fTime
+            };
+            res.render('submission', {
+                data: data,
+                currentUser: req.user,
+                title: data.n.title,
+                layout: 'breadcrumbs'
+            });
+        }
+    );
+});
+
+// user pages ==============================================
 app.get('/user/my-profile/edit', isAuthenticated, function (req, res) {
     if (req.user.new) {
         res.redirect('/complete-registration');
@@ -291,7 +442,8 @@ app.get('/user/my-profile/edit', isAuthenticated, function (req, res) {
     res.render('edit-profile', {
         data: {
             user: req.user,
-            currentUser: req.user
+            currentUser: req.user,
+            userAr: [req.user]
         },
         layout: 'breadcrumbs',
         title: 'Edit Profile'
@@ -302,49 +454,152 @@ app.get('/user/my-profile', isAuthenticated, function (req, res) {
     if (req.user.new) {
         res.redirect('/complete-registration');
     }
-    res.render('user', {
-        title: 'My Profile',
-        data: {
-            user: req.user,
-            currentUser: req.user,
-            myPage: true
+    Submission.find({_id: {$in: req.user.submissions}, deleted: false}, function (err, submissions) {
+        if (err) {
+            res.render('500');
+        } else {
+            res.render('user', {
+                title: 'My Profile',
+                data: {
+                    user: req.user,
+                    currentUser: req.user,
+                    userAr: [req.user],
+                    myPage: true,
+                    submissions: submissions
+                }
+            })
         }
-    })
+    });
+
 });
 
 app.get('/user/:userID', isAuthenticated, function (req, res) {
-    if (req.params.userID.equals(req.user._id)) {
+    if (req.params.user && req.params.userID.equals(req.user._id)) {
         res.redirect('/user/my-profile');
     }
     User.findOne({_id: req.params.userID, deleted: false}, function (err, user) {
         if (err) {
             res.render('500');
         } else if (user) {
-            res.render('user', {
-                data: {
-                    user: user,
-                    currentUser: req.user
-                },
-                layout: 'breadcrumbs',
-                title: user.name
+            Submission.find({_id: {$in: user.submissions}, deleted: false}, function (err, submissions) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.render('user', {
+                        data: {
+                            user: user,
+                            currentUser: req.user,
+                            userAr: [user],
+                            submissions: submissions
+                        },
+                        layout: 'breadcrumbs',
+                        title: user.name
+                    });
+                }
             });
-        } else {
+        }
+        else {
             res.render('404');
         }
     });
 });
 
+// submission ==============================================
 app.get('/submit', isAuthenticated, function (req, res) {
-    res.render('submit', {
-        layout: 'breadcrumbs',
-        title: 'Submit Notebook',
-        data: {
-            currentUser: req.user,
-            submit: true
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err) {
+            res.render('500');
+        } else if (user) {
+            if (user.currentSubmission) {
+                res.redirect('/submit/preview');
+            } else {
+                res.render('submit', {
+                    layout: 'breadcrumbs',
+                    title: 'Submit Notebook',
+                    data: {
+                        currentUser: req.user,
+                        submit: true
+                    }
+                });
+            }
         }
     });
 });
 
+app.get('/submit/preview', isAuthenticated, function (req, res) {
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err) {
+            res.render('500');
+        } else if (user) {
+            if (user.currentSubmission) {
+                var data = {
+                    author: user,
+                    notebook: user.currentSubmission
+                };
+                res.render('submissionPreview', {
+                        data: data,
+                        title: user.currentSubmission.title
+                    }
+                );
+            } else {
+                res.redirect('/submit');
+            }
+        } else {
+            res.render('404');
+        }
+    });
+
+});
+
+app.get('/submit/cancel', isAuthenticated, function (req, res) {
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err || !user) {
+            res.render('500');
+        } else if (user) {
+            user.currentSubmission = null;
+            user.save(function (err) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.status(200);
+                    res.send('redirect');
+                }
+            })
+        }
+    })
+});
+
+app.get('/submit/confirm', isAuthenticated, function (req, res) {
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err || !user) {
+            res.render('500');
+        } else if (user) {
+
+            var newSub = new Submission(user.currentSubmission);
+            newSub.author = req.user._id;
+            newSub.save(function (err) {
+                if (err) {
+                    console.log("ERROR SAVING NEW SUB");
+                    res.render('500');
+                } else {
+                    user.currentSubmission = null;
+                    user.submissions.push(newSub._id);
+                    user.save(function (err) {
+                        if (err) {
+                            console.log("ERROR SAVING USER");
+                            res.render('500');
+                        } else {
+                            res.status(200);
+                            res.send(newSub._doc._id);
+                        }
+                    })
+                }
+            })
+        }
+    })
+});
+
+//registration ==============================================
 app.get('/complete-registration', function (req, res) {
     res.render('edit-profile', {
         title: "Complete Registration",
@@ -356,14 +611,14 @@ app.get('/complete-registration', function (req, res) {
     })
 });
 
-// logout ===================================
+// logout ===================================================
 app.get('/logout', function (req, res, next) {
     console.log("logging out...");
     req.logout();
     res.redirect('/');
 });
 
-// login ====================================
+// login ====================================================
 app.get('/login', function (req, res, next) {
     res.render('login', {
         layout: 'breadcrumbs',
@@ -564,6 +819,55 @@ app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) 
 });
 
 // POST ======================================
+//file uploads
+app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, res) {
+    var file = req.files.file;
+    console.log("Req.body: ", req.body);
+    console.log("File name: ", file.name);
+    console.log("File type: ", file.type);
+    User.findOne({_id: req.user._id}, function (err, user) {
+        if (err || !user) {
+            res.render('500');
+        } else if (user) {
+            var newSub = new Submission();
+
+            newSub.title = req.body.title;
+            //todo: parse topic list
+            // newSub.topicList = topicList
+            newSub.language = req.body.language;
+            newSub.summary = req.body.summary;
+            //todo: convert ipynb to html
+            // newSub.notebook = fileHTML
+
+            newSub.author = user._id;
+            //todo: parse co-authors
+            // newSub.coAuthors = coAuthors
+            newSub.comments = [];
+
+            newSub.votes = 0;
+            newSub.views = 0;
+
+            newSub.published = new Date();
+            newSub.lastUpdated = new Date();
+
+            newSub.deleted = false;
+            newSub.flagged = false;
+
+
+            user.currentSubmission = newSub;
+            user.save(function (err) {
+                if (err) {
+                    res.render('500');
+                } else {
+                    res.status(200);
+                    res.send('redirect');
+                }
+            });
+        }
+    });
+
+});
+
 app.post('/edit-profile', isAuthenticated, function (req, res) {
     console.log('Received /edit-profile post request');
     console.log("request: ", req.body);
