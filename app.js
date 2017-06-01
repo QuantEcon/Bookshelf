@@ -286,6 +286,7 @@ app.get('/', isAuthenticated, function (req, res) {
 });
 
 app.get('/search', function (req, res) {
+    console.log("Got search request: ", req.query);
     var searchParams = {};
     if (req.query.language != 'All') {
         searchParams.language = req.query.language
@@ -293,6 +294,10 @@ app.get('/search', function (req, res) {
     if (req.query.topic != 'All') {
         searchParams.topic = req.query.topic
     }
+    if(req.query.author){
+        searchParams.author = req.query.author;
+    }
+    console.log("Searching: ", searchParams);
 
     Submission.find(searchParams, function (err, submissions) {
         if (err) {

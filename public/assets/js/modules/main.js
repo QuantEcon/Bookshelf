@@ -77,10 +77,14 @@ app.controller('searchCtrl', function ($scope, $http) {
     $scope.showSearchBar = false;
 
     // Methods ========================================
-    $scope.search = function (params, init) {
+    $scope.search = function (params, init, userID) {
         if (!init) {
             console.log("Set current search!");
             $scope.hasCurrentSearch = true;
+        }
+        if (userID) {
+            console.log("Performing search for user");
+            $scope.searchParams.author = userID;
         }
         console.log("Performing search: ", params, init);
         params.page = 1;
@@ -91,7 +95,7 @@ app.controller('searchCtrl', function ($scope, $http) {
             params: {
                 language: params.language,
                 topic: params.topic,
-                author: ''
+                author: params.author
             }
         }).then(function success(response) {
                 console.log("Search returned: ", response);
@@ -109,8 +113,6 @@ app.controller('searchCtrl', function ($scope, $http) {
                 $scope.$emit('searchResults', results);
             }
         )
-
-
     };
 
     $scope.toggleSearchBar = function () {
@@ -118,9 +120,14 @@ app.controller('searchCtrl', function ($scope, $http) {
         $scope.showSearchBar = !$scope.showSearchBar;
     };
 
-    $scope.initSearch = function () {
+    $scope.initSearch = function (userID) {
         console.log("Init search");
-        $scope.search($scope.searchParams, true);
+
+        $scope.search($scope.searchParams, true, userID);
+    };
+
+    $scope.initSearchUser = function () {
+        console.log("Init user search");
     };
 
     $scope.clearSearch = function () {
@@ -143,4 +150,12 @@ app.controller('searchCtrl', function ($scope, $http) {
         console.log("Got initSearch");
         $scope.search($scope.searchParams);
     });
+
+
+});
+
+app.controller('userPageCtrl', function ($scope) {
+    //extract user id from url
+    $scope.userID = window.location.pathname.split('/')[2];
+
 });

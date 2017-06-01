@@ -5,7 +5,11 @@
 
 <div class="tile">
 
-    {{>searchbar}}
+    <div ng-app="mainApp"
+         ng-controller="searchCtrl">
+        {{>searchbar}}
+    </div>
+
 
     <div class="summaries">
 
@@ -45,7 +49,6 @@
             </div>
         </div>
 
-        <!--todo: implement pagination-->
         <dir-pagination-controls on-page-change="pageChangeHandler(newPageNumber)"
                                  template-url="/assets/pagination.html"></dir-pagination-controls>
 

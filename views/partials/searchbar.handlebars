@@ -3,10 +3,15 @@
     <script src="/assets/js/modules/main.js"></script>
 </head>
 
-<form ng-app="mainApp"
-      ng-controller="searchCtrl"
-      name="searchForm"
-      ng-submit="search(searchParams, false)" data-ng-init="initSearch()">
+{{#if userPage}}
+    <form name="searchForm"
+          ng-submit="search(searchParams, false, userID)"
+          data-ng-init="initSearch(userID)">
+{{else}}
+    <form name="searchForm"
+          ng-submit="search(searchParams, false)"
+          data-ng-init="initSearch()">
+{{/if}}
 
     <div class="filters">
 

@@ -17,12 +17,24 @@
         }]);
 
         app.controller('submissionCtrl', function ($scope) {
+            //todo: client side rendering
             $scope.published = new Date('{{data.n.published}}');
             $scope.lastUpdated = new Date('{{data.n.lastUpdated}}');
             $scope.summary = '{{data.n.summary}}';
+            $scope.showComments = false;
+            $scope.showNotebook = true;
 
             $scope.submitCommentClicked = function () {
                 console.log("Submit comment clicked");
+            };
+
+            $scope.toggleView = function () {
+                $scope.showComments = !$scope.showComments;
+                $scope.showNotebook = !$scope.showNotebook;
+            };
+
+            $scope.downloadNotebook = function () {
+                console.log("Download clicked");
             }
         });
 
@@ -137,47 +149,53 @@
 
         </div>
 
-        <div class="tile">
+        <div class="tile" ng-controller="submissionCtrl">
 
             <!--Notebook-->
-            <div class="tile-header">
+            <div class="tile-header" ng-show="showNotebook">
 
                 <h2 class="tile-title">Notebook</h2>
 
-                <!--<ul class="tile-options">-->
-                <!--<li><a class="active" href="/notebook/{{data.n._id}}/">Notebook</a></li>-->
-                <!--<li><a href="/notebook/{{data.n._id}}/comments/">Comments {{data.n.comments.length}}</a></li>-->
-                <!--<li><a class="alt"-->
-                <!--href="https://github.com/QuantEcon/QuantEcon.notebooks/raw/master/chase_nelder_mead.ipynb">Download</a>-->
-                <!--</li>-->
-                <!--</ul>-->
+                <ul class="tile-options">
+                    <li></li>
+                </ul>
+
+                <ul class="tile-options">
+                    <li><a class="active">Notebook</a></li>
+                    <li><a ng-click="toggleView()">Comments {{data.n.comments.length}}</a></li>
+                    <!--todo: implement download-->
+                    <li><a class="alt" ng-click="downloadNotebook()">Download</a>
+                    </li>
+                </ul>
 
             </div>
 
             <!--todo: insert notebook html here-->
-            {{#if data.n.notebook}}
-                <h4>Notebook html goes here</h4>
-            {{else}}
-                <p>Wow, such empty</p>
-            {{/if}}
+            <div ng-show="showNotebook">
+                {{#if data.n.notebook}}
+                    <h4>Notebook html goes here</h4>
+                {{else}}
+                    <p>Wow, such empty</p>
+                {{/if}}
+            </div>
+
 
             <!--Comments-->
-            <div class="tile-header">
+            <div class="tile-header" ng-show="showComments">
 
                 <h2 class="tile-title">Comments</h2>
 
-                <!--<ul class="tile-options">-->
-                <!--<li><a href="/notebook/{{data.n._id}}/">Notebook</a></li>-->
-                <!--<li><a class="active"-->
-                <!--href="/notebook/{{data.n._id}}/comments/">Comments {{data.n.comments.length}}</a></li>-->
-                <!--<li><a class="alt"-->
-                <!--href="https://github.com/QuantEcon/QuantEcon.notebooks/raw/master/chase_nelder_mead.ipynb">Download</a>-->
-                <!--</li>-->
-                <!--</ul>-->
+                <ul class="tile-options">
+                    <li><a ng-click="toggleView()">Notebook</a></li>
+                    <li><a class="active">Comments {{data.n.comments.length}}</a></li>
+                    <li><a class="alt" ng-click="downloadNotebook()">Download</a>
+                    </li>
+                </ul>
 
             </div>
 
-            <div class="comments" ng-controller="submissionCtrl">
+            <div class="comments"
+                 ng-show="showComments">
 
                 <div class="comments-thread">
 
