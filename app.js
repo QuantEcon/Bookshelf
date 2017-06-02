@@ -269,7 +269,6 @@ var isAuthenticated = function (req, res, next) {
 // routes =================================================================
 // GET ========================================
 app.get('/', isAuthenticated, function (req, res) {
-    //todo: implement pagination
     Submission.find({deleted: false}, function (err, submissions) {
         User.find({deleted: false}, function (err, users) {
             var data = {
@@ -301,7 +300,7 @@ app.get('/search/submissions', function (req, res) {
             searchParams.author = req.query.author;
         }
     }
-    console.log("Searching: ", searchParams);
+    console.log("Searching submissions: ", searchParams);
 
     Submission.find(searchParams, function (err, submissions) {
         if (err) {
@@ -331,6 +330,7 @@ app.get('/search/submissions', function (req, res) {
 });
 
 app.get('/search/users', function (req, res) {
+    console.log("Received user search request: ", req.query);
     var params = {};
     if (req.query._id) {
         if (req.query._id == 'my-profile') {

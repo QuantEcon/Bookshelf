@@ -120,12 +120,13 @@ app.controller('searchCtrl', function ($scope, $http) {
     };
 
     $scope.searchUsers = function (params) {
+        console.log("searchCtrl: search users: ", params);
         $http.get(url + '/search/users', {
             params: {
-                _id: params.id
+                _id: params.userID
             }
         }).then(function success(response) {
-                console.log("searchCtrl: Search returned: ", response);
+                console.log("searchCtrl: Search users returned: ", response);
                 var results = {
                     params: params,
                     data: response.data
@@ -152,7 +153,7 @@ app.controller('searchCtrl', function ($scope, $http) {
         $scope.searchSubmissions($scope.searchParams, args);
     };
 
-    $scope.initSearchUser = function () {
+    $scope.initUserSearch = function (args) {
         console.log("searchCtrl: Init user search");
     };
 
@@ -206,7 +207,7 @@ app.controller('userPageCtrl', function ($scope, $timeout) {
     // Events =========================================
     $scope.$on('searchUsersResult', function (event, results) {
         console.log("userPageCtrl: Got user search result: ", results.data);
-        $scope.userSummary = results.data[0].userSummary;
+        $scope.userSummary = results.data[0].summary;
         $scope.userJoined = results.data[0].joinDate;
     });
 
