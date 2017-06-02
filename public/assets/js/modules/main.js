@@ -201,9 +201,8 @@ app.controller('searchCtrl', function ($scope, $http) {
 
 app.controller('userPageCtrl', function ($scope, $timeout) {
     // Vars ===========================================
-    //extract user id from url
     $scope.dataReady = false;
-
+    // extract user id from url
     $scope.userID = window.location.pathname.split('/')[2];
     $scope.userSummary = '';
     $scope.userJoined = '';
@@ -226,9 +225,7 @@ app.controller('userPageCtrl', function ($scope, $timeout) {
         console.log("userPageCtrl: Got user search result: ", results.data);
         $scope.userSummary = results.data[0].summary;
         $scope.userJoined = results.data[0].joinDate;
-        $timeout(function () {
-            $scope.dataReady = true;
-        }, 5000);
+        $scope.dataReady = true;
     });
 
 });

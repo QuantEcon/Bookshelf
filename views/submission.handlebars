@@ -17,7 +17,6 @@
         }]);
 
         app.controller('submissionCtrl', function ($scope) {
-            //todo: client side rendering
             $scope.published = new Date('{{data.n.published}}');
             $scope.lastUpdated = new Date('{{data.n.lastUpdated}}');
             $scope.summary = '{{data.n.summary}}';
@@ -39,8 +38,8 @@
         });
 
         app.controller('voteCtrl', function ($scope) {
-            $scope.downvoteClicked = function () {
-                console.log("Downvote clicked");
+            $scope.downvoteClicked = function (submissionID) {
+                console.log("Downvote clicked: ", submissionID);
             };
 
             $scope.upvoteClicked = function () {
@@ -181,7 +180,8 @@
 
 
             <!--Comments-->
-            <div class="tile-header" ng-show="showComments">
+            <div class="tile-header"
+                 ng-show="showComments">
 
                 <h2 class="tile-title">Comments</h2>
 
@@ -226,9 +226,6 @@
                     </div>
 
                 </div>
-
-                <!--todo: figure out how to display either the comments or notebook-->
-
 
             </div>
         </div>

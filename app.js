@@ -2,7 +2,7 @@
  * Created by tlyon on 5/18/17.
  * Entry point for server.
  */
-// modules ===============================================================
+// modules ===============================================================================
 var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require("fs");
@@ -35,7 +35,7 @@ var User = require('./js/db/models/User');
 var Submission = require('./js/db/models/Submission');
 var Comment = require('./js/db/models/Comment');
 
-// config ================================================================
+// config ================================================================================
 var port = 8080;
 var websiteURL = 'http://localhost:8080';
 
@@ -145,7 +145,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// passport setup =======================================================
+// passport setup =========================================================================
 passportInit();
 
 //this isn't working...runs asynchronous
@@ -291,7 +291,7 @@ app.get('/search/submissions', function (req, res) {
         searchParams.language = req.query.language
     }
     if (req.query.topic != 'All') {
-        searchParams.topic = req.query.topic
+        searchParams.topicList = req.query.topic;
     }
     if (req.query.author) {
         if (req.query.author == 'my-profile') {
@@ -343,16 +343,17 @@ app.get('/search/users', function (req, res) {
     console.log("Searching users: ", params);
 
     User.find(params, function (err, users) {
-       if(err){
-           res.status(500);
-       } else {
-           res.send(users);
-       }
+        if (err) {
+            res.status(500);
+        } else {
+            res.send(users);
+        }
     });
 
 
 });
-// notebook pages ==========================================
+
+// notebook pages ==========================================================================
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
     // get nb info
     var notebook;
@@ -362,6 +363,7 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
 
     var notebookID = req.params.nbID;
 
+    //get notebook information
     series({
             //get notebook
             nb: function (callback) {
@@ -465,7 +467,7 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
     );
 });
 
-// user pages ==============================================
+// user pages ==============================================================================
 app.get('/user/my-profile/edit', isAuthenticated, function (req, res) {
     if (req.user.new) {
         res.redirect('/complete-registration');
@@ -535,7 +537,7 @@ app.get('/user/:userID', isAuthenticated, function (req, res) {
     });
 });
 
-// submission ==============================================
+// submission ==============================================================================
 app.get('/submit', isAuthenticated, function (req, res) {
     User.findOne({_id: req.user._id}, function (err, user) {
         if (err) {
@@ -630,7 +632,7 @@ app.get('/submit/confirm', isAuthenticated, function (req, res) {
     })
 });
 
-//registration ==============================================
+//registration =============================================================================
 app.get('/complete-registration', function (req, res) {
     res.render('edit-profile', {
         title: "Complete Registration",
@@ -642,14 +644,14 @@ app.get('/complete-registration', function (req, res) {
     })
 });
 
-// logout ===================================================
+// logout ==================================================================================
 app.get('/logout', function (req, res, next) {
     console.log("logging out...");
     req.logout();
     res.redirect('/');
 });
 
-// login ====================================================
+// login ===================================================================================
 app.get('/login', function (req, res, next) {
     res.render('login', {
         layout: 'breadcrumbs',
@@ -663,7 +665,8 @@ app.get('/auth/success', function (req, res) {
     res.render('success');
 });
 
-// fb login ================
+// fb login ================================
+
 // add fb to existing user
 app.get('/auth/fb/add', isAuthenticated, passport.authenticate('addFB', {scope: 'email'}));
 app.get('/auth/fb/callback/add',
@@ -685,7 +688,7 @@ app.get('/auth/fb/callback',
     }
 );
 
-// github login ============
+// github login ===========================
 
 // add github to profile
 app.get('/auth/github/add', isAuthenticated, passport.authenticate('addGithub', {scope: 'email'}));
@@ -709,7 +712,7 @@ app.get('/auth/github/callback',
 );
 
 // todo: fix this. getting redirect_uri mismatch
-// google login ===========
+// google login ===========================
 // app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
 // app.get('/auth/google/callback',
 //     passport.authenticate('google', {
@@ -718,7 +721,7 @@ app.get('/auth/github/callback',
 //     })
 // );
 
-// twitter login ==========
+// twitter login ==========================
 
 // add twitter to existing profile
 app.get('/auth/twitter/add', passport.authenticate('addTwitter', {scope: 'email'}));
@@ -741,7 +744,8 @@ app.get('/auth/twitter/callback',
 );
 
 // todo: fix this. getting redirect_uri mismatch
-// linkedin login =========
+// linkedin login =========================
+
 // app.get('/auth/linkedin', passport.authenticate('linkedin', {scope: 'email'}));
 // app.get('/auth/linkedin/callback',
 //     passport.authenticate('linkedin', {
@@ -750,7 +754,7 @@ app.get('/auth/twitter/callback',
 //     })
 // );
 
-// profile editing ============
+// profile editing ========================================================================
 app.get('/edit-profile/remove/:social', isAuthenticated, function (req, res) {
     var type = req.params.social;
     if (typeof type === 'string') {
@@ -849,7 +853,8 @@ app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) 
     }
 });
 
-// POST ======================================
+// POST ====================================================================================
+
 //file uploads
 app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, res) {
     var file = req.files.file;
@@ -864,7 +869,8 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
 
             newSub.title = req.body.title;
             //todo: parse topic list
-            // newSub.topicList = topicList
+            newSub.topicList = req.body.topicList;
+
             newSub.language = req.body.language;
             newSub.summary = req.body.summary;
             //todo: convert ipynb to html
@@ -884,6 +890,7 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
             newSub.deleted = false;
             newSub.flagged = false;
 
+            console.log("New sub: ", newSub);
 
             user.currentSubmission = newSub;
             user.save(function (err) {

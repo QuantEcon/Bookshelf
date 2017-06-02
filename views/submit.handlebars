@@ -1,86 +1,7 @@
 <head>
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <script src="/bundle.js"></script>
-    <script>
-        //todo: change this once not running on local host
-        var url = 'http://localhost:8080';
-        var app = angular.module('submissionApp', ['ngFileUpload', 'hc.marked']);
-
-        app.config(function ($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[{');
-            $interpolateProvider.endSymbol('}]}');
-        });
-
-        app.config(['markedProvider', function (markedProvider) {
-            markedProvider.setOptions({
-                gfm: true
-            });
-        }]);
-
-        app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $http, $window) {
-            // variables ============================================
-            $scope.submissionFormModel = {};
-            $scope.preview = false;
-
-            // methods ==============================================
-            $scope.chooseDifferentFile = function () {
-                $scope.submissionFormModel.file = null;
-            };
-
-            $scope.upload = function () {
-                Upload.upload({
-                    url: url + '/submit/file',
-                    data: {
-                        title: $scope.submissionFormModel.title,
-                        summary: $scope.submissionFormModel.summary,
-                        language: $scope.submissionFormModel.language,
-                        //todo: add co-authors
-                        coAuthors: [],
-                        //todo: add topic list
-                        topicList: [],
-
-                        //set default values
-                        comments: [],
-                        views: 0,
-                        votes: 0
-                    },
-                    file: $scope.submissionFormModel.file
-                }).then(
-                        //success
-                        function (res) {
-                            console.log('Success ' + res.config.data.file.name + ' uploaded. \nResponse: ' + res.data);
-                            window.location = url + '/submit/preview';
-                        },
-                        //failure
-                        function (res) {
-                            console.log('Error: ' + res.status);
-                        },
-                        //progress
-                        function (evt) {
-                            var progressPercentage = parseInt(100.0 * evt.loaded / evt.total);
-                            console.log('progress: ' + progressPercentage + '% ' + evt.config.data.file.name);
-                        }
-                );
-            };
-
-            $scope.togglePreviewSummary = function () {
-                $scope.preview = !$scope.preview;
-                console.log("Toggle preview summary: ", $scope.preview);
-            };
-
-            $scope.onSubmissionSubmit = function (valid) {
-                if (valid && $scope.submissionForm.file.$valid && $scope.submissionFormModel.file) {
-                    console.log("Valid Form!");
-                    console.log("FormModel: ", $scope.submissionFormModel);
-                    $scope.upload();
-                } else {
-                    console.log("Form is invalid");
-                }
-            };
-
-
-        }])
-    </script>
+    <script src="/assets/js/modules/submit.js"></script>
 </head>
 
 
@@ -123,8 +44,7 @@
                      ngf-drag-over-class="dragover"
                      ngf-multiple="false"
                      ngf-pattern=".ipynb"
-                     accept=".ipynb"
-                >
+                     accept=".ipynb">
 
                     <div class="dz-default dz-message"
                          ng-show="!submissionFormModel.file">
@@ -245,42 +165,51 @@
 
                     <p class="input-hint">The Notebook will be grouped under each selected topic.</p>
 
-                    <!--todo: figure out efficient way to bind to ng-model-->
                     <ul class="submit-topics">
-                        <li><input id="topic1" type="checkbox"><label for="topic1">General Economics and
-                            Teaching</label></li>
-                        <li><input id="topic2" type="checkbox"><label for="topic2"
-                                                                      title="History of Economic Thought, Methodology, and Heterodox Approaches">History
-                            of Economic Thought, Methodology, and Heterodox Approaches</label></li>
-                        <li><input id="topic3" type="checkbox"><label for="topic3">Mathematical and Quantitative
-                            Methods</label></li>
-                        <li><input id="topic4" type="checkbox"><label for="topic4">Microeconomics</label></li>
-                        <li><input id="topic5" type="checkbox"><label for="topic5">Macroeconomics and Monetary
-                            Economics</label></li>
-                        <li><input id="topic6" type="checkbox"><label for="topic6">International Economics</label></li>
-                        <li><input id="topic7" type="checkbox"><label for="topic7">Financial Economics</label></li>
-                        <li><input id="topic8" type="checkbox"><label for="topic8">Public Economics</label></li>
-                        <li><input id="topic9" type="checkbox"><label for="topic9">Health, Education, and
-                            Welfare</label></li>
-                        <li><input id="topic10" type="checkbox"><label for="topic10">Labor and Demographic
-                            Economics</label></li>
-                        <li><input id="topic11" type="checkbox"><label for="topic11">Law and Economics</label></li>
-                        <li><input id="topic12" type="checkbox"><label for="topic12">Industrial Organization</label>
+                        <li ng-repeat="topic in topics">
+                            <input type="checkbox"
+                                   name="submissionFormModel.selectedTopics[]"
+                                   ng-checked="!submissionFormModel.topics.indexOf(topic)"
+                                   ng-click="toggleTopicSelection(topic)"
+                                   value="{[{topic}]}"> <label>{[{topic}]}</label>
                         </li>
-                        <li><input id="topic13" type="checkbox"><label for="topic13"
-                                                                       title="Business Administration and Business Economics">Business
-                            Administration and Business Economics</label></li>
-                        <li><input id="topic14" type="checkbox"><label for="topic14">Economic History</label></li>
-                        <li><input id="topic15" type="checkbox"><label for="topic15"
-                                                                       title="Economic Development, Innovation, Technological Change, and Growth">Economic
-                            Development, Innovation, Technological Change, and Growth</label></li>
-                        <li><input id="topic16" type="checkbox"><label for="topic16">Economic Systems</label></li>
-                        <li><input id="topic17" type="checkbox"><label for="topic17">Agricultural and Natural Resource
-                            Economics</label></li>
-                        <li><input id="topic18" type="checkbox"><label for="topic18"
-                                                                       title="Urban, Rural, Regional, Real Estate, and Transportation Economics">Urban,
-                            Rural, Regional, Real Estate, and Transportation Economics</label></li>
                     </ul>
+                    <!--todo: figure out efficient way to bind to ng-model-->
+                    <!--<ul class="submit-topics">-->
+                    <!--<li><input id="topic1" type="checkbox"><label for="topic1">General Economics and-->
+                    <!--Teaching</label></li>-->
+                    <!--<li><input id="topic2" type="checkbox"><label for="topic2"-->
+                    <!--title="History of Economic Thought, Methodology, and Heterodox Approaches">History-->
+                    <!--of Economic Thought, Methodology, and Heterodox Approaches</label></li>-->
+                    <!--<li><input id="topic3" type="checkbox"><label for="topic3">Mathematical and Quantitative-->
+                    <!--Methods</label></li>-->
+                    <!--<li><input id="topic4" type="checkbox"><label for="topic4">Microeconomics</label></li>-->
+                    <!--<li><input id="topic5" type="checkbox"><label for="topic5">Macroeconomics and Monetary-->
+                    <!--Economics</label></li>-->
+                    <!--<li><input id="topic6" type="checkbox"><label for="topic6">International Economics</label></li>-->
+                    <!--<li><input id="topic7" type="checkbox"><label for="topic7">Financial Economics</label></li>-->
+                    <!--<li><input id="topic8" type="checkbox"><label for="topic8">Public Economics</label></li>-->
+                    <!--<li><input id="topic9" type="checkbox"><label for="topic9">Health, Education, and-->
+                    <!--Welfare</label></li>-->
+                    <!--<li><input id="topic10" type="checkbox"><label for="topic10">Labor and Demographic-->
+                    <!--Economics</label></li>-->
+                    <!--<li><input id="topic11" type="checkbox"><label for="topic11">Law and Economics</label></li>-->
+                    <!--<li><input id="topic12" type="checkbox"><label for="topic12">Industrial Organization</label>-->
+                    <!--</li>-->
+                    <!--<li><input id="topic13" type="checkbox"><label for="topic13"-->
+                    <!--title="Business Administration and Business Economics">Business-->
+                    <!--Administration and Business Economics</label></li>-->
+                    <!--<li><input id="topic14" type="checkbox"><label for="topic14">Economic History</label></li>-->
+                    <!--<li><input id="topic15" type="checkbox"><label for="topic15"-->
+                    <!--title="Economic Development, Innovation, Technological Change, and Growth">Economic-->
+                    <!--Development, Innovation, Technological Change, and Growth</label></li>-->
+                    <!--<li><input id="topic16" type="checkbox"><label for="topic16">Economic Systems</label></li>-->
+                    <!--<li><input id="topic17" type="checkbox"><label for="topic17">Agricultural and Natural Resource-->
+                    <!--Economics</label></li>-->
+                    <!--<li><input id="topic18" type="checkbox"><label for="topic18"-->
+                    <!--title="Urban, Rural, Regional, Real Estate, and Transportation Economics">Urban,-->
+                    <!--Rural, Regional, Real Estate, and Transportation Economics</label></li>-->
+                    <!--</ul>-->
 
                 </div>
 

@@ -1,9 +1,45 @@
-<a href="/auth/fb">Login with Facebook</a>
-<br>
-<a href="/auth/github">Login with Github</a>
+<!--<a href="/auth/fb">Login with Facebook</a>-->
 <!--<br>-->
-<!--<a href="/auth/google">Login with Google</a>-->
-<br>
-<a href="/auth/twitter">Login with Twitter</a>
+<!--<a href="/auth/github">Login with Github</a>-->
+<!--&lt;!&ndash;<br>&ndash;&gt;-->
+<!--&lt;!&ndash;<a href="/auth/google">Login with Google</a>&ndash;&gt;-->
 <!--<br>-->
-<!--<a href="/auth/linkedin">Login in with LinkedIn</a>-->
+<!--<a href="/auth/twitter">Login with Twitter</a>-->
+<!--&lt;!&ndash;<br>&ndash;&gt;-->
+<!--&lt;!&ndash;<a href="/auth/linkedin">Login in with LinkedIn</a>&ndash;&gt;-->
+
+<head>
+    <link rel="stylesheet" href="/assets/css/modal.css">
+</head>
+
+<div class="modal" id="signInModal">
+
+    <div class="modal-header">
+
+        <h1 class="modal-title">Sign In</h1>
+
+    </div>
+
+    <div class="modal-body">
+
+        <p><strong>Sign in</strong> using a social media account.</p>
+
+        <p>We won't share any of your personal data without your permission.</p>
+
+        <ul class="social-login">
+            <li><a href="/auth/github"><span class="fi-social-github"></span> GitHub</a></li>
+            <li><a href="/auth/google/"><span class="fi-social-google-plus"></span> Google</a></li>
+            <li><a href="/auth/linkedIn/"><span class="fi-social-linkedin"></span> LinkedIn</a></li>
+            <li><a href="/auth/twitter/"><span class="fi-social-twitter"></span> Twitter</a></li>
+            <li><a href="/auth/fb/"><span class="fi-social-facebook"></span> Facebook</a></li>
+        </ul>
+
+        <p>Singing in allows you to <strong>Vote</strong>, <strong>Comment</strong> and <strong>Submit</strong> Notebooks.</p>
+
+    </div>
+
+    <button class="close-button" data-close aria-label="Close modal" type="button">
+        <span aria-hidden="true">&times;</span>
+    </button>
+
+</div>
