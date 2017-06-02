@@ -3,7 +3,12 @@
  */
 // Controllers =========================================================
 var url = 'http://localhost:8080';
-var app = angular.module('mainApp', ['hc.marked', 'angularUtils.directives.dirPagination']);
+var app = angular.module('mainApp', [
+        'hc.marked',
+        'angularUtils.directives.dirPagination',
+        'angularMoment'
+    ]
+);
 
 // Config ==============================================================
 app.config(function ($interpolateProvider) {
@@ -21,6 +26,7 @@ app.controller('mainCtrl', function ($scope, $timeout) {
     // Vars ==========================================
     $scope.submissions = [];
     $scope.authors = [];
+    $scope.dataReady = false;
 
     // Methods =======================================
     $scope.initSubmissions = function (userID) {
@@ -37,6 +43,10 @@ app.controller('mainCtrl', function ($scope, $timeout) {
         console.log("mainCtrl: Got search submissions results: ", results);
         $scope.submissions = results.data.submissions;
         $scope.authors = results.data.authors;
+        // $timeout(function () {
+        //     $scope.dataReady = true;
+        // }, 5000);
+        $scope.dataReady = true;
     });
 });
 
@@ -80,6 +90,11 @@ app.controller('searchCtrl', function ($scope, $http) {
     $scope.showSearchBar = false;
 
     // Methods ========================================
+    $scope.span = function (num) {
+        console.log("Create array with ", num);
+        return new Array(num);
+    };
+
     $scope.searchSubmissions = function (params, args) {
         if (!args.init) {
             console.log("searchCtrl: Set current search!");
@@ -187,6 +202,8 @@ app.controller('searchCtrl', function ($scope, $http) {
 app.controller('userPageCtrl', function ($scope, $timeout) {
     // Vars ===========================================
     //extract user id from url
+    $scope.dataReady = false;
+
     $scope.userID = window.location.pathname.split('/')[2];
     $scope.userSummary = '';
     $scope.userJoined = '';
@@ -209,6 +226,9 @@ app.controller('userPageCtrl', function ($scope, $timeout) {
         console.log("userPageCtrl: Got user search result: ", results.data);
         $scope.userSummary = results.data[0].summary;
         $scope.userJoined = results.data[0].joinDate;
+        $timeout(function () {
+            $scope.dataReady = true;
+        }, 5000);
     });
 
 });

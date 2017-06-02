@@ -92,7 +92,7 @@
         {{#if userPage}}
             <a ng-click="clearSearch({init: true, userID: userID})">Clear search</a>
         {{else}}
-            <a ng-click="clearSearch()">Clear search</a>
+            <a ng-click="clearSearch({init: true})">Clear search</a>
         {{/if}}
 
     </p>

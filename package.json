@@ -19,6 +19,7 @@
   "homepage": "https://github.com/jstac/QuantEconLib#readme",
   "dependencies": {
     "angular-marked": "^1.2.2",
+    "angular-moment": "^1.0.1",
     "angular-utils-pagination": "^0.11.1",
     "async": "^2.4.1",
     "body-parser": "^1.17.2",
