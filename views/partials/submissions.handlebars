@@ -44,7 +44,7 @@
         </div>
 
         <div class="notebook-summary"
-             dir-paginate="notebook in submissions | itemsPerPage: 10"
+             dir-paginate="notebook in submissions | orderBy: 'notebook.published':true | itemsPerPage: 10"
              ng-show="dataReady">
 
             <div class="specs">

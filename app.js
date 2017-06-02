@@ -312,7 +312,7 @@ app.get('/search/submissions', function (req, res) {
             var authorIds = submissions.map(function (submission) {
                 return submission.author;
             });
-            User.find({_id: {$in: authorIds}}, 'name avatar _id', function (err, authors) {
+            User.find({_id: {$in: authorIds}}, 'name avatar _id isAdmin', function (err, authors) {
                 if (err) {
                     console.log("Error occurred finding authors");
                     res.status(500);
@@ -455,7 +455,8 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
                 numTotalComments: results.coms.length + results.reps.length,
                 commentUsers: commentAuthorIDs,
                 showNotebook: true,
-                fuzzyTime: fTime
+                fuzzyTime: fTime,
+                currentUser: req.user
             };
             res.render('submission', {
                 data: data,
@@ -569,7 +570,8 @@ app.get('/submit/preview', isAuthenticated, function (req, res) {
             if (user.currentSubmission) {
                 var data = {
                     author: user,
-                    notebook: user.currentSubmission
+                    notebook: user.currentSubmission,
+                    currentUser: user
                 };
                 res.render('submissionPreview', {
                         data: data,

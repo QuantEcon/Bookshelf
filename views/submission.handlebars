@@ -65,12 +65,15 @@
 
                 </div>
 
-                <ul class="admin-options">
-                    <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
-                            class="fi-flag"></span></a></li>
-                    <li><a href="#" title="Delete notebook" data-open="deleteContentModal"><span
-                            class="fi-x"></span></a></li>
-                </ul>
+                {{#if currentUser.isAdmin}}
+                    <ul class="admin-options">
+                        <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
+                                class="fi-flag"></span></a></li>
+                        <li><a href="#" title="Delete notebook" data-open="deleteContentModal"><span
+                                class="fi-x"></span></a></li>
+                    </ul>
+                {{/if}}
+
 
             </div>
 

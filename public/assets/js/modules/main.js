@@ -90,10 +90,6 @@ app.controller('searchCtrl', function ($scope, $http) {
     $scope.showSearchBar = false;
 
     // Methods ========================================
-    $scope.span = function (num) {
-        console.log("Create array with ", num);
-        return new Array(num);
-    };
 
     $scope.searchSubmissions = function (params, args) {
         if (!args.init) {
