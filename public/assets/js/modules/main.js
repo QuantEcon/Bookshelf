@@ -114,7 +114,8 @@ app.controller('searchCtrl', function ($scope, $http) {
             params: {
                 language: params.language,
                 topic: params.topic,
-                author: params.author
+                author: params.author,
+                select: params.select
             }
         }).then(function success(response) {
                 console.log("searchCtrl: Search returned: ", response);
@@ -138,13 +139,15 @@ app.controller('searchCtrl', function ($scope, $http) {
         console.log("searchCtrl: search users: ", params);
         $http.get(url + '/search/users', {
             params: {
-                _id: params.userID
+                _id: params.userID,
+                select: params.select
             }
         }).then(function success(response) {
                 console.log("searchCtrl: Search users returned: ", response);
                 var results = {
                     params: params,
-                    data: response.data
+                    data: response.data,
+                    select: params.select
                 };
                 $scope.$emit('searchUsersResult', results);
             },
@@ -163,14 +166,6 @@ app.controller('searchCtrl', function ($scope, $http) {
         $scope.showSearchBar = !$scope.showSearchBar;
     };
 
-    $scope.initSearch = function (args) {
-        console.log("searchCtrl: Init search");
-        $scope.searchSubmissions($scope.searchParams, args);
-    };
-
-    $scope.initUserSearch = function (args) {
-        console.log("searchCtrl: Init user search");
-    };
 
     $scope.clearSearch = function (args) {
         console.log("Clear search");
@@ -184,7 +179,7 @@ app.controller('searchCtrl', function ($scope, $http) {
         $scope.searchParams.keywords = "";
         $scope.numSubs = 0;
 
-        $scope.initSearch(args);
+        $scope.searchSubmissions($scope.searchParams, args);
     };
 
     // Events =========================================
@@ -210,7 +205,8 @@ app.controller('userPageCtrl', function ($scope, $timeout) {
     // Methods ========================================
     $scope.initUserData = function () {
         var args = {
-            userID: $scope.userID
+            userID: $scope.userID,
+            select: 'summary joinDate'
         };
         console.log("userPageCtrl: Init user search: ", args);
 

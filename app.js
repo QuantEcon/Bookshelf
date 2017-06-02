@@ -302,7 +302,7 @@ app.get('/search/submissions', function (req, res) {
     }
     console.log("Searching submissions: ", searchParams);
 
-    Submission.find(searchParams, function (err, submissions) {
+    Submission.find(searchParams, req.query.select, function (err, submissions) {
         if (err) {
             console.log("Error occurred finding submissions");
             res.status(500);
@@ -312,7 +312,7 @@ app.get('/search/submissions', function (req, res) {
             var authorIds = submissions.map(function (submission) {
                 return submission.author;
             });
-            User.find({_id: {$in: authorIds}}, function (err, authors) {
+            User.find({_id: {$in: authorIds}}, 'name avatar _id', function (err, authors) {
                 if (err) {
                     console.log("Error occurred finding authors");
                     res.status(500);
@@ -342,7 +342,7 @@ app.get('/search/users', function (req, res) {
 
     console.log("Searching users: ", params);
 
-    User.find(params, function (err, users) {
+    User.find(params, req.query.select, function (err, users) {
         if (err) {
             res.status(500);
         } else {
@@ -560,10 +560,12 @@ app.get('/submit', isAuthenticated, function (req, res) {
 });
 
 app.get('/submit/preview', isAuthenticated, function (req, res) {
-    User.findOne({_id: req.user._id}, function (err, user) {
+
+    User.findOne({_id: req.user._id}, '', function (err, user) {
         if (err) {
             res.render('500');
         } else if (user) {
+            console.log("Got user: ", user);
             if (user.currentSubmission) {
                 var data = {
                     author: user,
