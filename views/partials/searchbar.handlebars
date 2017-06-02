@@ -5,12 +5,10 @@
 
 {{#if userPage}}
     <form name="searchForm"
-          ng-submit="search(searchParams, false, userID)"
-          data-ng-init="initSearch(userID)">
+          ng-submit="searchSubmissions(searchParams, {init: false, userID: userID})">
 {{else}}
     <form name="searchForm"
-          ng-submit="search(searchParams, false)"
-          data-ng-init="initSearch()">
+          ng-submit="searchSubmissions(searchParams, false)">
 {{/if}}
 
     <div class="filters">
@@ -91,6 +89,11 @@
 
     <p class="search-message" ng-show="hasCurrentSearch">
         Your search returned {[{numSubs}]} notebooks.
-        <a ng-click="clearSearch()">Clear search</a>
+        {{#if userPage}}
+            <a ng-click="clearSearch({init: true, userID: userID})">Clear search</a>
+        {{else}}
+            <a ng-click="clearSearch()">Clear search</a>
+        {{/if}}
+
     </p>
 </form>

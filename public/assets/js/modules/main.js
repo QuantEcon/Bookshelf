@@ -17,21 +17,24 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('mainCtrl', function ($scope) {
+app.controller('mainCtrl', function ($scope, $timeout) {
     // Vars ==========================================
     $scope.submissions = [];
     $scope.authors = [];
 
     // Methods =======================================
-    $scope.init = function () {
-        console.log("Init: Hello world!");
-        $scope.$emit('initSearch', "start");
+    $scope.initSubmissions = function (userID) {
+        console.log("mainCtrl: init submissions");
+        $timeout(function () {
+            $scope.$broadcast('initSearch', {init: true, userID: userID});
+        })
     };
+
 
     // Events ========================================
     $scope.$on('searchResults', function (event, results) {
         //todo parse and sort results
-        console.log("Got search results: ", results);
+        console.log("mainCtrl: Got search submissions results: ", results);
         $scope.submissions = results.data.submissions;
         $scope.authors = results.data.authors;
     });
@@ -77,28 +80,29 @@ app.controller('searchCtrl', function ($scope, $http) {
     $scope.showSearchBar = false;
 
     // Methods ========================================
-    $scope.search = function (params, init, userID) {
-        if (!init) {
-            console.log("Set current search!");
+    $scope.searchSubmissions = function (params, args) {
+        if (!args.init) {
+            console.log("searchCtrl: Set current search!");
             $scope.hasCurrentSearch = true;
         }
-        if (userID) {
-            console.log("Performing search for user");
-            $scope.searchParams.author = userID;
+        if (args.userID) {
+            console.log("searchCtrl: Performing submissions search for user");
+            $scope.searchParams.author = args.userID;
         }
-        console.log("Performing search: ", params, init);
+
+        console.log("searchCtrl: search submissions:", $scope.searchParams, args);
+
         params.page = 1;
         $scope.searchParams.page = 1;
-        var searchURL = url + '/search';
 
-        $http.get(url + '/search', {
+        $http.get(url + '/search/submissions', {
             params: {
                 language: params.language,
                 topic: params.topic,
                 author: params.author
             }
         }).then(function success(response) {
-                console.log("Search returned: ", response);
+                console.log("searchCtrl: Search returned: ", response);
                 var results = {
                     params: params,
                     data: response.data
@@ -106,7 +110,7 @@ app.controller('searchCtrl', function ($scope, $http) {
                 $scope.numSubs = response.data.submissions.length;
                 $scope.$emit('searchResults', results);
             }, function error(response) {
-                console.log("An error occurred during the search");
+                console.log("searchCtrl: An error occurred during the search");
                 var results = {
                     err: response
                 };
@@ -115,22 +119,44 @@ app.controller('searchCtrl', function ($scope, $http) {
         )
     };
 
+    $scope.searchUsers = function (params) {
+        $http.get(url + '/search/users', {
+            params: {
+                _id: params.id
+            }
+        }).then(function success(response) {
+                console.log("searchCtrl: Search returned: ", response);
+                var results = {
+                    params: params,
+                    data: response.data
+                };
+                $scope.$emit('searchUsersResult', results);
+            },
+            function failure(response) {
+                console.log("searchCtrl: An error occurred during the search");
+                var results = {
+                    err: response
+                };
+                $scope.$emit('searchUsersResults', results);
+            }
+        );
+    };
+
     $scope.toggleSearchBar = function () {
         console.log("Toggle search: ", $scope.hasCurrentSearch);
         $scope.showSearchBar = !$scope.showSearchBar;
     };
 
-    $scope.initSearch = function (userID) {
-        console.log("Init search");
-
-        $scope.search($scope.searchParams, true, userID);
+    $scope.initSearch = function (args) {
+        console.log("searchCtrl: Init search");
+        $scope.searchSubmissions($scope.searchParams, args);
     };
 
     $scope.initSearchUser = function () {
-        console.log("Init user search");
+        console.log("searchCtrl: Init user search");
     };
 
-    $scope.clearSearch = function () {
+    $scope.clearSearch = function (args) {
         console.log("Clear search");
         $scope.hasCurrentSearch = false;
         $scope.searchParams = {};
@@ -142,20 +168,46 @@ app.controller('searchCtrl', function ($scope, $http) {
         $scope.searchParams.keywords = "";
         $scope.numSubs = 0;
 
-        $scope.initSearch();
+        $scope.initSearch(args);
     };
 
     // Events =========================================
     $scope.$on('initSearch', function (event, args) {
-        console.log("Got initSearch");
-        $scope.search($scope.searchParams);
+        console.log("searchCtrl: Got init search: ", args);
+        $scope.searchSubmissions($scope.searchParams, args);
     });
 
-
+    $scope.$on('initUserSearch', function (event, args) {
+        console.log("searchCtrl: Got init user search:", args);
+        $scope.searchUsers(args);
+    });
 });
 
-app.controller('userPageCtrl', function ($scope) {
+app.controller('userPageCtrl', function ($scope, $timeout) {
+    // Vars ===========================================
     //extract user id from url
     $scope.userID = window.location.pathname.split('/')[2];
+    $scope.userSummary = '';
+    $scope.userJoined = '';
+
+    // Methods ========================================
+    $scope.initUserData = function () {
+        var args = {
+            userID: $scope.userID
+        };
+        console.log("userPageCtrl: Init user search: ", args);
+
+        $timeout(function () {
+            $scope.$broadcast('initUserSearch', args);
+        });
+
+    };
+
+    // Events =========================================
+    $scope.$on('searchUsersResult', function (event, results) {
+        console.log("userPageCtrl: Got user search result: ", results.data);
+        $scope.userSummary = results.data[0].userSummary;
+        $scope.userJoined = results.data[0].joinDate;
+    });
 
 });

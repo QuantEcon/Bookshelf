@@ -3,7 +3,17 @@
     <script src="/assets/js/modules/main.js"></script>
 </head>
 
-<div class="tile">
+{{#if userPage}}
+    <div class="tile"
+         ng-controller="mainCtrl"
+         data-ng-init="initSubmissions(userID)">
+{{else}}
+    <div class="tile"
+         ng-controller="mainCtrl"
+         data-ng-init="initSubmissions()">
+{{/if}}
+
+
 
     <div ng-app="mainApp"
          ng-controller="searchCtrl">

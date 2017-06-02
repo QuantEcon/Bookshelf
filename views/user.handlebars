@@ -3,7 +3,7 @@
     <script src="/assets/js/modules/main.js"></script>
 </head>
 
-<div ng-app="mainApp" ng-controller="userPageCtrl">
+<div ng-app="mainApp" ng-controller="userPageCtrl" data-ng-init="initUserData()">
     <div class="row columns">
 
         <div class="details">
@@ -62,7 +62,7 @@
 
                     <div class="details-primary">
 
-                        <p marked="summary"></p>
+                        <p marked="userSummary"></p>
 
                         <p class="web"><a href="http://{{data.user.website}}/">{{data.user.website}}</a>
 
@@ -105,7 +105,7 @@
     </div>
 
     <!--submissions-->
-    <div class="row" ng-controller="mainCtrl">
+    <div class="row" >
         <div class="column">
             {{> submissions userPage=true}}
         </div>

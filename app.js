@@ -285,7 +285,7 @@ app.get('/', isAuthenticated, function (req, res) {
     });
 });
 
-app.get('/search', function (req, res) {
+app.get('/search/submissions', function (req, res) {
     console.log("Got search request: ", req.query);
     var searchParams = {};
     if (req.query.language != 'All') {
@@ -294,8 +294,12 @@ app.get('/search', function (req, res) {
     if (req.query.topic != 'All') {
         searchParams.topic = req.query.topic
     }
-    if(req.query.author){
-        searchParams.author = req.query.author;
+    if (req.query.author) {
+        if (req.query.author == 'my-profile') {
+            searchParams.author = req.user._id;
+        } else {
+            searchParams.author = req.query.author;
+        }
     }
     console.log("Searching: ", searchParams);
 
@@ -326,6 +330,28 @@ app.get('/search', function (req, res) {
     });
 });
 
+app.get('/search/users', function (req, res) {
+    var params = {};
+    if (req.query._id) {
+        if (req.query._id == 'my-profile') {
+            params._id = req.user._id;
+        } else {
+            params._id = req.query._id;
+        }
+    }
+
+    console.log("Searching users: ", params);
+
+    User.find(params, function (err, users) {
+       if(err){
+           res.status(500);
+       } else {
+           res.send(users);
+       }
+    });
+
+
+});
 // notebook pages ==========================================
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
     // get nb info
