@@ -45,7 +45,7 @@ app.controller('mainCtrl', function ($scope, $timeout) {
         $scope.authors = results.data.authors;
         // $timeout(function () {
         //     $scope.dataReady = true;
-        // }, 5000);
+        // }, 2000);
         $scope.dataReady = true;
     });
 });
@@ -106,7 +106,7 @@ app.controller('searchCtrl', function ($scope, $http) {
         params.page = 1;
         $scope.searchParams.page = 1;
 
-        $http.get(url + '/search/submissions', {
+        $http.get(url + '/search/all-submissions', {
             params: {
                 language: params.language,
                 topic: params.topic,

@@ -40,7 +40,7 @@
         <div class="filter-inputs">
 
             <label ng-show="!showSearchBar">Topic:
-                <select ng-model="searchParams.topic">
+                <select ng-model="searchParams.topic" type="submit">
 
                     <option ng-repeat="topic in topics" value="{[{topic}]}">{[{topic}]}</option>
 
@@ -48,7 +48,7 @@
             </label>
 
             <label ng-show="!showSearchBar">Language:
-                <select ng-model="searchParams.language">
+                <select ng-model="searchParams.language" type="submit">
                     <option value="All">All</option>
                     <option value="Python">Python</option>
                     <option value="Julia">Julia</option>

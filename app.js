@@ -284,9 +284,9 @@ app.get('/', isAuthenticated, function (req, res) {
     });
 });
 
-app.get('/search/submissions', function (req, res) {
-    console.log("Got search request: ", req.query);
+app.get('/search/all-submissions', function (req, res) {
     var searchParams = {};
+    //todo: implement sorting and pagination
     if (req.query.language != 'All') {
         searchParams.language = req.query.language
     }
@@ -300,7 +300,7 @@ app.get('/search/submissions', function (req, res) {
             searchParams.author = req.query.author;
         }
     }
-    console.log("Searching submissions: ", searchParams);
+    // console.log("Searching submissions: ", searchParams);
 
     Submission.find(searchParams, req.query.select, function (err, submissions) {
         if (err) {
@@ -329,39 +329,14 @@ app.get('/search/submissions', function (req, res) {
     });
 });
 
-app.get('/search/users', function (req, res) {
-    console.log("Received user search request: ", req.query);
-    var params = {};
-    if (req.query._id) {
-        if (req.query._id == 'my-profile') {
-            params._id = req.user._id;
-        } else {
-            params._id = req.query._id;
-        }
-    }
-
-    console.log("Searching users: ", params);
-
-    User.find(params, req.query.select, function (err, users) {
-        if (err) {
-            res.status(500);
-        } else {
-            res.send(users);
-        }
-    });
-
-
-});
-
-// notebook pages ==========================================================================
-app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
+app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
     // get nb info
     var notebook;
     var commentAuthorIDs;
     var replyIDs;
     var replyAuthorIDs;
 
-    var notebookID = req.params.nbID;
+    var notebookID = req.params.nbid;
 
     //get notebook information
     series({
@@ -445,27 +420,64 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
                     res.render('404');
                 }
             }
-            var fTime = fuzzyTime(results.nb.published);
+
             var data = {
-                n: results.nb,
-                u: results.auth,
+                notebook: results.nb,
+                author: results.auth,
                 coAuthors: results.coAuth,
                 comments: results.comments,
                 replies: results.reps,
-                numTotalComments: results.coms.length + results.reps.length,
-                commentUsers: commentAuthorIDs,
-                showNotebook: true,
-                fuzzyTime: fTime,
-                currentUser: req.user
+                commentAuthors: results.comAuth
             };
-            res.render('submission', {
-                data: data,
-                currentUser: req.user,
-                title: data.n.title,
-                layout: 'breadcrumbs'
-            });
+            if(req.user){
+                data.currentUserID = req.user._id;
+            }
+            res.send(data);
         }
     );
+});
+
+app.get('/search/users', function (req, res) {
+    console.log("Received user search request: ", req.query);
+    var params = {};
+    if (req.query._id) {
+        if (req.query._id == 'my-profile') {
+            params._id = req.user._id;
+        } else {
+            params._id = req.query._id;
+        }
+    }
+
+    console.log("Searching users: ", params);
+
+    User.find(params, req.query.select, function (err, users) {
+        if (err) {
+            res.status(500);
+        } else {
+            res.send(users);
+        }
+    });
+
+
+});
+
+// notebook pages ==========================================================================
+app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
+
+    Submission.findOne({_id: req.params.nbID}, function (err, submission) {
+        if (err) {
+            res.render('500');
+        } else if (submission) {
+            res.render('submission', {
+                submission: submission,
+                layout: 'breadcrumbs',
+                title: submission.title
+            });
+        } else {
+            res.render('404');
+        }
+    });
+
 });
 
 // user pages ==============================================================================

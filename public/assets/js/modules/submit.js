@@ -104,6 +104,10 @@ app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $htt
         console.log("Toggle preview summary: ", $scope.preview);
     };
 
+    $scope.onCancel = function () {
+        $http.get('/submit/cancel');
+    };
+
     $scope.onSubmissionSubmit = function (valid) {
         if (valid && $scope.submissionForm.file.$valid && $scope.submissionFormModel.file) {
             console.log("Valid Form!");

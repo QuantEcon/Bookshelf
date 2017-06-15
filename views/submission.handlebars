@@ -1,54 +1,10 @@
 <head>
     <script src="/bundle.js"></script>
-    <script>
-        //todo: change this once not running on local host
-        var url = 'http://localhost:8080';
-        var app = angular.module('submissionApp', ['hc.marked']);
-
-        app.config(function ($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[{');
-            $interpolateProvider.endSymbol('}]}');
-        });
-
-        app.config(['markedProvider', function (markedProvider) {
-            markedProvider.setOptions({
-                gfm: true
-            });
-        }]);
-
-        app.controller('submissionCtrl', function ($scope) {
-            $scope.published = new Date('{{data.n.published}}');
-            $scope.lastUpdated = new Date('{{data.n.lastUpdated}}');
-            $scope.summary = '{{data.n.summary}}';
-            $scope.showComments = false;
-            $scope.showNotebook = true;
-
-            $scope.submitCommentClicked = function () {
-                console.log("Submit comment clicked");
-            };
-
-            $scope.toggleView = function () {
-                $scope.showComments = !$scope.showComments;
-                $scope.showNotebook = !$scope.showNotebook;
-            };
-
-            $scope.downloadNotebook = function () {
-                console.log("Download clicked");
-            }
-        });
-
-        app.controller('voteCtrl', function ($scope) {
-            $scope.downvoteClicked = function (submissionID) {
-                console.log("Downvote clicked: ", submissionID);
-            };
-
-            $scope.upvoteClicked = function () {
-                console.log("Upvote clicked");
-            }
-        });
-    </script>
+    <script src="/assets/js/modules/submission.js"></script>
 </head>
-<div class="row" ng-app="submissionApp">
+<div class="row" ng-app="submissionApp"
+     ng-controller="submissionCtrl"
+     data-ng-init="init()">
     <div class="column">
 
         <div class="details">
@@ -58,7 +14,7 @@
                     <!--todo: get submission id somehow...-->
                     <a class="fi-like" id="submission-upvote-button" ng-click="upvoteClicked(submissionID, true)"></a>
 
-                    <span class="score" id="submission-score">{{data.n.votes}}</span>
+                    <span class="score" id="submission-score">{[{notebook.votes}]}</span>
 
                     <a class="fi-dislike" id="submission-downvote-button"
                        ng-click="downvoteClicked(submissionID, true)"></a>
@@ -83,12 +39,19 @@
 
                     <div class="details-title">
 
-                        <h1 class="title">{{data.n.title}}</h1>
+                        <h1 class="title">{[{notebook.title}]}</h1>
+                        <!--if this is the current user's submission-->
+
+                        <ul class="details-options" ng-show="currentUsersSubmission">
+                            <li><a href="/user/my-profile/edit/"
+                                   title="Edit Submission"><span class="fi-widget"></span></a>
+                            </li>
+                        </ul>
 
                         <ul class="topics">
-                            {{#each data.n.topicList}}
-                                <li><a href="/">{{this}}</a></li>
-                            {{/each}}
+                            <li ng-repeat="topic in notebook.topicList">
+                                <a href="/">{[{topic}]}</a>
+                            </li>
                         </ul>
 
                     </div>
@@ -97,9 +60,11 @@
 
                         <div class="counts">
                             <ul>
-                                <li class="views"><span class="count">{{data.n.views}}</span> Views</li>
-                                <li class="comments"><span class="count">{{data.numTotalComments}}</span> Comments</li>
-                                <li class="votes"><span class="count">{{data.n.votes}}</span> Votes</li>
+                                <li class="views"><span class="count">{[{notebook.views}]}</span> Views</li>
+                                <li class="comments"><span class="count">{[{notebook.comments.length + notebook.replies.length}]}</span>
+                                    Comments
+                                </li>
+                                <li class="votes"><span class="count">{[{notebook.votes}]}</span> Votes</li>
                             </ul>
                         </div>
 
@@ -107,7 +72,7 @@
 
                 </div>
 
-                <div class="details-body" ng-controller="submissionCtrl">
+                <div class="details-body" >
 
                     <div class="details-primary">
 
@@ -119,26 +84,23 @@
 
                         <div class="side">
 
-                            <p class="avatar"><a href="/user/{{data.u._id}}/"><img src={{data.u.avatar}}></a></p>
+                            <p class="avatar"><a href="/user/{[{author._id}]}/"><img src={[{author.avatar}]}></a></p>
 
                         </div>
 
                         <div class="main">
 
                             <ul class="specs">
-                                <li><span>Author:</span> <a href="/user/{{data.n.author}}/">{{data.u.name}}</a></li>
+                                <li><span>Author:</span> <a href="/user/{[{author._id}]}/">{[{author.name}]}</a></li>
                                 <li><span>Co-authors:</span>
-                                    {{#if data.coAuthors.length}}
-                                        {{#each data.coAuthors}}
-                                            <a href="/user/{{this._id}}">{{this.name}}</a><br>
-                                        {{/each}}
-                                    {{else}}
-                                        None<br>
-                                    {{/if}}
+                                    <a ng-repeat="coAuthor in notebook.coAuthors">
+                                        {[{coAuthor.name}]}
+                                    </a>
+                                    <br>
                                 </li>
-                                <li><span>Language:</span> <a href="/">{{data.n.language}}</a></li>
-                                <li><span>Published:</span> {[{published | date: 'd MMM yyyy'}]}</li>
-                                <li><span>Last update:</span> {[{lastUpdated| date: 'd MMM yyyy'}]}</li>
+                                <li><span>Language:</span> <a href="/">{[{notebook.language}]}</a></li>
+                                <li><span>Published:</span> {[{notebook.published | date: 'd MMM yyyy'}]}</li>
+                                <li><span>Last update:</span> {[{notebook.lastUpdated | date: 'd MMM yyyy'}]}</li>
                             </ul>
 
                         </div>
@@ -164,7 +126,7 @@
 
                 <ul class="tile-options">
                     <li><a class="active">Notebook</a></li>
-                    <li><a ng-click="toggleView()">Comments {{data.n.comments.length}}</a></li>
+                    <li><a ng-click="toggleView()">Comments {[{comments.length + replies.length}]}</a></li>
                     <!--todo: implement download-->
                     <li><a class="alt" ng-click="downloadNotebook()">Download</a>
                     </li>
@@ -174,11 +136,7 @@
 
             <!--todo: insert notebook html here-->
             <div ng-show="showNotebook">
-                {{#if data.n.notebook}}
-                    <h4>Notebook html goes here</h4>
-                {{else}}
-                    <p>Wow, such empty</p>
-                {{/if}}
+                {[{notebook.html}]}
             </div>
 
 
@@ -190,7 +148,7 @@
 
                 <ul class="tile-options">
                     <li><a ng-click="toggleView()">Notebook</a></li>
-                    <li><a class="active">Comments {{data.n.comments.length}}</a></li>
+                    <li><a class="active">Comments {[{comments.length + replies.length}]}</a></li>
                     <li><a class="alt" ng-click="downloadNotebook()">Download</a>
                     </li>
                 </ul>
@@ -202,21 +160,86 @@
 
                 <div class="comments-thread">
 
-                    <!-- .comment -->
-                    {{#each data.comments}}
-                        <!--main comment-->
-                        {{comment this ../data.replies ../data.commentUsers }}
-                        <!--replies-->
-                        {{#if this.replies.length}}
-                            <!--todo: style the comment-nested-->
-                            <div class="comment-nested" style="margin-left: 75px;">
-                                {{#each this.replies}}
-                                    {{reply this ../../data.replies ../../data.commentUsers}}
-                                {{/each}}
-                            </div>
-                        {{/if}}
+                    <div class="comment" ng-repeat="comment in comments">
 
-                    {{/each}}
+                        <div class="comment-side">
+
+                            <div class="comment-avatar">
+
+                                <a href="/user/{[{comment.author}]}/"
+                                   ng-repeat="commentAuthor in commentAuthors | filter: {_id: comment.author}">
+                                    <img src={[{commentAuthor.avatar}]}>
+                                </a>
+
+                            </div> <!-- .comment-avatar -->
+
+                            <div class="comment-score" id="score-{[{comment._id}]}">{[{comment.score}]}</div>
+                            <!-- .comment-score -->
+
+                            <!--todo: get comment id somehow...-->
+                            <ul class="comment-vote">
+                                <li><a class="fi-like" id="upvote-{[{comment._id}]}"
+                                       ng-click="upvoteClicked(comment._id, false)"></a></li>
+                                <li><a class="fi-dislike" id="downvote-{[{comment._id}]}"
+                                       ng-click="downvoteClicked(comment._id, false)"></a></li>
+                            </ul> <!-- .comment-vote -->
+
+                        </div> <!-- .comment-side -->
+
+                        <div class="comment-main">
+
+                            <div class="comment-header">
+                                <!--todo: get fuzzy timestamp-->
+                                <!--todo: filter users by author id-->
+                                <a href="/user/{[{comment.author}]}">
+                                    {{author.name}}
+                                </a>
+                                <span class="time">{[{comment.timestamp}]}</span>
+                                <a class="flag"
+                                   data-open="flagCommentModal"
+                                   title="Flag comment"
+                                   aria-controls="flagCommentModal"
+                                   aria-haspopup="true"
+                                   tabindex="0">
+                                    <span class="fi-flag"></span>
+                                </a>
+                                <a class="delete"
+                                   data-open="deleteContentModal"
+                                   aria-controls="deleteContentModal"
+                                   aria-haspopup="true"
+                                   tabindex="0">
+                                    <span class="fi-x"></span>
+                                </a>
+
+                            </div> <!-- .comment-header -->
+
+                            <div class="comment-body">
+
+                                <p>{[{comment.content}]}</p>
+
+                            </div> <!-- .comment-body -->
+
+                            <div class="comment-footer">
+
+                                <ul class="options">
+                                    <li><a ng-click="replyClicked()">Reply</a></li>
+                                </ul>
+
+                            </div> <!-- .comment-footer -->
+
+                            <div class="comment-reply">
+
+
+                            </div> <!-- .comment-reply -->
+
+                        </div> <!-- .comment-main -->
+
+
+                        <div class="comment-nested">
+
+                        </div> <!-- .comment-nested -->
+
+                    </div>
 
                     <div class="comments-post">
 
