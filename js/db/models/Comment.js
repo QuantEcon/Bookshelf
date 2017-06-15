@@ -10,6 +10,8 @@ var commentSchema = new Schema({
     author: ObjectId,
     timestamp: Date,
 
+    score: Number,
+
     content: String,
 
     replies: [ObjectId],

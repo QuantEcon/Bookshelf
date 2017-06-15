@@ -17,7 +17,7 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('submissionCtrl', function ($scope, $http) {
+app.controller('submissionCtrl', function ($scope, $http, $window) {
     //submission information
     $scope.notebook = {};
 
@@ -44,7 +44,7 @@ app.controller('submissionCtrl', function ($scope, $http) {
                 $scope.currentUsersSubmission = response.data.currentUsersSubmission;
 
                 //set comments/replies
-                $scope.commments = response.data.comments;
+                $scope.comments = response.data.comments;
                 $scope.replies = response.data.replies;
 
                 // set user's information
@@ -62,8 +62,21 @@ app.controller('submissionCtrl', function ($scope, $http) {
 
     };
 
-    $scope.submitCommentClicked = function () {
-        console.log("Submit comment clicked");
+    $scope.submitCommentClicked = function (content) {
+        console.log("Submit comment clicked: ", content);
+        //todo: send to server
+        var data = {
+            submissionID: $scope.submissionID,
+            content: content
+        };
+        $http.post(url + '/submit/comment', data).then(
+            function success(response) {
+                console.log("Successfully posted comment: ", response);
+                $window.location.reload();
+            },
+            function failure(response) {
+                console.log("Error posting comment: ", response);
+            })
     };
 
     $scope.toggleView = function () {

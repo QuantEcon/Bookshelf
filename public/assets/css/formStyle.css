@@ -71,3 +71,18 @@ div.md-summary > p.input-hint {
 .submit-form.submit-upload.dropzone.valid {
     border-style: solid !important;
 }
+
+.submit-comment button{
+    font-family: Raleway, sans-serif !important;
+    font-size: 1.5rem !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    color: #d84d0a;
+
+    padding: 5px 25px;
+    border: 1px solid #d84d0a;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 1rem 0 0
+}

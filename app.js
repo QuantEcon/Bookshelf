@@ -387,7 +387,8 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             reps: function (callback) {
                 //get replies
-                Comment.find({_id: {$in: replyIDs}, deleted: false}, function (err, replies) {
+                console.log("Reply ids: ", replyIDs);
+                Comment.find({_id: {$in: replyIDs[0]}, deleted: false}, function (err, replies) {
                     if (err) callback(err);
                     else {
                         replyAuthorIDs = replies.map(function (reply) {
@@ -424,11 +425,12 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
                 notebook: results.nb,
                 author: results.auth,
                 coAuthors: results.coAuth,
-                comments: results.comments,
+                comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth
             };
-            if(req.user){
+            console.log("notebook data: ", data);
+            if (req.user) {
                 data.currentUserID = req.user._id;
             }
             res.send(data);
@@ -467,7 +469,7 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
         if (err) {
             res.render('500');
         } else if (submission) {
-            if(req.user){
+            if (req.user) {
                 var data = {};
                 data.currentUser = req.user;
                 res.render('submission', {
@@ -951,6 +953,44 @@ app.post('/edit-profile', isAuthenticated, function (req, res) {
             })
         }
     });
+});
+
+app.post('/submit/comment', isAuthenticated, function (req, res) {
+    console.log("Received submit comment: ", req.body);
+
+    var newComment = new Comment();
+    newComment.author = req.user._id;
+    newComment.timestamp = new Date();
+    newComment.content = req.body.content;
+    newComment.replies = [];
+    newComment.score = 0;
+    newComment.flagged = false;
+    newComment.deleted = false;
+
+    newComment.save(function (err, c) {
+        if (err) {
+            res.status(500);
+        } else {
+            Submission.findOne(req.submissionID, function (err, submission) {
+                if (err) {
+                    res.status(500);
+                } else if (submission) {
+                    submission.comments.push(c._id);
+                    submission.save(function (err) {
+                        if(err){
+                            res.status(500);
+                        } else {
+                            console.log("Successfully submitted comment");
+                            res.send("Success");
+                        }
+                    })
+                } else {
+                    res.status(400);
+                }
+            });
+            
+        }
+    })
 });
 
 app.use(function (req, res) {

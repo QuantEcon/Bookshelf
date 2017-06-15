@@ -1,6 +1,7 @@
 <head>
     <script src="/bundle.js"></script>
     <script src="/assets/js/modules/submission.js"></script>
+    <link rel="stylesheet" href="/assets/css/formStyle.css">
 </head>
 <div class="row" ng-app="submissionApp"
      ng-controller="submissionCtrl"
@@ -11,7 +12,6 @@
 
             <div class="details-side">
                 <div class="vote" ng-controller="voteCtrl">
-                    <!--todo: get submission id somehow...-->
                     <a class="fi-like" id="submission-upvote-button" ng-click="upvoteClicked(submissionID, true)"></a>
 
                     <span class="score" id="submission-score">{[{notebook.votes}]}</span>
@@ -72,7 +72,7 @@
 
                 </div>
 
-                <div class="details-body" >
+                <div class="details-body">
 
                     <div class="details-primary">
 
@@ -113,7 +113,7 @@
 
         </div>
 
-        <div class="tile" ng-controller="submissionCtrl">
+        <div class="tile">
 
             <!--Notebook-->
             <div class="tile-header" ng-show="showNotebook">
@@ -176,7 +176,6 @@
                             <div class="comment-score" id="score-{[{comment._id}]}">{[{comment.score}]}</div>
                             <!-- .comment-score -->
 
-                            <!--todo: get comment id somehow...-->
                             <ul class="comment-vote">
                                 <li><a class="fi-like" id="upvote-{[{comment._id}]}"
                                        ng-click="upvoteClicked(comment._id, false)"></a></li>
@@ -194,7 +193,7 @@
                                 <a href="/user/{[{comment.author}]}">
                                     {{author.name}}
                                 </a>
-                                <span class="time">{[{comment.timestamp}]}</span>
+                                <span class="time">{[{comment.timestamp | date: 'd MMM yyyy'}]}</span>
                                 <a class="flag"
                                    data-open="flagCommentModal"
                                    title="Flag comment"
@@ -241,15 +240,29 @@
 
                     </div>
 
+
                     <div class="comments-post">
 
                         <label for="">Post a comment</label>
+                        <form name="submitCommentForm"
+                              novalidate="novalidate"
+                              ng-submit="submitCommentClicked(submitCommentForm.content)">
+                            <textarea placeholder="You can use markdown here..."
+                                      ng-model="submitCommentForm.content"
+                                      ng-required="required">
+                            </textarea>
 
-                        <textarea></textarea>
+                            <div class="submit-comment">
+                                <button type="submit"
+                                        ng-disabled="submitCommentForm.content == '' || submitCommentForm.$pristine">
+                                    Submit
+                                </button>
+                            </div>
+                        </form>
 
-                        <div class="submit-comment"><a ng-click="submitCommentClicked(true)">Submit</a></div>
 
                     </div>
+
 
                 </div>
 
