@@ -367,6 +367,7 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
                     }
                 })
             },
+            //todo: only get name, id, and avatar from comment/reply authors
             //get comments
             coms: function (callback) {
                 Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
@@ -401,7 +402,7 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             //get comments/replies authors
             comAuth: function (callback) {
                 var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
-                User.find({_id: {$in: mergedAuthorIDs}}, function (err, commentAuthors) {
+                User.find({_id: {$in: mergedAuthorIDs}}, 'name _id avatar', function (err, commentAuthors) {
                     if (err) callback(err);
                     else {
                         callback(null, commentAuthors);

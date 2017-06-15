@@ -190,8 +190,8 @@
                             <div class="comment-header">
                                 <!--todo: get fuzzy timestamp-->
                                 <!--todo: filter users by author id-->
-                                <a href="/user/{[{comment.author}]}">
-                                    {{author.name}}
+                                <a href="/user/{[{comment.author}]}" ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
+                                    {[{comAuthor.name}]}
                                 </a>
                                 <span class="time">{[{comment.timestamp | date: 'd MMM yyyy'}]}</span>
                                 <a class="flag"
