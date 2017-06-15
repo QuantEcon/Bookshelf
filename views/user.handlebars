@@ -81,13 +81,20 @@
                                         <span>Facebook</span></a></li>
                                 {{/if}}
                             {{/if}}
-                            {{#if data.user.linkedIn.url}}
-                                {{#if data.user.linkedIn.hidden}}
+                            {{#if data.user.twitter.url}}
+                                {{#if data.user.twitter.hidden}}
                                 {{else}}
-                                    <li><a href="{{user.linkedIn.url}}"><span class="fi-social-linkedin"></span>
-                                        <span>LinkedIn</span></a></li>
+                                    <li><a href="{{data.user.twitter.url}}"><span class="fi-social-twitter"></span>
+                                        <span>Twitter</span></a></li>
                                 {{/if}}
                             {{/if}}
+                                <!--{{#if data.user.linkedIn.url}}-->
+                                <!--{{#if data.user.linkedIn.hidden}}-->
+                                    <!--{{else}}-->
+                                <!--<li><a href="{{user.linkedIn.url}}"><span class="fi-social-linkedin"></span>-->
+                                <!--<span>LinkedIn</span></a></li>-->
+                                    <!--{{/if}}-->
+                                <!--{{/if}}-->
                             {{#if data.user.email}}
                                 <li><a href="mailto:{{data.user.email}}"><span class="fi-mail"></span>
                                     <span>Email</span></a></li>
@@ -105,7 +112,7 @@
     </div>
 
     <!--submissions-->
-    <div class="row" >
+    <div class="row">
         <div class="column">
             {{> submissions userPage=true}}
         </div>

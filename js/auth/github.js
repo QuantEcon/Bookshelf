@@ -122,7 +122,7 @@ passport.use('addGithub', new GithubStrategy({
                             user.github.avatarURL = '/assets/img/default-avatar.png';
                         }
 
-                        user.oneSocial = (user.twitter == {}) && (user.fb == {});
+                        user.oneSocial = (user.twitter == {}) && (user.fb == {}) && (user.google == {});
 
                         user.save(function (err) {
                             if (err) {

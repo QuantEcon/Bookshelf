@@ -27,6 +27,9 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.twitter.id = profile.id;
                         newUser.twitter.access_token = access_token;
                         newUser.twitter.username = profile.username;
+
+                        newUser.twitter.url = 'https://twitter.com/' + profile.username;
+
                         newUser.activeAvatar = 'twitter';
                         if (profile._json.profile_image_url) {
                             newUser.twitter.avatarURL = profile._json.profile_image_url.replace('_normal','');
@@ -112,7 +115,7 @@ passport.use('addTwitter', new TwitterStrategy({
                         user.twitter.avatarURL = '/assets/img/default-avatar.png';
                     }
 
-                    user.oneSocial = (user.github == {}) && (user.fb == {});
+                    user.oneSocial = (user.github == {}) && (user.fb == {}) && (user.google == {});
 
                     user.save(function (err) {
                         if (err) {

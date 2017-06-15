@@ -116,7 +116,7 @@ passport.use('addFB', new FacebookStrategy({
                     } else {
                         user.fb.avatarURL = '/assets/img/default-avatar.png';
                     }
-                    user.oneSocial = (user.twitter == {}) && (user.github == {});
+                    user.oneSocial = (user.twitter == {}) && (user.github == {}) && (user.google == {});
 
                     if (!user.email && profile.emails[0].value) {
                         user.email = profile.emails[0].value;

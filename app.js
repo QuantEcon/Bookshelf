@@ -19,7 +19,6 @@ var passportInit = require('./js/auth/init');
 require('./js/auth/facebook');
 require('./js/auth/twitter');
 require('./js/auth/github');
-require('./js/auth/linkedin');
 require('./js/auth/google');
 // var logout = require('express-passport-logout');
 
@@ -468,11 +467,23 @@ app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
         if (err) {
             res.render('500');
         } else if (submission) {
-            res.render('submission', {
-                submission: submission,
-                layout: 'breadcrumbs',
-                title: submission.title
-            });
+            if(req.user){
+                var data = {};
+                data.currentUser = req.user;
+                res.render('submission', {
+                    submission: submission,
+                    layout: 'breadcrumbs',
+                    title: submission.title,
+                    data: data
+                });
+            } else {
+                res.render('submission', {
+                    submission: submission,
+                    layout: 'breadcrumbs',
+                    title: submission.title
+                });
+            }
+
         } else {
             res.render('404');
         }
@@ -729,13 +740,19 @@ app.get('/auth/github/callback',
 
 // todo: fix this. getting redirect_uri mismatch
 // google login ===========================
-// app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
-// app.get('/auth/google/callback',
-//     passport.authenticate('google', {
-//         successRedirect: '/user/my-profile',
-//         failureRedirect: '/auth/failure'
-//     })
-// );
+app.get('/auth/google/add', passport.authenticate('addGoogle', {scope: 'email'}));
+app.get('/auth/google/callback/add', passport.authenticate('addGoogle', {
+        successRedirect: '/user/my-profile/edit',
+        failureRedirect: '/user/my-profile/add-failed'
+    })
+);
+app.get('/auth/google', passport.authenticate('google', {scope: 'email'}));
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/user/my-profile',
+        failureRedirect: '/auth/failure'
+    })
+);
 
 // twitter login ==========================
 
@@ -759,16 +776,6 @@ app.get('/auth/twitter/callback',
     }
 );
 
-// todo: fix this. getting redirect_uri mismatch
-// linkedin login =========================
-
-// app.get('/auth/linkedin', passport.authenticate('linkedin', {scope: 'email'}));
-// app.get('/auth/linkedin/callback',
-//     passport.authenticate('linkedin', {
-//         successRedirect: '/user/my-profile',
-//         failureRedirect: '/auth/failure'
-//     })
-// );
 
 // profile editing ========================================================================
 app.get('/edit-profile/remove/:social', isAuthenticated, function (req, res) {
@@ -787,7 +794,6 @@ app.get('/edit-profile/remove/:social', isAuthenticated, function (req, res) {
                 } else if (type == 'google') {
                     user.google = {};
                 }
-                //todo: add google
                 //update one social
                 var total = (user.github.id != null) +
                     (user.twitter.id != null) +
@@ -822,8 +828,9 @@ app.get('/edit-profile/toggle/:social', isAuthenticated, function (req, res) {
                 user.fb.hidden = !user.fb.hidden;
             } else if (type == 'twitter') {
                 user.twitter.hidden = !user.twitter.hidden;
+            } else if (type == 'google') {
+                user.google.hidden = !user.google.hidden;
             }
-            //todo: add google
 
             user.save(function (err) {
                 if (err) {
@@ -849,13 +856,13 @@ app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) 
             } else if (type == 'fb') {
                 user.avatar = user.fb.avatarURL;
                 user.activeAvatar = 'fb';
-
             } else if (type == 'twitter') {
                 user.avatar = user.twitter.avatarURL;
                 user.activeAvatar = 'twitter';
+            } else if (type == 'google') {
+                user.avatar = user.google.avatarURL;
+                user.activeAvatar = 'google';
             }
-            //todo: add google
-
             user.save(function (err) {
                 if (err) {
                     res.render('500');

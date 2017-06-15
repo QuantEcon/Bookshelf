@@ -83,12 +83,23 @@
             };
 
             $scope.removeTwitter = function () {
-                $http.get(url + '/edit-profile/remove/twitter');
+                $http.get(url + '/edit-profile/toggle/fb');
                 console.log("reloading...");
                 $window.location.reload()
             };
             $scope.toggleTwitter = function () {
                 $http.get(url + '/edit-profile/toggle/twitter');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+
+            $scope.removeGoogle = function () {
+                $http.get(url + '/edit-profile/toggle/google');
+                console.log("reloading...");
+                $window.location.reload()
+            };
+            $scope.toggleGoogle = function () {
+                $http.get(url + '/edit-profile/toggle/google');
                 console.log("reloading...");
                 $window.location.reload()
             };
@@ -103,6 +114,10 @@
             };
             $scope.useGithubPhoto = function () {
                 $http.get(url + '/edit-profile/use-photo/github');
+                $window.location.reload();
+            };
+            $scope.useGooglePhoto = function () {
+                $http.get(url + '/edit-profile/use-photo/google');
                 $window.location.reload();
             };
 
@@ -286,7 +301,7 @@
                     {{/if}}
 
                     {{#if data.user.fb.url}}
-                        <label class="section-title" for="github">
+                        <label class="section-title" for="fb">
                             Facebook Profile {{#if data.user.fb.hidden}}(hidden){{/if}}
                         </label>
                         <br>
@@ -318,8 +333,39 @@
                     {{/if}}
 
                     <!--todo: google-->
+                    {{#if data.user.google.id}}
+                        <label class="section-title" for="google">
+                            Google Profile {{#if data.user.google.hidden}}(hidden){{/if}}
+                        </label>
+                        <br>
+                        <!--todo: style-->
+                        <div class="edit-profile-header">
+                            <div class="avatar"><img src="{{data.user.google.avatarURL}}"></div>
+                            <span><a class="profile-link"
+                                     href="{{data.user.google.url}}">{{data.user.google.displayName}}</a>
+                        </div>
+                        <p class="input-hint input-hint-after">
+                            <a ng-click="removeGoogle()" ng-disabled="oneSocial">Remove</a>
+                            <!--|-->
+                            <!--{{#if data.user.google.hidden}}-->
+                                <!--<a ng-click="toggleGoogle()">Show</a>-->
+                            <!--{{else}}-->
+                                <!--<a ng-click="toggleGoogle()">Hide</a>-->
+                            <!--{{/if}}-->
+                            |
+                            <a ng-click="useGooglePhoto()" ng-disabled="activeAvatar == 'google'">Use this photo</a>
+                        </p>
 
-                    <!--todo: linkedin?-->
+                        <hr>
+                    {{else}}
+                        <label class="section-title" for="google">Google Profile</label>
+                        <br>
+                        <ul class="button-row">
+                            <li class="menu-submit"><a href="/auth/google/add">Add Google</a></li>
+                        </ul>
+                        <hr>
+                    {{/if}}
+
                 </div>
 
             </div>

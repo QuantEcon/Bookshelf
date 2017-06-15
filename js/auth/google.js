@@ -13,9 +13,9 @@ passport.use('google', new GoogleStrategy({
         callbackURL: config.google.callbackURL,
         realm: appConfig.url
     },
-    function (googleId, done) {
+    function (accessToken, refreshToken, profile, done) {
         process.nextTick(function () {
-            User.findOne({'google.id': googleId}, function (err, user) {
+            User.findOne({'google.id': profile.id}, function (err, user) {
                 if (err) {
                     return done(err);
                 } else {
@@ -23,9 +23,17 @@ passport.use('google', new GoogleStrategy({
                         return done(null, user);
                     } else {
                         var newUser = new User();
+                        console.log("Google profile: ", profile);
 
                         //set up google info
-                        newUser.google.id = googleId;
+                        newUser.google.id = profile.id;
+                        newUser.google.avatarURL = profile._json.image.url;
+                        newUser.google.hidden = false;
+                        newUser.google.displayName = profile.displayName;
+                        newUser.google.access_token = accessToken;
+
+                        newUser.oneSocial = true;
+                        newUser.activeAvatar = 'google';
 
                         //set up other info
                         newUser.views = 0;
@@ -36,8 +44,10 @@ passport.use('google', new GoogleStrategy({
                         newUser.submissions = [];
                         newUser.upvotes = [];
                         newUser.downvotes = [];
-                        newUser.email = '';
-                        newUser.avatar = '/assets/img/default-avatar.png';
+
+                        newUser.email = profile.email;
+                        newUser.avatar = profile._json.image.url;
+                        newUser.name = profile.displayName;
 
                         newUser.website = '';
                         newUser.email = '';
@@ -60,3 +70,37 @@ passport.use('google', new GoogleStrategy({
         })
     }
 ));
+
+passport.use('addGoogle', new GoogleStrategy({
+        clientID: config.google.clientID,
+        clientSecret: config.google.clientSecret,
+        callbackURL: config.google.addCallbackURL
+    },
+    function (req, access_token, refresh_token, profile, done) {
+        process.nextTick(function () {
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if(err){
+                    return done(err);
+                } else if(user){
+                    user.google.id = profile.id;
+                    user.google.avatarURL = profile._json.image.url;
+                    user.google.hidden = false;
+                    user.google.displayName = profile.displayName;
+                    user.google.access_token = accessToken;
+
+                    user.oneSocial = (user.twitter == {}) && (user.github == {}) && (user.fb == {});
+
+                    user.save(function (err) {
+                        if(err){
+                            return done(err);
+                        } else {
+                            return done(null, user);
+                        }
+                    })
+                } else {
+                    return done ("Couldn't find user with id");
+                }
+            })
+        })
+    })
+);
