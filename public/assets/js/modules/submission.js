@@ -4,7 +4,7 @@
 //todo: change this once not running on local host
 // todo: migrate to centralized file
 var url = 'http://localhost:8080';
-var app = angular.module('submissionApp', ['hc.marked']);
+var app = angular.module('submissionApp', ['hc.marked', 'angularMoment']);
 
 app.config(function ($interpolateProvider) {
     $interpolateProvider.startSymbol('{[{');
@@ -76,6 +76,9 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function failure(response) {
                 console.log("Error posting comment: ", response);
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
             })
     };
 
@@ -92,6 +95,9 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function failure(response) {
                 console.log("Error posting reply: ", response);
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
             }
         )
     };

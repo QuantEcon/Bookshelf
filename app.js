@@ -962,6 +962,12 @@ app.post('/edit-profile', isAuthenticated, function (req, res) {
 
 app.post('/submit/comment', isAuthenticated, function (req, res) {
     console.log("Received submit comment: ", req.body);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
 
     var newComment = new Comment();
     newComment.author = req.user._id;
@@ -1000,6 +1006,12 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
 
 app.post('/submit/reply', isAuthenticated, function (req, res) {
     console.log("Received submit comment: ", req.body);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
 
     var newReply = new Comment();
     newReply.author = req.user._id;

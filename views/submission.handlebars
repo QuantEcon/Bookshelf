@@ -14,14 +14,14 @@
                 <div class="vote">
                     <a class="fi-like" id="submission-upvote-button"
                        ng-click="upvoteSubmissionClicked(submissionID)"
-                       ng-class="{active: currentUser.upvotes.indexOf(submissionID) !== -1}">
+                       ng-class="{active: currentUser && currentUser.upvotes.indexOf(submissionID) !== -1}">
                     </a>
 
                     <span class="score" id="submission-score">{[{notebook.score}]}</span>
 
                     <a class="fi-dislike" id="submission-downvote-button"
                        ng-click="downvoteSubmissionClicked(submissionID)"
-                       ng-class="{active: currentUser.downvotes.indexOf(submissionID) !== -1}">
+                       ng-class="{active: currentUser && currentUser.downvotes.indexOf(submissionID) !== -1}">
                     </a>
 
                 </div>
@@ -185,12 +185,12 @@
                             <ul class="comment-vote">
                                 <li><a class="fi-like" id="upvote-{[{comment._id}]}"
                                        ng-click="upvoteCommentClicked(comment._id)"
-                                       ng-class="{active: currentUser.upvotes.indexOf(comment._id) !== -1}">
+                                       ng-class="{active: currentUser && currentUser.upvotes.indexOf(comment._id) !== -1}">
 
                                 </a></li>
                                 <li><a class="fi-dislike" id="downvote-{[{comment._id}]}"
                                        ng-click="downvoteCommentClicked(comment._id)"
-                                       ng-class="{active: currentUser.downvotes.indexOf(comment._id) !== -1}">
+                                       ng-class="{active: currentUser && currentUser.downvotes.indexOf(comment._id) !== -1}">
 
                                 </a></li>
                             </ul> <!-- .comment-vote -->
@@ -206,7 +206,7 @@
                                    ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
                                     {[{comAuthor.name}]}
                                 </a>
-                                <span class="time">{[{comment.timestamp | date: 'd MMM yyyy'}]}</span>
+                                <span class="time">{[{comment.timestamp | amDurationFormat: 'minute'}]} ago</span>
 
                                 <a class="flag"
                                    data-open="flagCommentModal"
@@ -299,11 +299,11 @@
                                         <ul class="comment-vote">
                                             <li><a class="fi-like"
                                                    ng-click="upvoteCommentClicked(reply._id)"
-                                                   ng-class="{active: currentUser.upvotes.indexOf(reply._id) !== -1}">
+                                                   ng-class="{active: currentUser && currentUser.upvotes.indexOf(reply._id) !== -1}">
                                             </a></li>
                                             <li><a class="fi-dislike"
                                                    ng-click="downvoteCommentClicked(reply._id)"
-                                                   ng-class="{active: currentUser.downvotes.indexOf(reply._id) !== -1}">
+                                                   ng-class="{active: currentUser && currentUser.downvotes.indexOf(reply._id) !== -1}">
                                             </a></li>
                                         </ul> <!-- .comment-vote -->
 
@@ -318,7 +318,7 @@
                                                 {[{author.name}]}
                                             </a>
 
-                                            <span class="time">{[{reply.timestamp | date: 'd MMM yyyy'}]}</span>
+                                            <span class="time">{[{reply.timestamp | amDurationFormat: 'minute'}]} ago</span>
 
                                             <a class="flag"
                                                data-open="flagCommentModal"
