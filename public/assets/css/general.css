@@ -16,3 +16,7 @@
     left: 0;
     top: 0;
 }
+
+.comment-body .edited-tag {
+    color: darkgrey;
+}

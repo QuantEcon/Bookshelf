@@ -977,6 +977,8 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
     newComment.score = 0;
     newComment.flagged = false;
     newComment.deleted = false;
+    newComment.edited = false;
+    newComment.editedDate = null;
 
     newComment.save(function (err, c) {
         if (err) {
@@ -1021,6 +1023,8 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
     newReply.score = 0;
     newReply.flagged = false;
     newReply.deleted = false;
+    newReply.edited = false;
+    newReply.editedDate = null;
 
     newReply.save(function (err, reply) {
         if (err) {

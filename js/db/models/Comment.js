@@ -14,6 +14,9 @@ var commentSchema = new Schema({
 
     content: String,
 
+    edited: Boolean,
+    editedDate: Date,
+
     replies: [ObjectId],
 
     flagged: Boolean,
