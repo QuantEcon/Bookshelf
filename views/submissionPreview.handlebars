@@ -50,7 +50,7 @@
                 <div class="vote">
                     <a class="fi-like" id="submission-upvote-button"></a>
 
-                    <span class="score" id="submission-score">{{data.notebook.score}}</span>
+                    <span class="score" id="submission-score">{{data.notebook.votes}}</span>
 
                     <a class="fi-dislike" id="submission-downvote-button"></a>
 
@@ -143,6 +143,7 @@
 
             <!--todo: insert notebook html here-->
             <h4>Notebook html goes here</h4>
+            {{{data.notebook.notebook}}}
 
         </div>
         <!--todo: remove user.currentSubmission on cancel-->

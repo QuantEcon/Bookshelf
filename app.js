@@ -11,6 +11,9 @@ var fuzzyTime = require('fuzzy-time');
 var series = require('async/series');
 var waterfall = require('async/waterfall');
 var asyncApply = require('async/apply');
+var exec = require('child_process').exec;
+var execFile = require('child_process').execFile;
+var sprintf = require('sprintf');
 
 // passport modules
 var passport = require('passport');
@@ -898,13 +901,14 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
             var newSub = new Submission();
 
             newSub.title = req.body.title;
-            //todo: parse topic list
+
             newSub.topicList = req.body.topicList;
 
             newSub.language = req.body.language;
             newSub.summary = req.body.summary;
-            //todo: convert ipynb to html
-            // newSub.notebook = fileHTML
+
+
+            newSub.file = file;
 
             newSub.author = user._id;
             //todo: parse co-authors
@@ -920,17 +924,31 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
             newSub.deleted = false;
             newSub.flagged = false;
 
-            console.log("New sub: ", newSub);
+            var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
+            console.log("command: ", command);
+            exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
+                console.log("stderr: ", stderr);
+                console.log("err: ", err);
 
-            user.currentSubmission = newSub;
-            user.save(function (err) {
                 if (err) {
-                    res.render('500');
+                    res.status(500);
                 } else {
-                    res.status(200);
-                    res.send('redirect');
+                    newSub.notebook = stdout;
+                    console.log("New sub: ", newSub);
+
+                    user.currentSubmission = newSub;
+                    user.save(function (err) {
+                        if (err) {
+                            res.render('500');
+                        } else {
+                            res.status(200);
+                            res.send('redirect');
+                        }
+                    });
                 }
             });
+
+
         }
     });
 
@@ -962,7 +980,7 @@ app.post('/edit-profile', isAuthenticated, function (req, res) {
 
 app.post('/submit/comment', isAuthenticated, function (req, res) {
     console.log("Received submit comment: ", req.body);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});
@@ -1008,7 +1026,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
 
 app.post('/submit/reply', isAuthenticated, function (req, res) {
     console.log("Received submit comment: ", req.body);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});
@@ -1061,7 +1079,7 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
 
 app.post('/upvote/submission', isAuthenticated, function (req, res) {
     console.log("Received upvote submission: ", req.body, req.user);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});
@@ -1138,7 +1156,7 @@ app.post('/upvote/submission', isAuthenticated, function (req, res) {
 
 app.post('/downvote/submission', isAuthenticated, function (req, res) {
     console.log("Received downvote submission: ", req.body);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});
@@ -1220,7 +1238,7 @@ app.post('/downvote/submission', isAuthenticated, function (req, res) {
 
 app.post('/upvote/comment', isAuthenticated, function (req, res) {
     console.log("Received upvote comment: ", req.body);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});
@@ -1297,7 +1315,7 @@ app.post('/upvote/comment', isAuthenticated, function (req, res) {
 
 app.post('/downvote/comment', isAuthenticated, function (req, res) {
     console.log("Received downvote comment: ", req.body);
-    if(!req.user){
+    if (!req.user) {
         console.log("User not logged in");
         res.status(400);
         res.send({code: 1, message: 'Login Required'});

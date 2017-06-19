@@ -1,6 +1,7 @@
 <head>
     <script src="/bundle.js"></script>
     <script src="/assets/js/modules/submission.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>git
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <link rel="stylesheet" href="/assets/css/general.css">
 </head>
@@ -142,8 +143,8 @@
             </div>
 
             <!--todo: insert notebook html here-->
-            <div ng-show="showNotebook">
-                {[{notebook.html}]}
+            <div ng-show="showNotebook"
+                 ng-bind-html="notebook.notebook">
             </div>
 
 
@@ -234,7 +235,8 @@
 
                                 <p marked="comment.content"></p>
 
-                                <p class="edited-tag" ng-show="comment.edited">(edited {[{comment.editedDate | amDurationFormat: 'minute'}]} ago)</p>
+                                <p class="edited-tag" ng-show="comment.edited">(edited {[{comment.editedDate |
+                                    amDurationFormat: 'minute'}]} ago)</p>
 
                             </div> <!-- .comment-body -->
 
@@ -341,7 +343,8 @@
 
                                         <div class="comment-body">
                                             <p marked="reply.content"></p>
-                                            <p class="edited-tag" ng-show="reply.edited">(edited {[{reply.editedDate | amDurationFormat: 'minute'}]} ago)</p>
+                                            <p class="edited-tag" ng-show="reply.edited">(edited {[{reply.editedDate |
+                                                amDurationFormat: 'minute'}]} ago)</p>
 
                                         </div> <!-- .comment-body -->
 

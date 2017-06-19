@@ -4,7 +4,7 @@
 //todo: change this once not running on local host
 // todo: migrate to centralized file
 var url = 'http://localhost:8080';
-var app = angular.module('submissionApp', ['hc.marked', 'angularMoment']);
+var app = angular.module('submissionApp', ['hc.marked', 'angularMoment', 'ngSanitize']);
 
 app.config(function ($interpolateProvider) {
     $interpolateProvider.startSymbol('{[{');
