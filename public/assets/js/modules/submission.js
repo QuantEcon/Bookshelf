@@ -21,7 +21,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
     //submission information
     $scope.notebook = {};
 
-    // user's information
+    // users' information
     $scope.comments = [];
     $scope.showReplyMap = {};
     $scope.replies = [];

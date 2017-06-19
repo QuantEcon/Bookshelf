@@ -195,6 +195,7 @@
                                     {[{comAuthor.name}]}
                                 </a>
                                 <span class="time">{[{comment.timestamp | date: 'd MMM yyyy'}]}</span>
+
                                 <a class="flag"
                                    data-open="flagCommentModal"
                                    title="Flag comment"
@@ -203,13 +204,16 @@
                                    tabindex="0">
                                     <span class="fi-flag"></span>
                                 </a>
-                                <a class="delete"
-                                   data-open="deleteContentModal"
-                                   aria-controls="deleteContentModal"
-                                   aria-haspopup="true"
-                                   tabindex="0">
-                                    <span class="fi-x"></span>
-                                </a>
+                                {{#if currentUser.isAdmin}}
+                                    <a class="delete"
+                                       data-open="deleteContentModal"
+                                       aria-controls="deleteContentModal"
+                                       aria-haspopup="true"
+                                       tabindex="0">
+                                        <span class="fi-x"></span>
+                                    </a>
+                                {{/if}}
+
 
                             </div> <!-- .comment-header -->
 
@@ -236,8 +240,9 @@
                                         </a>
                                     </li>
                                     <!--todo: restrict on server rendering-->
-                                    <li><a href="#">Edit</a></li>
-                                    <li><a href="#" class="alt">Delete</a></li>
+                                    <li><a href="#" ng-show="currentUserID == comment.author">Edit</a></li>
+                                    <li><a href="#" class="alt" ng-show="currentUserID == comment.author">Delete</a>
+                                    </li>
                                 </ul>
 
                             </div> <!-- .comment-footer -->
@@ -303,11 +308,13 @@
                                                 <span class="fi-flag"></span>
                                             </a>
 
-                                            <a class="delete"
-                                               data-open="deleteContentModal"
-                                               class="Delete comment">
-                                                <span class="fi-x"></span>
-                                            </a>
+                                            {{#if currentUser.isAdmin}}
+                                                <a class="delete"
+                                                   data-open="deleteContentModal"
+                                                   class="Delete comment">
+                                                    <span class="fi-x"></span>
+                                                </a>
+                                            {{/if}}
 
                                         </div> <!-- .comment-header -->
 
@@ -319,8 +326,9 @@
                                         <div class="comment-footer">
                                             <!--todo: restrict on server rendering-->
                                             <ul class="options">
-                                                <li><a href="#">Edit</a></li>
-                                                <li><a href="#" class="alt">Delete</a></li>
+                                                <li><a href="#" ng-show="currentUserID == reply.author">Edit</a></li>
+                                                <li><a href="#" class="alt" ng-show="currentUserID == reply.author">Delete</a>
+                                                </li>
                                             </ul>
 
                                         </div> <!-- .comment-footer -->
