@@ -978,7 +978,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
                 } else if (submission) {
                     submission.comments.push(c._id);
                     submission.save(function (err) {
-                        if(err){
+                        if (err) {
                             res.status(500);
                         } else {
                             console.log("Successfully submitted comment");
@@ -989,9 +989,54 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
                     res.status(400);
                 }
             });
-            
+
         }
     })
+});
+
+app.post('/submit/reply', isAuthenticated, function (req, res) {
+    console.log("Received submit comment: ", req.body);
+
+    var newReply = new Comment();
+    newReply.author = req.user._id;
+    newReply.timestamp = new Date();
+    newReply.content = req.body.content;
+    newReply.replies = [];
+    newReply.score = 0;
+    newReply.flagged = false;
+    newReply.deleted = false;
+
+    newReply.save(function (err, reply) {
+        if (err) {
+            // todo: delete reply
+            res.status(500);
+        } else if (reply) {
+            Comment.findOne(req.inReplyTo, function (err, comment) {
+                if (err) {
+                    // todo: delete reply
+                    res.status(500);
+                } else if (comment) {
+                    comment.replies.push(reply._id);
+                    comment.save(function (err) {
+                        if (err) {
+                            // todo: delete reply
+                            res.status(500);
+                        } else {
+                            console.log("Successfully submitted reply");
+                            res.send("Success");
+                        }
+                    })
+                } else {
+                    // todo: delete reply
+                    res.status(500);
+                }
+            })
+        } else {
+            // todo: delete reply
+            res.status(500);
+        }
+    });
+
 });
 
 app.use(function (req, res) {

@@ -190,7 +190,8 @@
                             <div class="comment-header">
                                 <!--todo: get fuzzy timestamp-->
                                 <!--todo: filter users by author id-->
-                                <a href="/user/{[{comment.author}]}" ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
+                                <a href="/user/{[{comment.author}]}"
+                                   ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
                                     {[{comAuthor.name}]}
                                 </a>
                                 <span class="time">{[{comment.timestamp | date: 'd MMM yyyy'}]}</span>
@@ -214,29 +215,129 @@
 
                             <div class="comment-body">
 
-                                <p>{[{comment.content}]}</p>
+                                <p marked="comment.content"></p>
 
                             </div> <!-- .comment-body -->
 
                             <div class="comment-footer">
 
                                 <ul class="options">
-                                    <li><a ng-click="replyClicked()">Reply</a></li>
+                                    <li>
+                                        <a ng-click="toggleReply(comment._id)"
+                                           ng-show="!showReplyMap[comment._id]">
+                                            Reply
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a ng-click="toggleReply(comment._id)"
+                                           class="alt"
+                                           ng-show="showReplyMap[comment._id]">
+                                            Close
+                                        </a>
+                                    </li>
+                                    <!--todo: restrict on server rendering-->
+                                    <li><a href="#">Edit</a></li>
+                                    <li><a href="#" class="alt">Delete</a></li>
                                 </ul>
 
                             </div> <!-- .comment-footer -->
 
-                            <div class="comment-reply">
+                            <div class="comment-reply" ng-show="showReplyMap[comment._id]">
+
+                                <form name="submitReplyForm"
+                                      novalidate="novalidate"
+                                      ng-submit="submitReplyTo(comment._id, submitReplyForm.content)">
+                                    <textarea placeholder="You can use markdown here..."
+                                              ng-model="submitReplyForm.content"
+                                              ng-required="required">
+                                    </textarea>
+
+                                    <div class="post-reply">
+                                        <button type="submit"
+                                                ng-disabled="submitReplyForm.content == '' || submitReplyForm.$pristine">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
 
 
                             </div> <!-- .comment-reply -->
+                            <div class="comment-nested" ng-repeat="replyID in comment.replies">
+
+                                <div class="comment" ng-repeat="reply in replies | filter: {_id: replyID}">
+
+                                    <div class="comment-side"
+                                         ng-repeat="author in commentAuthors | filter: {_id: reply.author}">
+
+                                        <div class="comment-avatar">
+
+                                            <a href="/user/{[{reply.author}]}/">
+                                                <img src="{[{author.avatar}]}">
+                                            </a>
+
+                                        </div> <!-- .comment-avatar -->
+
+                                        <div class="comment-score">{[{reply.score}]}</div> <!-- .comment-score -->
+
+                                        <ul class="comment-vote">
+                                            <li><a class="fi-like"></a></li>
+                                            <li><a class="fi-dislike"></a></li>
+                                        </ul> <!-- .comment-vote -->
+
+                                    </div> <!-- .comment-side -->
+
+                                    <div class="comment-main"
+                                         ng-repeat="author in commentAuthors | filter: {_id: reply.author}">
+
+                                        <div class="comment-header">
+
+                                            <a href="/user/{[{author._id}]}">
+                                                {[{author.name}]}
+                                            </a>
+
+                                            <span class="time">{[{reply.timestamp | date: 'd MMM yyyy'}]}</span>
+
+                                            <a class="flag"
+                                               data-open="flagCommentModal"
+                                               title="Flag comment">
+                                                <span class="fi-flag"></span>
+                                            </a>
+
+                                            <a class="delete"
+                                               data-open="deleteContentModal"
+                                               class="Delete comment">
+                                                <span class="fi-x"></span>
+                                            </a>
+
+                                        </div> <!-- .comment-header -->
+
+                                        <div class="comment-body">
+                                            <p marked="reply.content"></p>
+                                        </div> <!-- .comment-body -->
+
+
+                                        <div class="comment-footer">
+                                            <!--todo: restrict on server rendering-->
+                                            <ul class="options">
+                                                <li><a href="#">Edit</a></li>
+                                                <li><a href="#" class="alt">Delete</a></li>
+                                            </ul>
+
+                                        </div> <!-- .comment-footer -->
+
+                                        <div class="comment-reply">
+
+
+                                        </div> <!-- .comment-reply -->
+
+                                    </div> <!-- .comment-main -->
+
+                                </div> <!-- .comment -->
+                            </div> <!-- .comment-nested -->
+
 
                         </div> <!-- .comment-main -->
 
-
-                        <div class="comment-nested">
-
-                        </div> <!-- .comment-nested -->
 
                     </div>
 

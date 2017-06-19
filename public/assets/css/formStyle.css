@@ -1,9 +1,9 @@
-div.has-error{
+div.has-error {
     border-radius: 5px !important;
     border-color: #d84d0a !important;
 }
 
-h2.has-error{
+h2.has-error {
     color: #d84d0a !important;
 }
 
@@ -15,7 +15,7 @@ label.success {
     color: #00a000;
 }
 
-p.has-error{
+p.has-error {
     color: #d84d0a !important;
 }
 
@@ -35,7 +35,7 @@ select.has-error {
 }
 
 button:disabled,
-button[disabled]{
+button[disabled] {
     border-color: lightgrey !important;
     color: lightgrey !important;
     pointer-events: none !important;
@@ -46,7 +46,7 @@ a:disabled, a[disabled] {
     pointer-events: none !important;
 }
 
-a.profile-link{
+a.profile-link {
     color: #d84d0a;
     font-family: Raleway, sans-serif;
     font-size: large;
@@ -72,7 +72,7 @@ div.md-summary > p.input-hint {
     border-style: solid !important;
 }
 
-.submit-comment button{
+.submit-comment button {
     font-family: Raleway, sans-serif !important;
     font-size: 1.5rem !important;
     cursor: pointer !important;
@@ -80,6 +80,21 @@ div.md-summary > p.input-hint {
     color: #d84d0a;
 
     padding: 5px 25px;
+    border: 1px solid #d84d0a;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 1rem 0 0
+}
+
+.post-reply button {
+    font-family: Raleway, sans-serif !important;
+    font-size: 1.0rem !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    color: #d84d0a;
+
+    padding: 5px 5px;
     border: 1px solid #d84d0a;
     border-radius: 5px;
     font-weight: 700;

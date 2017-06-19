@@ -23,6 +23,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
 
     // user's information
     $scope.comments = [];
+    $scope.showReplyMap = {};
     $scope.replies = [];
     $scope.commentAuthors = [];
 
@@ -64,7 +65,6 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
 
     $scope.submitCommentClicked = function (content) {
         console.log("Submit comment clicked: ", content);
-        //todo: send to server
         var data = {
             submissionID: $scope.submissionID,
             content: content
@@ -79,6 +79,23 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             })
     };
 
+    $scope.submitReplyTo = function (commentID, content) {
+        console.log("Submit reply to %s: %s", commentID, content);
+        var data = {
+            inReplyTo: commentID,
+            content: content
+        };
+        $http.post(url + '/submit/reply', data).then(
+            function success(response) {
+                console.log("Successfully posted reply");
+                $window.location.reload();
+            },
+            function failure(response) {
+                console.log("Error posting reply: ", response);
+            }
+        )
+    };
+
     $scope.toggleView = function () {
         $scope.showComments = !$scope.showComments;
         $scope.showNotebook = !$scope.showNotebook;
@@ -88,6 +105,9 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         console.log("Download clicked");
     };
 
+    $scope.toggleReply = function (commentID) {
+        $scope.showReplyMap[commentID] = !$scope.showReplyMap[commentID];
+    }
 
 });
 
@@ -96,7 +116,7 @@ app.controller('voteCtrl', function ($scope) {
         console.log("Downvote clicked: ", submissionID);
     };
 
-    $scope.upvoteClicked = function () {
+    $scope.upvoteClicked = function (submissionID) {
         console.log("Upvote clicked");
     }
 });
