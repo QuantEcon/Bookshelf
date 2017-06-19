@@ -11,24 +11,30 @@
         <div class="details">
 
             <div class="details-side">
-                <div class="vote" ng-controller="voteCtrl">
-                    <a class="fi-like" id="submission-upvote-button" ng-click="upvoteClicked(submissionID, true)"></a>
+                <div class="vote">
+                    <a class="fi-like" id="submission-upvote-button"
+                       ng-click="upvoteSubmissionClicked(submissionID)"
+                       ng-class="{active: currentUser.upvotes.indexOf(submissionID) !== -1}">
+                    </a>
 
-                    <span class="score" id="submission-score">{[{notebook.votes}]}</span>
+                    <span class="score" id="submission-score">{[{notebook.score}]}</span>
 
                     <a class="fi-dislike" id="submission-downvote-button"
-                       ng-click="downvoteClicked(submissionID, true)"></a>
+                       ng-click="downvoteSubmissionClicked(submissionID)"
+                       ng-class="{active: currentUser.downvotes.indexOf(submissionID) !== -1}">
+                    </a>
 
                 </div>
 
-                {{#if currentUser.isAdmin}}
-                    <ul class="admin-options">
-                        <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
-                                class="fi-flag"></span></a></li>
+
+                <ul class="admin-options">
+                    <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
+                            class="fi-flag"></span></a></li>
+                    {{#if currentUser.isAdmin}}
                         <li><a href="#" title="Delete notebook" data-open="deleteContentModal"><span
                                 class="fi-x"></span></a></li>
-                    </ul>
-                {{/if}}
+                    {{/if}}
+                </ul>
 
 
             </div>
@@ -42,7 +48,7 @@
                         <h1 class="title">{[{notebook.title}]}</h1>
                         <!--if this is the current user's submission-->
 
-                        <ul class="details-options" ng-show="currentUsersSubmission">
+                        <ul class="details-options" ng-show="currentUser._id == author._id">
                             <li><a href="/user/my-profile/edit/"
                                    title="Edit Submission"><span class="fi-widget"></span></a>
                             </li>
@@ -64,7 +70,7 @@
                                 <li class="comments"><span class="count">{[{notebook.comments.length + notebook.replies.length}]}</span>
                                     Comments
                                 </li>
-                                <li class="votes"><span class="count">{[{notebook.votes}]}</span> Votes</li>
+                                <li class="votes"><span class="count">{[{notebook.score}]}</span> Votes</li>
                             </ul>
                         </div>
 
@@ -173,14 +179,20 @@
 
                             </div> <!-- .comment-avatar -->
 
-                            <div class="comment-score" id="score-{[{comment._id}]}">{[{comment.score}]}</div>
+                            <div class="comment-score">{[{comment.score}]}</div>
                             <!-- .comment-score -->
 
                             <ul class="comment-vote">
                                 <li><a class="fi-like" id="upvote-{[{comment._id}]}"
-                                       ng-click="upvoteClicked(comment._id, false)"></a></li>
+                                       ng-click="upvoteCommentClicked(comment._id)"
+                                       ng-class="{active: currentUser.upvotes.indexOf(comment._id) !== -1}">
+
+                                </a></li>
                                 <li><a class="fi-dislike" id="downvote-{[{comment._id}]}"
-                                       ng-click="downvoteClicked(comment._id, false)"></a></li>
+                                       ng-click="downvoteCommentClicked(comment._id)"
+                                       ng-class="{active: currentUser.downvotes.indexOf(comment._id) !== -1}">
+
+                                </a></li>
                             </ul> <!-- .comment-vote -->
 
                         </div> <!-- .comment-side -->
@@ -239,9 +251,9 @@
                                             Close
                                         </a>
                                     </li>
-                                    <!--todo: restrict on server rendering-->
-                                    <li><a href="#" ng-show="currentUserID == comment.author">Edit</a></li>
-                                    <li><a href="#" class="alt" ng-show="currentUserID == comment.author">Delete</a>
+                                    <!--todo: implement-->
+                                    <li><a href="#" ng-show="currentUser._id == comment.author">Edit</a></li>
+                                    <li><a href="#" class="alt" ng-show="currentUser._id == comment.author">Delete</a>
                                     </li>
                                 </ul>
 
@@ -285,8 +297,14 @@
                                         <div class="comment-score">{[{reply.score}]}</div> <!-- .comment-score -->
 
                                         <ul class="comment-vote">
-                                            <li><a class="fi-like"></a></li>
-                                            <li><a class="fi-dislike"></a></li>
+                                            <li><a class="fi-like"
+                                                   ng-click="upvoteCommentClicked(reply._id)"
+                                                   ng-class="{active: currentUser.upvotes.indexOf(reply._id) !== -1}">
+                                            </a></li>
+                                            <li><a class="fi-dislike"
+                                                   ng-click="downvoteCommentClicked(reply._id)"
+                                                   ng-class="{active: currentUser.downvotes.indexOf(reply._id) !== -1}">
+                                            </a></li>
                                         </ul> <!-- .comment-vote -->
 
                                     </div> <!-- .comment-side -->
@@ -326,21 +344,17 @@
                                         <div class="comment-footer">
                                             <!--todo: restrict on server rendering-->
                                             <ul class="options">
-                                                <li><a href="#" ng-show="currentUserID == reply.author">Edit</a></li>
-                                                <li><a href="#" class="alt" ng-show="currentUserID == reply.author">Delete</a>
+                                                <li><a href="#" ng-show="currentUser._id == reply.author">Edit</a></li>
+                                                <li><a href="#" class="alt" ng-show="currentUser._id == reply.author">Delete</a>
                                                 </li>
                                             </ul>
 
                                         </div> <!-- .comment-footer -->
 
-                                        <div class="comment-reply">
-
-
-                                        </div> <!-- .comment-reply -->
-
                                     </div> <!-- .comment-main -->
 
                                 </div> <!-- .comment -->
+
                             </div> <!-- .comment-nested -->
 
 

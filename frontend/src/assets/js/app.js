@@ -15,7 +15,7 @@ $(function(){
 	    var downvoted = $('.vote .fi-dislike').hasClass('active');
 		var upvote = $(this).hasClass('fi-like');
 	    var counter = $(this).siblings('.score');
-	    var counter2 = $('.votes .count');
+	    var counter2 = $('.score .count');
 		var count = parseInt(counter.text());
 	    if ( $(this).hasClass('active') ) {
 		    $('.vote a').removeClass('active');

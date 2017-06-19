@@ -61,7 +61,7 @@ var hbs = require('express-handlebars').create(
                     authorPic: user.avatar,
                     views: submission.views,
                     numComments: submission.comments.length,
-                    votes: submission.votes
+                    votes: submission.score
                 };
                 return new hbs.handlebars.SafeString(partial(info));
             },
@@ -432,7 +432,11 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             };
             console.log("notebook data: ", data);
             if (req.user) {
-                data.currentUserID = req.user._id;
+                data.currentUser = {
+                    _id: req.user._id,
+                    upvotes: req.user.upvotes,
+                    downvotes: req.user.downvotes
+                }
             }
             res.send(data);
         }
@@ -907,7 +911,7 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
             // newSub.coAuthors = coAuthors
             newSub.comments = [];
 
-            newSub.votes = 0;
+            newSub.score = 0;
             newSub.views = 0;
 
             newSub.published = new Date();
@@ -1038,6 +1042,321 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
     });
 
 });
+
+app.post('/upvote/submission', isAuthenticated, function (req, res) {
+    console.log("Received upvote submission: ", req.body, req.user);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
+    Submission.findOne({_id: req.body.submissionID}, function (err, submission) {
+        if (err) {
+            res.status(500);
+        } else if (submission) {
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if (err) {
+                    res.status(500);
+                } else if (user) {
+                    //has not upvoted
+                    if (user.upvotes.indexOf(submission._id) === -1) {
+                        //has not downvoted
+                        if (user.downvotes.indexOf(submission._id) !== -1) {
+                            //no upvote, downvote
+                            //remove submissionID from user.downvotes
+                            user.downvotes.remove(submission._id);
+                            //increment submission.score
+                            submission.score += 1;
+                        }
+                        //add submissionID to user.upvotes
+                        user.upvotes.push(submission._id);
+                        //increment submission.score
+                        submission.score += 1;
+
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                submission.save(function (err, submission) {
+                                    if (err) {
+                                        res.status(500);
+                                        //todo: edit user?
+                                    } else {
+                                        res.send('success');
+                                    }
+                                });
+                            }
+                        })
+
+                    }
+
+                    //has upvoted
+                    else {
+                        user.upvotes.remove(submission._id);
+                        submission.score -= 1;
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                submission.save(function (err, submission) {
+                                    if (err) {
+                                        res.status(500);
+                                        //todo: edit user?
+                                    } else {
+                                        res.send('success');
+                                    }
+                                });
+                            }
+                        })
+                    }
+                } else {
+                    res.status(500);
+                }
+            });
+        } else {
+            res.status(500);
+        }
+    })
+});
+
+app.post('/downvote/submission', isAuthenticated, function (req, res) {
+    console.log("Received downvote submission: ", req.body);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
+    Submission.findOne({_id: req.body.submissionID}, function (err, submission) {
+        if (err) {
+            res.status(500);
+        } else if (submission) {
+            // get user
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if (err) {
+                    res.status(500);
+                } else if (user) {
+
+                    //has not downvoted
+                    if (req.user.downvotes.indexOf(req.body.submissionID) === -1) {
+                        //has not upvoted
+                        if (req.user.upvotes.indexOf(req.body.submissionID) !== -1) {
+                            // no downvote, upvote
+                            //remove commentID from user.upvotes
+                            user.upvotes.remove(req.body.submissionID);
+                            submission.score -= 1;
+                        }
+                        //add commentID to user.upvotes
+                        user.downvotes.push(submission._id);
+                        //decrement comment.score
+                        submission.score -= 1;
+                        //save user
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                //save comment
+                                submission.save(function (err, comment) {
+                                    if (err) {
+                                        res.status(500);
+                                    } else {
+                                        res.send('Success');
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                    // has downvoted
+                    else {
+                        //remove commentID from user.downvotes
+                        user.downvotes.remove(req.body.submissionID);
+                        //increment comment score
+                        submission.score += 1;
+                        //save user
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                //save comment
+                                submission.save(function (err, submission) {
+                                    if (err) {
+                                        res.status(500);
+                                    } else {
+                                        res.send('Success');
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                } else {
+                    res.status(500);
+                }
+            });
+        } else {
+            res.status(500);
+        }
+    });
+
+});
+
+app.post('/upvote/comment', isAuthenticated, function (req, res) {
+    console.log("Received upvote comment: ", req.body);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
+    Comment.findOne({_id: req.body.commentID}, function (err, comment) {
+        if (err) {
+            res.status(500);
+        } else if (comment) {
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if (err) {
+                    res.status(500);
+                } else if (user) {
+                    //has not upvoted
+                    if (user.upvotes.indexOf(comment._id) === -1) {
+                        //has not downvoted
+                        if (user.downvotes.indexOf(comment._id) !== -1) {
+                            //no upvote, downvote
+                            //remove commentID from user.downvotes
+                            user.downvotes.remove(comment._id);
+                            //increment comment.score
+                            comment.score += 1;
+                        }
+                        //add commentID to user.upvotes
+                        user.upvotes.push(comment._id);
+                        //increment comment.score
+                        comment.score += 1;
+
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                comment.save(function (err, comment) {
+                                    if (err) {
+                                        res.status(500);
+                                        //todo: edit user?
+                                    } else {
+                                        res.send('success');
+                                    }
+                                });
+                            }
+                        })
+
+                    }
+
+                    //has upvoted
+                    else {
+                        user.upvotes.remove(comment._id);
+                        comment.score -= 1;
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                comment.save(function (err, comment) {
+                                    if (err) {
+                                        res.status(500);
+                                        //todo: edit user?
+                                    } else {
+                                        res.send('success');
+                                    }
+                                });
+                            }
+                        })
+                    }
+                } else {
+                    res.status(500);
+                }
+            });
+        } else {
+            res.status(500);
+        }
+    })
+});
+
+app.post('/downvote/comment', isAuthenticated, function (req, res) {
+    console.log("Received downvote comment: ", req.body);
+    if(!req.user){
+        console.log("User not logged in");
+        res.status(400);
+        res.send({code: 1, message: 'Login Required'});
+        return;
+    }
+    Comment.findOne({_id: req.body.commentID}, function (err, comment) {
+        if (err) {
+            res.status(500);
+        } else if (comment) {
+            // get user
+            User.findOne({_id: req.user._id}, function (err, user) {
+                if (err) {
+                    res.status(500);
+                } else if (user) {
+                    //has not downvoted
+                    if (user.downvotes.indexOf(req.body.commentID) === -1) {
+                        //has not upvoted
+                        if (user.upvotes.indexOf(req.body.commentID) !== -1) {
+                            // no downvote, upvote
+                            //remove commentID from user.upvotes
+                            user.upvotes.remove(req.body.commentID);
+                            comment.score -= 1;
+                        }
+                        //add commentID to user.downvotes
+                        user.downvotes.push(comment._id);
+                        //decrement comment.score
+                        comment.score -= 1;
+                        //save user
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                //save comment
+                                comment.save(function (err, comment) {
+                                    if (err) {
+                                        res.status(500);
+                                    } else {
+                                        res.send('Success');
+                                    }
+                                });
+                            }
+                        });
+
+                    } else { // has downvoted
+                        //remove commentID from user.downvotes
+                        user.downvotes.remove(req.body.commentID);
+                        //increment comment score
+                        comment.score += 1;
+                        //save user
+                        user.save(function (err, user) {
+                            if (err) {
+                                res.status(500);
+                            } else {
+                                //save comment
+                                comment.save(function (err, comment) {
+                                    if (err) {
+                                        res.status(500);
+                                    } else {
+                                        res.send('Success');
+                                    }
+                                });
+                            }
+                        });
+                    }
+                } else {
+                    res.status(500);
+                }
+            })
+
+        } else {
+            res.status(500);
+        }
+    });
+});
+
 
 app.use(function (req, res) {
     res.contentType('text/html');

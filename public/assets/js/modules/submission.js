@@ -49,7 +49,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
                 $scope.replies = response.data.replies;
 
                 // set user's information
-                $scope.currentUserID = response.data.currentUserID;
+                $scope.currentUser = response.data.currentUser;
                 $scope.commentAuthors = response.data.commentAuthors;
                 $scope.author = response.data.author;
                 $scope.coAuthors = response.data.coAuthors;
@@ -107,16 +107,81 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
 
     $scope.toggleReply = function (commentID) {
         $scope.showReplyMap[commentID] = !$scope.showReplyMap[commentID];
-    }
-
-});
-
-app.controller('voteCtrl', function ($scope) {
-    $scope.downvoteClicked = function (submissionID) {
-        console.log("Downvote clicked: ", submissionID);
     };
 
-    $scope.upvoteClicked = function (submissionID) {
-        console.log("Upvote clicked");
-    }
+    $scope.upvoteSubmissionClicked = function (submissionID) {
+        console.log("Upvote submission clicked");
+        var data = {
+            submissionID: submissionID
+        };
+        $http.post(url + '/upvote/submission', data).then(
+            function (response) {
+                console.log("Upvoted submission");
+                $window.location.reload();
+            },
+            function (response) {
+                console.log("Error upvoting submission: ", response);
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
+            }
+        );
+
+    };
+    $scope.downvoteSubmissionClicked = function (submissionID) {
+        console.log("Downvote submission clicked");
+        var data = {
+            submissionID: submissionID
+        };
+        $http.post(url + '/downvote/submission', data).then(
+            function success(response) {
+                console.log("Downvoted submission");
+                $window.location.reload();
+            },
+            function failure(response) {
+                console.log("Error downvoting submission");
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
+            }
+        );
+    };
+
+    $scope.upvoteCommentClicked = function (commentID) {
+        console.log("Upvote comment clicked");
+        var data = {
+            commentID: commentID
+        };
+        $http.post(url + '/upvote/comment', data).then(
+            function (response) {
+                console.log("Upvoted comment");
+                $window.location.reload();
+            },
+            function (response) {
+                console.log("Error upvoting comment");
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
+            }
+        )
+    };
+    $scope.downvoteCommentClicked = function (commentID) {
+        console.log("Downvote comment clicked");
+        var data = {
+            commentID: commentID
+        };
+        $http.post(url + '/downvote/comment', data).then(
+            function (response) {
+                console.log("Downvoted comment");
+                $window.location.reload();
+            },
+            function (response) {
+                console.log("Error downvoting comment");
+                if(response.data.code === 1){
+                    $window.location = url + '/login';
+                }
+            }
+        )
+    };
+
 });

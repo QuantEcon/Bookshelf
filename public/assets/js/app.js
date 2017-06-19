@@ -6376,7 +6376,7 @@ var _createClass = function () {
         addRemoveLinks: !0
     }), $(".vote a").click(function (e) {
         var t = $(".vote .fi-like").hasClass("active"), n = $(".vote .fi-dislike").hasClass("active"),
-            i = $(this).hasClass("fi-like"), o = $(this).siblings(".score"), s = $(".votes .count"),
+            i = $(this).hasClass("fi-like"), o = $(this).siblings(".score"), s = $(".score .count"),
             r = parseInt(o.text());
         $(this).hasClass("active") ? ($(".vote a").removeClass("active"), t ? (o.text(r - 1), s.text(r - 1)) : (o.text(r + 1), s.text(r + 1))) : ($(".vote a").removeClass("active"), $(this).addClass("active"), t ? (o.text(r - 2), s.text(r - 2)) : n ? (o.text(r + 2), s.text(r + 2)) : i ? (o.text(r + 1), s.text(r + 1)) : i || (o.text(r - 1), s.text(r - 1)), e.preventDefault())
     }), $(".filters select").change(function () {

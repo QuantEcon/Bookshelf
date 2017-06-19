@@ -17,7 +17,7 @@ var submissionSchema = new Schema({
     coAuthors: [ObjectId],
     comments: [ObjectId],
 
-    votes: Number,
+    score: Number,
     views: Number,
 
     published: Date,
