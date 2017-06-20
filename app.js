@@ -958,7 +958,7 @@ app.post('/submit/file/edit/:nbID', isAuthenticated, multipartyMiddleware, funct
                     console.log("Error 2");
                     res.status(500);
                 } else {
-                    submission.notebook = stdout;
+                    submission.notebook = stdout.replace(/<title[^>]*>([^<]*)<\/title>/, "$1");
                     submission.save(function (err) {
                         if (err) {
                             console.log("Error 3: ", err);
@@ -1025,7 +1025,7 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
                 if (err) {
                     res.status(500);
                 } else {
-                    newSub.notebook = stdout;
+                    newSub.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
                     console.log("New sub: ", newSub);
 
                     user.currentSubmission = newSub;
@@ -1167,7 +1167,7 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
             // todo: delete reply
             res.status(500);
         } else if (reply) {
-            Comment.findOne(req.inReplyTo, function (err, comment) {
+            Comment.findOne({_id: req.inReplyTo}, function (err, comment) {
                 if (err) {
                     // todo: delete reply
                     res.status(500);
