@@ -661,7 +661,11 @@ app.get('/submit/preview', isAuthenticated, function (req, res) {
 
     if (req.user._doc.currentSubmission) {
         res.render('submissionPreview', {
-            title: req.user._doc.currentSubmission.title
+            title: req.user._doc.currentSubmission.title,
+            data: {
+                currentUser: req.user,
+                submit: true
+            }
         });
     } else {
         res.render('submit')
