@@ -18,11 +18,13 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $http, $window) {
+app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function ($scope, $http, $window, Upload) {
     // variables ============================================
     $scope.submissionFormModel = {};
     $scope.submissionFormModel.topics = [];
     $scope.preview = false;
+    $scope.edit = false;
+    $scope.editID = '';
 
     $scope.topics = [
         'All',
@@ -49,6 +51,26 @@ app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $htt
     ];
 
     // methods ==============================================
+    $scope.init = function () {
+        var pathname = window.location.pathname.split('/');
+        $scope.edit = pathname[pathname.length - 1] === "edit";
+        if ($scope.edit) {
+            $scope.editID = pathname[2];
+            $http.get(url + '/search/notebook/' + $scope.editID).then(
+                function (response) {
+                    console.log("Init returned: ", response);
+                    $scope.submissionFormModel.title = response.data.notebook.title;
+                    $scope.submissionFormModel.language = response.data.notebook.language;
+                    $scope.submissionFormModel.topicList = response.data.notebook.topicList;
+                    $scope.submissionFormModel.summary = response.data.notebook.summary;
+                },
+                function (response) {
+                    $window.location.href = url + '/500';
+                }
+            )
+        }
+    };
+
     $scope.chooseDifferentFile = function () {
         $scope.submissionFormModel.file = null;
     };
@@ -64,15 +86,18 @@ app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $htt
     };
 
     $scope.upload = function () {
+        var fullURL = '/submit/file';
+        if ($scope.edit) {
+            fullURL = '/submit/file/edit/' + $scope.editID;
+        }
         Upload.upload({
-            url: url + '/submit/file',
+            url: fullURL,
             data: {
                 title: $scope.submissionFormModel.title,
                 summary: $scope.submissionFormModel.summary,
                 language: $scope.submissionFormModel.language,
                 //todo: add co-authors
                 coAuthors: [],
-                //todo: add topic list
                 topicList: $scope.submissionFormModel.topics,
 
                 //set default values
@@ -84,8 +109,13 @@ app.controller('submitCtrl', ['$scope', 'Upload', function ($scope, Upload, $htt
         }).then(
             //success
             function (res) {
-                console.log('Success ' + res.config.data.file.name + ' uploaded. \nResponse: ' + res.data);
-                window.location = url + '/submit/preview';
+                if ($scope.edit) {
+                    console.log("Successfully edited: ", res);
+                    window.location = url + '/notebook/' + $scope.editID;
+                } else {
+                    console.log('Success ' + res.config.data.file.name + ' uploaded. \nResponse: ' + res.data);
+                    window.location = url + '/submit/preview';
+                }
             },
             //failure
             function (res) {

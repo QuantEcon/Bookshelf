@@ -280,6 +280,7 @@ app.get('/', isAuthenticated, function (req, res) {
             };
             res.render('home', {
                 data: data,
+                title: 'QuantEconLib',
                 numSubmissions: submissions.length
             })
         });
@@ -433,7 +434,7 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
                 replies: results.reps,
                 commentAuthors: results.comAuth
             };
-            console.log("notebook data: ", data);
+            // console.log("notebook data: ", data);
             if (req.user) {
                 data.currentUser = {
                     _id: req.user._id,
@@ -497,6 +498,20 @@ app.get('/notebook/current-submission', isAuthenticated, function (req, res) {
 });
 
 // notebook pages ==========================================================================
+app.get('/notebook/:nbID/edit', isAuthenticated, function (req, res) {
+    console.log("Got notebook edit");
+    if (req.user) {
+        res.render('submit', {
+            title: 'Edit Notebook',
+            data: {
+                currentUser: req.user
+            }
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
 
     Submission.findOne({_id: req.params.nbID}, function (err, submission) {
@@ -920,6 +935,50 @@ app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) 
 });
 
 // POST ====================================================================================
+
+app.post('/submit/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (req, res) {
+    console.log("Got submit edit");
+    var file = req.files.file;
+    Submission.findOne({_id: req.params.nbID}, function (err, submission) {
+        if (err) {
+            console.log("Error 1");
+            res.status(500);
+            //todo: return error
+        } else if (submission) {
+            submission.title = req.body.title;
+            submission.topicList = req.body.topicList;
+            submission.language = req.body.language;
+            submission.summary = req.body.summary;
+            submission.file = file.name;
+            submission.lastUpdated = new Date();
+
+            var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
+            exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
+                if (err) {
+                    console.log("Error 2");
+                    res.status(500);
+                } else {
+                    submission.notebook = stdout;
+                    submission.save(function (err) {
+                        if (err) {
+                            console.log("Error 3: ", err);
+                            res.status(500);
+                        } else {
+                            res.send({
+                                nbID: submission._id,
+                                message: 'redirect'
+                            })
+                        }
+                    })
+                }
+            });
+
+        } else {
+            console.log("Error 4");
+            res.status(500);
+        }
+    });
+});
 
 //file uploads
 app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, res) {

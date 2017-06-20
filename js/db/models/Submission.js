@@ -12,6 +12,7 @@ var submissionSchema = new Schema({
     language: String,
     summary: String,
     notebook: String, // html of notebook
+    file: String, // path to file
 
     author: ObjectId,
     coAuthors: [ObjectId],

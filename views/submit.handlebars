@@ -4,18 +4,18 @@
     <script src="/assets/js/modules/submit.js"></script>
 </head>
 
-
 <form novalidate="novalidate"
       ng-app="submissionApp"
       ng-controller="submitCtrl"
       ng-submit="onSubmissionSubmit(submissionForm.$valid)"
+      ng-init="init()"
       name="submissionForm">
 
     <div class="row columns">
 
         <div class="submit-form">
 
-            <h1 class="page-title">Submit Notebook</h1>
+            <h1 class="page-title">{{title}}</h1>
 
             <div class="submit-upload" ng-app="fileUpload">
 
@@ -26,7 +26,7 @@
                 </h2>
 
                 <p class="input-hint"
-                   ng-show="!submissionFormModel.file">
+                   ng-show="!submissionFormModel.file && !edit">
                     You will be able to preview the rendered Notebook before publishing. A published
                     Notebook can be modified by uploading an updated version.
                 </p>
@@ -242,16 +242,8 @@
                     Terms <span class="mandatory">*</span>
                 </p>
 
-                <label>
-                    <input type="checkbox"
-                           required="required"
-                           ng-model="submissionFormModel.agreement"
-                           ng-class="{'has-error':submissionForm.agreement.$error.required && submissionForm.agreement.$dirty}"
-                           name="agreement">
-                    I agree to the <a href="#">Terms and Conditions</a> of publishing content
-                    and sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est
-                    laborum.
-                </label>
+                {{>agreement}}
+
                 <p class="error-help-text"
                    ng-show="submissionForm.agreement.$error.required && submissionForm.agreement.$dirty">
                     Agreement is required
@@ -263,7 +255,15 @@
                 <li>
                     <button name="submit"
                             type="submit"
-                            ng-disabled="submissionForm.$invalid">Preview
+                            ng-disabled="submissionForm.$invalid"
+                            ng-show="!edit">
+                        Preview
+                    </button>
+                    <button name="submit"
+                            type="submit"
+                            ng-disabled="submissionForm.$invalid"
+                            ng-show="edit">
+                        Save
                     </button>
                 </li>
             </ul>

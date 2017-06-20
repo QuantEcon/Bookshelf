@@ -34,7 +34,6 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
     $scope.dataReady = false;
 
     $scope.init = function () {
-        //todo: get submission information
         $http.get(url + '/search/notebook/' + $scope.submissionID)
             .then(function success(response) {
                 console.log("submissionCtrl: search returned: ", response);

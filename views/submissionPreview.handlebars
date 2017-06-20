@@ -76,7 +76,7 @@
                                     <a ng-repeat="coAuthor in notebook.coAuthors">{[{coAuthor}]}</a>
                                 </li>
                                 <li ng-show="!notebook.coAuthors.length"><span>Co-authors:</span>
-                                    <a>None</a>
+                                    <p>None</p>
                                 </li>
                                 <li><span>Language:</span> <a>{[{notebook.language}]}</a></li>
                                 <li><span>Published:</span> {[{notebook.published | date: 'd MMM yyyy'}]}</li>
