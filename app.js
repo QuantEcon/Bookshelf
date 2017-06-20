@@ -1070,6 +1070,32 @@ app.post('/edit-profile', isAuthenticated, function (req, res) {
     });
 });
 
+app.post('/submit/comment/edit/:commentID', isAuthenticated, function (req, res) {
+    Comment.findOne({_id: req.params.commentID}, function (err, comment) {
+        if (err) {
+            //todo: return error
+        } else if (comment) {
+            //todo: need to save previous submissions for legal reasons?
+            console.log("Edit comment content: ", req.body);
+            comment.edited = true;
+            comment.content = req.body.content;
+            comment.editedDate = new Date();
+            comment.save(function (err) {
+                if (err) {
+                    //todo: return error
+                } else {
+                    res.send({
+                        message: 'Redirect',
+                        error: false
+                    });
+                }
+            })
+        } else {
+            //todo: return error
+        }
+    })
+});
+
 app.post('/submit/comment', isAuthenticated, function (req, res) {
     console.log("Received submit comment: ", req.body);
     if (!req.user) {
@@ -1094,7 +1120,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
         if (err) {
             res.status(500);
         } else {
-            Submission.findOne(req.submissionID, function (err, submission) {
+            Submission.findOne({_id: req.body.submissionID}, function (err, submission) {
                 if (err) {
                     res.status(500);
                 } else if (submission) {

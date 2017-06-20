@@ -24,6 +24,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
     // users' information
     $scope.comments = [];
     $scope.showReplyMap = {};
+    $scope.showEditMap = {};
     $scope.replies = [];
     $scope.commentAuthors = [];
 
@@ -75,7 +76,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function failure(response) {
                 console.log("Error posting comment: ", response);
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
             })
@@ -94,9 +95,24 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function failure(response) {
                 console.log("Error posting reply: ", response);
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
+            }
+        )
+    };
+
+    $scope.submitEditComment = function (commentID, content) {
+        var data = {
+            content: content
+        };
+        console.log("Got submit edit content: ", content);
+        $http.post(url + '/submit/comment/edit/' + commentID, data).then(
+            function (response) {
+                $window.location.reload();
+            },
+            function (response) {
+                $window.location.href = url + '/500';
             }
         )
     };
@@ -114,6 +130,14 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         $scope.showReplyMap[commentID] = !$scope.showReplyMap[commentID];
     };
 
+    $scope.toggleEdit = function (commentID) {
+        $scope.showEditMap[commentID] = !$scope.showEditMap[commentID];
+    };
+
+    $scope.deleteComment = function (commentID) {
+        console.log("Delete clicked!");
+    };
+
     $scope.upvoteSubmissionClicked = function (submissionID) {
         console.log("Upvote submission clicked");
         var data = {
@@ -126,7 +150,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function (response) {
                 console.log("Error upvoting submission: ", response);
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
             }
@@ -145,7 +169,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function failure(response) {
                 console.log("Error downvoting submission");
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
             }
@@ -164,7 +188,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function (response) {
                 console.log("Error upvoting comment");
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
             }
@@ -182,7 +206,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
             },
             function (response) {
                 console.log("Error downvoting comment");
-                if(response.data.code === 1){
+                if (response.data.code === 1) {
                     $window.location = url + '/login';
                 }
             }

@@ -234,8 +234,10 @@
 
                                 <p marked="comment.content"></p>
 
-                                <p class="edited-tag" ng-show="comment.edited">(edited {[{comment.editedDate |
-                                    amDurationFormat: 'minute'}]} ago)</p>
+                                <p class="edited-tag"
+                                   ng-show="comment.edited">
+                                    (edited {[{comment.editedDate |amDurationFormat: 'minute'}]} ago)
+                                </p>
 
                             </div> <!-- .comment-body -->
 
@@ -244,10 +246,11 @@
                                 <ul class="options">
                                     <li>
                                         <a ng-click="toggleReply(comment._id)"
-                                           ng-show="!showReplyMap[comment._id]">
+                                           ng-show="!showReplyMap[comment._id] && !showEditMap[comment._id]">
                                             Reply
                                         </a>
                                     </li>
+                                    <!--replies-->
                                     <li>
                                         <a ng-click="toggleReply(comment._id)"
                                            class="alt"
@@ -255,13 +258,52 @@
                                             Close
                                         </a>
                                     </li>
+                                    <!--editing-->
+                                    <li>
+                                        <a ng-click="toggleEdit(comment._id)"
+                                           class="alt"
+                                           ng-show="showEditMap[comment._id]">
+                                            Cancel
+                                        </a>
+                                    </li>
                                     <!--todo: implement-->
-                                    <li><a href="#" ng-show="currentUser._id == comment.author">Edit</a></li>
-                                    <li><a href="#" class="alt" ng-show="currentUser._id == comment.author">Delete</a>
+                                    <li>
+                                        <a ng-click="toggleEdit(comment._id, comment.content)"
+                                           ng-show="currentUser._id == comment.author && !showEditMap[comment._id] && !showReplyMap[comment._id]">
+                                            Edit
+                                        </a>
+                                    </li>
+                                    <!--todo: implement-->
+                                    <li><a ng-click="deleteComment(comment._id)"
+                                           class="alt"
+                                           ng-show="currentUser._id == comment.author && !showEditMap[comment._id] && !showReplyMap[comment._id]">
+                                        Delete
+                                    </a>
                                     </li>
                                 </ul>
 
                             </div> <!-- .comment-footer -->
+                            <div class="comment-reply" ng-show="showEditMap[comment._id]">
+
+                                <form name="submitEditForm"
+                                      novalidate="novalidate"
+                                      ng-submit="submitEditComment(comment._id, submitEditForm.content)">
+                                    <textarea placeholder="You can use markdown here..."
+                                              ng-model="submitEditForm.content"
+                                              ng-required="required"
+                                              ng-init="submitEditForm.content = comment.content">
+                                    </textarea>
+
+                                    <div class="post-reply">
+                                        <button type="submit"
+                                                ng-disabled="submitEditForm.content == '' || submitEditForm.$pristine">
+                                            Save
+                                        </button>
+                                    </div>
+                                </form>
+
+
+                            </div> <!-- .comment-reply -->
 
                             <div class="comment-reply" ng-show="showReplyMap[comment._id]">
 
