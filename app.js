@@ -470,6 +470,32 @@ app.get('/search/users', function (req, res) {
 
 });
 
+app.get('/notebook/current-submission', isAuthenticated, function (req, res) {
+    if (req.user) {
+        User.findOne({_id: req.user._id}, '', function (err, user) {
+            if (err) {
+                console.log("Error getting current submission: ", err);
+                res.render('500');
+            } else if (user) {
+                if (user.currentSubmission) {
+                    var data = {
+                        author: user,
+                        notebook: user.currentSubmission,
+                        currentUser: user
+                    };
+                    res.send(data);
+                } else {
+                    res.redirect('/submit');
+                }
+            } else {
+                res.render('404');
+            }
+        });
+    } else {
+        res.redirect('/login');
+    }
+});
+
 // notebook pages ==========================================================================
 app.get('/notebook/:nbID', isAuthenticated, function (req, res) {
 
@@ -595,29 +621,36 @@ app.get('/submit', isAuthenticated, function (req, res) {
 
 app.get('/submit/preview', isAuthenticated, function (req, res) {
 
-    User.findOne({_id: req.user._id}, '', function (err, user) {
-        if (err) {
-            res.render('500');
-        } else if (user) {
-            console.log("Got user: ", user);
-            if (user.currentSubmission) {
-                var data = {
-                    author: user,
-                    notebook: user.currentSubmission,
-                    currentUser: user
-                };
-                res.render('submissionPreview', {
-                        data: data,
-                        title: user.currentSubmission.title
-                    }
-                );
-            } else {
-                res.redirect('/submit');
-            }
-        } else {
-            res.render('404');
-        }
-    });
+    // User.findOne({_id: req.user._id}, '', function (err, user) {
+    //     if (err) {
+    //         res.render('500');
+    //     } else if (user) {
+    //         console.log("Got user: ", user);
+    //         if (user.currentSubmission) {
+    //             var data = {
+    //                 author: user,
+    //                 currentUser: user
+    //             };
+    //             res.render('submissionPreview', {
+    //                     data: data,
+    //                     title: user.currentSubmission.title
+    //                 }
+    //             );
+    //         } else {
+    //             res.redirect('/submit');
+    //         }
+    //     } else {
+    //         res.render('404');
+    //     }
+    // });
+
+    if (req.user._doc.currentSubmission) {
+        res.render('submissionPreview', {
+            title: req.user._doc.currentSubmission.title
+        });
+    } else {
+        res.render('submit')
+    }
 
 });
 

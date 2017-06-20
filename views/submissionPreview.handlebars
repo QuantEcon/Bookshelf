@@ -1,47 +1,12 @@
 <head>
     <script src="/bundle.js"></script>
-
-    <script>
-        //todo: change this once not running on local host
-        var url = 'http://localhost:8080';
-        var app = angular.module('previewApp', ['hc.marked']);
-
-        app.config(function ($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[{');
-            $interpolateProvider.endSymbol('}]}');
-        });
-
-        app.config(['markedProvider', function (markedProvider) {
-            markedProvider.setOptions({
-                gfm: true
-            });
-        }]);
-
-        app.controller('previewCtrl', function ($scope, $http, $window) {
-            // Vars ================================================================
-            $scope.summary = '{{data.notebook.summary}}';
-            $scope.published = new Date('{{data.notebook.published}}');
-            $scope.lastUpdated = new Date('{{data.notebook.lastUpdated}}');
-
-            // Methods =============================================================
-            $scope.onCancel = function () {
-                console.log("Cancelling...");
-                $http.get('/submit/cancel');
-                $window.location.href = url + '/';
-            };
-
-            $scope.onSubmit = function () {
-                console.log("Submitting...");
-                $http.get('/submit/confirm').then(function (res) {
-                    console.log("Got response: ", res.data);
-                    $window.location.href = url + '/notebook/' + res.data;
-                });
-            }
-
-        });
-    </script>
+    <script src="/assets/js/modules/submissionPreview.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
 </head>
-<div class="row" ng-app="previewApp" ng-controller="previewCtrl">
+<div class="row"
+     ng-app="previewApp"
+     ng-controller="previewCtrl"
+     ng-init="init()">
     <div class="column">
 
         <div class="details">
@@ -50,7 +15,7 @@
                 <div class="vote">
                     <a class="fi-like" id="submission-upvote-button"></a>
 
-                    <span class="score" id="submission-score">{{data.notebook.votes}}</span>
+                    <span class="score" id="submission-score">{[{notebook.score}]}</span>
 
                     <a class="fi-dislike" id="submission-downvote-button"></a>
 
@@ -64,12 +29,10 @@
 
                     <div class="details-title">
 
-                        <h1 class="title">{{data.notebook.title}}</h1>
+                        <h1 class="title">{[{notebook.title}]}</h1>
 
                         <ul class="topics">
-                            {{#each data.notebook.topicList}}
-                                <li><a>{{this}}</a></li>
-                            {{/each}}
+                            <li ng-repeat="topic in notebook.topicList"><a>{[{topic}]}</a></li>
                         </ul>
 
                     </div>
@@ -78,9 +41,9 @@
 
                         <div class="counts">
                             <ul>
-                                <li class="views"><span class="count">{{data.notebook.views}}</span> Views</li>
+                                <li class="views"><span class="count">{[{notebook.views}]}</span> Views</li>
                                 <li class="comments"><span class="count">0</span> Comments</li>
-                                <li class="votes"><span class="count">{{data.notebook.votes}}</span> Votes</li>
+                                <li class="votes"><span class="count">{[{notebook.score}]}</span> Votes</li>
                             </ul>
                         </div>
 
@@ -100,26 +63,24 @@
 
                         <div class="side">
 
-                            <p class="avatar"><a><img src={{data.author.avatar}}></a></p>
+                            <p class="avatar"><a><img src={[{author.avatar}]}></a></p>
 
                         </div>
 
                         <div class="main">
 
                             <ul class="specs">
-                                <li><span>Author:</span> <a>{{data.author.name}}</a></li>
-                                <li><span>Co-authors:</span>
-                                    {{#if data.coAuthors.length}}
-                                        {{#each data.coAuthors}}
-                                            <a>{{this.name}}</a><br>
-                                        {{/each}}
-                                    {{else}}
-                                        None<br>
-                                    {{/if}}
+                                <li><span>Author:</span> <a>{[{author.name}]}</a></li>
+                                <li ng-show="notebook.coAuthors.length"><span>Co-authors:</span>
+                                    <!--todo: use coAuthor.name? what about for email authors?-->
+                                    <a ng-repeat="coAuthor in notebook.coAuthors">{[{coAuthor}]}</a>
                                 </li>
-                                <li><span>Language:</span> <a>{{data.notebook.language}}</a></li>
-                                <li><span>Published:</span> {[{published | date: 'd MMM yyyy'}]}</li>
-                                <li><span>Last update:</span> {[{lastUpdated | date: 'd MMM yyyy'}]}</li>
+                                <li ng-show="!notebook.coAuthors.length"><span>Co-authors:</span>
+                                    <a>None</a>
+                                </li>
+                                <li><span>Language:</span> <a>{[{notebook.language}]}</a></li>
+                                <li><span>Published:</span> {[{notebook.published | date: 'd MMM yyyy'}]}</li>
+                                <li><span>Last update:</span> {[{notebook.lastUpdated | date: 'd MMM yyyy'}]}</li>
                             </ul>
 
                         </div>
@@ -141,12 +102,9 @@
 
             </div>
 
-            <!--todo: insert notebook html here-->
-            <h4>Notebook html goes here</h4>
-            {{{data.notebook.notebook}}}
+            <div ng-bind-html="notebook.notebook"></div>
 
         </div>
-        <!--todo: remove user.currentSubmission on cancel-->
         <ul class="button-row">
             <li>
                 <a class="alt" ng-click="onCancel()">Cancel</a>
