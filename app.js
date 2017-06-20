@@ -1169,17 +1169,20 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
     newReply.save(function (err, reply) {
         if (err) {
             // todo: delete reply
+            console.log("Error 1");
             res.status(500);
         } else if (reply) {
-            Comment.findOne({_id: req.inReplyTo}, function (err, comment) {
+            Comment.findOne({_id: req.body.inReplyTo}, function (err, comment) {
                 if (err) {
                     // todo: delete reply
+                    console.log("Error 2");
                     res.status(500);
                 } else if (comment) {
                     comment.replies.push(reply._id);
                     comment.save(function (err) {
                         if (err) {
                             // todo: delete reply
+                            console.log("Error 3");
                             res.status(500);
                         } else {
                             console.log("Successfully submitted reply");
@@ -1188,11 +1191,13 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
                     })
                 } else {
                     // todo: delete reply
+                    console.log("Error 4");
                     res.status(500);
                 }
             })
         } else {
             // todo: delete reply
+            console.log("Error 5");
             res.status(500);
         }
     });

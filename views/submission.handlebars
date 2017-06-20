@@ -207,7 +207,9 @@
                                    ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
                                     {[{comAuthor.name}]}
                                 </a>
-                                <span class="time">{[{comment.timestamp | amDurationFormat: 'minute'}]} ago</span>
+                                <span class="time"
+                                      am-time-ago="comment.timestamp">
+                                </span>
 
                                 <a class="flag"
                                    data-open="flagCommentModal"
@@ -236,7 +238,7 @@
 
                                 <p class="edited-tag"
                                    ng-show="comment.edited">
-                                    (edited {[{comment.editedDate |amDurationFormat: 'minute'}]} ago)
+                                    (edited <span am-time-ago="comment.editedDate"></span>)
                                 </p>
 
                             </div> <!-- .comment-body -->
@@ -364,7 +366,7 @@
                                                 {[{author.name}]}
                                             </a>
 
-                                            <span class="time">{[{reply.timestamp | amDurationFormat: 'minute'}]} ago</span>
+                                            <span class="time" am-time-ago="reply.timestamp"></span>
 
                                             <a class="flag"
                                                data-open="flagCommentModal"
@@ -384,8 +386,9 @@
 
                                         <div class="comment-body">
                                             <p marked="reply.content"></p>
-                                            <p class="edited-tag" ng-show="reply.edited">(edited {[{reply.editedDate |
-                                                amDurationFormat: 'minute'}]} ago)</p>
+                                            <p class="edited-tag" ng-show="reply.edited">
+                                                (edited <span am-time-ago="reply.editedDate"></span>)
+                                            </p>
 
                                         </div> <!-- .comment-body -->
 
@@ -393,12 +396,50 @@
                                         <div class="comment-footer">
                                             <!--todo: restrict on server rendering-->
                                             <ul class="options">
-                                                <li><a href="#" ng-show="currentUser._id == reply.author">Edit</a></li>
-                                                <li><a href="#" class="alt" ng-show="currentUser._id == reply.author">Delete</a>
+                                                <li>
+                                                    <a ng-click="toggleEdit(reply._id)"
+                                                       class="alt"
+                                                       ng-show="showEditMap[reply._id]">
+                                                        Cancel
+                                                    </a>
+                                                </li>
+                                                <!--todo: implement-->
+                                                <li>
+                                                    <a ng-click="toggleEdit(reply._id, reply.content)"
+                                                       ng-show="currentUser._id == reply.author && !showEditMap[reply._id] && !showReplyMap[reply._id]">
+                                                        Edit
+                                                    </a>
+                                                </li>
+                                                <!--todo: implement-->
+                                                <li><a ng-click="deleteComment(reply._id)"
+                                                       class="alt"
+                                                       ng-show="currentUser._id == reply.author && !showEditMap[reply._id] && !showReplyMap[reply._id]">
+                                                    Delete
+                                                </a>
                                                 </li>
                                             </ul>
 
                                         </div> <!-- .comment-footer -->
+                                        <div class="comment-reply" ng-show="showEditMap[reply._id]">
+
+                                            <form name="submitEditForm"
+                                                  novalidate="novalidate"
+                                                  ng-submit="submitEditComment(reply._id, submitEditForm.content)">
+                                            <textarea placeholder="You can use markdown here..."
+                                                      ng-model="submitEditForm.content"
+                                                      ng-required="required"
+                                                      ng-init="submitEditForm.content = reply.content">
+                                            </textarea>
+
+                                                <div class="post-reply">
+                                                    <button type="submit"
+                                                            ng-disabled="submitEditForm.content == '' || submitEditForm.$pristine">
+                                                        Save
+                                                    </button>
+                                                </div>
+                                            </form>
+
+                                        </div> <!-- .comment-reply -->
 
                                     </div> <!-- .comment-main -->
 
