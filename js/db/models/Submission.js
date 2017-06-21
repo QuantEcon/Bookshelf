@@ -3,6 +3,7 @@
  */
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
@@ -27,5 +28,7 @@ var submissionSchema = new Schema({
     flagged: Boolean,
     deleted: Boolean
 });
+
+submissionSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("Submission", submissionSchema);

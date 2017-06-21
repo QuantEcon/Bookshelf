@@ -3,7 +3,6 @@
  */
 
 
-//todo: change this once not running on local host
 var app = angular.module('submissionApp', ['ngFileUpload', 'hc.marked']);
 
 app.config(function ($interpolateProvider) {

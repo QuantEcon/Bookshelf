@@ -1,4 +1,3 @@
-//todo: change this once not running on local host
 var app = angular.module('previewApp', ['hc.marked', 'ngSanitize']);
 
 app.config(function ($interpolateProvider) {

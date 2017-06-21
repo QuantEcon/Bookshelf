@@ -3,6 +3,7 @@
  */
 
 var mongoose = require('mongoose');
+var mongoosePaginate = require('mongoose-paginate');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
@@ -67,5 +68,7 @@ var userSchema = new Schema({
     flagged: Boolean,
     deleted: Boolean
 });
+
+userSchema.plugin(mongoosePaginate);
 
 module.exports = mongoose.model("User", userSchema);

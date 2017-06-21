@@ -303,7 +303,9 @@ app.get('/search/all-submissions', function (req, res) {
     }
     // console.log("Searching submissions: ", searchParams);
 
-    Submission.find(searchParams, req.query.select, function (err, submissions) {
+    var select = "_id title author views comments score summary published language";
+
+    Submission.find(searchParams, select, function (err, submissions) {
         if (err) {
             console.log("Error occurred finding submissions");
             res.status(500);
@@ -457,7 +459,9 @@ app.get('/search/users', function (req, res) {
 
     console.log("Searching users: ", params);
 
-    User.find(params, req.query.select, function (err, users) {
+    var select = "_id avatar name summary joinDate facebook.url github.url twitter.url email";
+
+    User.find(params, select, function (err, users) {
         if (err) {
             res.status(500);
         } else {
