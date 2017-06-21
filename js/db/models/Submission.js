@@ -18,6 +18,7 @@ var submissionSchema = new Schema({
     author: ObjectId,
     coAuthors: [ObjectId],
     comments: [ObjectId],
+    totalComments: Number,
 
     score: Number,
     views: Number,

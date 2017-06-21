@@ -113,6 +113,8 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
                 language: params.language,
                 topic: params.topic,
                 author: params.author,
+                time: params.time,
+                sortBy: params.sortBy
             }
         }).then(function success(response) {
                 console.log("searchCtrl: Search returned: ", response);
@@ -120,7 +122,7 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
                     params: params,
                     data: response.data
                 };
-                $scope.numSubs = response.data.submissions.length;
+                $scope.numSubs = response.data.totalSubmissions;
                 $scope.$emit('searchResults', results);
             }, function error(response) {
                 console.log("searchCtrl: An error occurred during the search");

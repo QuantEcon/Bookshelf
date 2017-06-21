@@ -133,7 +133,7 @@ app.use(express.static(__dirname + "/public"));
 var multipartyMiddleware = multiparty();
 
 app.use(function (req, res, next) {
-    console.log("Looking for URL : " + req.url);
+    // console.log("Looking for URL : " + req.url);
     next();
 });
 
@@ -301,11 +301,53 @@ app.get('/search/all-submissions', function (req, res) {
             searchParams.author = req.query.author;
         }
     }
-    // console.log("Searching submissions: ", searchParams);
+    //todo: get page from search query
+    var page = 1;
+    var select = "_id title author views comments score summary published language totalComments";
 
-    var select = "_id title author views comments score summary published language";
+    var options = {
+        limit: 10,
+        sort: {published: 1},
+        page: page,
+        select: select
+    };
 
-    Submission.find(searchParams, select, function (err, submissions) {
+    if (req.query.time) {
+        //todo: restrict by time
+        switch (req.query.time) {
+            case 'Today':
+                break;
+            case 'This month':
+                break;
+            case 'This year':
+                break;
+            case 'All time':
+                break;
+        }
+    }
+    if (req.query.sortBy) {
+        //todo: sort by sortBy
+        switch (req.query.sortBy) {
+            case 'Date':
+                break;
+            case 'Comments':
+                options.sort = {'totalComments': 1};
+                break;
+            case 'Trending':
+                break;
+            case 'Views':
+                break;
+        }
+
+    }
+
+
+    console.log("Performing search with params: ", options);
+
+
+    Submission.paginate(searchParams, options).then(function (result) {
+        var submissions = result.docs;
+        var err = null;
         if (err) {
             console.log("Error occurred finding submissions");
             res.status(500);
@@ -324,6 +366,7 @@ app.get('/search/all-submissions', function (req, res) {
                     res.status(200);
                     res.send({
                         submissions: submissions,
+                        totalSubmissions: result.total,
                         authors: authors
                     })
                 }
@@ -989,6 +1032,7 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
             //todo: parse co-authors
             // newSub.coAuthors = coAuthors
             newSub.comments = [];
+            newSub.totalComments = 0;
 
             newSub.score = 0;
             newSub.views = 0;
@@ -1098,6 +1142,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
     newComment.deleted = false;
     newComment.edited = false;
     newComment.editedDate = null;
+    newComment.submission = req.body.submissionID;
 
     newComment.save(function (err, c) {
         if (err) {
@@ -1108,6 +1153,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
                     res.status(500);
                 } else if (submission) {
                     submission.comments.push(c._id);
+                    submission.totalComments += 1;
                     submission.save(function (err) {
                         if (err) {
                             res.status(500);
@@ -1126,7 +1172,7 @@ app.post('/submit/comment', isAuthenticated, function (req, res) {
 });
 
 app.post('/submit/reply', isAuthenticated, function (req, res) {
-    console.log("Received submit comment: ", req.body);
+    console.log("Received submit reply: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
         res.status(400);
@@ -1163,8 +1209,25 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
                             console.log("Error 3");
                             res.status(500);
                         } else {
-                            console.log("Successfully submitted reply");
-                            res.send("Success");
+                            Submission.findOne({_id: comment.submission}, function (err, submission) {
+                                if (err) {
+                                    res.status(500);
+                                } else if (submission) {
+                                    submission.totalComments += 1;
+                                    submission.save(function (err) {
+                                        if (err) {
+                                            //todo: clean up added documents?
+                                            res.status(500);
+                                        } else {
+                                            console.log("Successfully submitted reply");
+                                            res.send("Success");
+                                        }
+                                    });
+                                } else {
+                                    res.status(500);
+                                }
+                            });
+
                         }
                     })
                 } else {

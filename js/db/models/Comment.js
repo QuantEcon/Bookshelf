@@ -11,6 +11,7 @@ var ObjectId = Schema.ObjectId;
 var commentSchema = new Schema({
     author: ObjectId,
     timestamp: Date,
+    submission: ObjectId,
 
     score: Number,
 
