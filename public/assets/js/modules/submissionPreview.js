@@ -1,5 +1,4 @@
 //todo: change this once not running on local host
-var url = 'http://localhost:8080';
 var app = angular.module('previewApp', ['hc.marked', 'ngSanitize']);
 
 app.config(function ($interpolateProvider) {
@@ -16,6 +15,7 @@ app.config(['markedProvider', function (markedProvider) {
 app.controller('previewCtrl', function ($scope, $http, $window) {
     // Vars ================================================================
     $scope.notebook = {};
+    var url = $window.location.origin;
 
     // Methods =============================================================
     $scope.init = function () {

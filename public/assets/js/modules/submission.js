@@ -1,9 +1,7 @@
 /**
  * Created by tlyon on 6/7/17.
  */
-//todo: change this once not running on local host
-// todo: migrate to centralized file
-var url = 'http://localhost:8080';
+
 var app = angular.module('submissionApp', ['hc.marked', 'angularMoment', 'ngSanitize']);
 
 app.config(function ($interpolateProvider) {
@@ -18,6 +16,8 @@ app.config(['markedProvider', function (markedProvider) {
 }]);
 
 app.controller('submissionCtrl', function ($scope, $http, $window) {
+    console.log("window.location: ", $window.location);
+    var url = $window.location.origin;
     //submission information
     $scope.notebook = {};
 

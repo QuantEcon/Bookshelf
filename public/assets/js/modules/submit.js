@@ -4,7 +4,6 @@
 
 
 //todo: change this once not running on local host
-var url = 'http://localhost:8080';
 var app = angular.module('submissionApp', ['ngFileUpload', 'hc.marked']);
 
 app.config(function ($interpolateProvider) {
@@ -20,6 +19,8 @@ app.config(['markedProvider', function (markedProvider) {
 
 app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function ($scope, $http, $window, Upload) {
     // variables ============================================
+    console.log("window.location: ", $window.location);
+    var url = $window.location.origin;
     $scope.submissionFormModel = {};
     $scope.submissionFormModel.topics = [];
     $scope.preview = false;

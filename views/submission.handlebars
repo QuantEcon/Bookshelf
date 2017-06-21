@@ -201,8 +201,6 @@
                         <div class="comment-main">
 
                             <div class="comment-header">
-                                <!--todo: get fuzzy timestamp-->
-                                <!--todo: filter users by author id-->
                                 <a href="/user/{[{comment.author}]}"
                                    ng-repeat="comAuthor in commentAuthors | filter: {_id: comment.author}">
                                     {[{comAuthor.name}]}
@@ -268,14 +266,12 @@
                                             Cancel
                                         </a>
                                     </li>
-                                    <!--todo: implement-->
                                     <li>
                                         <a ng-click="toggleEdit(comment._id, comment.content)"
                                            ng-show="currentUser._id == comment.author && !showEditMap[comment._id] && !showReplyMap[comment._id]">
                                             Edit
                                         </a>
                                     </li>
-                                    <!--todo: implement-->
                                     <li><a ng-click="deleteComment(comment._id)"
                                            class="alt"
                                            ng-show="currentUser._id == comment.author && !showEditMap[comment._id] && !showReplyMap[comment._id]">
@@ -329,8 +325,10 @@
                             </div> <!-- .comment-reply -->
                             <div class="comment-nested" ng-repeat="replyID in comment.replies">
 
+                                <!--todo: don't use ng-repeat to filter-->
                                 <div class="comment" ng-repeat="reply in replies | filter: {_id: replyID}">
 
+                                    <!--todo: don't use ng-repeat to filter-->
                                     <div class="comment-side"
                                          ng-repeat="author in commentAuthors | filter: {_id: reply.author}">
 
@@ -374,10 +372,10 @@
                                                 <span class="fi-flag"></span>
                                             </a>
 
+                                            <!--todo: implement admin delete-->
                                             {{#if currentUser.isAdmin}}
-                                                <a class="delete"
-                                                   data-open="deleteContentModal"
-                                                   class="Delete comment">
+                                                <a class="delete Delete comment"
+                                                   data-open="deleteContentModal">
                                                     <span class="fi-x"></span>
                                                 </a>
                                             {{/if}}
@@ -394,7 +392,6 @@
 
 
                                         <div class="comment-footer">
-                                            <!--todo: restrict on server rendering-->
                                             <ul class="options">
                                                 <li>
                                                     <a ng-click="toggleEdit(reply._id)"
@@ -403,14 +400,12 @@
                                                         Cancel
                                                     </a>
                                                 </li>
-                                                <!--todo: implement-->
                                                 <li>
                                                     <a ng-click="toggleEdit(reply._id, reply.content)"
                                                        ng-show="currentUser._id == reply.author && !showEditMap[reply._id] && !showReplyMap[reply._id]">
                                                         Edit
                                                     </a>
                                                 </li>
-                                                <!--todo: implement-->
                                                 <li><a ng-click="deleteComment(reply._id)"
                                                        class="alt"
                                                        ng-show="currentUser._id == reply.author && !showEditMap[reply._id] && !showReplyMap[reply._id]">

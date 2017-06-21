@@ -19,13 +19,11 @@
 
         app.controller('editProfileCtrl', function ($scope, $http, $window) {
             $scope.formModel = {};
-            //todo: figure out how to export this to an external file
             $scope.activeAvatar = '{{data.user.activeAvatar}}';
             //set default values
             $scope.formModel.name = '{{data.user.name}}';
             $scope.formModel.email = '{{data.user.email}}';
             $scope.formModel.website = '{{data.user.website}}';
-            //todo: handlebars can't render `. Switch to client side rendering
             $scope.formModel.summary = '{{data.user.summary}}';
             $scope.oneSocial = {{data.user.oneSocial}};
             $scope.previewSummary = false;
@@ -332,7 +330,6 @@
                         <hr>
                     {{/if}}
 
-                    <!--todo: google-->
                     {{#if data.user.google.id}}
                         <label class="section-title" for="google">
                             Google Profile {{#if data.user.google.hidden}}(hidden){{/if}}

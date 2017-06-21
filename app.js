@@ -12,7 +12,6 @@ var series = require('async/series');
 var waterfall = require('async/waterfall');
 var asyncApply = require('async/apply');
 var exec = require('child_process').exec;
-var execFile = require('child_process').execFile;
 var sprintf = require('sprintf');
 
 // passport modules
@@ -39,7 +38,6 @@ var Comment = require('./js/db/models/Comment');
 
 // config ================================================================================
 var port = 8080;
-var websiteURL = 'http://localhost:8080';
 
 // template engine
 var hbs = require('express-handlebars').create(
@@ -290,14 +288,14 @@ app.get('/', isAuthenticated, function (req, res) {
 app.get('/search/all-submissions', function (req, res) {
     var searchParams = {};
     //todo: implement sorting and pagination
-    if (req.query.language != 'All') {
+    if (req.query.language !== 'All') {
         searchParams.language = req.query.language
     }
-    if (req.query.topic != 'All') {
+    if (req.query.topic !== 'All') {
         searchParams.topicList = req.query.topic;
     }
     if (req.query.author) {
-        if (req.query.author == 'my-profile') {
+        if (req.query.author === 'my-profile') {
             searchParams.author = req.user._id;
         } else {
             searchParams.author = req.query.author;
@@ -392,7 +390,6 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             reps: function (callback) {
                 //get replies
-                console.log("Reply ids: ", replyIDs);
                 Comment.find({_id: {$in: replyIDs[0]}, deleted: false}, function (err, replies) {
                     if (err) callback(err);
                     else {
@@ -635,30 +632,6 @@ app.get('/submit', isAuthenticated, function (req, res) {
 });
 
 app.get('/submit/preview', isAuthenticated, function (req, res) {
-
-    // User.findOne({_id: req.user._id}, '', function (err, user) {
-    //     if (err) {
-    //         res.render('500');
-    //     } else if (user) {
-    //         console.log("Got user: ", user);
-    //         if (user.currentSubmission) {
-    //             var data = {
-    //                 author: user,
-    //                 currentUser: user
-    //             };
-    //             res.render('submissionPreview', {
-    //                     data: data,
-    //                     title: user.currentSubmission.title
-    //                 }
-    //             );
-    //         } else {
-    //             res.redirect('/submit');
-    //         }
-    //     } else {
-    //         res.render('404');
-    //     }
-    // });
-
     if (req.user._doc.currentSubmission) {
         res.render('submissionPreview', {
             title: req.user._doc.currentSubmission.title,
@@ -670,7 +643,6 @@ app.get('/submit/preview', isAuthenticated, function (req, res) {
     } else {
         res.render('submit')
     }
-
 });
 
 app.get('/submit/cancel', isAuthenticated, function (req, res) {
@@ -747,8 +719,6 @@ app.get('/login', function (req, res, next) {
         title: 'Login'
     });
 });
-
-//todo: loading screen?
 
 app.get('/auth/success', function (req, res) {
     res.render('success');
@@ -847,21 +817,21 @@ app.get('/edit-profile/remove/:social', isAuthenticated, function (req, res) {
             if (err) {
                 res.render('500');
             } else if (user) {
-                if (type == 'github') {
+                if (type === 'github') {
                     user.github = {};
-                } else if (type == 'twitter') {
+                } else if (type === 'twitter') {
                     user.twitter = {};
-                } else if (type == 'fb') {
+                } else if (type === 'fb') {
                     user.fb = {};
-                } else if (type == 'google') {
+                } else if (type === 'google') {
                     user.google = {};
                 }
                 //update one social
-                var total = (user.github.id != null) +
-                    (user.twitter.id != null) +
-                    (user.fb.id != null) +
-                    (user.google.id != null);
-                if (total == 1) {
+                var total = (user.github.id !== null) +
+                    (user.twitter.id !== null) +
+                    (user.fb.id !== null) +
+                    (user.google.id !== null);
+                if (total === 1) {
                     console.log("Now only have one social");
                     user.oneSocial = true;
                 }
@@ -884,13 +854,13 @@ app.get('/edit-profile/toggle/:social', isAuthenticated, function (req, res) {
     var type = req.params.social;
     if (typeof type === 'string') {
         User.findOne({_id: req.user._id}, function (err, user) {
-            if (type == 'github') {
+            if (type === 'github') {
                 user.github.hidden = !user.github.hidden;
-            } else if (type == 'fb') {
+            } else if (type === 'fb') {
                 user.fb.hidden = !user.fb.hidden;
-            } else if (type == 'twitter') {
+            } else if (type === 'twitter') {
                 user.twitter.hidden = !user.twitter.hidden;
-            } else if (type == 'google') {
+            } else if (type === 'google') {
                 user.google.hidden = !user.google.hidden;
             }
 
@@ -911,17 +881,17 @@ app.get('/edit-profile/use-photo/:social', isAuthenticated, function (req, res) 
     var type = req.params.social;
     if (typeof type === 'string') {
         User.findOne({_id: req.user._id}, function (err, user) {
-            if (type == 'github') {
+            if (type === 'github') {
                 user.avatar = user.github.avatarURL;
                 user.activeAvatar = 'github';
 
-            } else if (type == 'fb') {
+            } else if (type === 'fb') {
                 user.avatar = user.fb.avatarURL;
                 user.activeAvatar = 'fb';
-            } else if (type == 'twitter') {
+            } else if (type === 'twitter') {
                 user.avatar = user.twitter.avatarURL;
                 user.activeAvatar = 'twitter';
-            } else if (type == 'google') {
+            } else if (type === 'google') {
                 user.avatar = user.google.avatarURL;
                 user.activeAvatar = 'google';
             }
@@ -962,7 +932,7 @@ app.post('/submit/file/edit/:nbID', isAuthenticated, multipartyMiddleware, funct
                     console.log("Error 2");
                     res.status(500);
                 } else {
-                    submission.notebook = stdout.replace(/<title[^>]*>([^<]*)<\/title>/, "$1");
+                    submission.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
                     submission.save(function (err) {
                         if (err) {
                             console.log("Error 3: ", err);
@@ -1077,7 +1047,7 @@ app.post('/edit-profile', isAuthenticated, function (req, res) {
 app.post('/submit/comment/edit/:commentID', isAuthenticated, function (req, res) {
     Comment.findOne({_id: req.params.commentID}, function (err, comment) {
         if (err) {
-            //todo: return error
+            res.status(500);
         } else if (comment) {
             //todo: need to save previous submissions for legal reasons?
             console.log("Edit comment content: ", req.body);
@@ -1086,7 +1056,7 @@ app.post('/submit/comment/edit/:commentID', isAuthenticated, function (req, res)
             comment.editedDate = new Date();
             comment.save(function (err) {
                 if (err) {
-                    //todo: return error
+                    res.status(500);
                 } else {
                     res.send({
                         message: 'Redirect',
@@ -1095,7 +1065,7 @@ app.post('/submit/comment/edit/:commentID', isAuthenticated, function (req, res)
                 }
             })
         } else {
-            //todo: return error
+            res.status(500);
         }
     })
 });
@@ -1168,7 +1138,6 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
 
     newReply.save(function (err, reply) {
         if (err) {
-            // todo: delete reply
             console.log("Error 1");
             res.status(500);
         } else if (reply) {
@@ -1196,7 +1165,6 @@ app.post('/submit/reply', isAuthenticated, function (req, res) {
                 }
             })
         } else {
-            // todo: delete reply
             console.log("Error 5");
             res.status(500);
         }

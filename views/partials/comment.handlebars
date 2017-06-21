@@ -1,6 +1,7 @@
 <head>
     <script src="/assets/js/submission.js"></script>
 </head>
+<!--todo: switch to client side rendering-->
 <div class="comment" ng-app="myApp" ng-controller="commentCtrl">
 
     <div class="comment-side">
@@ -13,7 +14,6 @@
 
         <div class="comment-score" id="score-{{comment.id}}">{{comment.score}}</div> <!-- .comment-score -->
 
-        <!--todo: get comment id somehow...-->
         <ul class="comment-vote" ng-controller="voteCtrl">
             <li><a class="fi-like" id="upvote-{{comment.id}}" ng-click="upvoteClicked(id, false)"></a></li>
             <li><a class="fi-dislike" id="downvote-{{comment.id}}" ng-click="downvoteClicked(id, false)"></a></li>

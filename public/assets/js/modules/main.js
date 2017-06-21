@@ -2,7 +2,6 @@
  * Created by tlyon on 6/1/17.
  */
 // Controllers =========================================================
-var url = 'http://localhost:8080';
 var app = angular.module('mainApp', [
         'hc.marked',
         'angularUtils.directives.dirPagination',
@@ -22,7 +21,9 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('mainCtrl', function ($scope, $timeout) {
+app.controller('mainCtrl', function ($scope, $timeout, $window) {
+    var url = $window.location.origin;
+    console.log("window.location: ", $window.location);
     // Vars ==========================================
     $scope.submissions = [];
     $scope.authors = [];
@@ -50,7 +51,8 @@ app.controller('mainCtrl', function ($scope, $timeout) {
     });
 });
 
-app.controller('searchCtrl', function ($scope, $http) {
+app.controller('searchCtrl', function ($scope, $http, $window) {
+    var url = $window.location.origin;
     // Vars ===========================================
     $scope.topics = [
         'All',
