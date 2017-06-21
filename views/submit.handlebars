@@ -169,7 +169,7 @@
                         <li ng-repeat="topic in topics">
                             <input type="checkbox"
                                    name="submissionFormModel.selectedTopics[]"
-                                   ng-checked="!submissionFormModel.topics.indexOf(topic)"
+                                   ng-checked="submissionFormModel.topics[topic]"
                                    ng-click="toggleTopicSelection(topic)"
                                    value="{[{topic}]}"> <label>{[{topic}]}</label>
                         </li>

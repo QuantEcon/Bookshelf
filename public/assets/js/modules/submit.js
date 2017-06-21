@@ -22,7 +22,7 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
     console.log("window.location: ", $window.location);
     var url = $window.location.origin;
     $scope.submissionFormModel = {};
-    $scope.submissionFormModel.topics = [];
+    $scope.submissionFormModel.topics = {};
     $scope.preview = false;
     $scope.edit = false;
     $scope.editID = '';
@@ -62,7 +62,11 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
                     console.log("Init returned: ", response);
                     $scope.submissionFormModel.title = response.data.notebook.title;
                     $scope.submissionFormModel.language = response.data.notebook.language;
-                    $scope.submissionFormModel.topicList = response.data.notebook.topicList;
+                    for (var i = 0; i < response.data.notebook.topicList.length; i++) {
+                        console.log("Toggle: ", response.data.notebook.topicList[i]);
+                        $scope.toggleTopicSelection(response.data.notebook.topicList[i]);
+                    }
+                    // $scope.submissionFormModel.topics = response.data.notebook.topicList;
                     $scope.submissionFormModel.summary = response.data.notebook.summary;
                 },
                 function (response) {
@@ -77,13 +81,14 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
     };
 
     $scope.toggleTopicSelection = function (topic) {
-        var i = $scope.submissionFormModel.topics.indexOf(topic);
-
-        if (i > -1) {
-            $scope.submissionFormModel.topics.splice(i, 1);
-        } else {
-            $scope.submissionFormModel.topics.push(topic);
-        }
+        // var i = $scope.submissionFormModel.topics.indexOf(topic);
+        //
+        // if (i > -1) {
+        //     $scope.submissionFormModel.topics.splice(i, 1);
+        // } else {
+        //     $scope.submissionFormModel.topics.push(topic);
+        // }
+        $scope.submissionFormModel.topics[topic] = !$scope.submissionFormModel.topics[topic];
     };
 
     $scope.upload = function () {
@@ -91,6 +96,13 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
         if ($scope.edit) {
             fullURL = '/submit/file/edit/' + $scope.editID;
         }
+        var topics = [];
+        for (var i = 0; i < $scope.topics.length; i++) {
+            if ($scope.submissionFormModel.topics[$scope.topics[i]]) {
+                topics.push($scope.topics[i]);
+            }
+        }
+
         Upload.upload({
             url: fullURL,
             data: {
@@ -99,7 +111,7 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
                 language: $scope.submissionFormModel.language,
                 //todo: add co-authors
                 coAuthors: [],
-                topicList: $scope.submissionFormModel.topics,
+                topicList: topics,
 
                 //set default values
                 comments: [],
