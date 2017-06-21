@@ -107,7 +107,6 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
 
         params.page = 1;
         $scope.searchParams.page = 1;
-        //todo: populate select
 
         $http.get(url + '/search/all-submissions', {
             params: {

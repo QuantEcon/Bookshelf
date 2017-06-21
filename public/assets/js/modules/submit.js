@@ -65,6 +65,7 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
                         console.log("Toggle: ", response.data.notebook.topicList[i]);
                         $scope.toggleTopicSelection(response.data.notebook.topicList[i]);
                     }
+
                     // $scope.submissionFormModel.topics = response.data.notebook.topicList;
                     $scope.submissionFormModel.summary = response.data.notebook.summary;
                 },

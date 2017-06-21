@@ -345,7 +345,8 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, function (err, submission) {
+                var select = "_id title author views comments score summary published language notebook";
+                Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, select, function (err, submission) {
                     if (err) callback(err);
                     else {
                         notebook = submission;
@@ -355,7 +356,9 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             //get author
             auth: function (callback) {
-                User.findOne({_id: mdb.ObjectId(notebook.author)}, function (err, author) {
+                var select = "_id avatar name";
+
+                User.findOne({_id: mdb.ObjectId(notebook.author)}, select, function (err, author) {
                     if (err) callback(err);
                     else {
                         callback(null, author);
@@ -364,6 +367,7 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             //get co-authors
             coAuth: function (callback) {
+                var select = "_id avatar name";
                 User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
                     if (err) callback(err);
                     else {
@@ -404,8 +408,9 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             //get comments/replies authors
             comAuth: function (callback) {
+                var select = "_id avatar name";
                 var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
-                User.find({_id: {$in: mergedAuthorIDs}}, 'name _id avatar', function (err, commentAuthors) {
+                User.find({_id: {$in: mergedAuthorIDs}}, select, function (err, commentAuthors) {
                     if (err) callback(err);
                     else {
                         callback(null, commentAuthors);
