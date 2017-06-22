@@ -224,6 +224,14 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         })
     });
 
+    $scope.$watch('searchParams.language', function () {
+        console.log("sortby changed!");
+        $scope.searchSubmissions($scope.searchParams, {
+            init: true,
+            newPage: $scope.searchParams.page
+        })
+    });
+
     $scope.$on('initSearch', function (event, args) {
         console.log("searchCtrl: Got init search: ", args);
         $scope.searchSubmissions($scope.searchParams, args);
