@@ -29,8 +29,14 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
     $scope.authors = [];
     $scope.dataReady = false;
     $scope.currentPage = 1;
+    $scope.totalSubmissions = 0;
 
     // Methods =======================================
+    $scope.pageChangeHandler = function (newPageNumber) {
+        console.log("Page changed: ", newPageNumber);
+        $scope.$broadcast('pageChanged', {newPage: newPageNumber})
+    };
+
     $scope.initSubmissions = function (userID) {
         console.log("mainCtrl: init submissions");
         $timeout(function () {
@@ -45,14 +51,20 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
         console.log("mainCtrl: Got search submissions results: ", results);
         $scope.submissions = results.data.submissions;
         $scope.authors = results.data.authors;
+        $scope.totalSubmissions = results.totalSubmissions;
         // $timeout(function () {
         //     $scope.dataReady = true;
         // }, 2000);
         $scope.dataReady = true;
     });
+
+    $scope.$on('clearSearch', function (p1, p2) {
+        console.log("mainCtrl: clear search");
+        $scope.pagination.current = 1;
+    })
 });
 
-app.controller('searchCtrl', function ($scope, $http, $window) {
+app.controller('searchCtrl', function ($scope, $http, $window, paginationService) {
     var url = $window.location.origin;
     // Vars ===========================================
     $scope.topics = [
@@ -94,6 +106,7 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
 
     // Methods ========================================
 
+
     $scope.searchSubmissions = function (params, args) {
         if (!args.init) {
             console.log("searchCtrl: Set current search!");
@@ -103,11 +116,13 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
             console.log("searchCtrl: Performing submissions search for user");
             $scope.searchParams.author = args.userID;
         }
+        var page = 1;
+        if (args.newPage) {
+            page = args.newPage;
+        }
+        $scope.searchParams.page = args.newPage;
 
         console.log("searchCtrl: search submissions:", $scope.searchParams, args);
-
-        params.page = 1;
-        $scope.searchParams.page = 1;
 
         $http.get(url + '/search/all-submissions', {
             params: {
@@ -115,13 +130,15 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
                 topic: params.topic,
                 author: params.author,
                 time: params.time,
-                sortBy: params.sortBy
+                sortBy: params.sortBy,
+                page: page
             }
         }).then(function success(response) {
                 console.log("searchCtrl: Search returned: ", response);
                 var results = {
                     params: params,
-                    data: response.data
+                    data: response.data,
+                    totalSubmissions: response.data.totalSubmissions
                 };
                 $scope.numSubs = response.data.totalSubmissions;
                 $scope.$emit('searchResults', results);
@@ -171,6 +188,7 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
         $scope.hasCurrentSearch = false;
         $scope.searchParams = {};
         $scope.searchParams.page = 1;
+        $scope.$emit('clearSearch', {});
         $scope.searchParams.sortBy = "Trending";
         $scope.searchParams.time = "Today";
         $scope.searchParams.topic = $scope.topics[0];
@@ -182,6 +200,14 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
     };
 
     // Events =========================================
+    $scope.$watch('searchParams.sortBy', function () {
+        console.log("sortby changed!");
+        $scope.searchSubmissions($scope.searchParams, {
+            init: true,
+            newPage: $scope.searchParams.page
+        })
+    });
+
     $scope.$on('initSearch', function (event, args) {
         console.log("searchCtrl: Got init search: ", args);
         $scope.searchSubmissions($scope.searchParams, args);
@@ -190,6 +216,13 @@ app.controller('searchCtrl', function ($scope, $http, $window) {
     $scope.$on('initUserSearch', function (event, args) {
         console.log("searchCtrl: Got init user search:", args);
         $scope.searchUsers(args);
+    });
+
+    $scope.$on('pageChanged', function (event, args) {
+        console.log("Got page changed: ", args);
+        $scope.searchSubmissions.page = args.newPage;
+        args.init = true;
+        $scope.searchSubmissions($scope.searchParams, args)
     });
 });
 
@@ -204,7 +237,7 @@ app.controller('userPageCtrl', function ($scope, $timeout) {
     // Methods ========================================
     $scope.initUserData = function () {
         var args = {
-            userID: $scope.userID,
+            userID: $scope.userID
         };
         console.log("userPageCtrl: Init user search: ", args);
 

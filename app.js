@@ -37,7 +37,8 @@ var Submission = require('./js/db/models/Submission');
 var Comment = require('./js/db/models/Comment');
 
 // config ================================================================================
-var port = 8080;
+var port = require('./_config').port;
+console.log('Port: ', port);
 
 // template engine
 var hbs = require('express-handlebars').create(
@@ -286,6 +287,7 @@ app.get('/', isAuthenticated, function (req, res) {
 });
 
 app.get('/search/all-submissions', function (req, res) {
+    console.log("req.query: ", req.query);
     var searchParams = {};
     //todo: implement sorting and pagination
     if (req.query.language !== 'All') {
@@ -302,7 +304,7 @@ app.get('/search/all-submissions', function (req, res) {
         }
     }
     //todo: get page from search query
-    var page = 1;
+    var page = req.query.page;
     var select = "_id title author views comments score summary published language totalComments";
 
     var options = {
@@ -331,7 +333,7 @@ app.get('/search/all-submissions', function (req, res) {
             case 'Date':
                 break;
             case 'Comments':
-                options.sort = {'totalComments': 1};
+                options.sort = {'totalComments': -1};
                 break;
             case 'Trending':
                 break;
