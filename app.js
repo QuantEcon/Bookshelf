@@ -318,10 +318,22 @@ app.get('/search/all-submissions', function (req, res) {
         //todo: restrict by time
         switch (req.query.time) {
             case 'Today':
+                var today = new Date();
+                today.setHours(0, 0, 0, 0);
+                searchParams.published = {$gt: today};
                 break;
             case 'This month':
+                var month = new Date();
+                month.setDate(1);
+                month.setHours(0, 0, 0, 0);
+                searchParams.published = {$gt: month};
                 break;
             case 'This year':
+                var year = new Date();
+                year.setMonth(1);
+                year.setDate(1);
+                year.setHours(0, 0, 0, 0);
+                searchParams.published = {$gt: year};
                 break;
             case 'All time':
                 break;
@@ -345,8 +357,9 @@ app.get('/search/all-submissions', function (req, res) {
 
     }
 
-
-    console.log("Performing search with params: ", options);
+    console.log("-----------------------------");
+    console.log("Performing search with: options: ", options);
+    console.log("Performing search with: params: ", searchParams);
 
 
     Submission.paginate(searchParams, options).then(function (result) {
