@@ -1,14 +1,7 @@
 .idea/
 node_modules/
-dist/
-js/testDB.js
 npm-debug.log
 frontend
 
 #config
 _config.js
-
-#testing
-app/
-config/
-server.js

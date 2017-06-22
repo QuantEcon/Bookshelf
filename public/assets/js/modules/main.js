@@ -28,6 +28,7 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
     $scope.submissions = [];
     $scope.authors = [];
     $scope.dataReady = false;
+    $scope.currentPage = 1;
 
     // Methods =======================================
     $scope.initSubmissions = function (userID) {

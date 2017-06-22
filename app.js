@@ -307,7 +307,7 @@ app.get('/search/all-submissions', function (req, res) {
 
     var options = {
         limit: 10,
-        sort: {published: 1},
+        sort: {published: -1},
         page: page,
         select: select
     };
