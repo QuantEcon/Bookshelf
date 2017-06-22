@@ -100,6 +100,8 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
     $scope.searchParams.keywords = "";
     $scope.numSubs = 0;
 
+    $scope.previousSearch = "";
+
     $scope.hasCurrentSearch = false;
 
     $scope.showSearchBar = false;
@@ -108,6 +110,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
 
     $scope.searchSubmissions = function (params, args) {
+        $scope.previousSearch = params.keywords;
         if (!args.init) {
             console.log("searchCtrl: Set current search!");
             $scope.hasCurrentSearch = true;

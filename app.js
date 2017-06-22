@@ -316,6 +316,7 @@ app.get('/search/all-submissions', function (req, res) {
 
     if (req.query.keywords !== "") {
         console.log("Search has keywords");
+        searchParams.$text = {$search: req.query.keywords};
     }
 
     if (req.query.time) {

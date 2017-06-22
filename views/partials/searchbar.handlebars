@@ -89,7 +89,9 @@
     </div>
 
     <p class="search-message" ng-show="hasCurrentSearch">
-        Your search returned {[{numSubs}]} notebooks.
+        Your search for <span style="font-weight: bold">"{[{previousSearch}]}"</span> returned {[{numSubs}]}
+        <span ng-show="numSubs == 1">notebook.</span> <span ng-show="numSubs != 1">notebooks.</span>
+        <br>
         {{#if userPage}}
             <a ng-click="clearSearch({init: true, userID: userID})">Clear search</a>
         {{else}}
