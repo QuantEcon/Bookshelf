@@ -58,9 +58,9 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
         $scope.dataReady = true;
     });
 
-    $scope.$on('clearSearch', function (p1, p2) {
+    $scope.$on('setPage', function (event, args) {
         console.log("mainCtrl: clear search");
-        $scope.pagination.current = 1;
+        $scope.pagination.current = args.page;
     })
 });
 
@@ -188,7 +188,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         $scope.hasCurrentSearch = false;
         $scope.searchParams = {};
         $scope.searchParams.page = 1;
-        $scope.$emit('clearSearch', {});
+        $scope.$emit('setPage', {page: 1});
         $scope.searchParams.sortBy = "Trending";
         $scope.searchParams.time = "Today";
         $scope.searchParams.topic = $scope.topics[0];
@@ -201,6 +201,14 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
     // Events =========================================
     $scope.$watch('searchParams.sortBy', function () {
+        console.log("sortby changed!");
+        $scope.searchSubmissions($scope.searchParams, {
+            init: true,
+            newPage: $scope.searchParams.page
+        })
+    });
+
+    $scope.$watch('searchParams.topic', function () {
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
