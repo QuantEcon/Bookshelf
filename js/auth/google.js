@@ -104,3 +104,5 @@ passport.use('addGoogle', new GoogleStrategy({
         })
     })
 );
+
+module.exports = passport;

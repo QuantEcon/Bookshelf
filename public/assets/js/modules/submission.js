@@ -143,7 +143,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         var data = {
             submissionID: submissionID
         };
-        $http.post(url + '/upvote/submission', data).then(
+        $http.post(url + '/vote/upvote/submission', data).then(
             function (response) {
                 console.log("Upvoted submission");
                 $window.location.reload();
@@ -162,7 +162,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         var data = {
             submissionID: submissionID
         };
-        $http.post(url + '/downvote/submission', data).then(
+        $http.post(url + '/vote/downvote/submission', data).then(
             function success(response) {
                 console.log("Downvoted submission");
                 $window.location.reload();
@@ -181,7 +181,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         var data = {
             commentID: commentID
         };
-        $http.post(url + '/upvote/comment', data).then(
+        $http.post(url + '/vote/upvote/comment', data).then(
             function (response) {
                 console.log("Upvoted comment");
                 $window.location.reload();
@@ -199,7 +199,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         var data = {
             commentID: commentID
         };
-        $http.post(url + '/downvote/comment', data).then(
+        $http.post(url + '/vote/downvote/comment', data).then(
             function (response) {
                 console.log("Downvoted comment");
                 $window.location.reload();
