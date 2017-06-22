@@ -333,12 +333,14 @@ app.get('/search/all-submissions', function (req, res) {
             case 'Date':
                 break;
             case 'Comments':
-                options.sort = {'totalComments': -1};
+                options.sort = {'totalComments': -1, 'published': -1};
                 break;
             case 'Trending':
                 break;
             case 'Views':
                 break;
+            case 'Votes':
+                options.sort = {'score': -1, 'published': -1};
         }
 
     }
