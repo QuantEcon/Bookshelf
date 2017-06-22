@@ -60,7 +60,7 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
                 function (response) {
                     console.log("Init returned: ", response);
                     $scope.submissionFormModel.title = response.data.notebook.title;
-                    $scope.submissionFormModel.language = response.data.notebook.language;
+                    $scope.submissionFormModel.lang = response.data.notebook.lang;
                     for (var i = 0; i < response.data.notebook.topicList.length; i++) {
                         console.log("Toggle: ", response.data.notebook.topicList[i]);
                         $scope.toggleTopicSelection(response.data.notebook.topicList[i]);
@@ -108,7 +108,7 @@ app.controller('submitCtrl', ['$scope', '$http', '$window', 'Upload', function (
             data: {
                 title: $scope.submissionFormModel.title,
                 summary: $scope.submissionFormModel.summary,
-                language: $scope.submissionFormModel.language,
+                lang: $scope.submissionFormModel.lang,
                 //todo: add co-authors
                 coAuthors: [],
                 topicList: topics,

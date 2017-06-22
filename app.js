@@ -57,7 +57,7 @@ var hbs = require('express-handlebars').create(
                     title: submission.title,
                     authorID: submission.author,
                     authorName: user.name,
-                    language: submission.language,
+                    lang: submission.lang,
                     summary: submission.summary,
                     timestamp: fTime,
                     authorPic: user.avatar,
@@ -290,8 +290,8 @@ app.get('/search/all-submissions', function (req, res) {
     console.log("req.query: ", req.query);
     var searchParams = {};
     //todo: implement sorting and pagination
-    if (req.query.language !== 'All') {
-        searchParams.language = req.query.language
+    if (req.query.lang !== 'All') {
+        searchParams.lang = req.query.lang
     }
     if (req.query.topic !== 'All') {
         searchParams.topicList = req.query.topic;
@@ -305,7 +305,7 @@ app.get('/search/all-submissions', function (req, res) {
     }
     //todo: get page from search query
     var page = req.query.page;
-    var select = "_id title author views comments score summary published language totalComments";
+    var select = "_id title author views comments score summary published lang totalComments";
 
     var options = {
         limit: 10,
@@ -313,6 +313,10 @@ app.get('/search/all-submissions', function (req, res) {
         page: page,
         select: select
     };
+
+    if (req.query.keywords !== "") {
+        console.log("Search has keywords");
+    }
 
     if (req.query.time) {
         //todo: restrict by time
@@ -362,6 +366,7 @@ app.get('/search/all-submissions', function (req, res) {
     console.log("Performing search with: params: ", searchParams);
 
 
+    //todo: add select statement to only get required info
     Submission.paginate(searchParams, options).then(function (result) {
         var submissions = result.docs;
         var err = null;
@@ -405,7 +410,7 @@ app.get('/search/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published language notebook";
+                var select = "_id title author views comments score summary published lang notebook";
                 Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, select, function (err, submission) {
                     if (err) callback(err);
                     else {
@@ -742,7 +747,7 @@ app.get('/submit/confirm', isAuthenticated, function (req, res) {
             newSub.author = req.user._id;
             newSub.save(function (err) {
                 if (err) {
-                    console.log("ERROR SAVING NEW SUB");
+                    console.log("ERROR SAVING NEW SUB: ", err);
                     res.render('500');
                 } else {
                     user.currentSubmission = null;
@@ -990,7 +995,7 @@ app.post('/submit/file/edit/:nbID', isAuthenticated, multipartyMiddleware, funct
         } else if (submission) {
             submission.title = req.body.title;
             submission.topicList = req.body.topicList;
-            submission.language = req.body.language;
+            submission.lang = req.body.lang;
             submission.summary = req.body.summary;
             submission.file = file.name;
             submission.lastUpdated = new Date();
@@ -1039,7 +1044,7 @@ app.post('/submit/file', isAuthenticated, multipartyMiddleware, function (req, r
 
             newSub.topicList = req.body.topicList;
 
-            newSub.language = req.body.language;
+            newSub.lang = req.body.lang;
             newSub.summary = req.body.summary;
 
 

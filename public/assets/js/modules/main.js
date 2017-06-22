@@ -96,7 +96,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
     $scope.searchParams.sortBy = "Trending";
     $scope.searchParams.time = "Today";
     $scope.searchParams.topic = $scope.topics[0];
-    $scope.searchParams.language = "All";
+    $scope.searchParams.lang = "All";
     $scope.searchParams.keywords = "";
     $scope.numSubs = 0;
 
@@ -126,11 +126,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
         $http.get(url + '/search/all-submissions', {
             params: {
-                language: params.language,
+                lang: params.lang,
                 topic: params.topic,
                 author: params.author,
                 time: params.time,
                 sortBy: params.sortBy,
+                keywords: params.keywords,
                 page: page
             }
         }).then(function success(response) {
@@ -192,7 +193,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         $scope.searchParams.sortBy = "Trending";
         $scope.searchParams.time = "Today";
         $scope.searchParams.topic = $scope.topics[0];
-        $scope.searchParams.language = "All";
+        $scope.searchParams.lang = "All";
         $scope.searchParams.keywords = "";
         $scope.numSubs = 0;
 
@@ -200,7 +201,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
     };
 
     // Events =========================================
+    var sortByInit = true;
     $scope.$watch('searchParams.sortBy', function () {
+        if(sortByInit){
+            sortByInit = false;
+            return;
+        }
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
@@ -208,7 +214,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         })
     });
 
+    var topicInit = true;
     $scope.$watch('searchParams.topic', function () {
+        if(topicInit){
+            topicInit = false;
+            return;
+        }
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
@@ -216,7 +227,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         })
     });
 
+    var timeInit = true;
     $scope.$watch('searchParams.time', function () {
+        if(timeInit){
+            timeInit = false;
+            return;
+        }
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
@@ -224,7 +240,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         })
     });
 
-    $scope.$watch('searchParams.language', function () {
+    var languageInit = true;
+    $scope.$watch('searchParams.lang', function () {
+        if(languageInit){
+            languageInit = false;
+            return;
+        }
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,

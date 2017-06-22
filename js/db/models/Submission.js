@@ -10,7 +10,7 @@ var ObjectId = Schema.ObjectId;
 var submissionSchema = new Schema({
     title: String,
     topicList: [String],
-    language: String,
+    lang: String,
     summary: String,
     notebook: String, // html of notebook
     file: String, // path to file
@@ -31,5 +31,8 @@ var submissionSchema = new Schema({
 });
 
 submissionSchema.plugin(mongoosePaginate);
+console.log("Set indexes");
+submissionSchema.index({title: 'text', summary: 'text'});
+
 
 module.exports = mongoose.model("Submission", submissionSchema);
