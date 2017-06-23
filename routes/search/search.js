@@ -87,9 +87,9 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-    console.log("-----------------------------");
-    console.log("Performing search with: options: ", options);
-    console.log("Performing search with: params: ", searchParams);
+    // console.log("-----------------------------");
+    // console.log("Performing search with: options: ", options);
+    // console.log("Performing search with: params: ", searchParams);
 
 
     //todo: add select statement to only get required info
