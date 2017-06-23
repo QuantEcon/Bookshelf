@@ -2,13 +2,13 @@
  * Created by tlyon on 5/18/17.
  * Entry point for server.
  */
+
 // modules ===============================================================================
 var express = require('express');
 var bodyParser = require('body-parser');
 var fs = require("fs");
 var series = require('async/series');
 var waterfall = require('async/waterfall');
-var sprintf = require('sprintf');
 
 // routes ================================================================================
 //auth
@@ -16,17 +16,11 @@ var fbAuthRoutes = require('./routes/auth/fb');
 var githubAuthRoutes = require('./routes/auth/github');
 var twitterAuthRoutes = require('./routes/auth/twitter');
 var googleAuthRoutes = require('./routes/auth/google');
-//edit profile
 var editProfileRoutes = require('./routes/edit-profile/edit-profile');
-//search
 var searchRoutes = require('./routes/search/search');
-//submit
 var submitRoutes = require('./routes/submit/submit');
-//user
 var userRoutes = require('./routes/user/user');
-//notebook
 var notebookRoutes = require('./routes/notebook/notebook');
-//vote
 var upvoteRoutes = require('./routes/vote/upvote');
 var downvoteRoutes = require('./routes/vote/downvote');
 // =======================================================================================
@@ -70,7 +64,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(__dirname + "/public"));
 
 app.use(function (req, res, next) {
-    // console.log("Looking for URL : " + req.url);
+    console.log("Looking for URL : " + req.url);
     next();
 });
 
@@ -161,4 +155,5 @@ app.use(function (err, req, res, next) {
 // start server
 app.listen(port, function () {
     console.log("Server listening on port %d", port);
+    console.log("__dirname: ", __dirname);
 });

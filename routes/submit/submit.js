@@ -6,6 +6,9 @@ var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
+var sprintf = require('sprintf');
+var exec = require('child_process').exec;
+
 var multipartyMiddleware = multiparty();
 
 
@@ -277,16 +280,22 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
             newSub.deleted = false;
             newSub.flagged = false;
 
-            var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
+            console.log("new sub id: ", newSub._id);
+            var outputDir = __dirname + '/../../files/html/';
+            var outputName = newSub._id;
+            var templateLocation = __dirname + '/../../assets/nbconvert/templates/notebookHTML.tpl';
+
+            var command = sprintf('jupyter nbconvert %s --output=%s --output-dir=%s --template=%s', file.path, outputName, outputDir, templateLocation);
             console.log("command: ", command);
             exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
                 console.log("stderr: ", stderr);
                 console.log("err: ", err);
+                console.log("stdout: ", stdout);
 
                 if (err) {
                     res.status(500);
                 } else {
-                    newSub.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
+                    newSub.notebook = outputDir + outputName + '.html';
                     console.log("New sub: ", newSub);
 
                     user.currentSubmission = newSub;

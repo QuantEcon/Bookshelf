@@ -7,6 +7,8 @@ var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
+var fs = require('fs');
+
 var app = express.Router();
 
 
@@ -219,8 +221,13 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 }
             }
 
+            //todo: open file and send
+            var location = __dirname + '/../../files/html/' + notebook._id + '.html';
+            var notebookHTML = fs.readFileSync(location, 'utf8');
+
             var data = {
                 notebook: results.nb,
+                notebookHTML: notebookHTML,
                 author: results.auth,
                 coAuthors: results.coAuth,
                 comments: results.coms,

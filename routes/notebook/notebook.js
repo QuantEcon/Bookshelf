@@ -5,6 +5,8 @@ var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
+var fs = require('fs');
+
 var app = express.Router();
 
 
@@ -16,9 +18,12 @@ app.get('/current-submission', isAuthenticated, function (req, res) {
                 res.render('500');
             } else if (user) {
                 if (user.currentSubmission) {
+                    var location = __dirname + '/../../files/html/' + user.currentSubmission._id + '.html';
+                    var notebookHTML = fs.readFileSync(location, 'utf8');
                     var data = {
                         author: user,
                         notebook: user.currentSubmission,
+                        notebookHTML: notebookHTML,
                         currentUser: user
                     };
                     res.send(data);

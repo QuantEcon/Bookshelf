@@ -40,6 +40,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
                 console.log("submissionCtrl: search returned: ", response);
                 // set notebook information
                 $scope.notebook = response.data.notebook;
+                $scope.notebookHTML = response.data.notebookHTML;
 
                 //set current user's submission
                 $scope.currentUsersSubmission = response.data.currentUsersSubmission;

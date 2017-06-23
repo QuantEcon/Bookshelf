@@ -3,6 +3,7 @@ node_modules/
 npm-debug.log
 frontend
 data/
+files/
 
 #config
 _config.js

@@ -21,6 +21,7 @@ app.controller('previewCtrl', function ($scope, $http, $window) {
         $http.get('/notebook/current-submission').then(function (res) {
             console.log("Got init response: ", res.data);
             $scope.notebook = res.data.notebook;
+            $scope.notebookHTML = res.data.notebookHTML;
             $scope.author = res.data.author;
         });
     };
