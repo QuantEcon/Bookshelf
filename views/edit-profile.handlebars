@@ -2,7 +2,7 @@
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <script src="/bundle.js"></script>
     <script>
-//        todo: extract to separate file
+        //        todo: extract to separate file
         var app = angular.module('myApp', ['hc.marked']);
 
         app.config(function ($interpolateProvider) {
@@ -40,12 +40,15 @@
                     }
                     console.log("CLicked on submit");
                     console.log($scope.formModel);
-                    $http.post(url + '/edit-profile', $scope.formModel).success(function (data) {
-                        console.log("Saved profile");
-                        $window.location.href = url + '/user/my-profile'
-                    }).error(function (data) {
-                        console.log("Error saving profile");
-                    })
+                    $http.post(url + '/edit-profile', $scope.formModel).then(
+                            function success(data) {
+                                console.log("Saved profile");
+                                $window.location.href = url + '/user/my-profile';
+                            },
+                            function failure(data) {
+                                console.log("Error saving profile");
+                            }
+                    );
                 } else {
                     console.log("Form is invalid!");
                 }
@@ -136,7 +139,6 @@
             <h1 class="page-title">Edit Profile</h1>
 
             <div class="edit-profile-header">
-                <!--todo: be able to edit avatar-->
                 <p class="avatar"><img src='{{data.user.avatar}}'></p>
 
                 <div class="edit-profile-title">

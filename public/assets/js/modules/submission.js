@@ -15,7 +15,7 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('submissionCtrl', function ($scope, $http, $window) {
+app.controller('submissionCtrl', function ($scope, $http, $window, $sce) {
     console.log("window.location: ", $window.location);
     var url = $window.location.origin;
     //submission information
@@ -56,7 +56,11 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
                 $scope.coAuthors = response.data.coAuthors;
 
 
+                setTimeout(function () {
+
+                }, 2000);
                 $scope.dataReady = true;
+
             }, function error(response) {
                 console.log("submissionCtrl: Error occurred during the search");
                 window.location.href = url + '/500';

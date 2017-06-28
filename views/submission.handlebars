@@ -4,6 +4,15 @@
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-sanitize.js"></script>
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <link rel="stylesheet" href="/assets/css/general.css">
+    <script type="text/javascript" async
+            src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML">
+    </script>
+    <script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+});
+
+    </script>
 </head>
 <div class="row" ng-app="submissionApp"
      ng-controller="submissionCtrl"
@@ -19,7 +28,10 @@
                        ng-class="{active: currentUser && currentUser.upvotes.indexOf(submissionID) !== -1}">
                     </a>
 
-                    <span class="score" id="submission-score">{[{notebook.score}]}</span>
+                    <span ng-show="dataReady" class="score" id="submission-score">{[{notebook.score}]}</span>
+                    <span ng-show="!dataReady" class="score" id="submission-score">
+                        <img src="/assets/img/loading-dots.gif" class="text-loading-medium">
+                    </span>
 
                     <a class="fi-dislike" id="submission-downvote-button"
                        ng-click="downvoteSubmissionClicked(submissionID)"
@@ -68,11 +80,30 @@
 
                         <div class="counts">
                             <ul>
-                                <li class="views"><span class="count">{[{notebook.views}]}</span> Views</li>
-                                <li class="comments"><span class="count">{[{notebook.comments.length + notebook.replies.length}]}</span>
+                                <li class="views">
+                                    <span class="count" ng-show="dataReady">{[{notebook.views}]}</span>
+                                    <span ng-show="!dataReady">
+                                        <img src="/assets/img/loading-dots.gif" class="text-loading-medium">
+                                    </span>
+                                    Views
+                                </li>
+                                <li class="comments">
+                                    <span class="count" ng-show="dataReady">
+                                        {[{notebook.comments.length + notebook.replies.length}]}
+                                    </span>
+                                    <span ng-show="!dataReady">
+                                        <img src="/assets/img/loading-dots.gif" class="text-loading-medium">
+                                    </span>
                                     Comments
                                 </li>
-                                <li class="votes"><span class="count">{[{notebook.score}]}</span> Votes</li>
+                                <li class="votes">
+                                    <span class="count" ng-show="dataReady">{[{notebook.score}]}</span>
+                                    <span ng-show="!dataReady">
+                                        <img src="/assets/img/loading-dots.gif" class="text-loading-medium">
+                                    </span>
+                                    Votes
+                                </li>
+
                             </ul>
                         </div>
 
@@ -92,23 +123,57 @@
 
                         <div class="side">
 
-                            <p class="avatar"><a href="/user/{[{author._id}]}/"><img src={[{author.avatar}]}></a></p>
+                            <!--todo: fix this so that it renders correctly-->
+                            <p ng-show="!dataReady" class="avatar"><img src="/assets/img/default-avatar.png"
+                                                                        class="loading-avatar"></p>
+                            <p class="avatar" ng-show="dataReady"><a href="/user/{[{author._id}]}/"><img
+                                    src={[{author.avatar}]}></a></p>
 
                         </div>
 
                         <div class="main">
 
                             <ul class="specs">
-                                <li><span>Author:</span> <a href="/user/{[{author._id}]}/">{[{author.name}]}</a></li>
-                                <li><span>Co-authors:</span>
+                                <li ng-show="dataReady">
+                                    <span>Author:</span> <a href="/user/{[{author._id}]}/">{[{author.name}]}</a>
+                                </li>
+                                <li ng-show="!dataReady">
+                                    <span>Author:</span> <img src="/assets/img/loading-dots.gif" class="text-loading">
+                                </li>
+
+                                <li ng-show="dataReady"><span>Co-authors:</span>
                                     <a ng-repeat="coAuthor in notebook.coAuthors">
                                         {[{coAuthor.name}]}
                                     </a>
                                     <br>
                                 </li>
-                                <li><span>Language:</span> <a href="/">{[{notebook.lang}]}</a></li>
-                                <li><span>Published:</span> {[{notebook.published | date: 'd MMM yyyy'}]}</li>
-                                <li><span>Last update:</span> {[{notebook.lastUpdated | date: 'd MMM yyyy'}]}</li>
+                                <li ng-show="!dataReady">
+                                    <span>Co-authors:</span><img src="/assets/img/loading-dots.gif"
+                                                                 class="text-loading">
+                                </li>
+
+                                <li ng-show="dataReady">
+                                    <span>Language:</span> <a href="/">{[{notebook.lang}]}</a>
+                                </li>
+                                <li ng-show="!dataReady">
+                                    <span>Language:</span><img src="/assets/img/loading-dots.gif" class="text-loading">
+                                </li>
+
+                                <li ng-show="dataReady">
+                                    <span>Published:</span> {[{notebook.published | date: 'd MMM yyyy'}]}
+                                </li>
+                                <li ng-show="!dataReady">
+                                    <span>Published:</span><img src="/assets/img/loading-dots.gif" class="text-loading">
+                                </li>
+
+                                <li ng-show="dataReady">
+                                    <span>Last update:</span> {[{notebook.lastUpdated | date: 'd MMM yyyy'}]}
+                                </li>
+                                <li ng-show="!dataReady">
+                                    <span>Last update:</span><img src="/assets/img/loading-dots.gif"
+                                                                  class="text-loading">
+                                </li>
+
                             </ul>
 
                         </div>
@@ -133,10 +198,17 @@
                 </ul>
 
                 <ul class="tile-options">
-                    <li><a class="active">Notebook</a></li>
-                    <li><a ng-click="toggleView()">Comments {[{comments.length + replies.length}]}</a></li>
+                    <li><a class="active">
+                        Notebook
+                    </a></li>
+
+                    <li><a ng-click="toggleView()">
+                        Comments {[{comments.length + replies.length}]}
+                    </a></li>
+
                     <!--todo: implement download-->
-                    <li><a class="alt" ng-click="downloadNotebook()">Download</a>
+                    <li><a class="alt" ng-click="downloadNotebook()">
+                        Download</a>
                     </li>
                 </ul>
 
@@ -144,6 +216,7 @@
 
             <div ng-show="showNotebook"
                  ng-bind-html="notebookHTML">
+                <img src="/assets/img/loadingSpinner.gif" ng-show="!dataReady">
             </div>
 
 

@@ -47,7 +47,6 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
 
     // Events ========================================
     $scope.$on('searchResults', function (event, results) {
-        //todo parse and sort results
         console.log("mainCtrl: Got search submissions results: ", results);
         $scope.submissions = results.data.submissions;
         $scope.authors = results.data.authors;
@@ -94,7 +93,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
     $scope.searchParams = {};
     $scope.searchParams.page = 1;
     $scope.searchParams.sortBy = "Trending";
-    $scope.searchParams.time = "Today";
+    $scope.searchParams.time = "All time";
     $scope.searchParams.topic = $scope.topics[0];
     $scope.searchParams.lang = "All";
     $scope.searchParams.keywords = "";

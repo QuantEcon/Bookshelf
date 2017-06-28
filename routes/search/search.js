@@ -15,7 +15,6 @@ var app = express.Router();
 app.get('/all-submissions', function (req, res) {
     console.log("req.query: ", req.query);
     var searchParams = {};
-    //todo: implement sorting and pagination
     if (req.query.lang !== 'All') {
         searchParams.lang = req.query.lang
     }
@@ -45,23 +44,24 @@ app.get('/all-submissions', function (req, res) {
     }
 
     if (req.query.time) {
-        //todo: restrict by time
         switch (req.query.time) {
             case 'Today':
                 var today = new Date();
-                today.setHours(0, 0, 0, 0);
+                //todo: subtract 24 hours, don't just set to 00:00
+                today.setHours(today.getHours() - 24);
                 searchParams.published = {$gt: today};
                 break;
             case 'This month':
                 var month = new Date();
-                month.setDate(1);
+                //todo: subtract 30 days, don't just set to 1st
+                month.setDate(month.getDate() - 30);
                 month.setHours(0, 0, 0, 0);
                 searchParams.published = {$gt: month};
                 break;
             case 'This year':
                 var year = new Date();
-                year.setMonth(1);
-                year.setDate(1);
+                //todo: subtract 365 days, don't just set to Jan 1st
+                year.setDate(year.getDate() - 365);
                 year.setHours(0, 0, 0, 0);
                 searchParams.published = {$gt: year};
                 break;
@@ -70,7 +70,6 @@ app.get('/all-submissions', function (req, res) {
         }
     }
     if (req.query.sortBy) {
-        //todo: sort by sortBy
         switch (req.query.sortBy) {
             case 'Date':
                 break;
@@ -93,6 +92,7 @@ app.get('/all-submissions', function (req, res) {
 
 
     //todo: add select statement to only get required info
+    var select = "_id author lang published summary views comments score";
     Submission.paginate(searchParams, options).then(function (result) {
         var submissions = result.docs;
         var err = null;
@@ -166,9 +166,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     }
                 })
             },
-            //todo: only get name, id, and avatar from comment/reply authors
             //get comments
             coms: function (callback) {
+                // todo: add select statement
                 Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
                     if (err) callback(err);
                     else {
@@ -187,6 +187,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             reps: function (callback) {
                 //get replies
+                // todo: add select statement
                 Comment.find({_id: {$in: replyIDs[0]}, deleted: false}, function (err, replies) {
                     if (err) callback(err);
                     else {
@@ -199,6 +200,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             //get comments/replies authors
             comAuth: function (callback) {
+                //only get name, id, and avatar from comment/reply authors
                 var select = "_id avatar name";
                 var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
                 User.find({_id: {$in: mergedAuthorIDs}}, select, function (err, commentAuthors) {
@@ -221,7 +223,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 }
             }
 
-            //todo: open file and send
             var location = __dirname + '/../../files/html/' + notebook._id + '.html';
             var notebookHTML = fs.readFileSync(location, 'utf8');
 

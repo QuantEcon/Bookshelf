@@ -24,11 +24,26 @@
 ul.pagination li.active {
     border: 1px solid #d84d0a;
     background: transparent;
-    color: #d84d0a!important;
+    color: #d84d0a !important;
     font-weight: 700
 }
 
-ul.pagination li.active a{
-    color: #d84d0a!important;
+ul.pagination li.active a {
+    color: #d84d0a !important;
     font-weight: 700
+}
+
+img.text-loading {
+    height: 10%;
+    width: 10%;
+}
+
+img.text-loading-medium {
+    height: 60%;
+    width: 60%;
+}
+
+img.loading-avatar {
+    height: 100%;
+    width: 200%;
 }
