@@ -15,7 +15,7 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('submissionCtrl', function ($scope, $http, $window, $sce) {
+app.controller('submissionCtrl', function ($scope, $http, $window) {
     console.log("window.location: ", $window.location);
     var url = $window.location.origin;
     //submission information
@@ -41,6 +41,7 @@ app.controller('submissionCtrl', function ($scope, $http, $window, $sce) {
                 // set notebook information
                 $scope.notebook = response.data.notebook;
                 $scope.notebookHTML = response.data.notebookHTML;
+                MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
 
                 //set current user's submission
                 $scope.currentUsersSubmission = response.data.currentUsersSubmission;
