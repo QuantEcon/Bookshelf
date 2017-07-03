@@ -38,6 +38,7 @@ app.get('/', isAuthenticated, function (req, res) {
 app.get('/preview', isAuthenticated, function (req, res) {
     if (req.user._doc.currentSubmission) {
         res.render('submissionPreview', {
+            layout: 'breadcrumbs',
             title: req.user._doc.currentSubmission.title,
             data: {
                 currentUser: req.user,
@@ -45,7 +46,10 @@ app.get('/preview', isAuthenticated, function (req, res) {
             }
         });
     } else {
-        res.render('submit')
+        res.render('submit', {
+            layout: 'breadcrumbs',
+            title: 'Submission Preview'
+        })
     }
 });
 

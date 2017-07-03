@@ -15,3 +15,5 @@ Please review existing issues before submitting a new one. If no related issue e
 #### Enchancement requests:
 * Label the issue with 'enchancement'
 * Provide detailed description of what enchancement you would like
+#### JS Library Requests
+* If a notebook requires a specific JS library, open and issue with a link to the library
