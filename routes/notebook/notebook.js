@@ -6,6 +6,7 @@ var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
 var fs = require('fs');
+var path = require('path');
 
 var app = express.Router();
 
@@ -52,6 +53,18 @@ app.get('/:nbID/edit', isAuthenticated, function (req, res) {
     } else {
         res.redirect('/login');
     }
+});
+
+app.get('/:nbID/download', function (req, res) {
+    console.log("Downloading notebook", req.params.nbID);
+    Submission.findOne({_id: req.params.nbID}, function (err, submission) {
+        if (err) {
+            res.status(500);
+        } else {
+            console.log("Sending file:", path.resolve(__dirname + submission.filepath));
+            res.sendFile(path.resolve(__dirname + submission.filepath));
+        }
+    });
 });
 
 app.get('/:nbID', isAuthenticated, function (req, res) {

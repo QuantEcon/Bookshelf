@@ -9,6 +9,9 @@ var Comment = require('../../js/db/models/Comment');
 var sprintf = require('sprintf');
 var exec = require('child_process').exec;
 
+var fs = require('fs');
+var path = require('path');
+
 var multipartyMiddleware = multiparty();
 
 
@@ -91,6 +94,7 @@ app.get('/confirm', isAuthenticated, function (req, res) {
                             console.log("ERROR SAVING USER");
                             res.render('500');
                         } else {
+                            //save file in system
                             res.status(200);
                             res.send(newSub._doc._id);
                         }
@@ -259,6 +263,8 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
         } else if (user) {
             var newSub = new Submission();
 
+            console.log("File: ", file);
+
             newSub.title = req.body.title;
 
             newSub.topicList = req.body.topicList;
@@ -266,8 +272,8 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
             newSub.lang = req.body.lang;
             newSub.summary = req.body.summary;
 
-
-            newSub.file = file;
+            //todo: not sure if we should have this or not
+            //newSub.file = file;
 
             newSub.author = user._id;
             //todo: parse co-authors
@@ -284,13 +290,18 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
             newSub.deleted = false;
             newSub.flagged = false;
 
-            console.log("new sub id: ", newSub._id);
-            var outputDir = __dirname + '/../../files/html/';
-            var outputName = newSub._id;
-            var templateLocation = __dirname + '/../../assets/nbconvert/templates/notebookHTML.tpl';
+            newSub.fileName = file.name;
 
+            //=============================================================
+            var outputDir = __dirname + '/../../files/html/';
+            var fileSaveDir = __dirname + '/../../files/ipynb/';
+            var outputName = newSub._id;
+            //=============================================================
+
+            var templateLocation = __dirname + '/../../assets/nbconvert/templates/notebookHTML.tpl';
             var command = sprintf('jupyter nbconvert %s --output=%s --output-dir=%s --template=%s', file.path, outputName, outputDir, templateLocation);
             console.log("command: ", command);
+
             exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
                 console.log("stderr: ", stderr);
                 console.log("err: ", err);
@@ -299,14 +310,35 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
                 if (err) {
                     res.status(500);
                 } else {
-                    newSub.notebook = outputDir + outputName + '.html';
+
+                    newSub.notebook = '/../../files/html/' + outputName + '.html';
                     console.log("New sub: ", newSub);
+
+                    //==========================================================
+                    // save file
+                    var readStream = fs.createReadStream(file.path);
+                    readStream.once('error', function (err) {
+                        console.log(err);
+                        res.status(500);
+                    });
+                    readStream.once('done', function () {
+                        console.log("Done copying file");
+                    });
+
+                    var fileSavePath = '/../../files/ipynb/' + outputName + '.ipynb';
+
+                    readStream.pipe(fs.createWriteStream(__dirname + fileSavePath));
+
+                    newSub.filepath = fileSavePath;
+                    //==========================================================
 
                     user.currentSubmission = newSub;
                     user.save(function (err) {
                         if (err) {
                             res.render('500');
                         } else {
+
+                            console.log("Saved user");
                             res.status(200);
                             res.send('redirect');
                         }
@@ -320,6 +352,7 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
 
 });
 
+//todo redirect to submission preview instead of instantly saving it?
 app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (req, res) {
     console.log("Got submit edit");
     var file = req.files.file;
@@ -336,26 +369,27 @@ app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (re
             submission.file = file.name;
             submission.lastUpdated = new Date();
 
-            var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
-            exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
-                if (err) {
-                    console.log("Error 2");
-                    res.status(500);
-                } else {
-                    submission.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
-                    submission.save(function (err) {
-                        if (err) {
-                            console.log("Error 3: ", err);
-                            res.status(500);
-                        } else {
-                            res.send({
-                                nbID: submission._id,
-                                message: 'redirect'
-                            })
-                        }
-                    })
-                }
-            });
+            //todo: update file and html
+            // var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
+            // exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
+            //     if (err) {
+            //         console.log("Error 2");
+            //         res.status(500);
+            //     } else {
+            //         submission.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
+            //         submission.save(function (err) {
+            //             if (err) {
+            //                 console.log("Error 3: ", err);
+            //                 res.status(500);
+            //             } else {
+            //                 res.send({
+            //                     nbID: submission._id,
+            //                     message: 'redirect'
+            //                 })
+            //             }
+            //         })
+            //     }
+            // });
 
         } else {
             console.log("Error 4");

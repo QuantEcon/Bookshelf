@@ -2,7 +2,7 @@
  * Created by tlyon on 6/7/17.
  */
 
-var app = angular.module('submissionApp', ['hc.marked', 'angularMoment', 'ngSanitize']);
+var app = angular.module('submissionApp', ['hc.marked', 'angularMoment', 'ngSanitize', 'ngFileSaver']);
 
 app.config(function ($interpolateProvider) {
     $interpolateProvider.startSymbol('{[{');
@@ -15,7 +15,7 @@ app.config(['markedProvider', function (markedProvider) {
     });
 }]);
 
-app.controller('submissionCtrl', function ($scope, $http, $window) {
+app.controller('submissionCtrl', function ($scope, $http, $window, FileSaver) {
     console.log("window.location: ", $window.location);
     var url = $window.location.origin;
     //submission information
@@ -40,8 +40,9 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
                 console.log("submissionCtrl: search returned: ", response);
                 // set notebook information
                 $scope.notebook = response.data.notebook;
+                $scope.fileName = response.data.fileName;
                 $scope.notebookHTML = response.data.notebookHTML;
-                MathJax.Hub.Queue(['Typeset',MathJax.Hub]);
+                MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
 
                 //set current user's submission
                 $scope.currentUsersSubmission = response.data.currentUsersSubmission;
@@ -128,8 +129,22 @@ app.controller('submissionCtrl', function ($scope, $http, $window) {
         $scope.showNotebook = !$scope.showNotebook;
     };
 
+    //todo: download not working
     $scope.downloadNotebook = function () {
         console.log("Download clicked");
+        var nbID = $scope.submissionID;
+        $http({
+            url: url + '/notebook/' + nbID + '/download',
+            method: 'GET',
+            responseType: 'json'
+        }).then(
+            function success(res) {
+                console.log("Download file: ", res);
+            },
+            function failure(res) {
+                console.log("Error downloading file: ", res);
+            }
+        );
     };
 
     $scope.toggleReply = function (commentID) {

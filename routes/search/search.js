@@ -136,7 +136,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published lang notebook";
+                var select = "_id title author views comments score summary published lang notebook fileName";
                 Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, select, function (err, submission) {
                     if (err) callback(err);
                     else {
@@ -223,12 +223,13 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 }
             }
 
-            var location = __dirname + '/../../files/html/' + notebook._id + '.html';
+            var location = __dirname + notebook.notebook;
             var notebookHTML = fs.readFileSync(location, 'utf8');
 
             var data = {
                 notebook: results.nb,
                 notebookHTML: notebookHTML,
+                fileName: results.nb.fileName,
                 author: results.auth,
                 coAuthors: results.coAuth,
                 comments: results.coms,
