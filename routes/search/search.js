@@ -8,6 +8,7 @@ var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
 var fs = require('fs');
+var path = require('path');
 
 var app = express.Router();
 
@@ -224,7 +225,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             }
 
             var location = __dirname + notebook.notebook;
-            var notebookHTML = fs.readFileSync(location, 'utf8');
+            var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
 
             var data = {
                 notebook: results.nb,

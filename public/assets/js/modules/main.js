@@ -5,9 +5,11 @@
 var app = angular.module('mainApp', [
         'hc.marked',
         'angularUtils.directives.dirPagination',
-        'angularMoment'
+        'angularMoment',
+        'ngStorage'
     ]
 );
+
 
 // Config ==============================================================
 app.config(function ($interpolateProvider) {
@@ -63,7 +65,8 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
     })
 });
 
-app.controller('searchCtrl', function ($scope, $http, $window, paginationService) {
+app.controller('searchCtrl', function ($scope, $http, $window, paginationService, $localStorage) {
+
     var url = $window.location.origin;
     // Vars ===========================================
     $scope.topics = [
@@ -90,18 +93,35 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         'Other'
     ];
 
-    $scope.searchParams = {};
-    $scope.searchParams.page = 1;
-    $scope.searchParams.sortBy = "Trending";
-    $scope.searchParams.time = "All time";
-    $scope.searchParams.topic = $scope.topics[0];
-    $scope.searchParams.lang = "All";
-    $scope.searchParams.keywords = "";
+    $scope.storage = $localStorage;
+
+    $localStorage.$default({
+        searchParams: {
+            page: 1,
+            sortBy: "Trending",
+            time: "All time",
+            topic: $scope.topics[0],
+            lang: "All",
+            keywords: ""
+        },
+        hasCurrentSearch: false,
+        previousSearch: ""
+    });
+
+    // $scope.searchParams.page = 1;
+    // $scope.searchParams.sortBy = "Trending";
+    // $scope.searchParams.time = "All time";
+    // $scope.searchParams.topic = $scope.topics[0];
+    // $scope.searchParams.lang = "All";
+    // $scope.searchParams.keywords = "";
+
     $scope.numSubs = 0;
 
-    $scope.previousSearch = "";
+    $scope.searchParams = $localStorage.searchParams;
 
-    $scope.hasCurrentSearch = false;
+    $scope.previousSearch = $localStorage.previousSearch;
+
+    $scope.hasCurrentSearch = $localStorage.hasCurrentSearch;
 
     $scope.showSearchBar = false;
 
@@ -110,9 +130,12 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
     $scope.searchSubmissions = function (params, args) {
         $scope.previousSearch = params.keywords;
-        if (!args.init) {
+        $localStorage.previousSearch = params.keywords;
+
+        if (!args.init || $localStorage.hasCurrentSearch) {
             console.log("searchCtrl: Set current search!");
             $scope.hasCurrentSearch = true;
+            $localStorage.hasCurrentSearch = true;
         }
         if (args.userID) {
             console.log("searchCtrl: Performing submissions search for user");
@@ -187,16 +210,27 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
 
     $scope.clearSearch = function (args) {
-        console.log("Clear search");
-        $scope.hasCurrentSearch = false;
-        $scope.searchParams = {};
-        $scope.searchParams.page = 1;
         $scope.$emit('setPage', {page: 1});
-        $scope.searchParams.sortBy = "Trending";
-        $scope.searchParams.time = "Today";
-        $scope.searchParams.topic = $scope.topics[0];
-        $scope.searchParams.lang = "All";
-        $scope.searchParams.keywords = "";
+
+        console.log("Reset local storage");
+        $localStorage.$reset();
+        $localStorage.$default({
+            searchParams: {
+                page: 1,
+                sortBy: "Trending",
+                time: "All time",
+                topic: $scope.topics[0],
+                lang: "All",
+                keywords: ""
+            },
+            hasCurrentSearch: false,
+            previousSearch: ""
+        });
+
+        $scope.searchParams = $localStorage.searchParams;
+        $scope.previousSearch = $localStorage.previousSearch;
+        $scope.hasCurrentSearch = $localStorage.hasCurrentSearch;
+
         $scope.numSubs = 0;
 
         $scope.searchSubmissions($scope.searchParams, args);
@@ -205,7 +239,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
     // Events =========================================
     var sortByInit = true;
     $scope.$watch('searchParams.sortBy', function () {
-        if(sortByInit){
+        if (sortByInit) {
             sortByInit = false;
             return;
         }
@@ -218,7 +252,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
     var topicInit = true;
     $scope.$watch('searchParams.topic', function () {
-        if(topicInit){
+        if (topicInit) {
             topicInit = false;
             return;
         }
@@ -231,7 +265,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
     var timeInit = true;
     $scope.$watch('searchParams.time', function () {
-        if(timeInit){
+        if (timeInit) {
             timeInit = false;
             return;
         }
@@ -244,7 +278,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
 
     var languageInit = true;
     $scope.$watch('searchParams.lang', function () {
-        if(languageInit){
+        if (languageInit) {
             languageInit = false;
             return;
         }
