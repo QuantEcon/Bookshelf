@@ -46,7 +46,6 @@ app.controller('mainCtrl', function ($scope, $timeout, $window) {
         })
     };
 
-
     // Events ========================================
     $scope.$on('searchResults', function (event, results) {
         console.log("mainCtrl: Got search submissions results: ", results);
@@ -108,13 +107,6 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         previousSearch: ""
     });
 
-    // $scope.searchParams.page = 1;
-    // $scope.searchParams.sortBy = "Trending";
-    // $scope.searchParams.time = "All time";
-    // $scope.searchParams.topic = $scope.topics[0];
-    // $scope.searchParams.lang = "All";
-    // $scope.searchParams.keywords = "";
-
     $scope.numSubs = 0;
 
     $scope.searchParams = $localStorage.searchParams;
@@ -137,10 +129,19 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
             $scope.hasCurrentSearch = true;
             $localStorage.hasCurrentSearch = true;
         }
+
         if (args.userID) {
+            if (!url.includes(args.userID)) {
+                console.log("Not on user's page!");
+                $scope.searchParams.author = null;
+            }
             console.log("searchCtrl: Performing submissions search for user");
             $scope.searchParams.author = args.userID;
+        } else {
+            console.log("No user id!");
+            $scope.searchParams.author = null;
         }
+
         var page = 1;
         if (args.newPage) {
             page = args.newPage;
@@ -208,7 +209,6 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         $scope.showSearchBar = !$scope.showSearchBar;
     };
 
-
     $scope.clearSearch = function (args) {
         $scope.$emit('setPage', {page: 1});
 
@@ -246,7 +246,8 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
-            newPage: $scope.searchParams.page
+            newPage: $scope.searchParams.page,
+            userID: $scope.searchParams.author
         })
     });
 
@@ -259,7 +260,8 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
-            newPage: $scope.searchParams.page
+            newPage: $scope.searchParams.page,
+            userID: $scope.searchParams.author
         })
     });
 
@@ -269,10 +271,11 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
             timeInit = false;
             return;
         }
-        console.log("sortby changed!");
+        console.log("time changed: ", $scope.searchParams);
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
-            newPage: $scope.searchParams.page
+            newPage: $scope.searchParams.page,
+            userID: $scope.searchParams.author
         })
     });
 
@@ -285,7 +288,8 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         console.log("sortby changed!");
         $scope.searchSubmissions($scope.searchParams, {
             init: true,
-            newPage: $scope.searchParams.page
+            newPage: $scope.searchParams.page,
+            userID: $scope.searchParams.author
         })
     });
 
@@ -305,35 +309,47 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
         args.init = true;
         $scope.searchSubmissions($scope.searchParams, args)
     });
+
+    $scope.$on('logout', function (event, args) {
+        $scope.clearSearch(args);
+        $http.get(url + '/logout');
+    })
 });
 
 app.controller('userPageCtrl', function ($scope, $timeout) {
-    // Vars ===========================================
-    $scope.dataReady = false;
-    // extract user id from url
-    $scope.userID = window.location.pathname.split('/')[2];
-    $scope.userSummary = '';
-    $scope.userJoined = '';
+        // Vars ===========================================
+        $scope.dataReady = false;
+        // extract user id from url
+        $scope.userID = window.location.pathname.split('/')[2];
+        $scope.userSummary = '';
+        $scope.userJoined = '';
 
-    // Methods ========================================
-    $scope.initUserData = function () {
-        var args = {
-            userID: $scope.userID
+        // Methods ========================================
+        $scope.initUserData = function () {
+            var args = {
+                userID: $scope.userID
+            };
+            console.log("userPageCtrl: Init user search: ", args);
+
+            $timeout(function () {
+                $scope.$broadcast('initUserSearch', args);
+            });
+
         };
-        console.log("userPageCtrl: Init user search: ", args);
 
-        $timeout(function () {
-            $scope.$broadcast('initUserSearch', args);
+        $scope.logout = function () {
+            $timeout(function () {
+                $scope.$broadcast('logout', {init: true});
+            });
+        };
+
+        // Events =========================================
+        $scope.$on('searchUsersResult', function (event, results) {
+            console.log("userPageCtrl: Got user search result: ", results.data);
+            $scope.userSummary = results.data[0].summary;
+            $scope.userJoined = results.data[0].joinDate;
+            $scope.dataReady = true;
         });
 
-    };
-
-    // Events =========================================
-    $scope.$on('searchUsersResult', function (event, results) {
-        console.log("userPageCtrl: Got user search result: ", results.data);
-        $scope.userSummary = results.data[0].summary;
-        $scope.userJoined = results.data[0].joinDate;
-        $scope.dataReady = true;
-    });
-
-});
+    }
+);
