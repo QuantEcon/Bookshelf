@@ -13,16 +13,18 @@ app.post('/', isAuthenticated, function (req, res) {
         if (err) {
             res.render('500');
         } else {
+
             user.name = req.body.name;
             user.email = req.body.email;
-            user.summary = req.body.summary;
             user.website = req.body.website;
-            user.save(function (err) {
+            user.summary = req.body.summary;
+
+            user.save(function (err, savedUser) {
                 if (err) {
                     res.render('500');
                 } else {
                     res.status(200);
-                    res.send("Saved profile");
+                    res.send({user: savedUser});
                 }
             })
         }

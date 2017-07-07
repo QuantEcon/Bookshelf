@@ -190,7 +190,7 @@ app.controller('searchCtrl', function ($scope, $http, $window, paginationService
                 console.log("searchCtrl: Search users returned: ", response);
                 var results = {
                     params: params,
-                    data: response.data,
+                    data: response.data
                 };
                 $scope.$emit('searchUsersResult', results);
             },

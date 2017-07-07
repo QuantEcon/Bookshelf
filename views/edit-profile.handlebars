@@ -1,136 +1,24 @@
 <head>
     <link rel="stylesheet" href="/assets/css/formStyle.css">
     <script src="/bundle.js"></script>
-    <script>
-        //        todo: extract to separate file
-        var app = angular.module('myApp', ['hc.marked']);
-
-        app.config(function ($interpolateProvider) {
-            $interpolateProvider.startSymbol('{[{');
-            $interpolateProvider.endSymbol('}]}');
-        });
-
-        app.config(['markedProvider', function (markedProvider) {
-            markedProvider.setOptions({
-                gfm: true
-            });
-        }]);
-
-        app.controller('editProfileCtrl', function ($scope, $http, $window) {
-            var url = $window.location.origin;
-            $scope.formModel = {};
-            $scope.activeAvatar = '{{data.user.activeAvatar}}';
-            //set default values
-            $scope.formModel.name = '{{data.user.name}}';
-            $scope.formModel.email = '{{data.user.email}}';
-            $scope.formModel.website = '{{data.user.website}}';
-            $scope.formModel.summary = '{{data.user.summary}}';
-            $scope.oneSocial = {{data.user.oneSocial}};
-            $scope.previewSummary = false;
-
-            $scope.togglePreviewSummary = function () {
-                $scope.previewSummary = !$scope.previewSummary;
-                console.log("Toggle preview summary: ", $scope.previewSummary);
-            };
-
-            $scope.onProfileSubmit = function (valid) {
-                if (valid) {
-                    if ($scope.editProfileForm.$pristine) {
-                        $window.location.href = url + '/user/my-profile';
-                    }
-                    console.log("CLicked on submit");
-                    console.log($scope.formModel);
-                    $http.post(url + '/edit-profile', $scope.formModel).then(
-                            function success(data) {
-                                console.log("Saved profile");
-                                $window.location.href = url + '/user/my-profile';
-                            },
-                            function failure(data) {
-                                console.log("Error saving profile");
-                            }
-                    );
-                } else {
-                    console.log("Form is invalid!");
-                }
-
-            };
-            $scope.onCancel = function () {
-                console.log("Cancel clicked!");
-                $window.location.href = url + '/user/my-profile'
-            };
-
-            $scope.removeGithub = function () {
-                $http.get(url + '/edit-profile/remove/github');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.toggleGithub = function () {
-                $http.get(url + '/edit-profile/toggle/github');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.removeFB = function () {
-                $http.get(url + '/edit-profile/remove/fb');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.toggleFB = function () {
-                $http.get(url + '/edit-profile/toggle/fb');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.removeTwitter = function () {
-                $http.get(url + '/edit-profile/toggle/fb');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-            $scope.toggleTwitter = function () {
-                $http.get(url + '/edit-profile/toggle/twitter');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.removeGoogle = function () {
-                $http.get(url + '/edit-profile/toggle/google');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-            $scope.toggleGoogle = function () {
-                $http.get(url + '/edit-profile/toggle/google');
-                console.log("reloading...");
-                $window.location.reload()
-            };
-
-            $scope.useFBPhoto = function () {
-                $http.get(url + '/edit-profile/use-photo/fb');
-                $window.location.reload();
-            };
-            $scope.useTwitterPhoto = function () {
-                $http.get(url + '/edit-profile/use-photo/twitter');
-                $window.location.reload();
-            };
-            $scope.useGithubPhoto = function () {
-                $http.get(url + '/edit-profile/use-photo/github');
-                $window.location.reload();
-            };
-            $scope.useGooglePhoto = function () {
-                $http.get(url + '/edit-profile/use-photo/google');
-                $window.location.reload();
-            };
-
-
-        });
-    </script>
+    <script src="/assets/js/modules/edit-profile.js"></script>
 </head>
+
 <form ng-app="myApp"
       ng-controller="editProfileCtrl"
       novalidate="novalidate"
       ng-submit="onProfileSubmit(editProfileForm.$valid)"
-      name="editProfileForm">
+      name="editProfileForm"
+      ng-init="init()">
+
+    <div class="success callout" ng-show="saveSuccess">
+        <div class="row columns"><p class="callout-message"><i class="fi-check"></i>Your profile was saved</p></div>
+    </div>
+
+    <div class="warning callout" ng-show="saveFailure">
+        <div class="row columns"><p class="callout-message"><i class="fi-alert"></i>An error occurred while saving your
+            profile</p></div>
+    </div>
 
     <div class="row columns">
 
