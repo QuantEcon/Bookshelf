@@ -69,11 +69,13 @@ app.controller('editProfileCtrl', function ($scope, $http, $window) {
 
                     $scope.saveSuccess = true;
                     $scope.saveFailure = false;
+                    $scope.editProfileForm.$setPristine()
                 },
                 function failure(data) {
                     console.log("Error saving profile");
                     $scope.saveSuccess = false;
-                    $scope.saveFailure = true;
+                    $scope.saveFailure = true; 
+                    $scope.editProfileForm.$setPristine();
                 }
             );
         } else {
