@@ -23,6 +23,7 @@ app.controller('previewCtrl', function ($scope, $http, $window) {
             $scope.notebook = res.data.notebook;
             $scope.notebookHTML = res.data.notebookHTML;
             $scope.author = res.data.author;
+            MathJax.Hub.Queue(['Typeset', MathJax.Hub]);
         });
     };
 
