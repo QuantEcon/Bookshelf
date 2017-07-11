@@ -6,10 +6,9 @@
   "main": "./app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm start-server && npm start-client",
     "start-server": "node app.js",
     "start-client": "cd client && npm start",
-    "build-client": "cd client && npm build"
+    "start": "npm run start-server && npm run start-client"
   },
   "repository": {
     "type": "git",
@@ -22,11 +21,15 @@
   },
   "homepage": "https://github.com/jstac/QuantEconLib#readme",
   "dependencies": {
+    "@nteract/commutable": "^1.1.4",
+    "@nteract/notebook-preview": "^1.2.2",
+    "codemirror": "^5.27.4",
+    "@nteract/transform-dataresource": "^1.0.7",
+    "@nteract/transform-plotly": "^1.2.0",
+    "@nteract/transforms": "^1.1.0",
     "angular-file-saver": "^1.1.3",
     "angular-marked": "^1.2.2",
-    "angular-modal-service": "^0.12.1",
     "angular-moment": "^1.0.1",
-    "angular-recaptcha": "^4.1.0",
     "angular-utils-pagination": "^0.11.1",
     "async": "^2.4.1",
     "body-parser": "^1.17.2",
@@ -41,7 +44,9 @@
     "mongoose-paginate": "^5.0.3",
     "multiparty": "^4.1.3",
     "ng-file-upload": "^12.2.13",
+    "ngreact": "^0.4.1",
     "ngstorage": "^0.3.11",
+    "normalize.css": "^7.0.0",
     "passport": "^0.3.2",
     "passport-facebook": "^2.1.1",
     "passport-github": "^1.1.0",
@@ -49,6 +54,10 @@
     "passport-linkedin-oauth2": "^1.5.0",
     "passport-twitter": "^1.0.4",
     "passport-youtube-v3": "^2.0.0",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.1",
     "sprintf": "^0.1.5"
   }
 }
