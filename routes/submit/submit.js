@@ -369,28 +369,7 @@ app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (re
             submission.file = file.name;
             submission.lastUpdated = new Date();
 
-            //todo: update file and html
-            // var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
-            // exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
-            //     if (err) {
-            //         console.log("Error 2");
-            //         res.status(500);
-            //     } else {
-            //         submission.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
-            //         submission.save(function (err) {
-            //             if (err) {
-            //                 console.log("Error 3: ", err);
-            //                 res.status(500);
-            //             } else {
-            //                 res.send({
-            //                     nbID: submission._id,
-            //                     message: 'redirect'
-            //                 })
-            //             }
-            //         })
-            //     }
-            // });
-
+            
         } else {
             console.log("Error 4");
             res.status(500);

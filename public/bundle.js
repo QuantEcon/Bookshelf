@@ -951,7 +951,7 @@ module.exports =
     .provider('marked', markedProvider)
     .name;
 
-},{"./strip-indent":3,"marked":9}],3:[function(require,module,exports){
+},{"./strip-indent":3,"marked":12}],3:[function(require,module,exports){
 module.exports = function unindent(text) {
   if (!text) {
     return text;
@@ -983,6 +983,251 @@ module.exports = function unindent(text) {
 };
 
 },{}],4:[function(require,module,exports){
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId])
+/******/ 			return installedModules[moduleId].exports;
+/******/
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			exports: {},
+/******/ 			id: moduleId,
+/******/ 			loaded: false
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.loaded = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(0);
+/******/ })
+/************************************************************************/
+/******/ ([
+/* 0 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var _module = angular.module('angularModalService', []);
+	
+	_module.factory('ModalService', ['$animate', '$document', '$compile', '$controller', '$http', '$rootScope', '$q', '$templateRequest', '$timeout', function ($animate, $document, $compile, $controller, $http, $rootScope, $q, $templateRequest, $timeout) {
+	
+	  function ModalService() {
+	
+	    var self = this;
+	
+	    //  Track open modals.
+	    self.openModals = [];
+	
+	    //  Returns a promise which gets the template, either
+	    //  from the template parameter or via a request to the
+	    //  template url parameter.
+	    var getTemplate = function getTemplate(template, templateUrl) {
+	      var deferred = $q.defer();
+	      if (template) {
+	        deferred.resolve(template);
+	      } else if (templateUrl) {
+	        $templateRequest(templateUrl, true).then(function (template) {
+	          deferred.resolve(template);
+	        }, function (error) {
+	          deferred.reject(error);
+	        });
+	      } else {
+	        deferred.reject("No template or templateUrl has been specified.");
+	      }
+	      return deferred.promise;
+	    };
+	
+	    //  Adds an element to the DOM as the last child of its container
+	    //  like append, but uses $animate to handle animations. Returns a
+	    //  promise that is resolved once all animation is complete.
+	    var appendChild = function appendChild(parent, child) {
+	      var children = parent.children();
+	      if (children.length > 0) {
+	        return $animate.enter(child, parent, children[children.length - 1]);
+	      }
+	      return $animate.enter(child, parent);
+	    };
+	
+	    //  Close all modals, providing the given result to the close promise.
+	    self.closeModals = function (result, delay) {
+	      while (self.openModals.length) {
+	        self.openModals[0].close(result, delay);
+	        self.openModals.splice(0, 1);
+	      }
+	    };
+	
+	    self.showModal = function (options) {
+	
+	      //  Get the body of the document, we'll add the modal to this.
+	      var body = angular.element($document[0].body);
+	
+	      //  Create a deferred we'll resolve when the modal is ready.
+	      var deferred = $q.defer();
+	
+	      //  Validate the input parameters.
+	      var controllerName = options.controller;
+	      if (!controllerName) {
+	        deferred.reject("No controller has been specified.");
+	        return deferred.promise;
+	      }
+	
+	      //  Get the actual html of the template.
+	      getTemplate(options.template, options.templateUrl).then(function (template) {
+	
+	        //  The main modal object we will build.
+	        var modal = {};
+	
+	        //  Create a new scope for the modal.
+	        var modalScope = (options.scope || $rootScope).$new();
+	        var rootScopeOnClose = $rootScope.$on('$locationChangeSuccess', cleanUpClose);
+	
+	        //  Create the inputs object to the controller - this will include
+	        //  the scope, as well as all inputs provided.
+	        //  We will also create a deferred that is resolved with a provided
+	        //  close function. The controller can then call 'close(result)'.
+	        //  The controller can also provide a delay for closing - this is
+	        //  helpful if there are closing animations which must finish first.
+	        var closeDeferred = $q.defer();
+	        var closedDeferred = $q.defer();
+	        var inputs = {
+	          $scope: modalScope,
+	          close: function close(result, delay) {
+	            //  If we have a pre-close function, call it.
+	            if (typeof options.preClose === 'function') options.preClose(modal, result, delay);
+	
+	            if (delay === undefined || delay === null) delay = 0;
+	            $timeout(function () {
+	
+	              cleanUpClose(result);
+	            }, delay);
+	          }
+	        };
+	
+	        //  If we have provided any inputs, pass them to the controller.
+	        if (options.inputs) angular.extend(inputs, options.inputs);
+	
+	        //  Compile then link the template element, building the actual element.
+	        //  Set the $element on the inputs so that it can be injected if required.
+	        var linkFn = $compile(template);
+	        var modalElement = linkFn(modalScope);
+	        inputs.$element = modalElement;
+	
+	        //  Create the controller, explicitly specifying the scope to use.
+	        var controllerObjBefore = modalScope[options.controllerAs];
+	        var modalController = $controller(options.controller, inputs, false, options.controllerAs);
+	
+	        if (options.controllerAs && controllerObjBefore) {
+	          angular.extend(modalController, controllerObjBefore);
+	        }
+	
+	        //  Then, append the modal to the dom.
+	        if (options.appendElement) {
+	          // append to custom append element
+	          appendChild(options.appendElement, modalElement);
+	        } else {
+	          // append to body when no custom append element is specified
+	          appendChild(body, modalElement);
+	        }
+	
+	        // Finally, append any custom classes to the body
+	        if (options.bodyClass) {
+	          body[0].classList.add(options.bodyClass);
+	        }
+	
+	        //  Populate the modal object...
+	        modal.controller = modalController;
+	        modal.scope = modalScope;
+	        modal.element = modalElement;
+	        modal.close = closeDeferred.promise;
+	        modal.closed = closedDeferred.promise;
+	
+	        //  ...which is passed to the caller via the promise.
+	        deferred.resolve(modal);
+	
+	        //  We can track this modal in our open modals.
+	        self.openModals.push({ modal: modal, close: inputs.close });
+	
+	        function cleanUpClose(result) {
+	
+	          //  Resolve the 'close' promise.
+	          closeDeferred.resolve(result);
+	
+	          //  Remove the custom class from the body
+	          if (options.bodyClass) {
+	            body[0].classList.remove(options.bodyClass);
+	          }
+	
+	          //  Let angular remove the element and wait for animations to finish.
+	          $animate.leave(modalElement).then(function () {
+	            //  Resolve the 'closed' promise.
+	            closedDeferred.resolve(result);
+	
+	            //  We can now clean up the scope
+	            modalScope.$destroy();
+	
+	            //  Remove the modal from the set of open modals.
+	            for (var i = 0; i < self.openModals.length; i++) {
+	              if (self.openModals[i].modal === modal) {
+	                self.openModals.splice(i, 1);
+	                break;
+	              }
+	            }
+	
+	            //  Unless we null out all of these objects we seem to suffer
+	            //  from memory leaks, if anyone can explain why then I'd
+	            //  be very interested to know.
+	            inputs.close = null;
+	            deferred = null;
+	            closeDeferred = null;
+	            modal = null;
+	            inputs = null;
+	            modalElement = null;
+	            modalScope = null;
+	          });
+	
+	          // remove event watcher
+	          rootScopeOnClose && rootScopeOnClose();
+	        }
+	      }).then(null, function (error) {
+	        // 'catch' doesn't work in IE8.
+	        deferred.reject(error);
+	      });
+	
+	      return deferred.promise;
+	    };
+	  }
+	
+	  return new ModalService();
+	}]);
+
+/***/ }
+/******/ ]);
+
+},{}],5:[function(require,module,exports){
 (function (global){
 /* angular-moment.js / v1.0.1 / (c) 2013, 2014, 2015, 2016 Uri Shaked / MIT Licence */
 
@@ -1723,7 +1968,412 @@ module.exports = function unindent(text) {
 })();
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"angular":8,"moment":10}],5:[function(require,module,exports){
+},{"angular":11,"moment":13}],6:[function(require,module,exports){
+require('./release/angular-recaptcha.js');
+module.exports = 'vcRecaptcha';
+
+},{"./release/angular-recaptcha.js":7}],7:[function(require,module,exports){
+/**
+ * @license angular-recaptcha build:2017-04-24
+ * https://github.com/vividcortex/angular-recaptcha
+ * Copyright (c) 2017 VividCortex
+**/
+
+/*global angular, Recaptcha */
+(function (ng) {
+    'use strict';
+
+    ng.module('vcRecaptcha', []);
+
+}(angular));
+
+/*global angular */
+(function (ng) {
+    'use strict';
+
+    function throwNoKeyException() {
+        throw new Error('You need to set the "key" attribute to your public reCaptcha key. If you don\'t have a key, please get one from https://www.google.com/recaptcha/admin/create');
+    }
+
+    var app = ng.module('vcRecaptcha');
+
+    /**
+     * An angular service to wrap the reCaptcha API
+     */
+    app.provider('vcRecaptchaService', function(){
+        var provider = this;
+        var config = {};
+        provider.onLoadFunctionName = 'vcRecaptchaApiLoaded';
+
+        /**
+         * Sets the reCaptcha configuration values which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param defaults  object which overrides the current defaults object.
+         */
+        provider.setDefaults = function(defaults){
+            ng.copy(defaults, config);
+        };
+
+        /**
+         * Sets the reCaptcha key which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param siteKey  the reCaptcha public key (refer to the README file if you don't know what this is).
+         */
+        provider.setSiteKey = function(siteKey){
+            config.key = siteKey;
+        };
+
+        /**
+         * Sets the reCaptcha theme which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param theme  The reCaptcha theme.
+         */
+        provider.setTheme = function(theme){
+            config.theme = theme;
+        };
+
+        /**
+         * Sets the reCaptcha stoken which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param stoken  The reCaptcha stoken.
+         */
+        provider.setStoken = function(stoken){
+            config.stoken = stoken;
+        };
+
+        /**
+         * Sets the reCaptcha size which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param size  The reCaptcha size.
+         */
+        provider.setSize = function(size){
+            config.size = size;
+        };
+
+        /**
+         * Sets the reCaptcha type which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param type  The reCaptcha type.
+         */
+        provider.setType = function(type){
+            config.type = type;
+        };
+
+        /**
+         * Sets the reCaptcha language which will be used by default is not specified in a specific directive instance.
+         *
+         * @param lang  The reCaptcha language.
+         */
+        provider.setLang = function(lang){
+            config.lang = lang;
+        };
+
+        /**
+         * Sets the reCaptcha badge position which will be used by default if not specified in a specific directive instance.
+         *
+         * @param badge  The reCaptcha badge position.
+         */
+        provider.setBadge = function(badge){
+            config.badge = badge;
+        };
+
+        /**
+         * Sets the reCaptcha configuration values which will be used by default is not specified in a specific directive instance.
+         *
+         * @since 2.5.0
+         * @param onLoadFunctionName  string name which overrides the name of the onload function. Should match what is in the recaptcha script querystring onload value.
+         */
+        provider.setOnLoadFunctionName = function(onLoadFunctionName){
+            provider.onLoadFunctionName = onLoadFunctionName;
+        };
+
+        provider.$get = ['$rootScope','$window', '$q', '$document', function ($rootScope, $window, $q, $document) {
+            var deferred = $q.defer(), promise = deferred.promise, instances = {}, recaptcha;
+
+            $window.vcRecaptchaApiLoadedCallback = $window.vcRecaptchaApiLoadedCallback || [];
+
+            var callback = function () {
+                recaptcha = $window.grecaptcha;
+
+                deferred.resolve(recaptcha);
+            };
+
+            $window.vcRecaptchaApiLoadedCallback.push(callback);
+
+            $window[provider.onLoadFunctionName] = function () {
+                $window.vcRecaptchaApiLoadedCallback.forEach(function(callback) {
+                    callback();
+                });
+            };
+
+
+            function getRecaptcha() {
+                if (!!recaptcha) {
+                    return $q.when(recaptcha);
+                }
+
+                return promise;
+            }
+
+            function validateRecaptchaInstance() {
+                if (!recaptcha) {
+                    throw new Error('reCaptcha has not been loaded yet.');
+                }
+            }
+
+
+            // Check if grecaptcha is not defined already.
+            if (ng.isDefined($window.grecaptcha)) {
+                callback();
+            } else {
+                // Generate link on demand
+                var script = $window.document.createElement('script');
+                script.async = true;
+                script.defer = true;
+                script.src = 'https://www.google.com/recaptcha/api.js?onload='+provider.onLoadFunctionName+'&render=explicit';
+                $document.find('body').append(script);
+            }
+
+            return {
+
+                /**
+                 * Creates a new reCaptcha object
+                 *
+                 * @param elm  the DOM element where to put the captcha
+                 * @param conf the captcha object configuration
+                 * @throws NoKeyException    if no key is provided in the provider config or the directive instance (via attribute)
+                 */
+                create: function (elm, conf) {
+
+                    conf.sitekey = conf.key || config.key;
+                    conf.theme = conf.theme || config.theme;
+                    conf.stoken = conf.stoken || config.stoken;
+                    conf.size = conf.size || config.size;
+                    conf.type = conf.type || config.type;
+                    conf.hl = conf.lang || config.lang;
+                    conf.badge = conf.badge || config.badge;
+
+                    if (!conf.sitekey || conf.sitekey.length !== 40) {
+                        throwNoKeyException();
+                    }
+                    return getRecaptcha().then(function (recaptcha) {
+                        var widgetId = recaptcha.render(elm, conf);
+                        instances[widgetId] = elm;
+                        return widgetId;
+                    });
+                },
+
+                /**
+                 * Reloads the reCaptcha
+                 */
+                reload: function (widgetId) {
+                    validateRecaptchaInstance();
+
+                    recaptcha.reset(widgetId);
+
+                    // Let everyone know this widget has been reset.
+                    $rootScope.$broadcast('reCaptchaReset', widgetId);
+                },
+
+                /**
+                 * Executes the reCaptcha
+                 */
+                execute: function (widgetId) {
+                    validateRecaptchaInstance();
+
+                    recaptcha.execute(widgetId);
+                },
+
+                /**
+                 * Get/Set reCaptcha language
+                 */
+                useLang: function (widgetId, lang) {
+                    var instance = instances[widgetId];
+
+                    if (instance) {
+                        var iframe = instance.querySelector('iframe');
+                        if (lang) {
+                            // Setter
+                            if (iframe && iframe.src) {
+                                var s = iframe.src;
+                                if (/[?&]hl=/.test(s)) {
+                                    s = s.replace(/([?&]hl=)\w+/, '$1' + lang);
+                                } else {
+                                    s += ((s.indexOf('?') === -1) ? '?' : '&') + 'hl=' + lang;
+                                }
+
+                                iframe.src = s;
+                            }
+                        } else {
+                            // Getter
+                            if (iframe && iframe.src && /[?&]hl=\w+/.test(iframe.src)) {
+                                return iframe.src.replace(/.+[?&]hl=(\w+)([^\w].+)?/, '$1');
+                            } else {
+                                return null;
+                            }
+                        }
+                    } else {
+                        throw new Error('reCaptcha Widget ID not exists', widgetId);
+                    }
+                },
+
+                /**
+                 * Gets the response from the reCaptcha widget.
+                 *
+                 * @see https://developers.google.com/recaptcha/docs/display#js_api
+                 *
+                 * @returns {String}
+                 */
+                getResponse: function (widgetId) {
+                    validateRecaptchaInstance();
+
+                    return recaptcha.getResponse(widgetId);
+                },
+
+                /**
+                 * Gets reCaptcha instance and configuration
+                 */
+                getInstance: function (widgetId) {
+                    return instances[widgetId];
+                },
+
+                /**
+                 * Destroy reCaptcha instance.
+                 */
+                destroy: function (widgetId) {
+                    delete instances[widgetId];
+                }
+            };
+
+        }];
+    });
+
+}(angular));
+
+/*global angular, Recaptcha */
+(function (ng) {
+    'use strict';
+
+    var app = ng.module('vcRecaptcha');
+
+    app.directive('vcRecaptcha', ['$document', '$timeout', 'vcRecaptchaService', function ($document, $timeout, vcRecaptcha) {
+
+        return {
+            restrict: 'A',
+            require: "?^^form",
+            scope: {
+                response: '=?ngModel',
+                key: '=?',
+                stoken: '=?',
+                theme: '=?',
+                size: '=?',
+                type: '=?',
+                lang: '=?',
+                badge: '=?',
+                tabindex: '=?',
+                required: '=?',
+                onCreate: '&',
+                onSuccess: '&',
+                onExpire: '&'
+            },
+            link: function (scope, elm, attrs, ctrl) {
+                scope.widgetId = null;
+
+                if(ctrl && ng.isDefined(attrs.required)){
+                    scope.$watch('required', validate);
+                }
+
+                var removeCreationListener = scope.$watch('key', function (key) {
+                    var callback = function (gRecaptchaResponse) {
+                        // Safe $apply
+                        $timeout(function () {
+                            scope.response = gRecaptchaResponse;
+                            validate();
+
+                            // Notify about the response availability
+                            scope.onSuccess({response: gRecaptchaResponse, widgetId: scope.widgetId});
+                        });
+                    };
+
+                    vcRecaptcha.create(elm[0], {
+
+                        callback: callback,
+                        key: key,
+                        stoken: scope.stoken || attrs.stoken || null,
+                        theme: scope.theme || attrs.theme || null,
+                        type: scope.type || attrs.type || null,
+                        lang: scope.lang || attrs.lang || null,
+                        tabindex: scope.tabindex || attrs.tabindex || null,
+                        size: scope.size || attrs.size || null,
+                        badge: scope.badge || attrs.badge || null,
+                        'expired-callback': expired
+
+                    }).then(function (widgetId) {
+                        // The widget has been created
+                        validate();
+                        scope.widgetId = widgetId;
+                        scope.onCreate({widgetId: widgetId});
+
+                        scope.$on('$destroy', destroy);
+
+                        scope.$on('reCaptchaReset', function(event, resetWidgetId){
+                          if(ng.isUndefined(resetWidgetId) || widgetId === resetWidgetId){
+                            scope.response = "";
+                            validate();
+                          }
+                        })
+
+                    });
+
+                    // Remove this listener to avoid creating the widget more than once.
+                    removeCreationListener();
+                });
+
+                function destroy() {
+                  if (ctrl) {
+                    // reset the validity of the form if we were removed
+                    ctrl.$setValidity('recaptcha', null);
+                  }
+
+                  cleanup();
+                }
+
+                function expired(){
+                    // Safe $apply
+                    $timeout(function () {
+                        scope.response = "";
+                        validate();
+
+                        // Notify about the response availability
+                        scope.onExpire({ widgetId: scope.widgetId });
+                    });
+                }
+
+                function validate(){
+                    if(ctrl){
+                        ctrl.$setValidity('recaptcha', scope.required === false ? null : Boolean(scope.response));
+                    }
+                }
+
+                function cleanup(){
+                  vcRecaptcha.destroy(scope.widgetId);
+
+                  // removes elements reCaptcha added.
+                  ng.element($document[0].querySelectorAll('.pls-container')).parent().remove();
+                }
+            }
+        };
+    }]);
+
+}(angular));
+
+},{}],8:[function(require,module,exports){
 /**
  * dirPagination - AngularJS module for paginating (almost) anything.
  *
@@ -2364,11 +3014,11 @@ module.exports = function unindent(text) {
     }
 })();
 
-},{}],6:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 require('./dirPagination');
 module.exports = 'angularUtils.directives.dirPagination';
 
-},{"./dirPagination":5}],7:[function(require,module,exports){
+},{"./dirPagination":8}],10:[function(require,module,exports){
 /**
  * @license AngularJS v1.6.4
  * (c) 2010-2017 Google, Inc. http://angularjs.org
@@ -35741,11 +36391,11 @@ $provide.value("$locale", {
 })(window);
 
 !window.angular.$$csp().noInlineStyle && window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 require('./angular');
 module.exports = angular;
 
-},{"./angular":7}],9:[function(require,module,exports){
+},{"./angular":10}],12:[function(require,module,exports){
 (function (global){
 /**
  * marked - a markdown parser
@@ -37035,7 +37685,7 @@ if (typeof module !== 'undefined' && typeof exports === 'object') {
 }());
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],10:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 //! moment.js
 //! version : 2.18.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -41500,7 +42150,7 @@ return hooks;
 
 })));
 
-},{}],11:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 /**!
  * AngularJS file upload directives and services. Supports: file upload/drop/paste, resume, cancel/abort,
  * progress, resize, thumbnail, preview, validation and CORS
@@ -44400,10 +45050,10 @@ ngFileUpload.service('UploadExif', ['UploadResize', '$q', function (UploadResize
 }]);
 
 
-},{}],12:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 require('./dist/ng-file-upload-all');
 module.exports = 'ngFileUpload';
-},{"./dist/ng-file-upload-all":11}],13:[function(require,module,exports){
+},{"./dist/ng-file-upload-all":14}],16:[function(require,module,exports){
 (function (root, factory) {
   'use strict';
 
@@ -44642,7 +45292,7 @@ module.exports = 'ngFileUpload';
 
 }));
 
-},{"angular":8}],14:[function(require,module,exports){
+},{"angular":11}],17:[function(require,module,exports){
 /**
  * Created by tlyon on 5/31/17.
  *
@@ -44653,6 +45303,7 @@ var ngPaginate = require('angular-utils-pagination');
 var moment = require('angular-moment');
 var FileSaver = require('angular-file-saver');
 var ngstorage = require('ngstorage');
+var reCaptcha = require('angular-recaptcha');
+var angularModal = require('angular-modal-service');
 
-
-},{"angular-file-saver":1,"angular-marked":2,"angular-moment":4,"angular-utils-pagination":6,"ng-file-upload":12,"ngstorage":13}]},{},[14]);
+},{"angular-file-saver":1,"angular-marked":2,"angular-modal-service":4,"angular-moment":5,"angular-recaptcha":6,"angular-utils-pagination":9,"ng-file-upload":15,"ngstorage":16}]},{},[17]);
