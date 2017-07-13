@@ -1,6 +1,6 @@
 {
   "name": "quanteconlib",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Code for the site QuantEconLib",
   "private": true,
   "main": "./app.js",
@@ -8,7 +8,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start-server": "node app.js",
     "start-client": "cd client && npm start",
-    "start": "npm run start-server && npm run start-client"
+    "start": "concurrently \"npm run start-server\" \"npm run start-client\"",
+    "install-all": "npm install && npm run install-client",
+    "install-client": "cd client && npm install"
   },
   "repository": {
     "type": "git",
@@ -23,7 +25,6 @@
   "dependencies": {
     "@nteract/commutable": "^1.1.4",
     "@nteract/notebook-preview": "^1.2.2",
-    "codemirror": "^5.27.4",
     "@nteract/transform-dataresource": "^1.0.7",
     "@nteract/transform-plotly": "^1.2.0",
     "@nteract/transforms": "^1.1.0",
@@ -33,6 +34,7 @@
     "angular-utils-pagination": "^0.11.1",
     "async": "^2.4.1",
     "body-parser": "^1.17.2",
+    "codemirror": "^5.27.4",
     "connect-multiparty": "^2.0.0",
     "express": "^4.15.3",
     "express-handlebars": "^3.0.0",
@@ -54,8 +56,10 @@
     "passport-linkedin-oauth2": "^1.5.0",
     "passport-twitter": "^1.0.4",
     "passport-youtube-v3": "^2.0.0",
+    "query-string": "^4.3.4",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
+    "react-imageloader": "^2.1.0",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.1",
     "sprintf": "^0.1.5"

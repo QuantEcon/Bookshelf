@@ -12,7 +12,18 @@ var path = require('path');
 
 var app = express.Router();
 
-
+/*
+    Query the url with the following parameters
+    {
+        lang: 'language the notebook is in'
+        topic: 'topic of the notebook'
+        author: 'id of author of notebook'
+        time: 'time filter'
+        keywords: 'string of key words to search for'
+        page: 'current page # to search for'
+        sortBy: 'sorting by characteristic'
+    }
+*/
 app.get('/all-submissions', function (req, res) {
     console.log("req.query: ", req.query);
     var searchParams = {};
@@ -112,7 +123,7 @@ app.get('/all-submissions', function (req, res) {
                     res.status(500);
                     res.send("Error occurred finding authors");
                 } else {
-                    res.status(200);
+                    console.log("total submissions: ", result.total);
                     res.send({
                         submissions: submissions,
                         totalSubmissions: result.total,
