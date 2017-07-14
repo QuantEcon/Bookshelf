@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import Timestamp from 'react-timestamp';
+import Time from 'react-time';
 
 import Markdown from 'react-markdown';
 
@@ -8,12 +8,17 @@ class SubmissionPreview extends Component {
     constructor(props) {
         super(props);
 
-        this.timestamp = new Date();
-
         this.state = {
             submission: props.submission,
             author: props.author
         }
+    }
+
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            submission: nextProps.submission,
+            author: nextProps.author
+        });
     }
 
     render() {
@@ -25,7 +30,7 @@ class SubmissionPreview extends Component {
                         <a href={"/submission/" + this.state.submission._id}>{this.state.submission.title}</a>
                     </h3>
                     <p className="date">
-                        Published {' '}<Timestamp time={this.state.submission.timestamp} format='ago' precision={1}/>{' '}
+                        Published {' '}<Time value={this.state.submission.published} relative/>{' '}
                         by
                         <a href="/user/authorid">
                             {' '}{this.state.author.name}{' '}
@@ -48,7 +53,7 @@ class SubmissionPreview extends Component {
                                 <span className="count">{this.state.submission.views}</span>
                                 Views</li>
                             <li className="comments">
-                                <span className="count">{this.state.submission.comments.length}</span>
+                                <span className="count">{this.state.submission.totalComments}</span>
                                 Comments
                             </li>
                             <li className="votes">

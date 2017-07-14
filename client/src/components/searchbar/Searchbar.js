@@ -11,11 +11,7 @@ class Searchbar extends Component {
     constructor(props) {
         super(props);
 
-        console.log("props: ", props);
-
         this.state = props.searchParams;
-
-        console.log("state:", this.state);
 
         this.submit = this
             .submit
@@ -86,7 +82,6 @@ class Searchbar extends Component {
     }
 
     submit() {
-        console.log('Submit: ', this.state);
         //get search results return to parent
         var searchParams = {
             keywords: this.state.keywords,

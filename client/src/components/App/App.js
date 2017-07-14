@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
-// import Switch from 'react-router';
 //Components
 import Home from '../home/Home';
 import Submission from '../submissions/Submission';
@@ -19,6 +18,7 @@ class App extends Component {
           <Switch>
             <Route exact path='/' component={Home}/>
             <Route path='/submission/:id' component={Submission}/>
+            
             <Route path='/user' component={User}/>
 
             {/*Page not found*/}

@@ -56,7 +56,7 @@ class SubmissionList extends Component {
     }
     //get submissions from API initialize data
     onSearchResults(results) {
-        console.log("Search results: ", results);
+        console.log('Search returned:', results);
         this.setState({submissions: results.submissions, authors: results.authors, totalSubmissions: results.totalSubmissions, dataReady: true});
     }
 

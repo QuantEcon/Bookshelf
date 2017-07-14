@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "moment": "^2.18.1",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.6.1",
@@ -11,7 +12,7 @@
     "react-paginate": "^4.4.3",
     "react-router": "^4.1.1",
     "react-scripts": "1.0.10",
-    "react-timestamp": "^4.2.1"
+    "react-time": "^4.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
