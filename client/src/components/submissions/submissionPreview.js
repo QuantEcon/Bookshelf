@@ -2,12 +2,14 @@ import React, {Component} from 'react';
 
 import Timestamp from 'react-timestamp';
 
+import Markdown from 'react-markdown';
+
 class SubmissionPreview extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.timestamp = new Date();
-        
+
         this.state = {
             submission: props.submission,
             author: props.author
@@ -20,20 +22,20 @@ class SubmissionPreview extends Component {
 
                 <div className="specs">
                     <h3 className="title">
-                        <a href="">{this.state.submission.title}</a>
+                        <a href={"/submission/" + this.state.submission._id}>{this.state.submission.title}</a>
                     </h3>
                     <p className="date">
-                        Published
-                        {' '}<Timestamp time={this.state.submission.timestamp} format='ago' precision={1}/>{' '}
+                        Published {' '}<Timestamp time={this.state.submission.timestamp} format='ago' precision={1}/>{' '}
                         by
                         <a href="/user/authorid">
                             {' '}{this.state.author.name}{' '}
                         </a>
                         in
-                        <a>{' '}{ this.state.submission.lang}</a>
+                        <a>{' '}{this.state.submission.lang}</a>
                     </p>
-                    <p className="short"></p>
+                    <Markdown source={this.state.submission.summary?this.state.submission.summary:'*No summary*'} className='short'/>
                 </div>
+
                 <p className="avatar">
                     <a>
                         <img src={this.state.author.avatar} alt="Author avatar"/>

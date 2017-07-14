@@ -368,8 +368,14 @@ app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (re
             submission.summary = req.body.summary;
             submission.file = file.name;
             submission.lastUpdated = new Date();
-
-            
+            submission.save(function(err){
+                if(err){
+                    console.log('Error saving edited submission');
+                    res.status(500);
+                } else {
+                    res.send(200);
+                }
+            });
         } else {
             console.log("Error 4");
             res.status(500);
