@@ -27,7 +27,7 @@ class Head extends Component {
 
                         <ul className="site-menu">
                             <li className="menu-signin">
-                                <a href="/login" aria-haspopup="true">Sign In</a>
+                                <a href="/signin" aria-haspopup="true">Sign In</a>
                             </li>
                         </ul>
 

@@ -34,7 +34,6 @@ var submissionSchema = new Schema({
 });
 
 submissionSchema.plugin(mongoosePaginate);
-console.log("Set indexes");
 submissionSchema.index({title: 'text', summary: 'text'});
 
 

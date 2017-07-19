@@ -274,7 +274,7 @@ app.get('/users', function (req, res) {
 
     console.log("Searching users: ", params);
 
-    var select = "_id avatar name summary joinDate facebook.url github.url twitter.url email oneSocial";
+    var select = "_id avatar name summary joinDate fb.url github.url twitter.url email oneSocial submissions";
 
     User.find(params, select, function (err, users) {
         if (err) {

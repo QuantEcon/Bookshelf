@@ -41,14 +41,6 @@ var userSchema = new Schema({
         hidden: Boolean,
         avatarURL: String,
     },
-    // linkedin: {
-    //     id: String,
-    //     access_token: String,
-    //     url: String,
-    //     displayName: String,
-    //     hidden: Boolean,
-    //     avatarURL: String,
-    // },
     google: {
         id: String,
         avatarURL: String,

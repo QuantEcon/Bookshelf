@@ -58,13 +58,19 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
 
 // set location of assets
 app.use(express.static(__dirname + "/public"));
 
 app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, Access-Control-Allow-Origin");
+    res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
 
@@ -78,8 +84,12 @@ app.use(passport.session());
 passportInit();
 
 app.get('/', isAuthenticated, function (req, res) {
-    Submission.find({deleted: false}, function (err, submissions) {
-        User.find({deleted: false}, function (err, users) {
+    Submission.find({
+        deleted: false
+    }, function (err, submissions) {
+        User.find({
+            deleted: false
+        }, function (err, users) {
             var data = {
                 n: submissions,
                 u: users,
@@ -155,5 +165,4 @@ app.use(function (err, req, res, next) {
 // start server
 app.listen(port, function () {
     console.log("Server listening on port %d", port);
-    console.log("__dirname: ", __dirname);
 });

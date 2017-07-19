@@ -7,10 +7,8 @@ import Time from 'react-time';
 import ThumbsUp from 'react-icons/lib/md/thumb-down'
 import ThumbsDown from 'react-icons/lib/md/thumb-up'
 
-// import QuantEconAvatar from '../../assets/img/quant-econ-avatar.png'
-
-import Notebook from '@nteract/notebook-preview';
-//Components
+// import QuantEconAvatar from '../../assets/img/quant-econ-avatar.png' import
+// Notebook from '@nteract/notebook-preview'; Components
 import Head from '../partials/Head';
 
 class notebook extends Component {
@@ -21,6 +19,11 @@ class notebook extends Component {
             dataReady: false,
             showNotebook: true
         }
+
+        this.toggleView = this
+            .toggleView
+            .bind(this);
+
         console.log('Fetch notebook data: ', props);
         fetch('/search/notebook/' + props.match.params.id).then(results => {
             return results.json();
@@ -30,6 +33,10 @@ class notebook extends Component {
             console.log('State:', this.state);
             this.setState({dataReady: true, showNotebook: true});
         })
+    }
+
+    toggleView() {
+        this.setState({showNotebook: !this.showNotebook});
     }
 
     render() {
@@ -43,7 +50,7 @@ class notebook extends Component {
                             <div className="details-side">
                                 <div className="vote">
                                     {/*TODO:Loading spinners?*/}
-                                    <a className="fi-like" onClick={this.upvote}>
+                                    <a onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>
 
@@ -51,7 +58,7 @@ class notebook extends Component {
                                         ? <span className='score'>{this.state.notebook.score}</span>
                                         : <p>loading</p>}
 
-                                    <a className="fi-dislike" onClick={this.downvote}>
+                                    <a onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>
                                 </div>
@@ -205,7 +212,20 @@ class notebook extends Component {
                                                     </ul>
                                                 </div>
                                             : <div>
-                                                comments go here...
+                                                <div className='tile-header'>
+                                                    <h2 className='tile-title'>Comments</h2>
+                                                    <ul className='tile-options'>
+                                                        <li>
+                                                            <a onClick={this.toggleView}>Notebook</a>
+                                                        </li>
+                                                        <li>
+                                                            <a className='active'>Comments</a>
+                                                        </li>
+                                                        <li>
+                                                            <a className='alt' onClick={this.download}>Download</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>}
 
                                     </div>
