@@ -32,7 +32,7 @@ class SubmissionPreview extends Component {
                     <p className="date">
                         Published {' '}<Time value={this.state.submission.published} relative/>{' '}
                         by
-                        <a href="/user/authorid">
+                        <a href={"/user/" + this.state.author._id}>
                             {' '}{this.state.author.name}{' '}
                         </a>
                         in
@@ -42,7 +42,7 @@ class SubmissionPreview extends Component {
                 </div>
 
                 <p className="avatar">
-                    <a>
+                    <a href={"/user/" + this.state.author._id}>
                         <img src={this.state.author.avatar} alt="Author avatar"/>
                     </a>
                 </p>
