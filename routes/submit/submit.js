@@ -320,68 +320,23 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
             var outputName = newSub._id;
             //=============================================================
 
-            var readStream = fs.createReadStream(file.path);
-            var json = {};
-            readStream.once('error', function (err) {
-                console.log('Error reading file: ', err);
-                res.status(500);
-            });
-            readStream.once('done', function () {
-                console.log('done copying file:');
-                readStream.pipe(json);
-                newSub.notebook = json;
-                res.status(200);
-            });
-
-            // var templateLocation = __dirname + '/../../assets/nbconvert/templates/notebookHTML.tpl';
-            // var command = sprintf('jupyter nbconvert %s --output=%s --output-dir=%s --template=%s', file.path, outputName, outputDir, templateLocation);
-            // console.log("command: ", command);
-
-            // exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
-            //     console.log("stderr: ", stderr);
-            //     console.log("err: ", err);
-            //     console.log("stdout: ", stdout);
-
-            //     if (err) {
-            //         res.status(500);
-            //     } else {
-
-            //         newSub.notebook = '/../../files/html/' + outputName + '.html';
-            //         console.log("New sub: ", newSub);
-
-            //         //==========================================================
-            //         // save file
-            //         var readStream = fs.createReadStream(file.path);
-            //         readStream.once('error', function (err) {
-            //             console.log(err);
-            //             res.status(500);
-            //         });
-            //         readStream.once('done', function () {
-            //             console.log("Done copying file");
-            //         });
-
-            //         var fileSavePath = '/../../files/ipynb/' + outputName + '.ipynb';
-
-            //         readStream.pipe(fs.createWriteStream(__dirname + fileSavePath));
-
-            //         newSub.filepath = fileSavePath;
-            //         //==========================================================
-
-            //         user.currentSubmission = newSub;
-            //         user.save(function (err) {
-            //             if (err) {
-            //                 res.render('500');
-            //             } else {
-
-            //                 console.log("Saved user");
-            //                 res.status(200);
-            //                 res.send('redirect');
-            //             }
-            //         });
-            //     }
-            // });
-
-
+            var notebookJSON = JSON.parse(fs.readFile(file.path, 'utf8'), function (err) {
+                if (err) {
+                    res.status(500);
+                } else {
+                    //save notebookJSON
+                    newSub.notebookJSON = notebookJSON;
+                    user.currentSubmission = newSub;
+                    user.save(function (err) {
+                        if (err) {
+                            res.status(500);
+                        } else {
+                            res.status(200);
+                            res.send('redirect');
+                        }
+                    })
+                }
+            })
         }
     });
 
@@ -397,22 +352,30 @@ app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (re
         if (err) {
             console.log("Error 1");
             res.status(500);
-            //todo: return error
+            //TODO: return error
         } else if (submission) {
-            submission.title = req.body.title;
-            submission.topicList = req.body.topicList;
-            submission.lang = req.body.lang;
-            submission.summary = req.body.summary;
-            submission.file = file.name;
-            submission.lastUpdated = new Date();
-            submission.save(function (err) {
+            var notebookJSON = JSON.parse(fs.readFile(file.path, 'utf8'), function (err) {
                 if (err) {
-                    console.log('Error saving edited submission');
                     res.status(500);
                 } else {
-                    res.send(200);
+                    submission.title = req.body.title;
+                    submission.topicList = req.body.topicList;
+                    submission.lang = req.body.lang;
+                    submission.summary = req.body.summary;
+                    submission.file = file.name;
+                    submission.lastUpdated = new Date();
+                    submission.notebookJSON = notebookJSON;
+                    submission.save(function (err) {
+                        if (err) {
+                            console.log('Error saving edited submission');
+                            res.status(500);
+                        } else {
+                            res.send(200);
+                        }
+                    });
                 }
             });
+
         } else {
             console.log("Error 4");
             res.status(500);

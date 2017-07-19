@@ -12,10 +12,8 @@ var submissionSchema = new Schema({
     topicList: [String],
     lang: String,
     summary: String,
-    notebook: Object, // html of notebook
-    filepath: String, // path to file,
     fileName: String,
-    file: Object,
+    notebookJSON: Object,
 
 
     author: ObjectId,

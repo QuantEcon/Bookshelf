@@ -236,11 +236,14 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             }
 
             var location = __dirname + notebook.notebook;
-            var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
+            // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
+            console.log('dirname: ', __dirname);
+            var notebookJSON = JSON.parse(fs.readFileSync(__dirname + '/UN_demography.ipynb','utf8'));
 
             var data = {
                 notebook: results.nb,
-                notebookHTML: notebookHTML,
+                // notebookHTML: notebookHTML,
+                notebookJSON: notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
                 coAuthors: results.coAuth,

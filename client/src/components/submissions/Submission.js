@@ -2,6 +2,10 @@ import React, {Component} from 'react';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
+import NotebookPreview from '@nteract/notebook-preview';
+import '@nteract/notebook-preview/styles/main.css';
+import '@nteract/notebook-preview/styles/theme-light.css';
+import 'codemirror/lib/codemirror.css';
 
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-down'
@@ -37,7 +41,9 @@ class notebook extends Component {
     }
 
     toggleView() {
-        this.setState({showNotebook: !this.state.showNotebook});
+        this.setState({
+            showNotebook: !this.state.showNotebook
+        });
     }
 
     render() {
@@ -198,19 +204,25 @@ class notebook extends Component {
                             {this.state.dataReady
                                 ? <div>
                                         {this.state.showNotebook
-                                            ? <div className='tile-header'>
-                                                    <h2 className='tile-title'>Notebook</h2>
-                                                    <ul className='tile-options'>
-                                                        <li>
-                                                            <a className='active'>Notebook</a>
-                                                        </li>
-                                                        <li>
-                                                            <a onClick={this.toggleView}>Comments</a>
-                                                        </li>
-                                                        <li>
-                                                            <a className='alt' onClick={this.download}>Download</a>
-                                                        </li>
-                                                    </ul>
+                                            ? <div>
+                                                    <div className='tile-header'>
+                                                        <h2 className='tile-title'>Notebook</h2>
+                                                        <ul className='tile-options'>
+                                                            <li>
+                                                                <a className='active'>Notebook</a>
+                                                            </li>
+                                                            <li>
+                                                                <a onClick={this.toggleView}>Comments</a>
+                                                            </li>
+                                                            <li>
+                                                                <a className='alt' onClick={this.download}>Download</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                    {/* {this.state.notebook.notebookJSON
+                                                        ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
+                                                        : null} */}
+                                                    <NotebookPreview notebook={this.state.notebookJSON}/>
                                                 </div>
                                             : <div>
                                                 <div className='tile-header'>
@@ -227,7 +239,10 @@ class notebook extends Component {
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <CommentsThread comments={this.state.comments} replies={this.state.replies} commentAuthors={this.state.commentAuthors}/>
+                                                <CommentsThread
+                                                    comments={this.state.comments}
+                                                    replies={this.state.replies}
+                                                    commentAuthors={this.state.commentAuthors}/>
                                             </div>}
 
                                     </div>
