@@ -10,6 +10,7 @@ import ThumbsDown from 'react-icons/lib/md/thumb-up'
 // import QuantEconAvatar from '../../assets/img/quant-econ-avatar.png' import
 // Notebook from '@nteract/notebook-preview'; Components
 import Head from '../partials/Head';
+import CommentsThread from '../comments/CommentsThread'
 
 class notebook extends Component {
 
@@ -36,7 +37,7 @@ class notebook extends Component {
     }
 
     toggleView() {
-        this.setState({showNotebook: !this.showNotebook});
+        this.setState({showNotebook: !this.state.showNotebook});
     }
 
     render() {
@@ -127,7 +128,7 @@ class notebook extends Component {
                                         <div className='side'>
                                             <p className='avatar'>
                                                 {this.state.dataReady
-                                                    ? <img src={this.state.author.avatar} alt="Author avatar"/>
+                                                    ? <a href={'/user/' + this.state.author._id}><img src={this.state.author.avatar} alt="Author avatar"/></a>
                                                     : <p>loading...</p>}
 
                                             </p>
@@ -226,6 +227,7 @@ class notebook extends Component {
                                                         </li>
                                                     </ul>
                                                 </div>
+                                                <CommentsThread comments={this.state.comments} replies={this.state.replies} commentAuthors={this.state.commentAuthors}/>
                                             </div>}
 
                                     </div>
