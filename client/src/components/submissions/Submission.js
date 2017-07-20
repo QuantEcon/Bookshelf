@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
+// import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
 import '@nteract/notebook-preview/styles/main.css';
 import '@nteract/notebook-preview/styles/theme-light.css';
@@ -29,15 +30,16 @@ class notebook extends Component {
             .toggleView
             .bind(this);
 
-        console.log('Fetch notebook data: ', props);
         fetch('/search/notebook/' + props.match.params.id).then(results => {
             return results.json();
         }).then(data => {
-            console.log("Query returned: ", data);
             this.state = data;
-            console.log('State:', this.state);
             this.setState({dataReady: true, showNotebook: true});
         })
+    }
+
+    encounteredURI(uri){
+        console.log('encountered uri in markdown: ', uri);
     }
 
     toggleView() {
@@ -126,18 +128,15 @@ class notebook extends Component {
                                 <div className='details-body'>
                                     <div className='details-primary'>
                                         {this.state.dataReady
-                                            ? <Markdown source={this.state.notebook.summary}/>
+                                            ? <Markdown source={this.state.notebook.summary} transformLinkUri={this.encounteredURI}/>
                                             : <p>loading...</p>}
 
                                     </div>
                                     <div className='details-secondary'>
                                         <div className='side'>
-                                            <p className='avatar'>
                                                 {this.state.dataReady
-                                                    ? <a href={'/user/' + this.state.author._id}><img src={this.state.author.avatar} alt="Author avatar"/></a>
-                                                    : <p>loading...</p>}
-
-                                            </p>
+                                                    ? <p className='avatar'><a href={'/user/' + this.state.author._id}><img src={this.state.author.avatar} alt="Author avatar"/></a></p>
+                                                    : <p>loading</p>}
                                         </div>
                                         <div className='main'>
                                             <ul className='specs'>
@@ -152,11 +151,9 @@ class notebook extends Component {
                                                 </li>
                                                 <li>
                                                     <span>Co-Authors:</span>
-                                                    <a>
-                                                        {/*TODO: repeat for co authors*/}
-                                                        {' '}None
-                                                    </a>
-                                                    <br/>
+                                                    {this.state.dataReady && this.state.coAuthors.length
+                                                        ? <a>co-author name</a>
+                                                        : <div>None</div>}
                                                 </li>
                                                 <li>
                                                     <span>Language:</span>
