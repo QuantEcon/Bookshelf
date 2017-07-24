@@ -5,6 +5,12 @@ var isAuthenticated = require('./isAuthenticated').isAuthenticated;
 var app = express.Router();
 // fb login ================================
 
+app.use(function(req, res, next){
+    console.log('[FB AUTH] req.headers:', req.headers);
+    console.log('[FB AUTH] req.method:', req.method);
+    next();
+}); 
+
 // add fb to existing user
 app.get('/add', isAuthenticated, passport.authenticate('addFB', {scope: 'email'}));
 app.get('/callback/add',
@@ -14,14 +20,6 @@ app.get('/callback/add',
     })
 );
 // register new user with fb
-// app.get('/', function(req, res){
-//     console.log('req.headers: ', req.headers);
-// });
-app.use(function(req, res, next){
-    console.log('FB Auth:', req.headers);
-    res.setHeader('access-control-allow-origin', '*');
-    next();
-});
 
 app.get('/', passport.authenticate('facebook', {scope: 'email'}));
 app.get('/callback',

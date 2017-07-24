@@ -16,6 +16,7 @@ class ReplyList extends Component {
     render() {
         return (
             <div>
+                {/*Render each reply*/}
                 {this
                     .state
                     .replies

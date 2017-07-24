@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom'
 
 import Time from 'react-time';
 
@@ -14,11 +15,8 @@ class SubmissionPreview extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            submission: nextProps.submission,
-            author: nextProps.author
-        });
+    componentWillReceiveProps(nextProps) {
+        this.setState({submission: nextProps.submission, author: nextProps.author});
     }
 
     render() {
@@ -27,40 +25,46 @@ class SubmissionPreview extends Component {
 
                 <div className="specs">
                     <h3 className="title">
-                        <a href={"/submission/" + this.state.submission._id}>{this.state.submission.title}</a>
+                        <Link to={'/submission/' + this.state.submission._id}>
+                            {this.state.submission.title}
+                        </Link>
                     </h3>
                     <p className="date">
                         Published {' '}<Time value={this.state.submission.published} relative/>{' '}
                         by
-                        <a href={"/user/" + this.state.author._id}>
+
+                        <Link to={'/user/' + this.state.author._id}>
                             {' '}{this.state.author.name}{' '}
-                        </a>
+                        </Link>
+                        
                         in
                         <a>{' '}{this.state.submission.lang}</a>
                     </p>
-                    <Markdown source={this.state.submission.summary?this.state.submission.summary:'*No summary*'} className='short'/>
+                    <Markdown
+                        source={this.state.submission.summary
+                        ? this.state.submission.summary
+                        : '*No summary*'}
+                        className='short'/>
                 </div>
 
                 <p className="avatar">
-                    <a href={"/user/" + this.state.author._id}>
+                    <Link to={'/user/' + this.state.author._id}>
                         <img src={this.state.author.avatar} alt="Author avatar"/>
-                    </a>
+                    </Link>
                 </p>
                 <div className="stats">
-                    <a href="/notebook/">
-                        <ul>
-                            <li className="views">
-                                <span className="count">{this.state.submission.views}</span>
-                                Views</li>
-                            <li className="comments">
-                                <span className="count">{this.state.submission.totalComments}</span>
-                                Comments
-                            </li>
-                            <li className="votes">
-                                <span className="count">{this.state.submission.score}</span>
-                                Votes</li>
-                        </ul>
-                    </a>
+                    <ul>
+                        <li className="views">
+                            <span className="count">{this.state.submission.views}</span>
+                            Views</li>
+                        <li className="comments">
+                            <span className="count">{this.state.submission.totalComments}</span>
+                            Comments
+                        </li>
+                        <li className="votes">
+                            <span className="count">{this.state.submission.score}</span>
+                            Votes</li>
+                    </ul>
                 </div>
             </div>
         )

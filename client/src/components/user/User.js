@@ -24,7 +24,7 @@ class User extends Component {
         };
 
         console.log('Querying database...');
-        fetch('/search/users/?_id=' + this.props.match.params.userID).then(results => {
+        fetch('/api/search/users/?_id=' + this.props.match.params.userID).then(results => {
             return results.json();
         }).then(data => {
             console.log('User search returned: ', data);

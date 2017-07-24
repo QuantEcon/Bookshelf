@@ -4,6 +4,8 @@
   "private": true,
   "dependencies": {
     "@nteract/notebook-preview": "^2.1.0",
+    "@nteract/transforms-full": "^2.2.0",
+    "history": "^4.6.3",
     "moment": "^2.18.1",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
@@ -12,9 +14,14 @@
     "react-icons": "^2.2.5",
     "react-markdown": "^2.5.0",
     "react-paginate": "^4.4.3",
+    "react-redux": "^5.0.5",
     "react-router": "^4.1.1",
+    "react-router-dom": "^4.1.2",
+    "react-router-redux": "^5.0.0-alpha.6",
     "react-scripts": "1.0.10",
-    "react-time": "^4.3.0"
+    "react-time": "^4.3.0",
+    "redux": "^3.7.2",
+    "redux-thunk": "^2.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

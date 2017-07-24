@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 import logo from '../../assets/img/qe-logo-horizontal.png';
 
@@ -13,21 +14,22 @@ class Head extends Component {
                     <div className="header-container">
 
                         <div className="site-title">
-                            <a href="/">
+                            <Link to='/'>
                                 <h2 className="site-name">QuantEconLib</h2>
                                 <p className="site-tag">Open notebook library for economic modeling</p>
-                            </a>
+                            </Link>
+
                         </div>
 
                         <p className="qe-logo">
-                            <a href="https://quantecon.org/" title="quantecon.org">
+                            <Link to='https://quantecon.org/'>
                                 <img src={logo} alt="QuantEcon logo"/>Quant<span>Econ</span>
-                            </a>
+                            </Link>
                         </p>
 
                         <ul className="site-menu">
                             <li className="menu-signin">
-                                <a href="/signin" aria-haspopup="true">Sign In</a>
+                                <Link to='/signin'>Sign In</Link>
                             </li>
                         </ul>
 

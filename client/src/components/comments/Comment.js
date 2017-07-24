@@ -3,6 +3,8 @@ import React, {Component} from 'react';
 import ThumbsUp from 'react-icons/lib/md/thumb-down';
 import ThumbsDown from 'react-icons/lib/md/thumb-up';
 import FlagIcon from 'react-icons/lib/md/flag';
+import DeleteIcon from 'react-icons/lib/md/delete';
+import EditIcon from 'react-icons/lib/md/edit';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
@@ -49,12 +51,12 @@ class Comment extends Component {
                     <ul className='comment-vote'>
                         <li>
                             <a onClick={this.upvote}>
-                                <ThumbsUp></ThumbsUp>
+                                <ThumbsUp/>
                             </a>
                         </li>
                         <li>
                             <a onClick={this.downvote}>
-                                <ThumbsDown></ThumbsDown>
+                                <ThumbsDown/>
                             </a>
                         </li>
                     </ul>
@@ -66,11 +68,17 @@ class Comment extends Component {
                             {this.state.author.name}
                         </a>
                         <span className='time'>
-                            <Time value={this.state.comment.timestamp} relative></Time>
+                            <Time value={this.state.comment.timestamp} relative/>
                         </span>
+                        {/* {this.state.comment.flagged
+                            ? <FlagIcon/>
+                            : <a onClick={this.flagComment}>
+                                <FlagIcon/>
+                            </a>} */}
                         <a onClick={this.flagComment}>
                             <FlagIcon/>
                         </a>
+
                     </div>
 
                     <div className='comment-body'>
@@ -85,19 +93,32 @@ class Comment extends Component {
 
                     <div className='comment-footer'>
                         <ul className='options'>
-                            {this.state.showInsertReply && !this.state.isReply
-                                ? <div>
-                                        <li>
-                                            <a onClick={this.toggleInsertReply}>Close</a>
-                                        </li>
+                            {!this.state.isReply
+                                ? <div>{this.state.showInsertReply
+                                            ? <div>
+                                                    <li>
+                                                        <a onClick={this.toggleInsertReply}>Close</a>
+                                                    </li>
+                                                </div>
+                                            : <div>
+                                                <li>
+                                                    <a onClick={this.toggleInsertReply}>Reply</a>
+                                                </li>
+                                            </div>}
                                     </div>
-                                : <div>
-                                    <li>
-                                        <a onClick={this.toggleInsertReply}>Reply</a>
-                                    </li>
-                                </div>}
+                                : null}
 
                             {/* TODO: insert edit and delete options */}
+                            {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
+                                ? <div>
+                                        <a onClick={this.editComment}>
+                                            <EditIcon/>
+                                        </a>
+                                        <a onClick={this.deleteComment}>
+                                            <DeleteIcon/>
+                                        </a>
+                                    </div>
+                                : null}
                         </ul>
                     </div>
 
@@ -114,6 +135,8 @@ class Comment extends Component {
                                 </form>
                             </div>
                         : null}
+
+                    {/*Render all replies for this comment*/}
                     {this.state.replies
                         ? <ReplyList replies={this.state.replies} authors={this.state.authors}/>
                         : null}

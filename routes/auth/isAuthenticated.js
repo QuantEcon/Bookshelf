@@ -3,6 +3,7 @@ var isAuthenticated = function (req, res, next) {
         return next();
     } else {
         //not authenticated
+        console.log('not authenticated');
         if (/^\/user\/my-profile/.test(req.url)) {
             res.redirect('/login');
         }

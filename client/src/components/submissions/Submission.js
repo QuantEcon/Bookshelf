@@ -8,16 +8,18 @@ import '@nteract/notebook-preview/styles/main.css';
 import '@nteract/notebook-preview/styles/theme-light.css';
 import 'codemirror/lib/codemirror.css';
 
+import {transforms, displayOrder} from '@nteract/transforms-full';
+
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-down'
 import ThumbsDown from 'react-icons/lib/md/thumb-up'
 
-// import QuantEconAvatar from '../../assets/img/quant-econ-avatar.png' import
-// Notebook from '@nteract/notebook-preview'; Components
+//Components
 import Head from '../partials/Head';
 import CommentsThread from '../comments/CommentsThread'
 
-class notebook extends Component {
+
+class Submission extends Component {
 
     constructor(props) {
         super(props);
@@ -30,12 +32,20 @@ class notebook extends Component {
             .toggleView
             .bind(this);
 
-        fetch('/search/notebook/' + props.match.params.id).then(results => {
+        fetch('/api/search/notebook/' + props.match.params.id).then(results => {
             return results.json();
         }).then(data => {
             this.state = data;
             this.setState({dataReady: true, showNotebook: true});
         })
+    }
+
+    upvote(){
+        console.log('upvote');
+    }
+
+    downvote(){
+        console.log('downvote');
     }
 
     encounteredURI(uri){
@@ -219,7 +229,7 @@ class notebook extends Component {
                                                     {/* {this.state.notebook.notebookJSON
                                                         ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
                                                         : null} */}
-                                                    <NotebookPreview notebook={this.state.notebookJSON}/>
+                                                    <NotebookPreview notebook={this.state.notebookJSON} transforms={transforms} displayOrder={displayOrder}/>
                                                 </div>
                                             : <div>
                                                 <div className='tile-header'>
@@ -255,4 +265,4 @@ class notebook extends Component {
     }
 }
 
-export default notebook;
+export default Submission;

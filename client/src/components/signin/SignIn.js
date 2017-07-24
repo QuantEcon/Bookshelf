@@ -20,7 +20,7 @@ class SignIn extends Component {
 
     signInFB() {
         console.log('Sign in fb');
-        fetch('http://localhost:8080/auth/fb/', {
+        fetch('/api/auth/fb', {
             headers: {
                 'Access-Control-Allow-Origin':'*'
             }
@@ -32,7 +32,7 @@ class SignIn extends Component {
 
     signInGithub() {
         console.log('Sign in github');
-        fetch('/auth/github', {
+        fetch('/api/auth/github', {
             headers: {
                 'Access-Control-Allow-Origin':'*'
             }
@@ -42,7 +42,7 @@ class SignIn extends Component {
     }
 
     signInGoogle() {
-        fetch('/auth/google', {
+        fetch('/api/auth/google', {
             headers: {
                 'Access-Control-Allow-Origin':'*',
             }
@@ -53,7 +53,7 @@ class SignIn extends Component {
 
     signInTwitter() {
         console.log('Sign in twitter');
-        fetch('/auth/twitter', {
+        fetch('/api/auth/twitter', {
             headers: {
                 'Access-Control-Allow-Origin':'*'
             }

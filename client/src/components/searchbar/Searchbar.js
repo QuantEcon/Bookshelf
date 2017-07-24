@@ -93,7 +93,7 @@ class Searchbar extends Component {
         };
 
         var query = queryString.stringify(searchParams);
-        fetch('/search/all-submissions/?' + query).then(results => {
+        fetch('/api/search/all-submissions/?' + query).then(results => {
             return results.json();
         }).then(data => {
             this.setState({totalSubmissions: data.totalSubmissions});
