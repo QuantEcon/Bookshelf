@@ -18,37 +18,30 @@ import ThumbsDown from 'react-icons/lib/md/thumb-up'
 import Head from '../partials/Head';
 import CommentsThread from '../comments/CommentsThread'
 
-
 class Submission extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            dataReady: false,
             showNotebook: true
         }
+
 
         this.toggleView = this
             .toggleView
             .bind(this);
-
-        fetch('/api/search/notebook/' + props.match.params.id).then(results => {
-            return results.json();
-        }).then(data => {
-            this.state = data;
-            this.setState({dataReady: true, showNotebook: true});
-        })
     }
 
-    upvote(){
+
+    upvote() {
         console.log('upvote');
     }
 
-    downvote(){
+    downvote() {
         console.log('downvote');
     }
 
-    encounteredURI(uri){
+    encounteredURI(uri) {
         console.log('encountered uri in markdown: ', uri);
     }
 
@@ -73,8 +66,8 @@ class Submission extends Component {
                                         <ThumbsUp/>
                                     </a>
 
-                                    {this.state.dataReady
-                                        ? <span className='score'>{this.state.notebook.score}</span>
+                                    {!this.props.isLoading
+                                        ? <span className='score'>{this.props.submission.data.notebook.score}</span>
                                         : <p>loading</p>}
 
                                     <a onClick={this.downvote}>
@@ -91,8 +84,8 @@ class Submission extends Component {
 
                                     <div className='details-title'>
 
-                                        {this.state.dataReady
-                                            ? <h1 className='title'>{this.state.notebook.title}</h1>
+                                        {!this.props.isLoading
+                                            ? <h1 className='title'>{this.props.submission.data.notebook.title}</h1>
                                             : <p>loading...</p>}
 
                                         {/*TODO: check current user id == notebook.author*/}
@@ -107,25 +100,25 @@ class Submission extends Component {
                                         <div className='counts'>
                                             <ul>
                                                 <li className='views'>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                <span className='count'>{this.state.notebook.views + ' '}</span>
+                                                                <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
                                                                 Views
                                                             </div>
                                                         : <p>Loading...</p>}
                                                 </li>
                                                 <li className='comments'>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                <span className='count'>{this.state.comments.length + this.state.replies.length}{' '}</span>
+                                                                <span className='count'>{this.props.submission.data.comments.length + this.props.submission.data.replies.length}{' '}</span>
                                                                 Comments
                                                             </div>
                                                         : <p>loading...</p>}
                                                 </li>
                                                 <li className='votes'>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                <span className='count'>{this.state.notebook.score}{' '}</span>
+                                                                <span className='count'>{this.props.submission.data.notebook.score}{' '}</span>
                                                                 Votes
                                                             </div>
                                                         : <p>loading...</p>}
@@ -137,40 +130,44 @@ class Submission extends Component {
 
                                 <div className='details-body'>
                                     <div className='details-primary'>
-                                        {this.state.dataReady
-                                            ? <Markdown source={this.state.notebook.summary} transformLinkUri={this.encounteredURI}/>
+                                        {!this.props.isLoading
+                                            ? <Markdown
+                                                    source={this.props.submission.data.notebook.summary}
+                                                    transformLinkUri={this.encounteredURI}/>
                                             : <p>loading...</p>}
 
                                     </div>
                                     <div className='details-secondary'>
                                         <div className='side'>
-                                                {this.state.dataReady
-                                                    ? <p className='avatar'><a href={'/user/' + this.state.author._id}><img src={this.state.author.avatar} alt="Author avatar"/></a></p>
-                                                    : <p>loading</p>}
+                                            {!this.props.isLoading
+                                                ? <p className='avatar'>
+                                                        <a href={'/user/' + this.props.submission.data.author._id}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></a>
+                                                    </p>
+                                                : <p>loading</p>}
                                         </div>
                                         <div className='main'>
                                             <ul className='specs'>
                                                 <li>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
                                                                 <span>Author: {' '}</span>
-                                                                <a href={'/user/' + this.state.author._id}>{this.state.author.name}</a>
+                                                                <a href={'/user/' + this.props.submission.data.author._id}>{this.props.submission.data.author.name}</a>
                                                             </div>
                                                         : <p>loading...</p>}
 
                                                 </li>
                                                 <li>
                                                     <span>Co-Authors:</span>
-                                                    {this.state.dataReady && this.state.coAuthors.length
+                                                    {!this.props.isLoading && this.props.submission.data.coAuthors.length
                                                         ? <a>co-author name</a>
                                                         : <div>None</div>}
                                                 </li>
                                                 <li>
                                                     <span>Language:</span>
                                                     {/*TODO: Link to homepage with language search query*/}
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                {' '}<a>{this.state.notebook.lang}</a>
+                                                                {' '}<a>{this.props.submission.data.notebook.lang}</a>
                                                             </div>
 
                                                         : <p>loading...</p>}
@@ -178,22 +175,22 @@ class Submission extends Component {
                                                 </li>
                                                 <li>
                                                     <span>Published:</span>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                {/* {' '}<Timestamp time={this.state.notebook.published} format='date'/> */}
-                                                                <Time value={this.state.notebook.published} format='d MMM YYYY'/>
+                                                                {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
+                                                                <Time value={this.props.submission.data.notebook.published} format='d MMM YYYY'/>
                                                             </div>
                                                         : <p>loading...</p>}
 
                                                 </li>
                                                 <li>
                                                     <span>Last update:</span>
-                                                    {this.state.dataReady
+                                                    {!this.props.isLoading
                                                         ? <div>
-                                                                {/* {' '}<Timestamp time={this.state.notebook.lastUpdated} format='date'/> */}
-                                                                {this.state.notebook.lastUpdated
-                                                                    ? <Time value={this.state.notebook.lastUpdated} format='d MMM YYYY'/>
-                                                                    : <Time value={this.state.notebook.published} format='d MMM YYYY'/>}
+                                                                {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
+                                                                {this.props.submission.data.notebook.lastUpdated
+                                                                    ? <Time value={this.props.submission.data.notebook.lastUpdated} format='d MMM YYYY'/>
+                                                                    : <Time value={this.props.submission.data.notebook.published} format='d MMM YYYY'/>}
                                                             </div>
                                                         : <p>loading...</p>}
 
@@ -208,52 +205,56 @@ class Submission extends Component {
 
                         {/* TODO: extract to Component? */}
                         <div className='tile'>
-                            {this.state.dataReady
-                                ? <div>
-                                        {this.state.showNotebook
-                                            ? <div>
-                                                    <div className='tile-header'>
-                                                        <h2 className='tile-title'>Notebook</h2>
-                                                        <ul className='tile-options'>
-                                                            <li>
-                                                                <a className='active'>Notebook</a>
-                                                            </li>
-                                                            <li>
-                                                                <a onClick={this.toggleView}>Comments</a>
-                                                            </li>
-                                                            <li>
-                                                                <a className='alt' onClick={this.download}>Download</a>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                    {/* {this.state.notebook.notebookJSON
-                                                        ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
-                                                        : null} */}
-                                                    <NotebookPreview notebook={this.state.notebookJSON} transforms={transforms} displayOrder={displayOrder}/>
-                                                </div>
-                                            : <div>
+                            {this.props.isLoading
+                                ? <h3>Loading...</h3>
+                                : <div>
+                                    {this.state.showNotebook
+                                        ? <div>
                                                 <div className='tile-header'>
-                                                    <h2 className='tile-title'>Comments</h2>
+                                                    <h2 className='tile-title'>Notebook</h2>
                                                     <ul className='tile-options'>
                                                         <li>
-                                                            <a onClick={this.toggleView}>Notebook</a>
+                                                            <a className='active'>Notebook</a>
                                                         </li>
                                                         <li>
-                                                            <a className='active'>Comments</a>
+                                                            <a onClick={this.toggleView}>Comments</a>
                                                         </li>
                                                         <li>
                                                             <a className='alt' onClick={this.download}>Download</a>
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                <CommentsThread
-                                                    comments={this.state.comments}
-                                                    replies={this.state.replies}
-                                                    commentAuthors={this.state.commentAuthors}/>
-                                            </div>}
+                                                {/* {this.state.notebook.notebookJSON
+                                                        ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
+                                                        : null} */}
+                                                <NotebookPreview
+                                                    notebook={this.props.submission.data.notebookJSON}
+                                                    transforms={transforms}
+                                                    displayOrder={displayOrder}/>
+                                            </div>
+                                        : <div>
+                                            <div className='tile-header'>
+                                                <h2 className='tile-title'>Comments</h2>
+                                                <ul className='tile-options'>
+                                                    <li>
+                                                        <a onClick={this.toggleView}>Notebook</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className='active'>Comments</a>
+                                                    </li>
+                                                    <li>
+                                                        <a className='alt' onClick={this.download}>Download</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            <CommentsThread
+                                                comments={this.props.submission.data.comments}
+                                                replies={this.props.submission.data.replies}
+                                                commentAuthors={this.props.submission.data.commentAuthors}/>
+                                        </div>}
 
-                                    </div>
-                                : <h3>Loading...</h3>}
+                                </div>
+}
 
                         </div>
 

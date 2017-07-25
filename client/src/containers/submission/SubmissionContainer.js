@@ -1,35 +1,45 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
+import * as SubmissionActions from '../../actions/submission';
 
 class SubmissionContainer extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-
-        var notebookID = props.match.params.id;
-        //TODO: dispatch find notebook action
-
-        
-        this.state = {
-            submission: {}
-        }
+        // console.log('[SubmissionContainer] - props: ', props);
+        this.props.actions.fetchNBInfo(props.match.params.id);
     }
 
-    render(){
-        <div>
-            <Submission submission={this.state.submission}/>
-        </div>
+    // componentWillReceiveProps(props){
+    //     console.log('[SubmissionContainer] - received new props: ', props);
+    // }
+
+    render() {
+        return (
+            <div>
+                <Submission submission={this.props.submission} isLoading={this.props.isLoading}/>
+            </div>
+        )
+
     }
 }
 
 function mapStateToProps(state, props) {
+    var il = true;
+    if(state.submissionByID[props.match.params.id]){
+        il = state.submissionByID[props.match.params.id].isFetching
+    } 
     return {
-        submission: state.submission
+        submission: state.submissionByID[props.match.params.id],
+        isLoading: il
     }
 }
 
-function mapDispatchToProps(dispatch){
-
+function mapDispatchToProps(dispatch) {
+    return {
+        actions: bindActionCreators(SubmissionActions, dispatch)
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubmissionContainer);

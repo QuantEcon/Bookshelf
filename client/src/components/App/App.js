@@ -2,10 +2,10 @@ import React, {Component} from 'react';
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 // Containers
-
+import SubmissionContainer from '../../containers/submission/SubmissionContainer'
 //Components
 import Home from '../home/Home';
-import Submission from '../submissions/Submission';
+// import Submission from '../submissions/Submission';
 import User from '../user/User';
 import Submit from '../submit/Submit';
 import SignIn from '../signin/SignIn';
@@ -21,7 +21,7 @@ class App extends Component {
         <div>
           <Switch>
             <Route exact path='/' component={Home}/>
-            <Route path='/submission/:id' component={Submission}/>
+            <Route path='/submission/:id' component={SubmissionContainer}/>
             <Route path='/submit' component={Submit}/> 
             <Route path='/signin' exact component={SignIn}/>
             <Route path='/user/:userID' component={User}/>
