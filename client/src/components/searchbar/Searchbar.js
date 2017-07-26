@@ -101,7 +101,13 @@ class Searchbar extends Component {
 
     submit(e) {
         //get search results return to parent
-        console.log('[Searchbar] - submit search: ', this.state.searchParams)
+        if(e){
+            e.preventDefault();
+        }
+        console.log('[Searchbar] - search params: ', this.state.searchParams)
+        if(this.state.searchParams.keywords !== ''){
+            this.setState({hasCurrentSearch: true, previousSearch: this.state.searchParams.keywords, showSearchBar: false})
+        }
         this
             .props
             .actions
