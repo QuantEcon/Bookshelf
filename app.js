@@ -70,10 +70,11 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, Access-Control-Allow-Origin");
-    res.header("Access-Control-Allow-Credentials", "true");
+    console.log('\tmethod: ', req.method);
+    // res.header("Access-Control-Allow-Origin", "*");
+    // res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    // res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization, Access-Control-Allow-Credentials, Access-Control-Allow-Origin");
+    // res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
 
@@ -106,7 +107,9 @@ passportInit();
 //         });
 //     });
 // });
-
+app.get('/', (req, res) => {
+    console.log('server get /');
+});
 //registration
 // app.get('/complete-registration', function (req, res) {
 //     res.render('edit-profile', {
@@ -152,24 +155,25 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 // app.use('/vote/upvote', upvoteRoutes);
 // app.use('/vote/downvote', downvoteRoutes);
 
-app.get('*', (req, res) => {
-    console.log('Sending react app')
-    res.sendFile(path.join(__dirname, '/client/build/index.html'));
-});
+// app.use(function (req, res) {
+//     console.log('404 on the server: ', req.url);
+//     res.status(404);
+//     res.sendStatus(404);
+// });
+
+// app.use(function (err, req, res, next) {
+//     console.error(err.stack);
+//     res.status(500);
+//     res.render('500');
+// });
+
+// app.get('*', (req, res) => {
+//     console.log('Sending react app')
+//     res.sendFile(path.join(__dirname, '/client/build/index.html'));
+// });
 // =========================================================================================
 
-app.use(function (req, res) {
-    console.log('404 on the server');
-    res.contentType('text/html');
-    res.status(404);
-    res.render('404');
-});
 
-app.use(function (err, req, res, next) {
-    console.error(err.stack);
-    res.status(500);
-    res.render('500');
-});
 
 // start server
 app.listen(port, function () {

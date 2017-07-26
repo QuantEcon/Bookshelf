@@ -87,6 +87,15 @@ class SignIn extends Component {
                                 <OAuthSignInButton provider='twitter'>oauth twitter</OAuthSignInButton>
                             </li>
                             <li>
+                                <OAuthSignInButton provider='github'>oauth github</OAuthSignInButton>
+                            </li>
+                            <li>
+                                <OAuthSignInButton provider='fb'>oauth fb</OAuthSignInButton>
+                            </li>
+                            <li>
+                                <OAuthSignInButton provider='google'>oauth google</OAuthSignInButton>
+                            </li>
+                            <li>
                                 <a onClick={this.signInGithub}>
                                     <span><GithubIcon/></span>
                                     GitHub</a>

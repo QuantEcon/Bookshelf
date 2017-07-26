@@ -21,7 +21,7 @@ store
             default: {
                 apiUrl: 'http://localhost:8080/api/auth',
                 authProviderPaths: {
-                    github: '/github',
+                    github: '/github/',
                     twitter: '/twitter',
                     fb: '/fb',
                     google: '/google'

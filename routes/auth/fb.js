@@ -5,11 +5,11 @@ var isAuthenticated = require('./isAuthenticated').isAuthenticated;
 var app = express.Router();
 // fb login ================================
 
-app.use(function(req, res, next){
-    console.log('[FB AUTH] req.headers:', req.headers);
-    console.log('[FB AUTH] req.method:', req.method);
-    next();
-}); 
+// app.use(function(req, res, next){
+//     console.log('[FB AUTH] req.headers:', req.headers);
+//     console.log('[FB AUTH] req.method:', req.method);
+//     next();
+// }); 
 
 // add fb to existing user
 app.get('/add', isAuthenticated, passport.authenticate('addFB', {scope: 'email'}));
