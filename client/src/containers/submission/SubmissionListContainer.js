@@ -7,7 +7,6 @@ import * as SubmissionListActions from '../../actions/submissionList';
 class SubmissionListContainer extends Component {
     constructor(props) {
         super(props);
-        console.log('[SubmissionListContainer] - Props: ', props);
         this
             .props
             .actions
@@ -40,33 +39,30 @@ class SubmissionListContainer extends Component {
 }
 
 function mapStateToProps(state, props) {
-    console.log('[SubmissionListContainer] - own props: ', props);
-    var searchParams = {
-            lang: 'All',
-            time: 'All time',
-            topic: 'All',
-            author: '',
-            keywords: '',
-            page: 1,
-            sortBy: 'Trending'
-        }
-    if (props.userID) {
-        searchParams = Object.assign(searchParams, {author: props.userID});
-    } else {
-        searchParams = Object.assign(searchParams, state.submissionList.searchParams);
-        if (searchParams.author) {
-            delete searchParams.author;
-        }
-
+    var searchParams = Object.assign({}, {
+        lang: 'All',
+        time: 'All time',
+        topic: 'All',
+        author: '',
+        keywords: '',
+        page: 1,
+        sortBy: 'Trending'
+    }, state.submissionList.searchParams);
+if (props.userID) {
+    searchParams = Object.assign(searchParams, {author: props.userID});
+} else {
+    if (searchParams.author) {
+        delete searchParams.author;
     }
-    console.log('[SubmissionListContainer] - searchParams: ', searchParams);
-    return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
+
+}
+return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
 }
 
 function mapDispatchToProps(dispatch) {
-    return {
-        actions: bindActionCreators(SubmissionListActions, dispatch)
-    }
+return {
+    actions: bindActionCreators(SubmissionListActions, dispatch)
+}
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubmissionListContainer);

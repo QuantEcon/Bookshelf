@@ -13,16 +13,6 @@ import EmailIcon from 'react-icons/lib/md/email'
 import Head from '../partials/Head';
 
 class User extends Component {
-    constructor(props) {
-        super(props);
-
-        console.log('[User] - props:', props);
-    }
-
-    componentWillReceiveProps(props) {
-        console.log('[User] - received new props: ', props);
-    }
-
     render() {
         return (
             <div>

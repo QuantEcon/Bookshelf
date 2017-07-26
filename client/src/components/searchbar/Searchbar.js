@@ -101,7 +101,7 @@ class Searchbar extends Component {
 
     submit(e) {
         //get search results return to parent
-        console.log('[Searchbar] - submit search: ', e, this.state.searchParams)
+        console.log('[Searchbar] - submit search: ', this.state.searchParams)
         this
             .props
             .actions

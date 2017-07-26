@@ -8,7 +8,6 @@ export const requestUserInfo = (userID = null) => {
 
 export const RECEIVE_USER_INFO = 'RECEIVE_USER_INFO'
 export const receiveUserInfo = (userID, json) => {
-    console.log('[User Actions] - json', json);
     return {
         type: RECEIVE_USER_INFO,
         userID,

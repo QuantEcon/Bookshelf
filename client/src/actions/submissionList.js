@@ -48,7 +48,6 @@ export const fetchSubmissions = (searchParams = {}) => {
         page: 1,
         sortBy: 'Trending'
     }, searchParams)
-    console.log('[SubmissionList Actions] - search params: ', sp);
     return function (dispatch) {
         dispatch(requestSubmissionPreviews(sp));
         var qs = queryString.stringify(sp);

@@ -10,9 +10,7 @@ class UserContainer extends Component {
         this.props.actions.fetchUserInfo(props.match.params.userID);
     }
 
-    componentWillReceiveProps(props){
-        console.log('[UserContainer] - received new props: ', props);
-    }
+
 
     render(){
         return(
@@ -24,6 +22,7 @@ class UserContainer extends Component {
 }
 
 const mapStateToProps = (state, props) => {
+
     var il = true;
     if(state.userByID[props.match.params.userID]){
         il = state.userByID[props.match.params.userID].isFetching;
