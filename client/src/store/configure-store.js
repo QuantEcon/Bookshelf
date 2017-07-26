@@ -18,6 +18,15 @@ import thunkMiddleware from 'redux-thunk';
         lastUpdated: Date,
         previews: [],
         authors: []
+    },
+    userByID: {
+        *userID*: {
+            isFetching: Boolean,
+            didInvalidate: Boolean,
+            lastUpdated: Date,
+            data: {}
+        },
+        ...
     }
 }
 */

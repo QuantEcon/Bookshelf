@@ -4,6 +4,7 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import GoogleIcon from 'react-icons/lib/fa/google'
+import {OAuthSignInButton} from 'redux-auth/default-theme'
 
 import Head from '../partials/Head';
 class SignIn extends Component {
@@ -62,6 +63,12 @@ class SignIn extends Component {
         })
     }
 
+    onSignInSuccess(){
+        console.log('Sign in successful');
+    }
+
+
+    
     render() {
         return (
             <div>
@@ -76,6 +83,9 @@ class SignIn extends Component {
                             using a social media account.</p>
                         <p>We won't share any of your personal data without your permission</p>
                         <ul className='social-login'>
+                            <li>
+                                <OAuthSignInButton provider='twitter'>oauth twitter</OAuthSignInButton>
+                            </li>
                             <li>
                                 <a onClick={this.signInGithub}>
                                     <span><GithubIcon/></span>

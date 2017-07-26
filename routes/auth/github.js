@@ -15,7 +15,10 @@ app.get('/callback/add',
     })
 );
 // register with github
-app.get('/', passport.authenticate('github', {scope: 'email'}));
+app.post('/', function(req,res,next){
+    console.log('github auth /');
+    next();
+},passport.authenticate('github', {scope: 'email'}));
 app.get('/callback',
     passport.authenticate('github', {failureRedirect: '/auth/failure'}),
     function (req, res) {

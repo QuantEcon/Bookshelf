@@ -71,7 +71,6 @@ class Searchbar extends Component {
 
     searchButtonClicked() {
         if (this.state.searchParams.keywords !== '') {
-            this.setState({hasCurrentSearch: true, previousSearch: this.state.searchParams.keywords, showSearchBar: false})
             this.submit();
         } else {
             this.closeSearch();
@@ -100,7 +99,6 @@ class Searchbar extends Component {
     }
 
     submit(e) {
-        //get search results return to parent
         if(e){
             e.preventDefault();
         }

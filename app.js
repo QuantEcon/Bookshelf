@@ -86,26 +86,26 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportInit();
 
-app.get('/', isAuthenticated, function (req, res) {
-    Submission.find({
-        deleted: false
-    }, function (err, submissions) {
-        User.find({
-            deleted: false
-        }, function (err, users) {
-            var data = {
-                n: submissions,
-                u: users,
-                currentUser: req.user
-            };
-            res.render('home', {
-                data: data,
-                title: 'QuantEconLib',
-                numSubmissions: submissions.length
-            })
-        });
-    });
-});
+// app.get('/', isAuthenticated, function (req, res) {
+//     Submission.find({
+//         deleted: false
+//     }, function (err, submissions) {
+//         User.find({
+//             deleted: false
+//         }, function (err, users) {
+//             var data = {
+//                 n: submissions,
+//                 u: users,
+//                 currentUser: req.user
+//             };
+//             res.render('home', {
+//                 data: data,
+//                 title: 'QuantEconLib',
+//                 numSubmissions: submissions.length
+//             })
+//         });
+//     });
+// });
 
 //registration
 // app.get('/complete-registration', function (req, res) {
@@ -159,6 +159,7 @@ app.get('*', (req, res) => {
 // =========================================================================================
 
 app.use(function (req, res) {
+    console.log('404 on the server');
     res.contentType('text/html');
     res.status(404);
     res.render('404');
