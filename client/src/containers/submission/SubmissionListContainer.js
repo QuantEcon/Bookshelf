@@ -7,14 +7,12 @@ import * as SubmissionListActions from '../../actions/submissionList';
 class SubmissionListContainer extends Component {
     constructor(props) {
         super(props);
-        // console.log('[SubmissionListContainer] - Props: ', props);
+        console.log('[SubmissionListContainer] - Props: ', props);
         this
             .props
             .actions
-            .fetchSubmissions();
+            .fetchSubmissions(props.searchParams);
     }
-
-    
 
     render() {
         return (
@@ -42,7 +40,27 @@ class SubmissionListContainer extends Component {
 }
 
 function mapStateToProps(state, props) {
-    return {searchParams: state.submissionList.searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
+    console.log('[SubmissionListContainer] - own props: ', props);
+    var searchParams = {
+            lang: 'All',
+            time: 'All time',
+            topic: 'All',
+            author: '',
+            keywords: '',
+            page: 1,
+            sortBy: 'Trending'
+        }
+    if (props.userID) {
+        searchParams = Object.assign(searchParams, {author: props.userID});
+    } else {
+        searchParams = Object.assign(searchParams, state.submissionList.searchParams);
+        if (searchParams.author) {
+            delete searchParams.author;
+        }
+
+    }
+    console.log('[SubmissionListContainer] - searchParams: ', searchParams);
+    return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
 }
 
 function mapDispatchToProps(dispatch) {

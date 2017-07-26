@@ -2,11 +2,11 @@ import React, {Component} from 'react';
 
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
 // Containers
-import SubmissionContainer from '../../containers/submission/SubmissionContainer'
+import SubmissionContainer from '../../containers/submission/SubmissionContainer';
+import UserContainer from '../../containers/user/UserContainer'
 //Components
 import Home from '../home/Home';
 // import Submission from '../submissions/Submission';
-import User from '../user/User';
 import Submit from '../submit/Submit';
 import SignIn from '../signin/SignIn';
 import '../../assets/css/app.css'
@@ -24,7 +24,7 @@ class App extends Component {
             <Route path='/submission/:id' component={SubmissionContainer}/>
             <Route path='/submit' component={Submit}/> 
             <Route path='/signin' exact component={SignIn}/>
-            <Route path='/user/:userID' component={User}/>
+            <Route path='/user/:userID' component={UserContainer}/>
 
             {/*Page not found*/}
             <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>

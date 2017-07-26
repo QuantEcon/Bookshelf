@@ -38,23 +38,22 @@ export function invalidateSubmissionList(searchParams) {
 
 //TODO: Dispatch on error action
 
-export const fetchSubmissions = (searchParams = {
-    lang: 'All',
-    time: 'All time',
-    topic: 'All',
-    author: '',
-    keywords: '',
-    page: 1,
-    sortBy: 'Trending'
-}) => {
+export const fetchSubmissions = (searchParams = {}) => {
+    var sp = Object.assign({}, {
+        lang: 'All',
+        time: 'All time',
+        topic: 'All',
+        author: '',
+        keywords: '',
+        page: 1,
+        sortBy: 'Trending'
+    }, searchParams)
+    console.log('[SubmissionList Actions] - search params: ', sp);
     return function (dispatch) {
-        dispatch(requestSubmissionPreviews(searchParams));
-        var qs = queryString.stringify(searchParams);
-        return fetch('/api/search/all-submissions/?' + qs).then(
-            response => response.json(),
-            error => console.log('An error occured: ', error)
-        ).then(json => {
-            dispatch(receiveSubmissionPreviews(searchParams, json));
+        dispatch(requestSubmissionPreviews(sp));
+        var qs = queryString.stringify(sp);
+        return fetch('/api/search/all-submissions/?' + qs).then(response => response.json(), error => console.log('An error occured: ', error)).then(json => {
+            dispatch(receiveSubmissionPreviews(sp, json));
         });
     }
 }
