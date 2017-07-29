@@ -33,11 +33,7 @@ class SignIn extends Component {
 
     signInGithub() {
         console.log('Sign in github');
-        fetch('/api/auth/github', {
-            headers: {
-                'Access-Control-Allow-Origin':'*'
-            }
-        }).then(results => {
+        fetch('/api/auth/github').then(results => {
             console.log('results: ', results);
         })
     }

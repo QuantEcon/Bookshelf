@@ -39,6 +39,7 @@
     "express-passport-logout": "^0.1.0",
     "express-session": "^1.15.3",
     "fuzzy-time": "^1.0.7",
+    "jsonwebtoken": "^7.4.1",
     "mongodb": "^2.2.26",
     "mongoose": "^4.10.2",
     "mongoose-paginate": "^5.0.3",

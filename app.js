@@ -78,11 +78,11 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use(session({
-    secret: 'banana horse',
-    resave: true,
-    saveUninitialized: true
-}));
+// app.use(session({
+//     secret: 'banana horse',
+//     resave: true,
+//     saveUninitialized: true
+// }));
 app.use(passport.initialize());
 app.use(passport.session());
 passportInit();
@@ -107,9 +107,6 @@ passportInit();
 //         });
 //     });
 // });
-app.get('/', (req, res) => {
-    console.log('server get /');
-});
 //registration
 // app.get('/complete-registration', function (req, res) {
 //     res.render('edit-profile', {
@@ -149,6 +146,25 @@ app.use('/api/auth/fb', fbAuthRoutes);
 app.use('/api/auth/github', githubAuthRoutes);
 app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);
+const validateToken = (token) => {
+
+}
+app.get('/api/auth/validate-token', function(req, res){
+    console.log('[ValidateToken] - req.headers.access-token: ', req.headers['access-token']);
+
+    User.findOne({'github.access_token': req.headers.access_token}, function (err, user) {
+        if(err){
+            console.log('[ValidateToken] - err finding user:',err);
+            res.sendStatus(500);
+        } else if(user){
+            console.log('[ValidateToken] - found user');
+            res.send(user);
+        } else {
+            console.log('[ValidateToken] - could not find user');
+            res.sendStatus(400);
+        }
+    })
+});
 // // profile editing
 // app.use('/edit-profile', editProfileRoutes);
 // //voting
@@ -167,10 +183,10 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 //     res.render('500');
 // });
 
-// app.get('*', (req, res) => {
-//     console.log('Sending react app')
-//     res.sendFile(path.join(__dirname, '/client/build/index.html'));
-// });
+app.get('*', (req, res) => {
+    console.log('Sending react app')
+    res.sendFile(path.join(__dirname, '/client/build/index.html'));
+});
 // =========================================================================================
 
 

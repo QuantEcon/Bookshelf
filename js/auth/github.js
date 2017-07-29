@@ -15,6 +15,8 @@ passport.use('github', new GithubStrategy({
     },
     function (access_token, refresh_token, profile, done) {
         console.log("In github callback");
+        console.log('[GithubStrategy] - access_token: ', access_token);
+        console.log('[GithubStrategy] - refresh_token: ', refresh_token);
         process.nextTick(function () {
             User.findOne({'github.id': profile.id}, function (err, user) {
                 if (err) {

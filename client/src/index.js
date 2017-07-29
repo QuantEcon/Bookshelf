@@ -25,7 +25,8 @@ store
                     twitter: '/twitter',
                     fb: '/fb',
                     google: '/google'
-                }
+                },
+                tokenValidationPath: '/validate-token'
             }
         }
     ]))
