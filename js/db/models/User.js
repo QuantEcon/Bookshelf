@@ -53,9 +53,12 @@ var userSchema = new Schema({
         access_token: String,
         username: String,
         avatarURL: String,
-        url: String
+        url: String,
+        hidden: Boolean
     },
     oneSocial: Boolean,
+    currentToken: String,
+    currentProvider: String,
     // meta
     flagged: Boolean,
     deleted: Boolean

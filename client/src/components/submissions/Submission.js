@@ -11,11 +11,12 @@ import 'codemirror/lib/codemirror.css';
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
-import ThumbsUp from 'react-icons/lib/md/thumb-down'
-import ThumbsDown from 'react-icons/lib/md/thumb-up'
+import ThumbsUp from 'react-icons/lib/md/thumb-up'
+import ThumbsDown from 'react-icons/lib/md/thumb-down'
+import Gear from 'react-icons/lib/fa/cog'
 
 //Components
-import Head from '../partials/Head';
+import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 
 class Submission extends Component {
@@ -26,12 +27,14 @@ class Submission extends Component {
             showNotebook: true
         }
 
-
         this.toggleView = this
             .toggleView
             .bind(this);
     }
 
+    componentWillReceiveProps(props) {
+        console.log('[Submission] - received new props: ', props);
+    }
 
     upvote() {
         console.log('upvote');
@@ -54,7 +57,7 @@ class Submission extends Component {
     render() {
         return (
             <div>
-                <Head/>
+                <HeadContainer/>
                 <div className='row'>
                     <div className='column'>
                         {/* TODO: extract to component? */}
@@ -89,6 +92,15 @@ class Submission extends Component {
                                             : <p>loading...</p>}
 
                                         {/*TODO: check current user id == notebook.author*/}
+                                        {!this.props.isLoading && this.props.myID && this.props.myID === this.props.submission.data.author._id
+                                            ? <ul className='details-options'>
+                                                    <li>
+                                                        <a>
+                                                            <Gear/>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            : null}
 
                                         <ul className='topics'>
                                             {/*Repeat for each topic in list*/}
@@ -178,7 +190,9 @@ class Submission extends Component {
                                                     {!this.props.isLoading
                                                         ? <div>
                                                                 {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
-                                                                <Time value={this.props.submission.data.notebook.published} format='d MMM YYYY'/>
+                                                                <Time
+                                                                    value={this.props.submission.data.notebook.published}
+                                                                    format='d MMM YYYY'/>
                                                             </div>
                                                         : <p>loading...</p>}
 
@@ -189,8 +203,12 @@ class Submission extends Component {
                                                         ? <div>
                                                                 {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
                                                                 {this.props.submission.data.notebook.lastUpdated
-                                                                    ? <Time value={this.props.submission.data.notebook.lastUpdated} format='d MMM YYYY'/>
-                                                                    : <Time value={this.props.submission.data.notebook.published} format='d MMM YYYY'/>}
+                                                                    ? <Time
+                                                                            value={this.props.submission.data.notebook.lastUpdated}
+                                                                            format='d MMM YYYY'/>
+                                                                    : <Time
+                                                                        value={this.props.submission.data.notebook.published}
+                                                                        format='d MMM YYYY'/>}
                                                             </div>
                                                         : <p>loading...</p>}
 

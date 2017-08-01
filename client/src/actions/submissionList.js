@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+// import {fetch as authFetch} from 'redux-auth'
 
 export const REQUEST_SUBMISSION_PREVIEWS = 'REQUEST_SUBMISSION_PREVIEWS'
 export function requestSubmissionPreviews(searchParams = {
@@ -49,9 +50,10 @@ export const fetchSubmissions = (searchParams = {}) => {
         sortBy: 'Trending'
     }, searchParams)
     return function (dispatch) {
+        console.log('[SubmissionListActions] - fetching submission previews');
         dispatch(requestSubmissionPreviews(sp));
         var qs = queryString.stringify(sp);
-        return fetch('/api/search/all-submissions/?' + qs).then(response => response.json(), error => console.log('An error occured: ', error)).then(json => {
+        return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {
             dispatch(receiveSubmissionPreviews(sp, json));
         });
     }

@@ -4,9 +4,12 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import GoogleIcon from 'react-icons/lib/fa/google'
-import {OAuthSignInButton} from 'redux-auth/default-theme'
+// import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
+import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
 
-import Head from '../partials/Head';
+import HeadContainer from '../../containers/HeadContainer';
+
+// import Head from '../partials/Head';
 class SignIn extends Component {
     //TODO: need to style the modal. Text is aligned left. Need align center
     constructor(props) {
@@ -16,6 +19,8 @@ class SignIn extends Component {
         this.signInGoogle=this.signInGoogle.bind(this);
         this.signInGithub=this.signInGithub.bind(this);
         this.signInTwitter=this.signInTwitter.bind(this);
+
+        this.onSignInSuccess=this.onSignInSuccess.bind(this);
 
     }
 
@@ -61,6 +66,7 @@ class SignIn extends Component {
 
     onSignInSuccess(){
         console.log('Sign in successful');
+        // this.props.history.push('/');
     }
 
 
@@ -68,7 +74,7 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-                <Head/>
+                <HeadContainer/>
                 <div className='modal'>
                     <div className='modal-header'>
                         <h1 className='modal-title'>Sign In</h1>
@@ -80,36 +86,16 @@ class SignIn extends Component {
                         <p>We won't share any of your personal data without your permission</p>
                         <ul className='social-login'>
                             <li>
-                                <OAuthSignInButton provider='twitter'>oauth twitter</OAuthSignInButton>
+                                <OAuthSignInButton provider='Twitter' icon={TwitterIcon()}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='github'>oauth github</OAuthSignInButton>
+                                <OAuthSignInButton provider='Github' icon={GithubIcon()}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='fb'>oauth fb</OAuthSignInButton>
+                                <OAuthSignInButton provider='Facebook' icon={FacebookIcon()}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='google'>oauth google</OAuthSignInButton>
-                            </li>
-                            <li>
-                                <a onClick={this.signInGithub}>
-                                    <span><GithubIcon/></span>
-                                    GitHub</a>
-                            </li>
-                            <li>
-                                <a onClick={this.signInGoogle}>
-                                    <span><GoogleIcon/></span>
-                                    Google</a>
-                            </li>
-                            <li>
-                                <a onClick={this.signInTwitter}>
-                                    <span><TwitterIcon/></span>
-                                    Twitter</a>
-                            </li>
-                            <li>
-                                <a onClick={this.signInFB}>
-                                    <span><FacebookIcon/></span>
-                                    Facebook</a>
+                                <OAuthSignInButton provider='Google' icon={GoogleIcon()}></OAuthSignInButton>
                             </li>
                         </ul>
                         <p>Singing in allows you to

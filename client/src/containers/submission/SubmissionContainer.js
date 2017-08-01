@@ -18,7 +18,7 @@ class SubmissionContainer extends Component {
     render() {
         return (
             <div>
-                <Submission submission={this.props.submission} isLoading={this.props.isLoading}/>
+                <Submission submission={this.props.submission} isLoading={this.props.isLoading} myID={this.props.myID}/>
             </div>
         )
 
@@ -32,6 +32,7 @@ function mapStateToProps(state, props) {
     } 
     return {
         submission: state.submissionByID[props.match.params.id],
+        myID: state.auth.isSignedIn ? state.auth.user._id : null,
         isLoading: il
     }
 }

@@ -3,20 +3,20 @@ import React, {Component} from 'react';
 import Time from 'react-time';
 import Markdown from 'react-markdown';
 
-import SubmissionListContainer from '../../containers/submission/SubmissionListContainer'
+import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
+import HeadContainer from '../../containers/HeadContainer';
 
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import EmailIcon from 'react-icons/lib/md/email'
 
-import Head from '../partials/Head';
 
 class User extends Component {
     render() {
         return (
             <div>
-                <Head/>
+                <HeadContainer/>
                 <div className='row columns'>
                     <div className='details'>
                         <div className='details-side'>

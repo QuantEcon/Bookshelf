@@ -1,6 +1,7 @@
 var passport = require('../../js/auth/github');
 var express = require('express');
 var isAuthenticated = require('./isAuthenticated').isAuthenticated;
+const User = require('../../js/db/models/User');
 
 const qs = require('query-string');
 
@@ -33,8 +34,24 @@ app.get('/callback',
                 token: req.user.github.access_token,
                 uid: req.user._id
             });
-            console.log('[GithubCallback] - query string: ', queryString);
-            res.redirect(req.headers.referer + '?' + queryString);
+            User.findOne({'_id': req.user._id}, function(err, user){
+                if(err){
+                    res.sendStatus(500);
+                } else if(user){
+                    user.currentToken = req.user.github.access_token;
+                    user.currentProvider = 'Github';
+                } else {
+                    res.sendStatus(500);
+                }
+                user.save(function(err){
+                    if(err){
+                        res.sendStatus(500);
+                    } else {
+                        res.redirect(req.headers.referer + '?' + queryString);
+                    }
+                })
+            });
+            
         }
     }
 );

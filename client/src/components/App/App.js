@@ -6,7 +6,7 @@ import SubmissionContainer from '../../containers/submission/SubmissionContainer
 import UserContainer from '../../containers/user/UserContainer'
 //Components
 import Home from '../home/Home';
-import {AuthGlobals} from 'redux-auth/default-theme';
+// import {AuthGlobals} from 'redux-auth/default-theme';
 // import Submission from '../submissions/Submission';
 import Submit from '../submit/Submit';
 import SignIn from '../signin/SignIn';
@@ -19,7 +19,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <AuthGlobals/>
+        {/* <AuthGlobals/> */}
         <BrowserRouter>
           <div>
             <Switch>

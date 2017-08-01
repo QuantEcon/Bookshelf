@@ -1,3 +1,5 @@
+import store from '../store/store';
+
 export const REQUEST_USER_INFO = 'REQUEST_USER_INFO'
 export const requestUserInfo = (userID = null) => {
     return {
@@ -27,6 +29,10 @@ export const invalidateUserInfo = (userID) => {
 export const fetchUserInfo = (userID) => {
     return function(dispatch) {
         dispatch(requestUserInfo(userID));
+        if(userID === 'my-profile'){
+            const state = store.getState();
+            userID = state.auth.user._id;
+        }
         fetch('/api/search/users/?_id=' + userID).then(
             results => {return results.json();},
             error => {console.log('An error ocurred: ', error)}

@@ -1,3 +1,5 @@
+// import {fetch as authFetch} from 'redux-auth';
+
 export const REQUEST_NB_INFO = 'REQUEST_NB_INFO';
 export function requestNBInfo(notebookID = null) {
     // console.log('[Submission Actions] - request nb info: ', notebookID);
@@ -29,6 +31,7 @@ export function invalidateNBInfo(notebookID){
 export const fetchNBInfo = (notebookID) => {
     return function(dispatch){
         dispatch(requestNBInfo(notebookID));
+        console.log('Fetching notebook info....');
         fetch('/api/search/notebook/' + notebookID).then(
             response => response.json(),
             error => {
