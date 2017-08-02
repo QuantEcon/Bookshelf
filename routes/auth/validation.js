@@ -9,7 +9,7 @@ app.options('/', function (req, res) {
 });
 
 app.get('/', passport.authenticate('jwt', {session:false}), function(req, res){
-    console.log('[ValidateToken] - req.user: ', req.user);
+    // console.log('[ValidateToken] - req.user: ', req.user);
     res.send({
         user: req.user,
         provider: req.user.currentProvider,

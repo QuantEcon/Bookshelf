@@ -51,7 +51,9 @@ app.get('/callback',
                     res.sendStatus(500);
                 } else if (user) {
                     var token = jwt.sign({
-                        user
+                        user: {
+                            _id: user._id
+                        }
                     }, 'banana horse laser muffin');
                     var queryString = qs.stringify({
                         token,

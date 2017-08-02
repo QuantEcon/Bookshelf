@@ -1,20 +1,22 @@
 import {
     REQUEST_USER_INFO,
-    RECEIVE_USER_INFO
+    RECEIVE_USER_INFO,
+    REQUIRE_SIGN_IN
 } from '../actions/user'
 
 const UserReducer = (state = {}, action) => {
     switch(action.type){
         case REQUEST_USER_INFO:
-            return Object({}, state, {
+            var newState = Object.assign({}, state, {
                 isFetching: true,
                 [action.userID]: {
-                    idFetching: true,
+                    isFetching: true,
                     didInvalidate: false
                 }
             });
+            return newState;
         case RECEIVE_USER_INFO:
-            return Object.assign({}, state, {
+            var receiveNewState = Object.assign({}, state, {
                 isFetching: false,
                 [action.userID]: {
                     isFetching: false,
@@ -22,6 +24,15 @@ const UserReducer = (state = {}, action) => {
                     lastUpdated: action.receivedAt,
                     data: action.data
                 }
+            })
+            return receiveNewState;
+        case REQUIRE_SIGN_IN:
+            return Object.assign({}, state, {
+                isFetching: false,
+                [action.userID]: {
+                    isFetching: false,
+                    didInvalidate: false
+                },
             })
         default: 
             return state

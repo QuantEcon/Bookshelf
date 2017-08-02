@@ -24,19 +24,27 @@ const getAllParams = (url) => {
     }
 }
 
+// function ProccessChildMessage(message){
+//     console.log('[Authentication] - received message from popup: ', message);
+// }
+
 const listenForCredentials = (popup, provider, resolve, reject) => {
     if (!resolve) {
+        console.log('No resolve');
         return new Promise((resolve, reject) => {
             listenForCredentials(popup, provider, resolve, reject);
         });
     } else {
         let credentials;
         try {
+            //TODO: this causes a CORS issue. Figure out way around it
+            // console.log('Popup location: ', popup.location);
             credentials = getAllParams(popup.location) //get the credentials from the window location parameters
         } catch (err) {
-            reject({
-                errors: 'Error parsing credentials'
-            })
+            console.log('[ListenForCredentials] - err: ', err);
+            // reject({
+            //     errors: 'Error parsing credentials'
+            // })
         }
         if (credentials && credentials.uid) { //if we have credentials and a user id, continue
             popup.close();

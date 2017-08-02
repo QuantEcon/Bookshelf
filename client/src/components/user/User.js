@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 
 import Time from 'react-time';
 import Markdown from 'react-markdown';
@@ -10,9 +11,13 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import EmailIcon from 'react-icons/lib/md/email'
-
+import GearIcon from 'react-icons/lib/fa/cog'
 
 class User extends Component {
+    constructor(props){
+        super(props)
+        console.log('[User] - props: ', props)
+    }
     render() {
         return (
             <div>
@@ -34,6 +39,22 @@ class User extends Component {
                                         : <h1 className='title'>{this.props.data.name}</h1>}
 
                                     {/*TODO: Insert my-page settings here*/}
+                                    {this.props.isMyProfile
+                                        ? <div>
+                                            <ul className='details-options'>
+                                                <li>
+                                                    <Link to="/user/my-profile/edit">
+                                                        <GearIcon/>
+                                                    </Link>
+                                                </li>
+                                                <li>
+                                                    <Link to="/api/auth/logout">
+                                                        Sign Out
+                                                    </Link>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        : null}
                                     <p className='date'>
                                         Joined {!this.props.isLoading
                                             ? <Time value={this.props.data.joinDate} format='d MMM YYYY'/>

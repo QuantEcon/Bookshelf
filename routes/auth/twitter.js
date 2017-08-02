@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const qs = require('query-string');
 
 var app = express.Router();
+var referer = '';
 // twitter login ==========================
 
 // add twitter to existing profile
@@ -19,7 +20,11 @@ app.get('/callback/add', passport.authenticate('addTwitter', {
 }));
 
 // register/login with twitter
-app.get('/', passport.authenticate('twitter', {
+app.get('/', function(req, res, next){
+    // console.log('[TwitterAuth] - req.headers: ', req.headers);
+    referer = req.headers.referer
+    next();
+}, passport.authenticate('twitter', {
     scope: 'email'
 }));
 app.get('/callback',
@@ -27,8 +32,10 @@ app.get('/callback',
         failureRedirect: '/auth/failure'
     }),
     function (req, res) {
+        console.log('[TwitterAuth] - after second auth');
         if (req.user.new) {
             //TODO: figure out how to get the client to redirect
+            console.log('[TwitterAuth] - new twitter user')
             res.redirect('/complete-registration');
         } else {
             const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
@@ -40,11 +47,15 @@ app.get('/callback',
                 '_id': req.user._id
             }, select, function (err, user) {
                 if (err) {
+                    console.log('[TwitterAuth] - error finding user')
                     res.sendStatus(500);
                 } else if (user) {
+                    console.log('[TwitterAuth] - found user')
                     //sign new jwt
                     var token = jwt.sign({
-                        user
+                        user: {
+                            _id: user._id
+                        }
                     }, "banana horse laser muffin");
                     var queryString = qs.stringify({
                         token,
@@ -52,14 +63,17 @@ app.get('/callback',
                     });
                     user.currentProvider = 'Twitter';
                 } else {
+                    console.log('[TwitterAuth] - no user found')
                     res.sendStatus(500);
                 }
                 user
                     .save(function (err) {
                         if (err) {
+                            console.log('[TwitterAuth] - error saving user')
                             res.sendStatus(500);
                         } else {
-                            res.redirect(req.headers.referer + '?' + queryString);
+                            console.log('[TwitterAuth] - redirect back to client')
+                            res.redirect(referer + '?' + queryString);
                         }
                     })
             });

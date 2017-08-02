@@ -43,7 +43,9 @@ app.get('/callback', passport.authenticate('github', {
             } else if (user) {
                 //sign new jwt
                 var token = jwt.sign({
-                    user
+                    user: {
+                        _id: user._id
+                    }
                 }, "banana horse laser muffin");
                 var queryString = qs.stringify({
                     token,

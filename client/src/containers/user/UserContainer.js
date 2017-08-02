@@ -9,16 +9,12 @@ class UserContainer extends Component {
         super(props);
         
         this.props.actions.fetchUserInfo(props.match.params.userID);
-        if(this.props.myID === this.props.user._id){
-            //TODO: redirect to /user/my-profile
-            console.log('[UserContainer] - Current user\'s page! Redirect to /user/my-profile');
-        }
     }
 
     render(){
         return(
             <div>
-                <User data={this.props.user ? this.props.user.data : null} isLoading={this.props.isLoading}/>
+                <User data={this.props.user ? this.props.user.data : {}} isLoading={this.props.isLoading}/>
             </div>
         )
     }
@@ -32,7 +28,6 @@ const mapStateToProps = (state, props) => {
     }
     return {
         user: state.userByID[props.match.params.userID],
-        myID: state.auth.isSignedIn ? state.auth.user._id : null,
         isLoading: il
     }
 }

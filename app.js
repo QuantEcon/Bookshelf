@@ -76,8 +76,8 @@ app.use(function (req, res, next) {
     console.log('----------------------------------------------------------------\n')
     console.log("Looking for URL : " + req.url);
     console.log('\tmethod: ', req.method);
-    console.log('req.headers: ', req.headers);
-    console.log('req.cookies:',req.cookies);
+    // console.log('req.headers: ', req.headers);
+    // console.log('req.cookies:',req.cookies);
     console.log('\n');
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');

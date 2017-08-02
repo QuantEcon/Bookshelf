@@ -4,6 +4,7 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 // Containers
 import SubmissionContainer from '../../containers/submission/SubmissionContainer';
 import UserContainer from '../../containers/user/UserContainer'
+// import MyProfileContainer from '../../containers/user/MyProfileContainer'
 //Components
 import Home from '../home/Home';
 // import {AuthGlobals} from 'redux-auth/default-theme';
@@ -13,8 +14,17 @@ import SignIn from '../signin/SignIn';
 import '../../assets/css/app.css'
 import '../../assets/css/general.css'
 import '../../assets/css/formStyle.css'
+// import store from '../../store/store'
 
 class App extends Component {
+
+  // requireAuth = (history) => {
+  //   console.log('[App] - require auth');
+  //   var state = store.getState();
+  //   if(!state.auth.isSignedIn){
+  //     history.replace('/signin');
+  //   }
+  // }
 
   render() {
     return (

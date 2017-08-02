@@ -18,6 +18,14 @@ export const receiveUserInfo = (userID, json) => {
     }
 }
 
+export const REQUIRE_SIGN_IN = 'REQUIRE_SIGN_IN'
+export const requireSignIn = () => {
+    return {
+        type: REQUIRE_SIGN_IN,
+        userID: 'my-profile'
+    }
+}
+
 export const INVALIDATE_USER_INFO = 'INVALIDATE_USER_INFO'
 export const invalidateUserInfo = (userID) => {
     return {
@@ -29,14 +37,20 @@ export const invalidateUserInfo = (userID) => {
 export const fetchUserInfo = (userID) => {
     return function(dispatch) {
         dispatch(requestUserInfo(userID));
+        const state = store.getState();
         if(userID === 'my-profile'){
-            const state = store.getState();
+            if(!state.auth.isSignedIn){
+                dispatch(requireSignIn());
+                return;
+            }
+            console.log('[UserActions]: - state: ', state);
             userID = state.auth.user._id;
         }
         fetch('/api/search/users/?_id=' + userID).then(
             results => {return results.json();},
             error => {console.log('An error ocurred: ', error)}
         ).then(data => {
+            console.log('[UserActions] - received user data: ', data);
             dispatch(receiveUserInfo(userID, data))
         });
     }

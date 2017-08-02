@@ -77,6 +77,7 @@ class SignIn extends Component {
     onSignInEnd(didAuthenticate) {
         console.log('[SignIn] - did authenticate:', didAuthenticate);
         if (didAuthenticate) {
+            console.log('[SignIn] - history: ', this.props.history)
             this
                 .props
                 .history

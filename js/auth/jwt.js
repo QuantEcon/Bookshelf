@@ -14,7 +14,7 @@ const select = 'name views numComments joinDate voteScore position submissions u
                 'L google.avatarURL google.hidden google.displayName twitter.username twitter.ava' +
                 'tarURL twitter.url twitter.hidden';
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
-    console.log('[JWTAuth] - jwt_payload:', jwt_payload);
+    // console.log('[JWTAuth] - jwt_payload:', jwt_payload);
     User.findOne({
         _id: jwt_payload.user._id
     }, select, function (err, user) {
@@ -22,7 +22,7 @@ passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
             console.log('[JWTStrategy] - error finding user:', err);
             return done(err, false)
         } else if (user) {
-            console.log('[JWTStrategy] - found user: ', user);
+            // console.log('[JWTStrategy] - found user: ', user);
             done(null, user);
         } else {
             console.log('[JWTStrategy] - no user');
