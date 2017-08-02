@@ -42,10 +42,11 @@ const listenForCredentials = (popup, provider, resolve, reject) => {
             popup.close();
             //save token and uid
             storeCredentials(credentials);
-            //TODO: fetch validate token url
+            console.log('[ListenForCredentials] - credentials: ', credentials);
+            //validate token
             fetch('/api/auth/validate-token', {
                     headers: {
-                        'access-token': credentials.token
+                        'Authorization': "JWT " + credentials.token
                     }
                 })
                 .then(parseResponse)

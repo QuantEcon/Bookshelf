@@ -15,12 +15,22 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
 
-        this.signInFB=this.signInFB.bind(this);
-        this.signInGoogle=this.signInGoogle.bind(this);
-        this.signInGithub=this.signInGithub.bind(this);
-        this.signInTwitter=this.signInTwitter.bind(this);
+        this.signInFB = this
+            .signInFB
+            .bind(this);
+        this.signInGoogle = this
+            .signInGoogle
+            .bind(this);
+        this.signInGithub = this
+            .signInGithub
+            .bind(this);
+        this.signInTwitter = this
+            .signInTwitter
+            .bind(this);
 
-        this.onSignInSuccess=this.onSignInSuccess.bind(this);
+        this.onSignInEnd = this
+            .onSignInEnd
+            .bind(this);
 
     }
 
@@ -28,12 +38,12 @@ class SignIn extends Component {
         console.log('Sign in fb');
         fetch('/api/auth/fb', {
             headers: {
-                'Access-Control-Allow-Origin':'*'
+                'Access-Control-Allow-Origin': '*'
             }
         }).then(results => {
             console.log('results: ', results);
         })
-        
+
     }
 
     signInGithub() {
@@ -46,7 +56,7 @@ class SignIn extends Component {
     signInGoogle() {
         fetch('/api/auth/google', {
             headers: {
-                'Access-Control-Allow-Origin':'*',
+                'Access-Control-Allow-Origin': '*'
             }
         }).then(results => {
             console.log('results: ', results);
@@ -57,20 +67,27 @@ class SignIn extends Component {
         console.log('Sign in twitter');
         fetch('/api/auth/twitter', {
             headers: {
-                'Access-Control-Allow-Origin':'*'
+                'Access-Control-Allow-Origin': '*'
             }
         }).then(results => {
             console.log('results: ', results);
         })
     }
 
-    onSignInSuccess(){
-        console.log('Sign in successful');
-        // this.props.history.push('/');
+    onSignInEnd(didAuthenticate) {
+        console.log('[SignIn] - did authenticate:', didAuthenticate);
+        if (didAuthenticate) {
+            this
+                .props
+                .history
+                .push('/');
+        } else {
+            console.log('[SignIn] - error authenticating');
+            //TODO: display error banner
+        }
+
     }
 
-
-    
     render() {
         return (
             <div>
@@ -86,16 +103,28 @@ class SignIn extends Component {
                         <p>We won't share any of your personal data without your permission</p>
                         <ul className='social-login'>
                             <li>
-                                <OAuthSignInButton provider='Twitter' icon={TwitterIcon()}></OAuthSignInButton>
+                                <OAuthSignInButton
+                                    provider='Twitter'
+                                    icon={TwitterIcon()}
+                                    next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='Github' icon={GithubIcon()}></OAuthSignInButton>
+                                <OAuthSignInButton
+                                    provider='Github'
+                                    icon={GithubIcon()}
+                                    next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='Facebook' icon={FacebookIcon()}></OAuthSignInButton>
+                                <OAuthSignInButton
+                                    provider='Facebook'
+                                    icon={FacebookIcon()}
+                                    next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                             <li>
-                                <OAuthSignInButton provider='Google' icon={GoogleIcon()}></OAuthSignInButton>
+                                <OAuthSignInButton
+                                    provider='Google'
+                                    icon={GoogleIcon()}
+                                    next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                         </ul>
                         <p>Singing in allows you to

@@ -25,6 +25,7 @@ const userRoutes = require('./routes/user/user');
 const notebookRoutes = require('./routes/notebook/notebook');
 const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
+const validationRoutes = require('./routes/auth/validation');
 // =======================================================================================
 
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
@@ -32,7 +33,6 @@ const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated
 // passport modules
 const passport = require('passport');
 const passportInit = require('./js/auth/init');
-
 const session = require('express-session');
 
 //file uploads
@@ -47,6 +47,7 @@ const Comment = require('./js/db/models/Comment');
 
 // config ================================================================================
 const port = require('./_config').port;
+const secret = require('./_config').secret
 
 // template engine
 const hbs = require('express-handlebars').create({
@@ -88,7 +89,7 @@ app.use(function (req, res, next) {
 });
 
 app.use(session({
-    secret: 'banana horse',
+    secret: secret,
     resave: true,
     saveUninitialized: true
 }));
@@ -105,41 +106,9 @@ app.use('/api/auth/fb', fbAuthRoutes);
 app.use('/api/auth/github', githubAuthRoutes);
 app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);
+app.use('/api/auth/validate-token', validationRoutes);
 
-app.options('/api/auth/validate-token', function (req, res) {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.sendStatus(200);
-});
 
-app.get('/api/auth/validate-token', function (req, res) {
-    console.log('[ValidateToken] - req.headers.access-token: ', req.headers['access-token']);
-    const select = 'name views numComments joinDate voteScore position submissions upvotes' +
-        'downvotes avatar website email summary activeAvatar currentProvider' +
-        'github.username github.url github.hidden github.avatarURL' +
-        'fb.displayName fb.url fb.hidden fb.avatarURL' +
-        'google.avatarURL google.hidden google.displayName' +
-        'twitter.username twitter.avatarURL twitter.url twitter.hidden';
-    //TODO: use passport-jwt for getting user
-    User.findOne({
-        'currentToken': req.headers['access-token']
-    }, select, function (err, user) {
-        if (err) {
-            console.error('[ValidateToken] - err finding user:', err);
-            res.sendStatus(500);
-        } else if (user) {
-            console.log('[ValidateToken] - user signed in');
-            res.send({
-                user: user,
-                provider: user.currentProvider,
-                uid: user._id,
-                token: req.headers['access-token']
-            });
-        } else {
-            console.error('[ValidateToken] - could not find user');
-            res.sendStatus(400);
-        }
-    })
-});
 
 app.get('*', (req, res) => {
     console.log('Sending react app')

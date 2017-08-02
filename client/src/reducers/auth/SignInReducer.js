@@ -1,6 +1,7 @@
 import {
     BEGIN_USER_AUTHENTICATION,
-    END_USER_AUTHENTICATION
+    END_USER_AUTHENTICATION,
+    STORE_CREDENTIALS
 } from '../../actions/auth/signIn'
 
 const SignInReducer = (state = {}, action) => {
@@ -19,7 +20,11 @@ const SignInReducer = (state = {}, action) => {
                 valid: action.error ? false : true,
                 isSignedIn: action.error ? false : true
             })
-
+        case STORE_CREDENTIALS:
+            return Object.assign({}, state, {
+                token: action.credentials.token,
+                uid: action.credentials.uid
+            })
         default:
             return state;
     }

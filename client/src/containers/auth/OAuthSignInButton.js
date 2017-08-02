@@ -10,12 +10,17 @@ class OAuthSignInButton extends Component {
     constructor(props) {
         super(props);
         // console.log('[OAuthSignInButton] - props:', props);
-        this.signIn=this.signIn.bind(this);
+        this.signIn = this
+            .signIn
+            .bind(this);
     }
 
     signIn() {
         console.log('[OAuthSignInButton] - provider: ', this.props.provider);
-        this.props.actions.signIn(this.props.provider)
+        this
+            .props
+            .actions
+            .signIn(this.props.provider, this.props.next);
     }
 
     render() {
@@ -26,7 +31,7 @@ class OAuthSignInButton extends Component {
     }
 }
 
-function mapDispathToProps(dispatch){
+function mapDispathToProps(dispatch) {
     return {
         actions: bindActionCreators(AuthActions, dispatch)
     }
