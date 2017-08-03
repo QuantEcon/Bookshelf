@@ -4,6 +4,7 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import GoogleIcon from 'react-icons/lib/fa/google'
+import ErrorIcon from 'react-icons/lib/md/error-outline'
 // import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
 
@@ -15,64 +16,13 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
 
-        this.signInFB = this
-            .signInFB
-            .bind(this);
-        this.signInGoogle = this
-            .signInGoogle
-            .bind(this);
-        this.signInGithub = this
-            .signInGithub
-            .bind(this);
-        this.signInTwitter = this
-            .signInTwitter
-            .bind(this);
-
         this.onSignInEnd = this
             .onSignInEnd
             .bind(this);
 
     }
 
-    signInFB() {
-        console.log('Sign in fb');
-        fetch('/api/auth/fb', {
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            }
-        }).then(results => {
-            console.log('results: ', results);
-        })
-
-    }
-
-    signInGithub() {
-        console.log('Sign in github');
-        fetch('/api/auth/github').then(results => {
-            console.log('results: ', results);
-        })
-    }
-
-    signInGoogle() {
-        fetch('/api/auth/google', {
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            }
-        }).then(results => {
-            console.log('results: ', results);
-        })
-    }
-
-    signInTwitter() {
-        console.log('Sign in twitter');
-        fetch('/api/auth/twitter', {
-            headers: {
-                'Access-Control-Allow-Origin': '*'
-            }
-        }).then(results => {
-            console.log('results: ', results);
-        })
-    }
+    showErrorMessage = false;
 
     onSignInEnd(didAuthenticate) {
         console.log('[SignIn] - did authenticate:', didAuthenticate);
@@ -85,6 +35,7 @@ class SignIn extends Component {
         } else {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner
+            this.showErrorMessage = true;
         }
 
     }
@@ -93,6 +44,16 @@ class SignIn extends Component {
         return (
             <div>
                 <HeadContainer/>
+                {this.showErrorMessage 
+                ?<div className="warning callout">
+                    <div className="row columns">
+                        <p className="callout-message">
+                            <ErrorIcon/> An error occurred while trying to login
+                            </p>
+                    </div>
+                </div>
+                :null}
+                
                 <div className='modal'>
                     <div className='modal-header'>
                         <h1 className='modal-title'>Sign In</h1>

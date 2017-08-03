@@ -4,17 +4,16 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 // Containers
 import SubmissionContainer from '../../containers/submission/SubmissionContainer';
 import UserContainer from '../../containers/user/UserContainer'
-// import MyProfileContainer from '../../containers/user/MyProfileContainer'
+import MyProfileContainer from '../../containers/user/MyProfileContainer'
 //Components
 import Home from '../home/Home';
-// import {AuthGlobals} from 'redux-auth/default-theme';
+import ProtectedRoute from '../ProtectedRoute';
 // import Submission from '../submissions/Submission';
 import Submit from '../submit/Submit';
 import SignIn from '../signin/SignIn';
 import '../../assets/css/app.css'
 import '../../assets/css/general.css'
 import '../../assets/css/formStyle.css'
-// import store from '../../store/store'
 
 class App extends Component {
 
@@ -26,10 +25,10 @@ class App extends Component {
   //   }
   // }
 
+
   render() {
     return (
       <div>
-        {/* <AuthGlobals/> */}
         <BrowserRouter>
           <div>
             <Switch>
@@ -37,8 +36,8 @@ class App extends Component {
               <Route path='/submission/:id' component={SubmissionContainer}/>
               <Route path='/submit' component={Submit}/> 
               <Route path='/signin' exact component={SignIn}/>
+              <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route path='/user/:userID' component={UserContainer}/>
-
               {/*Page not found*/}
               <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>
             </Switch>
