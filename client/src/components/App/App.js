@@ -5,11 +5,10 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import SubmissionContainer from '../../containers/submission/SubmissionContainer';
 import UserContainer from '../../containers/user/UserContainer'
 import MyProfileContainer from '../../containers/user/MyProfileContainer'
+import SubmitContainer from '../../containers/SubmitContainer'
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
-// import Submission from '../submissions/Submission';
-import Submit from '../submit/Submit';
 import SignIn from '../signin/SignIn';
 import '../../assets/css/app.css'
 import '../../assets/css/general.css'
@@ -34,7 +33,7 @@ class App extends Component {
             <Switch>
               <Route exact path='/' component={Home}/>
               <Route path='/submission/:id' component={SubmissionContainer}/>
-              <Route path='/submit' component={Submit}/> 
+              <ProtectedRoute path='/submit' component={SubmitContainer}/> 
               <Route path='/signin' exact component={SignIn}/>
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route path='/user/:userID' component={UserContainer}/>

@@ -3,6 +3,10 @@ import {
     END_USER_AUTHENTICATION,
     STORE_CREDENTIALS
 } from '../../actions/auth/signIn'
+import {
+    START_SIGN_OUT,
+    END_SIGN_OUT
+} from '../../actions/auth/signOut'
 
 const SignInReducer = (state = {}, action) => {
     switch (action.type) {
@@ -24,6 +28,20 @@ const SignInReducer = (state = {}, action) => {
             return Object.assign({}, state, {
                 token: action.credentials.token,
                 uid: action.credentials.uid
+            })
+        case START_SIGN_OUT:
+            return Object.assign({}, state, {
+                loading: true
+            })
+        case END_SIGN_OUT:
+            return Object.assign({}, state, {
+                token: null,
+                uid: null,
+                user: {},
+                provider: null,
+                error: null,
+                valid: null,
+                isSignedIn: false
             })
         default:
             return state;

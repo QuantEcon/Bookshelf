@@ -18,7 +18,7 @@ class SubmissionContainer extends Component {
     render() {
         return (
             <div>
-                <Submission submission={this.props.submission} isLoading={this.props.isLoading} myID={this.props.myID}/>
+                <Submission submission={this.props.submission} isLoading={this.props.isLoading} myID={this.props.myID} />
             </div>
         )
 

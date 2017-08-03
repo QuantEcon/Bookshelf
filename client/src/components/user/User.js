@@ -16,8 +16,14 @@ import GearIcon from 'react-icons/lib/fa/cog'
 class User extends Component {
     constructor(props){
         super(props)
+        this.signOut = this.signOut.bind(this);
         console.log('[User] - props: ', props)
     }
+
+    signOut = () => {
+        this.props.actions.signOut();
+    }
+
     render() {
         return (
             <div>
@@ -48,9 +54,9 @@ class User extends Component {
                                                     </Link>
                                                 </li>
                                                 <li>
-                                                    <Link to="/api/auth/logout">
+                                                    <a onClick={this.signOut}>
                                                         Sign Out
-                                                    </Link>
+                                                    </a>
                                                 </li>
                                             </ul>
                                         </div>

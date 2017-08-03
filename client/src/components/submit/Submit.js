@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
-
+import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
+import Markdown from 'react-markdown';
+
 import Head from '../partials/Head';
 
 class Submit extends Component {
@@ -38,7 +40,8 @@ class Submit extends Component {
             accepted: [],
             rejected: [],
             fileUploaded: false,
-            uploadError: false
+            uploadError: false,
+            showSummaryPreview: false
         }
 
         this.onDrop = this
@@ -55,31 +58,132 @@ class Submit extends Component {
             .bind(this);
     }
 
-    topicChanged(event){
-        console.log('topic changed: ', event.target.name, ' = ', event.target.checked);
+    formData = {
+        agreement: false,
+        title: '',
+        summary: '',
+        lang: '',
+        topics: [],
+        coAuthors: []
+    }
+
+    errors = {
+        title: false,
+        agreement: false
+    }
+
+    dirtyFields = {
+        title: false,
+        agreement: false
+    }
+
+    validate = () => {
+        var valid = true;
+
+        if (!this.formData.title) {
+            valid = false
+            if (this.dirtyFields.title) {
+                this.errors.title = true;
+            } else {
+                this.errors.title = false
+            }
+        } else {
+            this.errors.title = false
+        }
+
+        //validate file
+        if (!this.state.fileUploaded) {
+            valid = false;
+        }
+
+        if (!this.formData.agreement) {
+            valid = false;
+            if (this.dirtyFields.agreement) {
+                this.errors.agreement = true;
+            } else {
+                this.errors.agreement = false;
+            }
+        } else {
+            this.errors.agreement = false;
+        }
+
+        //TODO: validate co-author email patterns
+
+        this.setState({
+            valid
+        }, ()=>this.forceUpdate());
+    }
+
+    removeTopic = (topic, array) => {
+        var index = array.indexOf(topic);
+        if (index > -1) {
+            array.splice(index, 1);
+        }
+    }
+    topicChanged(event) {
         //TODO: add/remove topic to/from topic list
+        if (event.target.checked) {
+            this
+                .formData
+                .topics
+                .push(event.target.name);
+        } else {
+            this.removeTopic(event.target.name, this.formData.topics);
+        }
+    }
+
+    langChanged = (event) => {
+        this.formData.lang = event.target.value
     }
 
     titleChanged(event) {
-        this.setState({title: event.target.value});
+        this.dirtyFields.title = true;
+        this.formData.title = event.target.value;
+        this.validate();
+    }
+
+    agreementChanged = (event) => {
+        this.dirtyFields.agreement = true;
+        this.formData.agreement = event.target.checked;
+        this.validate();
+    }
+
+    toggleSummaryPreview = () => {
+        this.setState({
+            showSummaryPreview: !this.state.showSummaryPreview
+        });
+    }
+
+    summaryChanged = (event) => {
+        this.formData.summary = event.target.value;
+        this.forceUpdate();
     }
 
     onDrop(accepted, rejected) {
         if (accepted.length) {
-            this.setState({accepted, rejected, fileUploaded: true, uploadError: false});
+            this.setState({
+                accepted,
+                rejected,
+                fileUploaded: true,
+                uploadError: false
+            }, () => this.validate());
         } else if (!this.state.fileUploaded) {
-            this.setState({uploadError: true});
+            this.setState({
+                uploadError: true
+            }, () => this.validate());
         }
     }
 
     printState() {
-        console.log("Print state: ", this.state);
+        console.log("state: ", this.state);
+        console.log('errors: ', this.errors);
+        console.log('dirty fields: ', this.dirtyFields);
+        console.log('formdata: ', this.formData);
     }
 
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
-    // .ipynb as valid accept parameter
+    // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
-        // The file will still be accepted, however
         return (
             <div>
                 <Head/>
@@ -141,7 +245,11 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
-                                        onChange={this.titleChanged}/>
+                                        onChange={this.titleChanged}/> {this.errors.title
+                                        ? <p className="error-help-text">
+                                                Title is required
+                                            </p>
+                                        : null}
 
                                 </div>
                             </div>
@@ -167,12 +275,14 @@ class Submit extends Component {
                                     <div className='submit-user'>
                                         <div className='side'>
                                             <p className='avatar'>
-                                                <a href="/user">img</a>
+                                                <Link to={'/user/' + this.props.user._id}>
+                                                    <img src={this.props.user.avatar} alt="Your avatar"/>
+                                                </Link>
                                             </p>
                                         </div>
                                         <div className='main'>
                                             <p>
-                                                <a href="/user">Username</a>
+                                                <Link to={'/user/' + this.props.user._id}>{this.props.user.name}</Link>
                                             </p>
                                         </div>
                                     </div>
@@ -200,21 +310,69 @@ class Submit extends Component {
                                     <label className='section-title'>Language
                                         <span className='mandatory'>*</span>
                                     </label>
-                                    <select name="lang">
+                                    <select name="lang" value='python' onChange={this.langChanged}>
                                         <option value="python">Python</option>
                                         <option value="julia">Julia</option>
                                         <option value="r">R</option>
                                         <option value="other">Other</option>
                                     </select>
+
+                                    <hr/>
+
+                                    <label htmlFor='summary' className='section-title'>Summary</label>
+                                    <p className="input-hint">You can use{' '}
+                                        <a href="http://commonmark.org/help/">markdown</a>{' '}
+                                        here.</p>
+                                    <textarea
+                                        placeholder="Notebook summary"
+                                        id="summary"
+                                        onChange={this.summaryChanged}></textarea>
+
+                                    {this.state.showSummaryPreview
+                                        ? <div>
+                                                <Markdown
+                                                    source={this.formData.summary
+                                                    ? this.formData.summary
+                                                    : '*No summary*'}/>
+                                                <p className="input-hint-after input-hint orange bold" onClick={this.toggleSummaryPreview}>
+                                                    Close Summary
+                                                </p>
+                                            </div>
+                                        : <p className="input-hint input-hint-after">
+
+                                            <a onClick={this.toggleSummaryPreview}>
+                                                Preview
+                                            </a>
+                                        </p>}
                                 </div>
 
                             </div>
 
-                            <div className='submit-footer'></div>
+                            <div className='submit-footer'>
+                                <p className='section-title'>
+                                    Terms
+                                    <span className='mandatory'>*</span>
+                                </p>
+
+                                <label>
+                                    <input type="checkbox" name="agreement" onChange={this.agreementChanged}/>
+                                    I agree to the
+                                    <a>Terms and Conditions</a>
+                                    of publishing content and sint occaecat cupidatat non proident, sunt in culpa
+                                    qui officia deserunt mollit anim id est laborum.
+                                </label>
+
+                                {this.errors.agreement
+                                    ? <p className="error-help-text">
+                                            Agreement is required
+                                        </p>
+                                    : null}
+
+                            </div>
 
                             <ul className='button-row'>
                                 <li>
-                                    <button onClick={this.submit}>
+                                    <button onClick={this.submit} disabled={!this.state.valid}>
                                         Submit
                                     </button>
                                 </li>
@@ -226,7 +384,6 @@ class Submit extends Component {
 
                 <button onClick={this.printState}>Print State</button>
             </div>
-
         )
     }
 }

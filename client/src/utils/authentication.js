@@ -50,7 +50,6 @@ const listenForCredentials = (popup, provider, resolve, reject) => {
             popup.close();
             //save token and uid
             storeCredentials(credentials);
-            console.log('[ListenForCredentials] - credentials: ', credentials);
             //validate token
             fetch('/api/auth/validate-token', {
                     headers: {
@@ -73,7 +72,7 @@ const listenForCredentials = (popup, provider, resolve, reject) => {
         } else { //loop until we get a response
             setTimeout(() => {
                 listenForCredentials(popup, provider, resolve, reject)
-            }, 0);
+            }, 1000);
         }
     }
 }

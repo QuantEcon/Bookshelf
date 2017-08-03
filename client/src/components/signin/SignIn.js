@@ -25,9 +25,7 @@ class SignIn extends Component {
     showErrorMessage = false;
 
     onSignInEnd(didAuthenticate) {
-        console.log('[SignIn] - did authenticate:', didAuthenticate);
         if (didAuthenticate) {
-            console.log('[SignIn] - history: ', this.props.history)
             this
                 .props
                 .history

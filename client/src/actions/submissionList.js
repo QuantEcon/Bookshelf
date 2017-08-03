@@ -50,7 +50,6 @@ export const fetchSubmissions = (searchParams = {}) => {
         sortBy: 'Trending'
     }, searchParams)
     return function (dispatch) {
-        console.log('[SubmissionListActions] - fetching submission previews');
         dispatch(requestSubmissionPreviews(sp));
         var qs = queryString.stringify(sp);
         return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {

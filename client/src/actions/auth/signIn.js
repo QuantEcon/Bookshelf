@@ -37,7 +37,6 @@ export const signIn = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticate('github').then(resp => {
-                    console.log('[SignInActions] - success authenticating:', resp);
                     dispatch(endUserAuthentication('Github', resp.data.user, resp.data.token, null))
                     next(true);
                 }, error => {
@@ -52,7 +51,6 @@ export const signIn = (provider, next) => {
                 break;
             case 'Twitter':
                 authenticate('twitter').then(resp => {
-                    console.log('[SignInActions] - success authenticating:', resp);
                     dispatch(endUserAuthentication('Twitter', resp.data.user, resp.data.token, null))
                     next(true)
                 }, error => {
@@ -67,7 +65,6 @@ export const signIn = (provider, next) => {
                 break;
             case 'Google':
                 authenticate('google').then(resp => {
-                    console.log('[SignInActions] - success authenticating:', resp);
                     dispatch(endUserAuthentication('Google', resp.data.user, resp.data.token, null))
                     next(true)
                 }, error => {
@@ -82,7 +79,6 @@ export const signIn = (provider, next) => {
                 break;
             case 'Facebook':
                 authenticate('fb').then(resp => {
-                    console.log('[SignInActions] - success authenticating:', resp);
                     dispatch(endUserAuthentication('Facebook', resp.data.user, resp.data.token, null))
                     next(true)
                 }, error => {
