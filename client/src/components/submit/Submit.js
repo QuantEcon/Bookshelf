@@ -36,6 +36,8 @@ class Submit extends Component {
     constructor(props) {
         super(props);
 
+        console.log('[Submit] - props', props);
+
         this.state = {
             accepted: [],
             rejected: [],
@@ -62,7 +64,7 @@ class Submit extends Component {
         agreement: false,
         title: '',
         summary: '',
-        lang: '',
+        lang: 'Python',
         topics: [],
         coAuthors: []
     }
@@ -132,6 +134,11 @@ class Submit extends Component {
         }
     }
 
+    submit = (e) => {
+        e.preventDefault();
+        this.props.submit(this.formData, this.state.accepted[0]);
+    }
+
     langChanged = (event) => {
         this.formData.lang = event.target.value
     }
@@ -189,7 +196,7 @@ class Submit extends Component {
                 <Head/>
                 <div className='row columns'>
                     <div className='submit-form'>
-                        <form action="">
+                        <form onSubmit={this.submit}>
                             <div className='submit-upload'>
                                 <h2 className='section-title'>Notebook File
                                     <span className='mandatory'>*</span>
@@ -372,7 +379,7 @@ class Submit extends Component {
 
                             <ul className='button-row'>
                                 <li>
-                                    <button onClick={this.submit} disabled={!this.state.valid}>
+                                    <button disabled={!this.state.valid}>
                                         Submit
                                     </button>
                                 </li>

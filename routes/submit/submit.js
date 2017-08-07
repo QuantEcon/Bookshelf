@@ -1,6 +1,8 @@
 var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var multiparty = require('connect-multiparty');
+const passport = require('../../js/auth/jwt');
+
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -17,30 +19,30 @@ var multipartyMiddleware = multiparty();
 
 var app = express.Router();
 
-app.get('/', isAuthenticated, function (req, res) {
-    User.findOne({
-        _id: req.user._id
-    }, function (err, user) {
-        if (err) {
-            res.render('500');
-        } else if (user) {
-            if (user.currentSubmission) {
-                res.redirect('/submit/preview');
-            } else {
-                res.render('submit', {
-                    layout: 'breadcrumbs',
-                    title: 'Submit Notebook',
-                    data: {
-                        currentUser: req.user,
-                        submit: true
-                    }
-                });
-            }
-        }
-    });
-});
+// app.get('/', isAuthenticated, function (req, res) {
+//     User.findOne({
+//         _id: req.user._id
+//     }, function (err, user) {
+//         if (err) {
+//             res.render('500');
+//         } else if (user) {
+//             if (user.currentSubmission) {
+//                 res.redirect('/submit/preview');
+//             } else {
+//                 res.render('submit', {
+//                     layout: 'breadcrumbs',
+//                     title: 'Submit Notebook',
+//                     data: {
+//                         currentUser: req.user,
+//                         submit: true
+//                     }
+//                 });
+//             }
+//         }
+//     });
+// });
 
-app.get('/preview', isAuthenticated, function (req, res) {
+app.get('/preview',  passport.authenticate('jwt', {session:false}), function (req, res) {
     if (req.user._doc.currentSubmission) {
         res.render('submissionPreview', {
             layout: 'breadcrumbs',
@@ -58,7 +60,7 @@ app.get('/preview', isAuthenticated, function (req, res) {
     }
 });
 
-app.get('/cancel', isAuthenticated, function (req, res) {
+app.get('/cancel',  passport.authenticate('jwt', {session:false}), function (req, res) {
     User.findOne({
         _id: req.user._id
     }, function (err, user) {
@@ -78,7 +80,7 @@ app.get('/cancel', isAuthenticated, function (req, res) {
     })
 });
 
-app.get('/confirm', isAuthenticated, function (req, res) {
+app.get('/confirm',  passport.authenticate('jwt', {session:false}), function (req, res) {
     User.findOne({
         _id: req.user._id
     }, function (err, user) {
@@ -111,7 +113,7 @@ app.get('/confirm', isAuthenticated, function (req, res) {
     })
 });
 
-app.post('/comment/edit/:commentID', isAuthenticated, function (req, res) {
+app.post('/comment/edit/:commentID',  passport.authenticate('jwt', {session:false}), function (req, res) {
     Comment.findOne({
         _id: req.params.commentID
     }, function (err, comment) {
@@ -139,7 +141,7 @@ app.post('/comment/edit/:commentID', isAuthenticated, function (req, res) {
     })
 });
 
-app.post('/comment', isAuthenticated, function (req, res) {
+app.post('/comment',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received submit comment: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
@@ -180,7 +182,10 @@ app.post('/comment', isAuthenticated, function (req, res) {
                             res.status(500);
                         } else {
                             console.log("Successfully submitted comment");
-                            res.send("Success");
+                            res.send({
+                                comment: newComment,
+                                submissionID: submission._id
+                            });
                         }
                     })
                 } else {
@@ -192,7 +197,7 @@ app.post('/comment', isAuthenticated, function (req, res) {
     })
 });
 
-app.post('/reply', isAuthenticated, function (req, res) {
+app.post('/reply',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received submit reply: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
@@ -224,14 +229,14 @@ app.post('/reply', isAuthenticated, function (req, res) {
                 _id: req.body.inReplyTo
             }, function (err, comment) {
                 if (err) {
-                    // todo: delete reply
+                    // TODO: delete reply
                     console.log("Error 2");
                     res.status(500);
                 } else if (comment) {
                     comment.replies.push(reply._id);
                     comment.save(function (err) {
                         if (err) {
-                            // todo: delete reply
+                            // TODO: delete reply
                             console.log("Error 3");
                             res.status(500);
                         } else {
@@ -244,11 +249,15 @@ app.post('/reply', isAuthenticated, function (req, res) {
                                     submission.totalComments += 1;
                                     submission.save(function (err) {
                                         if (err) {
-                                            //todo: clean up added documents?
+                                            //TODO: clean up added documents?
                                             res.status(500);
                                         } else {
                                             console.log("Successfully submitted reply");
-                                            res.send("Success");
+                                            res.send({
+                                                commentID: comment._id,
+                                                reply: newReply,
+                                                submissionID: submission._id
+                                            });
                                         }
                                     });
                                 } else {
@@ -259,7 +268,7 @@ app.post('/reply', isAuthenticated, function (req, res) {
                         }
                     })
                 } else {
-                    // todo: delete reply
+                    // TODO: delete reply
                     console.log("Error 4");
                     res.status(500);
                 }
@@ -272,7 +281,7 @@ app.post('/reply', isAuthenticated, function (req, res) {
 
 });
 
-app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
+app.post('/file',  passport.authenticate('jwt', {session:false}), multipartyMiddleware, function (req, res) {
     var file = req.files.file;
     console.log("Req.body: ", req.body);
     console.log("File name: ", file.name);
@@ -343,7 +352,7 @@ app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
 });
 
 //todo redirect to submission preview instead of instantly saving it?
-app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (req, res) {
+app.post('/file/edit/:nbID',  passport.authenticate('jwt', {session:false}), multipartyMiddleware, function (req, res) {
     console.log("Got submit edit");
     var file = req.files.file;
     Submission.findOne({

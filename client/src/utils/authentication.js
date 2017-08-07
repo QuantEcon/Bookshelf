@@ -4,7 +4,7 @@ import {
     getParamByName
 } from './url'
 import {
-    storeCredentials
+    saveCredentials
 } from '../actions/auth/signIn';
 
 export const authenticate = (provider) => {
@@ -48,8 +48,6 @@ const listenForCredentials = (popup, provider, resolve, reject) => {
         }
         if (credentials && credentials.uid) { //if we have credentials and a user id, continue
             popup.close();
-            //save token and uid
-            storeCredentials(credentials);
             //validate token
             fetch('/api/auth/validate-token', {
                     headers: {
@@ -58,8 +56,10 @@ const listenForCredentials = (popup, provider, resolve, reject) => {
                 })
                 .then(parseResponse)
                 .then(data => {
+                    console.log('[Authentication] - data: ', data);
                     resolve({
-                        data
+                        data,
+                        credentials
                     });
                 })
                 .catch(error => {

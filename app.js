@@ -50,17 +50,17 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 // template engine
-const hbs = require('express-handlebars').create({
-    defaultLayout: 'mainLayout'
-});
+// const hbs = require('express-handlebars').create({
+//     defaultLayout: 'mainLayout'
+// });
 
 const app = express();
 
 // app.use(cors());
 
 //set rendering engine
-app.engine('handlebars', hbs.engine);
-app.set('view engine', 'handlebars');
+// app.engine('handlebars', hbs.engine);
+// app.set('view engine', 'handlebars');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -76,6 +76,7 @@ app.use(function (req, res, next) {
     console.log('----------------------------------------------------------------\n')
     console.log("Looking for URL : " + req.url);
     console.log('\tmethod: ', req.method);
+    console.log('\tbody: ', req.body);
     // console.log('req.headers: ', req.headers);
     // console.log('req.cookies:',req.cookies);
     console.log('\n');
@@ -107,6 +108,13 @@ app.use('/api/auth/github', githubAuthRoutes);
 app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
+
+//submit
+app.use('/api/submit', submitRoutes);
+
+//vote
+app.use('/api/upvote', upvoteRoutes);
+app.use('/api/downvote', downvoteRoutes);
 
 
 

@@ -48,7 +48,9 @@ app.post('/submission', isAuthenticated, function (req, res) {
                                     if (err) {
                                         res.status(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            submissionID: submission._id
+                                        });
                                     }
                                 });
                             }
@@ -71,7 +73,9 @@ app.post('/submission', isAuthenticated, function (req, res) {
                                     if (err) {
                                         res.status(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            submissionID: submission._id
+                                        });
                                     }
                                 });
                             }
@@ -129,7 +133,9 @@ app.post('/comment', isAuthenticated, function (req, res) {
                                     if (err) {
                                         res.status(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            commentID: comment._id
+                                        });
                                     }
                                 });
                             }
@@ -150,7 +156,9 @@ app.post('/comment', isAuthenticated, function (req, res) {
                                     if (err) {
                                         res.status(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            commentID: comment._id
+                                        });
                                     }
                                 });
                             }

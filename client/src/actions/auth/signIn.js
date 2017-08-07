@@ -21,15 +21,6 @@ export const endUserAuthentication = (provider, user = {}, token, error) => {
     }
 }
 
-export const STORE_CREDENTIALS = 'STORE_CREDENTIALS'
-export const storeCredentials = (credentials) => {
-    return {
-        type: STORE_CREDENTIALS,
-        credentials
-    }
-}
-
-
 export const signIn = (provider, next) => {
     return function (dispatch) {
         dispatch(beginUserAuthentication(provider));
@@ -37,7 +28,8 @@ export const signIn = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticate('github').then(resp => {
-                    dispatch(endUserAuthentication('Github', resp.data.user, resp.data.token, null))
+                    console.log('[SignIn] - resp: ', resp);
+                    dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null))
                     next(true);
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -51,7 +43,8 @@ export const signIn = (provider, next) => {
                 break;
             case 'Twitter':
                 authenticate('twitter').then(resp => {
-                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.data.token, null))
+                    console.log('[SignIn] - resp: ', resp);
+                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null))
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -65,7 +58,8 @@ export const signIn = (provider, next) => {
                 break;
             case 'Google':
                 authenticate('google').then(resp => {
-                    dispatch(endUserAuthentication('Google', resp.data.user, resp.data.token, null))
+                    console.log('[SignIn] - resp: ', resp);
+                    dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null))
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -79,7 +73,8 @@ export const signIn = (provider, next) => {
                 break;
             case 'Facebook':
                 authenticate('fb').then(resp => {
-                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.data.token, null))
+                    console.log('[SignIn] - resp: ', resp);
+                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null))
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')

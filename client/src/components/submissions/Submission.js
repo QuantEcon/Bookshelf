@@ -30,18 +30,37 @@ class Submission extends Component {
         this.toggleView = this
             .toggleView
             .bind(this);
+        this.upvote = this
+            .upvote
+            .bind(this);
+        this.downvote = this
+            .downvote
+            .bind(this);
     }
 
-    componentWillReceiveProps(props) {
-        console.log('[Submission] - received new props: ', props);
-    }
+    // componentWillReceiveProps(props) {     console.log('[Submission] - received
+    // new props: ', props);     // console.log('Did upvote: ',
+    // this.props.currentUser &&
+    // this.props.currentUser.upvotes.indexOf(this.props.submissionID) > -1)     //
+    // if(this.props.currentUser){     //     console.log('Upvotes: ',
+    // this.props.currentUser.upvotes);     // } }
 
     upvote() {
-        console.log('upvote');
+        console.log('upvote: ', this.props.submissionID);
+        this
+            .props
+            .actions
+            .upvoteSubmission(this.props.submissionID);
+        //TODO: unfocus button after click
     }
 
     downvote() {
         console.log('downvote');
+        this
+            .props
+            .actions
+            .downvoteSubmission(this.props.submissionID);
+        //TODO: unfocus button after click
     }
 
     encounteredURI(uri) {
@@ -65,17 +84,34 @@ class Submission extends Component {
                             <div className="details-side">
                                 <div className="vote">
                                     {/*TODO:Loading spinners?*/}
-                                    <a onClick={this.upvote}>
-                                        <ThumbsUp/>
-                                    </a>
+
+                                    {this.props.currentUser && this
+                                        .props
+                                        .currentUser
+                                        .upvotes
+                                        .indexOf(this.props.submissionID) > -1
+                                        ? <a onClick={this.upvote} className='active'>
+                                                <ThumbsUp/>
+                                            </a>
+                                        : <a onClick={this.upvote}>
+                                            <ThumbsUp/>
+                                        </a>}
 
                                     {!this.props.isLoading
                                         ? <span className='score'>{this.props.submission.data.notebook.score}</span>
                                         : <p>loading</p>}
 
-                                    <a onClick={this.downvote}>
-                                        <ThumbsDown/>
-                                    </a>
+                                    {this.props.currentUser && this
+                                        .props
+                                        .currentUser
+                                        .downvotes
+                                        .indexOf(this.props.submissionID) > -1
+                                        ? <a onClick={this.upvote} className='active'>
+                                                <ThumbsDown/>
+                                            </a>
+                                        : <a onClick={this.upvote}>
+                                            <ThumbsDown/>
+                                        </a>}
                                 </div>
 
                                 {/*TODO: Admin options*/}
