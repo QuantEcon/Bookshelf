@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import ThumbsUp from 'react-icons/lib/md/thumb-down';
-import ThumbsDown from 'react-icons/lib/md/thumb-up';
+import ThumbsUp from 'react-icons/lib/md/thumb-up';
+import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import FlagIcon from 'react-icons/lib/md/flag';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
@@ -28,6 +28,17 @@ class Comment extends Component {
         this.toggleInsertReply = this
             .toggleInsertReply
             .bind(this)
+
+        this.upvote = this.upvote.bind(this)
+        this.downvote = this.downvote.bind(this);
+    }
+
+    upvote(){
+        console.log('[Comment] - Upvote comment: ', this.props.comment._id);
+    }
+
+    downvote(){
+        console.log('[Comment] - Downvote comment: ', this.props.comment._id);
     }
 
     toggleInsertReply() {

@@ -167,7 +167,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published lang fileName notebookJSON";
+                var select = "_id title author views comments score summary published lang fileName ipynbFile";
                 Submission.findOne({
                     _id: mdb.ObjectId(notebookID),
                     deleted: false
@@ -175,7 +175,20 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     if (err) callback(err);
                     else {
                         notebook = submission;
-                        callback(null, submission);
+                        //              fs.readFile(req.file.path, 'utf8', (err, notebookString) => {
+                        // if (err) {
+                        //     console.log('[Submit] - error reading file');
+                        //     res.status(500);
+                        //     res.send({error: true, message: 'Error reading file'})
+                        // } else {
+                        fs.readFile(submission.ipynbFile, 'utf8', (err, notebookString) => {
+                            if (err) {
+                                callback(err, null);
+                            } else {
+                                notebook.notebookJSON = JSON.parse(notebookString);
+                                callback(null, submission);
+                            }
+                        })
                     }
                 });
             },
@@ -281,12 +294,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
             //TODO: refactor to store JSON on submission then send that
             console.log('dirname: ', __dirname);
-            var notebookJSON = JSON.parse(fs.readFileSync(__dirname + '/UN_demography.ipynb', 'utf8'));
 
             var data = {
                 notebook: results.nb,
                 // notebookHTML: notebookHTML,
-                notebookJSON: notebookJSON,
+                notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
                 coAuthors: results.coAuth,

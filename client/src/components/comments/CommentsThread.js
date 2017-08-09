@@ -58,7 +58,9 @@ class CommentsThread extends Component {
                                     replies={replies}
                                     author={author}
                                     key={index}
-                                    authors={this.state.commentAuthors}/>
+                                    authors={this.state.commentAuthors}
+                                    upvote={this.props.downvote}
+                                    downvote={this.props.downvote}/>
                             })}
                     </div>
                     <div className='comments-post'>

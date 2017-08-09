@@ -106,10 +106,10 @@ class Submission extends Component {
                                         .currentUser
                                         .downvotes
                                         .indexOf(this.props.submissionID) > -1
-                                        ? <a onClick={this.upvote} className='active'>
+                                        ? <a onClick={this.downvote} className='active'>
                                                 <ThumbsDown/>
                                             </a>
-                                        : <a onClick={this.upvote}>
+                                        : <a onClick={this.downvote}>
                                             <ThumbsDown/>
                                         </a>}
                                 </div>
@@ -304,7 +304,9 @@ class Submission extends Component {
                                             <CommentsThread
                                                 comments={this.props.submission.data.comments}
                                                 replies={this.props.submission.data.replies}
-                                                commentAuthors={this.props.submission.data.commentAuthors}/>
+                                                commentAuthors={this.props.submission.data.commentAuthors}
+                                                downvote={this.props.actions.downvoteCom}
+                                                upvote={this.props.actions.upvoteCom}/>
                                         </div>}
 
                                 </div>

@@ -14,7 +14,7 @@ var submissionSchema = new Schema({
     summary: String,
     fileName: String,
     notebookJSON: Object,
-
+    ipynbFile: String,
 
     author: ObjectId,
     coAuthors: [ObjectId],

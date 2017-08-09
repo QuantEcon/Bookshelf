@@ -36,8 +36,6 @@ class Submit extends Component {
     constructor(props) {
         super(props);
 
-        console.log('[Submit] - props', props);
-
         this.state = {
             accepted: [],
             rejected: [],

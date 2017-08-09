@@ -1,6 +1,6 @@
 import store from '../../store/store';
 import * as SubmissionActions from '../submission';
-
+import axios from 'axios'
 export const AUTH_POST_COMMENT = 'POST_COMMENT'
 export function postComment(submissionID, comment) {
     return {
@@ -54,44 +54,35 @@ export function addDownvote(id) {
 export const upvoteSubmission = (submissionID) => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
-            console.log('[AuthActions] - upvoteSubmission state: ', store.getState().auth);
-            console.log('[UpvoteSubmission] - submissionID: ', submissionID);
-            console.log('[UpvoteSubmission] : body: ', JSON.stringify({submissionID}));
-            fetch('/api/upvote/submission', {
-                method: 'POST',
+            axios.post('/api/upvote/submission', {
+                submissionID
+            }, {
                 headers: {
-                    'Authorization': 'JWT ' + store.getState().auth.token,
-                    'content-type':'application/json'
-                },
-                body: JSON.stringify({submissionID})
-            }).then(resp => {
-                return resp.json();
-            } ).then(results => {
-                console.log('[Upvote] - results: ', results);
-                if(results.error){
-                    console.log('Error upvoting submission: ', results.message);
-                    return;
+                    'Authorization': 'JWT ' + store.getState().auth.token
                 }
-                const currentUser = store.getState().auth.user
-                //has already upvoted
+            }).then(response => {
+                if (response.data.error) {
+                    console.log('[AuthActions] - error upvote submission: ', response.data.message);
+                }
+                const currentUser = store.getState().auth.user;
                 if (currentUser.upvotes.indexOf(submissionID) > -1) {
                     //TODO: remove from upvotes
                     dispatch(removeUpvote(submissionID));
-                    dispatch(SubmissionActions.downvoteSub(submissionID))
-                }
-                //has already downvoted 
-                else if (currentUser.downvotes.indexOf(submissionID) > -1) {
+                    dispatch(SubmissionActions.downvoteSub(submissionID) //has already downvoted
+                    )
+                } else if (currentUser.downvotes.indexOf(submissionID) > -1) {
                     //TODO: remove from downvotes
                     dispatch(removeDownvote(submissionID))
                     dispatch(addUpvote(submissionID))
                     dispatch(SubmissionActions.upvoteSub(submissionID))
-                    dispatch(SubmissionActions.upvoteSub(submissionID))
-                }
-                //hasn't downvoted or upvoted
-                else {
+                    dispatch(SubmissionActions.upvoteSub(submissionID) //hasn't downvoted or upvoted
+                    )
+                } else {
                     dispatch(addUpvote(submissionID))
                     dispatch(SubmissionActions.upvoteSub(submissionID))
                 }
+            }).catch(error => {
+                console.log('[AuthActions] - error upvoting submission: ', error);
             })
         } else {
             //TODO: what to do if not authenticated?
@@ -100,33 +91,31 @@ export const upvoteSubmission = (submissionID) => {
     }
 }
 
-export const downvoteSubmission = ({submissionID}) => {
+export const downvoteSubmission = ({
+    submissionID
+}) => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
-            fetch('/api/downvote/submission', {
-                method: 'POST',
+            axios.post('/api/downvote/submission', {
+                submissionID
+            }, {
                 headers: {
                     'Authorization': 'JWT ' + store.getState().auth.token
-                },
-                body: {
-                    submissionID
                 }
-            }).then(resp => {
-                return resp.json();
-            }, error => {
-                console.log('Error upvoting submission: ', error);
-            }).then(results => {
-                const currentUser = store.getState().auth.user
-                //has already downvoted
+            }).then(response => {
+                if (response.data.error) {
+                    console.log('[AuthActions] - error downvote submission: ', response.data.message);
+                    return;
+                }
+                const currentUser = store.getState().auth.user;
                 if (currentUser.downvotes.indexOf(submissionID) > -1) {
                     //TODO: remove from upvotes
                     dispatch(removeDownvote(submissionID));
                     dispatch(SubmissionActions.upvoteSub({
-                        submissionID
-                    }))
-                }
-                //has already upvoted 
-                else if (currentUser.upvotes.indexOf(submissionID) > -1) {
+                            submissionID
+                        }) //has already upvoted
+                    )
+                } else if (currentUser.upvotes.indexOf(submissionID) > -1) {
                     //TODO: remove from downvotes
                     dispatch(removeUpvote(submissionID))
                     dispatch(addDownvote(submissionID))
@@ -134,17 +123,19 @@ export const downvoteSubmission = ({submissionID}) => {
                         submissionID
                     }))
                     dispatch(SubmissionActions.downvoteSub({
-                        submissionID
-                    }))
-                }
-                //hasn't downvoted or upvoted
-                else {
+                            submissionID
+                        }) //hasn't downvoted or upvoted
+                    )
+                } else {
                     dispatch(addDownvote(submissionID))
                     dispatch(SubmissionActions.upvoteSub({
                         submissionID
                     }))
                 }
+            }).catch(error => {
+                console.log('[AuthActions] - error downvoting submission');
             })
+
         } else {
             //TODO: what to do if not authenticated?
             console.log('not signed in')
@@ -158,7 +149,12 @@ export const downvoteComment = (commentID) => {
             fetch('/api/downvote/comment', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'JWT ' + store.getState().auth.token
+                    'Authorization': 'JWT ' + store
+                        .getState()
+                        .auth
+                        .token,
+                    'content-type': 'application/json'
+
                 },
                 body: {
                     commentID
@@ -168,21 +164,22 @@ export const downvoteComment = (commentID) => {
             }, error => {
                 //TODO: what to do on error
             }).then(response => {
-                const currentUser = store.getState().auth.user;
+                const currentUser = store
+                    .getState()
+                    .auth
+                    .user;
                 //has already downvoted
                 if (currentUser.downvotes.indexOf(commentID) > -1) {
                     dispatch(removeDownvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID));
-                }
-                //has already upvoted
-                else if (currentUser.upvotes.indexOf(commentID) > -1) {
+                    dispatch(SubmissionActions.upvoteCom(commentID) //has already upvoted
+                    );
+                } else if (currentUser.upvotes.indexOf(commentID) > -1) {
                     dispatch(removeUpvote(commentID));
                     dispatch(addDownvote(commentID));
                     dispatch(SubmissionActions.downvoteCom(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID));
-                }
-                //hasn't upvoted or downvoted
-                else {
+                    dispatch(SubmissionActions.downvoteCom(commentID) //hasn't upvoted or downvoted
+                    );
+                } else {
                     dispatch(addDownvote(commentID));
                     dispatch(SubmissionActions.downvoteCom(commentID));
                 }
@@ -200,7 +197,12 @@ export const upvoteComment = (commentID) => {
             fetch('/api/upvote/comment', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'JWT ' + store.getState().auth.token
+                    'Authorization': 'JWT ' + store
+                        .getState()
+                        .auth
+                        .token,
+                    'content-type': 'application/json'
+
                 },
                 body: {
                     commentID
@@ -210,21 +212,22 @@ export const upvoteComment = (commentID) => {
             }, error => {
                 //TODO: what to do on error
             }).then(response => {
-                const currentUser = store.getState().auth.user;
+                const currentUser = store
+                    .getState()
+                    .auth
+                    .user;
                 //has already upvoted
                 if (currentUser.upvotes.indexOf(commentID) > -1) {
                     dispatch(removeUpvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID));
-                }
-                //has already downvoted
-                else if (currentUser.downvotes.indexOf(commentID) > -1) {
+                    dispatch(SubmissionActions.downvoteCom(commentID) //has already downvoted
+                    );
+                } else if (currentUser.downvotes.indexOf(commentID) > -1) {
                     dispatch(removeDownvote(commentID));
                     dispatch(addUpvote(commentID));
                     dispatch(SubmissionActions.upvoteCom(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID));
-                }
-                //hasn't upvoted or downvoted
-                else {
+                    dispatch(SubmissionActions.upvoteCom(commentID) //hasn't upvoted or downvoted
+                    );
+                } else {
                     dispatch(addUpvote(commentID));
                     dispatch(SubmissionActions.upvoteCom(commentID));
                 }
@@ -241,7 +244,12 @@ export const submitComment = (submissionID, comment) => {
         fetch('/api/submit/comment/' + submissionID, {
             method: 'POST',
             headers: {
-                'Authorization': 'JWT ' + store.getState().auth.token
+                'Authorization': 'JWT ' + store
+                    .getState()
+                    .auth
+                    .token,
+                'content-type': 'application/json'
+
             },
             body: {
                 submissionID,
@@ -271,7 +279,12 @@ export const submitReply = (submissionID, commentID, reply) => {
         fetch('/api/submit/comment/' + submissionID, {
             method: 'POST',
             headers: {
-                'Authorization': 'JWT ' + store.getState().auth.token
+                'Authorization': 'JWT ' + store
+                    .getState()
+                    .auth
+                    .token,
+                'content-type': 'application/json'
+
             },
             body: {
                 submissionID,
