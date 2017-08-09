@@ -16,7 +16,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next){
-    console.log('[Downvote] - req.headers: ', req.headers);
     console.log('[Downvote] - body: ', req.body);
     next();
 })
@@ -116,18 +115,18 @@ app.post('/comment',  passport.authenticate('jwt', {session:false}), function (r
     console.log("Received downvote comment: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
-        res.status(400);
+        res.sendStatus(400);
         res.send({code: 1, message: 'Login Required'});
         return;
     }
     Comment.findOne({_id: req.body.commentID}, function (err, comment) {
         if (err) {
-            res.status(500);
+            res.sendStatus(500);
         } else if (comment) {
             // get user
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
-                    res.status(500);
+                    res.sendStatus(500);
                 } else if (user) {
                     //has not downvoted
                     if (user.downvotes.indexOf(req.body.commentID) === -1) {
@@ -145,12 +144,12 @@ app.post('/comment',  passport.authenticate('jwt', {session:false}), function (r
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
                                 //save comment
                                 comment.save(function (err, comment) {
                                     if (err) {
-                                        res.status(500);
+                                        res.sendStatus(500);
                                     } else {
                                         res.send({
                                             commentID: comment._id
@@ -168,12 +167,12 @@ app.post('/comment',  passport.authenticate('jwt', {session:false}), function (r
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
                                 //save comment
                                 comment.save(function (err, comment) {
                                     if (err) {
-                                        res.status(500);
+                                        res.sendStatus(500);
                                     } else {
                                         res.send({
                                             commentID: comment._id
@@ -184,12 +183,12 @@ app.post('/comment',  passport.authenticate('jwt', {session:false}), function (r
                         });
                     }
                 } else {
-                    res.status(500);
+                    res.sendStatus(500);
                 }
             })
 
         } else {
-            res.status(500);
+            res.sendStatus(500);
         }
     });
 });

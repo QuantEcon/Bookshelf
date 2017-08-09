@@ -13,9 +13,7 @@ import {
 const CommentsReducer = (comments = {}, action) => {
     switch (action.type) {
         case POST_COMMENT:
-            return Object.assign({}, comments, {
-                [action.comment._id]: action.comment
-            });
+            return 
         case POST_REPLY:
             return Object.assign({}, comments, {
                 [action.commentID]: [
@@ -83,6 +81,18 @@ const RepliesReducer = (replies = {}, action) => {
     }
 }
 
+const DataReducer = (data = {}, action) => {
+    switch(action.type){
+        case POST_COMMENT:
+            return Object.assign({}, data, {
+                comments: [
+                    ...data.comments,
+                    action.comment
+                ]
+            })
+    }
+}
+
 const SubmissionReducer = (state = {}, action) => {
 
     switch (action.type) {
@@ -106,17 +116,20 @@ const SubmissionReducer = (state = {}, action) => {
                 }
             })
         case POST_COMMENT:
+            console.log('[SubmissionActions] - post comment action: ', action);
             return Object.assign({}, state, {
-                [action.submissionID]: {
-                    comments: CommentsReducer(state, action)
-                }
+                [action.submissionID]: Object.assign({}, state[action.submissionID], {
+                    data: DataReducer(state[action.submissionID].data, action)
+                })
             })
         case POST_REPLY:
             return Object.assign({}, state, {
+                //TODO: use DataReducer
                 comments: CommentsReducer(state, action),
                 replies: RepliesReducer(state, action)
             })
         case UPVOTE_COMMENT:
+            //TODO: use DataReducer
             return Object.assign({}, state, {
                 comments: CommentsReducer(state, action),
                 replies: RepliesReducer(state, action)

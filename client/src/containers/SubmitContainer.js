@@ -6,9 +6,9 @@ import Submit from '../components/submit/Submit'
 import * as SubmitActions from '../actions/submit'
 
 class SubmitContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
+    // constructor(props) {
+    //     super(props);
+    // }
 
     onSubmit = (formData, file) => {
         console.log('[SubmitContainer] - onsubmit: ', formData, file)

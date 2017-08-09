@@ -17,7 +17,6 @@ app.use(bodyParser.urlencoded({
 }));
 
 app.use(function(req, res, next){
-    console.log('[Upvote] - req.headers: ', req.headers);
     console.log('[Upvote] - body: ', req.body);
     next();
 })

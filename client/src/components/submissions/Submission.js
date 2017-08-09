@@ -36,6 +36,9 @@ class Submission extends Component {
         this.downvote = this
             .downvote
             .bind(this);
+        this.onSubmitComment = this
+            .onSubmitComment
+            .bind(this);
     }
 
     // componentWillReceiveProps(props) {     console.log('[Submission] - received
@@ -50,7 +53,7 @@ class Submission extends Component {
         this
             .props
             .actions
-            .upvoteSubmission({submissionID:this.props.submissionID});
+            .upvoteSubmission({submissionID: this.props.submissionID});
         //TODO: unfocus button after click
     }
 
@@ -65,6 +68,14 @@ class Submission extends Component {
 
     encounteredURI(uri) {
         console.log('encountered uri in markdown: ', uri);
+    }
+
+    onSubmitComment(comment) {
+        console.log('[Submission] - submit new comment: ', comment);
+        this
+            .props
+            .actions
+            .submitComment(this.props.submissionID, comment)
     }
 
     toggleView() {
@@ -306,7 +317,9 @@ class Submission extends Component {
                                                 replies={this.props.submission.data.replies}
                                                 commentAuthors={this.props.submission.data.commentAuthors}
                                                 downvote={this.props.actions.downvoteCom}
-                                                upvote={this.props.actions.upvoteCom}/>
+                                                upvote={this.props.actions.upvoteCom}
+                                                postComment={this.onSubmitComment}
+                                                postReply={this.props.actions.submitReply}/>
                                         </div>}
 
                                 </div>

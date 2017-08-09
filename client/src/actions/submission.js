@@ -61,7 +61,7 @@ export function upvoteCom(commentID) {
 }
 
 export const POST_COMMENT = 'POST_COMMENT'
-export function postComment(submissionID, comment) {
+export function postComment({submissionID, comment}) {
     return {
         type: POST_COMMENT,
         submissionID,

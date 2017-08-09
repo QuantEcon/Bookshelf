@@ -27,7 +27,9 @@ class CommentsThread extends Component {
 
     submitNewComment() {
         console.log('submit new comment: ', this.state.newCommentText);
+        this.props.postComment(this.state.newCommentText);
     }
+
 
     render() {
         return (
