@@ -50,7 +50,7 @@ class Submission extends Component {
         this
             .props
             .actions
-            .upvoteSubmission(this.props.submissionID);
+            .upvoteSubmission({submissionID:this.props.submissionID});
         //TODO: unfocus button after click
     }
 
@@ -59,7 +59,7 @@ class Submission extends Component {
         this
             .props
             .actions
-            .downvoteSubmission(this.props.submissionID);
+            .downvoteSubmission({submissionID: this.props.submissionID});
         //TODO: unfocus button after click
     }
 

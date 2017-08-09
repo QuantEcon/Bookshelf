@@ -122,6 +122,7 @@ const SubmissionReducer = (state = {}, action) => {
                 replies: RepliesReducer(state, action)
             })
         case UPVOTE_SUBMISSION:
+            console.log('[SubmissionReducer] - upvote submission action: ', action);
             return Object.assign({}, state, {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     data: Object.assign({}, state[action.submissionID].data, {
@@ -137,6 +138,7 @@ const SubmissionReducer = (state = {}, action) => {
                 replies: RepliesReducer(state, action)
             })
         case DOWNVOTE_SUBMISSION:
+            console.log('[SubmissionReducer] - downvote submission action: ', action);
             return Object.assign({}, state, {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     data: Object.assign({}, state[action.submissionID].data, {

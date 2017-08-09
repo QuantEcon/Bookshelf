@@ -29,6 +29,7 @@ export function invalidateNBInfo(notebookID) {
 
 export const DOWNVOTE_SUBMISSION = 'DOWNVOTE_SUBMISSION'
 export function downvoteSub(submissionID) {
+    console.log('[SubmissionActions] - downvote sub: ', submissionID)
     return {
         type: DOWNVOTE_SUBMISSION,
         submissionID

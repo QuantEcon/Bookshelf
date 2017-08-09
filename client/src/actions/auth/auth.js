@@ -51,7 +51,10 @@ export function addDownvote(id) {
     }
 }
 
-export const upvoteSubmission = (submissionID) => {
+export const upvoteSubmission = ({
+    submissionID
+}) => {
+    console.log('[AuthActions] - upvote submission : ', submissionID)
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             axios.post('/api/upvote/submission', {
@@ -94,6 +97,7 @@ export const upvoteSubmission = (submissionID) => {
 export const downvoteSubmission = ({
     submissionID
 }) => {
+    console.log('[AuthActions] - downvote submission : ', submissionID)
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             axios.post('/api/downvote/submission', {
@@ -109,31 +113,25 @@ export const downvoteSubmission = ({
                 }
                 const currentUser = store.getState().auth.user;
                 if (currentUser.downvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from upvotes
+                    //TODO: remove from downvotes
+                    console.log('[AuthActions] - has already downvoted');
                     dispatch(removeDownvote(submissionID));
-                    dispatch(SubmissionActions.upvoteSub({
-                            submissionID
-                        }) //has already upvoted
+                    dispatch(SubmissionActions.upvoteSub(submissionID) //has already upvoted
                     )
                 } else if (currentUser.upvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from downvotes
+                    //TODO: remove from upvotes
+                    console.log('[AuthActions] - has already upvoted')
                     dispatch(removeUpvote(submissionID))
                     dispatch(addDownvote(submissionID))
-                    dispatch(SubmissionActions.downvoteSub({
-                        submissionID
-                    }))
-                    dispatch(SubmissionActions.downvoteSub({
-                            submissionID
-                        }) //hasn't downvoted or upvoted
+                    dispatch(SubmissionActions.downvoteSub(submissionID))
+                    dispatch(SubmissionActions.downvoteSub(submissionID) //hasn't downvoted or upvoted
                     )
                 } else {
                     dispatch(addDownvote(submissionID))
-                    dispatch(SubmissionActions.upvoteSub({
-                        submissionID
-                    }))
+                    dispatch(SubmissionActions.downvoteSub(submissionID))
                 }
             }).catch(error => {
-                console.log('[AuthActions] - error downvoting submission');
+                console.log('[AuthActions] - error downvoting submission: ', error);
             })
 
         } else {
