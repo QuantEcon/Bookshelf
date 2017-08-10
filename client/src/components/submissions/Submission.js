@@ -292,10 +292,12 @@ class Submission extends Component {
                                                 {/* {this.state.notebook.notebookJSON
                                                         ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
                                                         : null} */}
-                                                <NotebookPreview
-                                                    notebook={this.props.submission.data.notebookJSON}
-                                                    transforms={transforms}
-                                                    displayOrder={displayOrder}/>
+                                                <div id='notebook'>
+                                                    <NotebookPreview
+                                                        notebook={this.props.submission.data.notebookJSON}
+                                                        transforms={transforms}
+                                                        displayOrder={displayOrder}/>
+                                                </div>
                                             </div>
                                         : <div>
                                             <div className='tile-header'>

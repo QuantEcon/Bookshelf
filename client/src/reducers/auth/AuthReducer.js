@@ -245,41 +245,41 @@ const AuthReducer = (state = {}, action) => {
                 user: UserReducer(state.user, action)
             })
         case TOGGLE_SOCIAL_HIDDEN:
-            var success = true;
+            var toggleSocialSuccess = true;
             if (action.error) {
-                success = false;
+                toggleSocialSuccess = false;
             }
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action),
                 editProfileError: action.error
                     ? true
                     : false,
-                editProfileSuccess: success
+                editProfileSuccess: toggleSocialSuccess
             })
         case REMOVE_SOCIAL:
-            var success = true;
+            var removeSocialSuccess = true;
             if (action.error) {
-                success = false;
+                removeSocialSuccess = false;
             }
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action),
                 editProfileError: action.error
                     ? true
                     : false,
-                editProfileSuccess: success
+                editProfileSuccess: removeSocialSuccess
 
             })
         case SET_AVATAR_PICTURE:
-            var success = true;
+            var setAvatarSuccess = true;
             if (action.error) {
-                success = false;
+                setAvatarSuccess = false;
             }
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action),
                 editProfileError: action.error
                     ? true
                     : false,
-                editProfileSuccess: success
+                editProfileSuccess: setAvatarSuccess
 
             })
         default:

@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import ReactDOM from 'react-dom';
 import {Link} from 'react-router-dom'
 import HeadContainer from '../../containers/HeadContainer';
 import Markdown from 'react-markdown';
@@ -204,12 +203,12 @@ class EditProfile extends Component {
     }
 
     validateEmail = (email) => {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        var re = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
     }
 
     isURL = (str) => {
-        var expression = /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi;
+        var expression = /[-a-zA-Z0-9@:%_.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_.~#?&//=]*)?/gi;
         var regex = new RegExp(expression);
         return str.match(regex);
     }
@@ -229,7 +228,7 @@ class EditProfile extends Component {
             this.errors.name = false;
         }
 
-        if (this.formData.email != '' && this.dirtyFields.email) {
+        if (this.formData.email !== '' && this.dirtyFields.email) {
             if (this.validateEmail(this.formData.email)) {
                 this.errors.email = false;
             } else {
@@ -238,7 +237,7 @@ class EditProfile extends Component {
             }
         }
 
-        if (this.formData.website != '' && this.dirtyFields.website) {
+        if (this.formData.website !== '' && this.dirtyFields.website) {
             if (this.isURL(this.formData.website)) {
                 this.errors.website = false
             } else {

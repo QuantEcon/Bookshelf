@@ -3,9 +3,6 @@ import {parseResponse} from './url';
 import {
     getParamByName
 } from './url'
-import {
-    saveCredentials
-} from '../actions/auth/signIn';
 
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
