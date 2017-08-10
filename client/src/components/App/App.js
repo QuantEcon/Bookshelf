@@ -7,6 +7,7 @@ import UserContainer from '../../containers/user/UserContainer'
 import MyProfileContainer from '../../containers/user/MyProfileContainer'
 import SubmitContainer from '../../containers/SubmitContainer'
 import PreviewContainer from '../../containers/PreviewContainer'
+import EditProfileContainer from '../../containers/user/EditProfileContainer'
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
@@ -28,6 +29,7 @@ class App extends Component {
               <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
               <ProtectedRoute path='/submit' component={SubmitContainer}/>
               <Route path='/signin' exact component={SignIn}/>
+              <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
               <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>

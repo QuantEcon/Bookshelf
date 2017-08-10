@@ -90,6 +90,8 @@ const DataReducer = (data = {}, action) => {
                     action.comment
                 ]
             })
+        default: 
+            return data
     }
 }
 

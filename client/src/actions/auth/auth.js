@@ -2,35 +2,278 @@ import store from '../../store/store';
 import * as SubmissionActions from '../submission';
 import axios from 'axios'
 export const AUTH_POST_COMMENT = 'POST_COMMENT'
-export function postComment({submissionID, comment}) {
-    return {type: AUTH_POST_COMMENT, submissionID, comment}
+export function postComment({
+    submissionID,
+    comment
+}) {
+    return {
+        type: AUTH_POST_COMMENT,
+        submissionID,
+        comment
+    }
 }
 
 export const AUTH_POST_REPLY = 'POST_REPLY'
 export function postReply(submissionID, commentID, reply) {
-    return {type: AUTH_POST_REPLY, submissionID, commentID, reply}
+    return {
+        type: AUTH_POST_REPLY,
+        submissionID,
+        commentID,
+        reply
+    }
 }
 export const AUTH_REMOVE_UPVOTE = 'AUTH_REMOVE_UPVOTE'
 export function removeUpvote(id) {
-    return {type: AUTH_REMOVE_UPVOTE, id}
+    return {
+        type: AUTH_REMOVE_UPVOTE,
+        id
+    }
 }
 
 export const AUTH_ADD_UPVOTE = 'AUTH_ADD_UPVOTE'
 export function addUpvote(id) {
-    return {type: AUTH_ADD_UPVOTE, id}
+    return {
+        type: AUTH_ADD_UPVOTE,
+        id
+    }
 }
 
 export const AUTH_REMOVE_DOWNVOTE = 'AUTH_REMOVE_DOWNVOTE'
 export function removeDownvote(id) {
-    return {type: AUTH_REMOVE_DOWNVOTE, id}
+    return {
+        type: AUTH_REMOVE_DOWNVOTE,
+        id
+    }
 }
 
 export const AUTH_ADD_DOWNVOTE = 'AUTH_ADD_DOWNVOTE'
 export function addDownvote(id) {
-    return {type: AUTH_ADD_DOWNVOTE, id}
+    return {
+        type: AUTH_ADD_DOWNVOTE,
+        id
+    }
 }
 
-export const upvoteSubmission = ({submissionID}) => {
+export const BEGIN_EDIT_PROFILE = 'BEGIN_EDIT_PROFILE';
+export const beginEditProfile = ({
+    email,
+    name,
+    position,
+    website,
+    error
+}) => {
+    if (error) {
+        return {
+            type: BEGIN_EDIT_PROFILE,
+            error
+        }
+    } else {
+        return {
+            type: BEGIN_EDIT_PROFILE,
+            email,
+            name,
+            position,
+            website
+        }
+    }
+}
+
+export const END_EDIT_PROFILE = 'END_EDIT_PROFILE';
+export const endEditProfile = ({
+    email,
+    name,
+    position,
+    website,
+    error
+}) => {
+    if (error) {
+        return {
+            type: END_EDIT_PROFILE,
+            error
+        }
+    } else {
+        return {
+            type: END_EDIT_PROFILE,
+            email,
+            name,
+            position,
+            website
+        }
+    }
+}
+
+export const TOGGLE_SOCIAL_HIDDEN = 'TOGGLE_SOCIAL_HIDDEN'
+const toggleSocialHidden = ({
+    social
+}) => {
+    return {
+        type: TOGGLE_SOCIAL_HIDDEN,
+        social
+    }
+}
+
+export const SET_AVATAR_PICTURE = 'SET_AVATAR_PICTURE'
+const setAvatarPicutre = ({
+    social
+}) => {
+    return {
+        type: SET_AVATAR_PICTURE,
+        social
+    }
+}
+
+export const REMOVE_SOCIAL = 'REMOVE_SOCIAL'
+const removeSocial = ({
+    social
+}) => {
+    return {
+        type: REMOVE_SOCIAL,
+        social
+    }
+}
+
+export const removeSocialAccount = ({
+    social
+}) => {
+    return function (dispatch) {
+        if (store.getState().auth.isSignedIn) {
+            axios.post('/api/edit-profile/remove-social', {
+                social
+            }, {
+                headers: {
+                    'Authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(response => {
+                if (response.data.error) {
+                    dispatch(removeSocial({
+                        error: response.data.message
+                    }));
+                } else {
+                    dispatch(removeSocial({
+                        social
+                    }));
+                }
+            }).catch(error => {
+                dispatch(removeSocial({
+                    error
+                }));
+            })
+        }
+    }
+}
+
+export const setActiveAvatar = ({
+    social
+}) => {
+    return function (dispatch) {
+        if (store.getState().auth.isSignedIn) {
+            axios.post('/api/edit-profile/set-avatar', {
+                social
+            }, {
+                headers: {
+                    'Authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(response => {
+                if (response.data.error) {
+                    dispatch(setAvatarPicutre({
+                        error: response.data.message
+                    }));
+                } else {
+                    dispatch(setAvatarPicutre({
+                        social
+                    }));
+                }
+            }).catch(error => {
+                dispatch(setAvatarPicutre({
+                    error
+                }));
+            })
+        }
+    }
+}
+
+export const toggleSocial = ({
+    social
+}) => {
+    console.log('[AuthActions] - toggle social: ', social);
+    return function (dispatch) {
+        if (store.getState().auth.isSignedIn) {
+            console.log('[AuthActions] - send toggle social request: ', social)
+            axios.post('/api/edit-profile/toggle-social', {
+                social
+            }, {
+                headers: {
+                    'Authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(response => {
+                console.log('[AuthActions] - toggle social response: ', response);
+                if (response.data.error) {
+                    dispatch(toggleSocialHidden({
+                        error: response.data.message
+                    }));
+                } else {
+                    console.log('[AuthActions] - success toggle social: ', social);
+                    dispatch(toggleSocialHidden({
+                        social
+                    }));
+                }
+            }).catch(error => {
+                dispatch(toggleSocialHidden({
+                    error
+                }));
+            })
+        }
+    }
+}
+
+export const editProfile = ({
+    email,
+    name,
+    position,
+    website
+}) => {
+    return function (dispatch) {
+        if (store.getState().auth.isSignedIn) {
+            dispatch(beginEditProfile({
+                email,
+                name,
+                position,
+                website
+            }));
+            axios.post('/api/edit-profile/', {
+                email,
+                name,
+                position,
+                website
+            }, {
+                headers: {
+                    'Authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(response => {
+                if (response.data.error) {
+                    console.log('[AuthActions] - edit profile. server returned error: ', response.data.message);
+                    dispatch(endEditProfile({
+                        error: response.data.message
+                    }))
+                } else {
+                    dispatch(endEditProfile({
+                        email: response.data.user.email,
+                        name: response.data.user.name,
+                        position: response.data.user.position,
+                        website: response.data.user.website
+                    }))
+                }
+            }).catch(error => {
+                console.log('[AuthActions] - edit profile error: ', error);
+
+            })
+        }
+    }
+}
+
+export const upvoteSubmission = ({
+    submissionID
+}) => {
     console.log('[AuthActions] - upvote submission : ', submissionID)
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
@@ -77,7 +320,9 @@ export const upvoteSubmission = ({submissionID}) => {
     }
 }
 
-export const downvoteSubmission = ({submissionID}) => {
+export const downvoteSubmission = ({
+    submissionID
+}) => {
     console.log('[AuthActions] - downvote submission : ', submissionID)
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
@@ -103,8 +348,7 @@ export const downvoteSubmission = ({submissionID}) => {
                     //TODO: remove from downvotes
                     console.log('[AuthActions] - has already downvoted');
                     dispatch(removeDownvote(submissionID));
-                    dispatch(SubmissionActions.upvoteSub(submissionID) //has already upvoted
-                    )
+                    dispatch(SubmissionActions.upvoteSub(submissionID))
                 } else if (currentUser.upvotes.indexOf(submissionID) > -1) {
                     //TODO: remove from upvotes
                     console.log('[AuthActions] - has already upvoted')
@@ -234,9 +478,15 @@ export const submitComment = (submissionID, comment) => {
             if (response.data.error) {
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
-            dispatch(postComment({submissionID: response.data.submissionID, comment: response.data.comment}));
+            dispatch(postComment({
+                submissionID: response.data.submissionID,
+                comment: response.data.comment
+            }));
             console.log('dispatch submission actions post comment');
-            dispatch(SubmissionActions.postComment({submissionID: response.data.submissionID, comment: response.data.comment}))
+            dispatch(SubmissionActions.postComment({
+                submissionID: response.data.submissionID,
+                comment: response.data.comment
+            }))
         }).catch(error => {
             console.log('[AuthActions] - error submitting comment: ', error);
         })
@@ -267,8 +517,16 @@ export const submitReply = (submissionID, commentID, reply) => {
             console.log("Error submitting reply:", error);
         }).then(response => {
             console.log('Submit reply successful: ', response);
-            dispatch(postReply({submissionID: response.body.submissionID, commentID: response.body.commentID, reply: response.body.reply}))
-            dispatch(SubmissionActions.postReply({submissionID: response.body.submissionID, commentID: response.body.commentID, reply: response.body.reply}))
+            dispatch(postReply({
+                submissionID: response.body.submissionID,
+                commentID: response.body.commentID,
+                reply: response.body.reply
+            }))
+            dispatch(SubmissionActions.postReply({
+                submissionID: response.body.submissionID,
+                commentID: response.body.commentID,
+                reply: response.body.reply
+            }))
         })
     }
 }

@@ -93,9 +93,9 @@ class User extends Component {
                                 <div className='details-primary'>
                                     {!this.props.isLoading
                                         ? <div>
-                                                <Markdown source={this.props.data.summary}/>
+                                                <Markdown source={this.props.data.position ? this.props.data.position : '*No summary*'}/>
                                                 <ul className='networks'>
-                                                    {this.props.data.github
+                                                    {this.props.data.github && !this.props.data.github.hidden
                                                         ? <li>
                                                                 <a href={this.props.data.github.url}>
                                                                     <span><GithubIcon/></span>
@@ -104,7 +104,7 @@ class User extends Component {
                                                             </li>
                                                         : null}
 
-                                                    {this.props.data.fb
+                                                    {this.props.data.fb && !this.props.data.fb.hidden
                                                         ? <li>
                                                                 <a href={this.props.data.fb.url}>
                                                                     <span><FacebookIcon/></span>
@@ -113,7 +113,7 @@ class User extends Component {
                                                             </li>
                                                         : null}
 
-                                                    {this.props.data.twitter
+                                                    {this.props.data.twitter && !this.props.data.twitter.hidden
                                                         ? <li>
                                                                 <a href={this.props.data.twitter.url}>
                                                                     <span><TwitterIcon/></span>

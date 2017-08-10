@@ -108,6 +108,7 @@ app.use('/api/auth/github', githubAuthRoutes);
 app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
+app.use('/api/edit-profile', editProfileRoutes)
 
 //submit
 app.use('/api/submit', submitRoutes);

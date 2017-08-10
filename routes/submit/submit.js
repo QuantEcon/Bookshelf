@@ -1,5 +1,4 @@
 var express = require('express');
-var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var multiparty = require('connect-multiparty');
 const passport = require('../../js/auth/jwt');
 const bodyParser = require('body-parser');

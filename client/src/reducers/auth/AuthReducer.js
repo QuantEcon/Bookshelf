@@ -1,25 +1,18 @@
-import {
-    BEGIN_USER_AUTHENTICATION,
-    END_USER_AUTHENTICATION
-} from '../../actions/auth/signIn'
-import {
-    START_SIGN_OUT,
-    END_SIGN_OUT
-} from '../../actions/auth/signOut'
-import {
-    BEGIN_SUBMIT,
-    ADD_CURRENT_SUBMISSION,
-    END_SUBMIT,
-    CONFIRM_SUBMIT,
-    CANCEL_SUBMIT
-} from '../../actions/submit';
+import {BEGIN_USER_AUTHENTICATION, END_USER_AUTHENTICATION} from '../../actions/auth/signIn'
+import {START_SIGN_OUT, END_SIGN_OUT} from '../../actions/auth/signOut'
+import {BEGIN_SUBMIT, ADD_CURRENT_SUBMISSION, END_SUBMIT, CONFIRM_SUBMIT, CANCEL_SUBMIT} from '../../actions/submit';
 import {
     AUTH_POST_COMMENT,
     AUTH_POST_REPLY,
     AUTH_REMOVE_UPVOTE,
     AUTH_ADD_UPVOTE,
     AUTH_REMOVE_DOWNVOTE,
-    AUTH_ADD_DOWNVOTE
+    AUTH_ADD_DOWNVOTE,
+    BEGIN_EDIT_PROFILE,
+    END_EDIT_PROFILE,
+    SET_AVATAR_PICTURE,
+    TOGGLE_SOCIAL_HIDDEN,
+    REMOVE_SOCIAL
 } from '../../actions/auth/auth'
 
 var REMOVE_CURRENT_SUBMISSION = 'REMOVE_CURRENT_SUBMISSION'
@@ -33,9 +26,7 @@ const UserReducer = (user = {}, action) => {
             if (indexUp > -1) {
                 var newUpvotes = JSON.parse(JSON.stringify(user.upvotes))
                 newUpvotes.splice(indexUp, 1)
-                return Object.assign({}, user, {
-                    upvotes: newUpvotes
-                })
+                return Object.assign({}, user, {upvotes: newUpvotes})
             } else {
                 return user
             }
@@ -55,9 +46,7 @@ const UserReducer = (user = {}, action) => {
             if (indexDown > -1) {
                 var newDownvotes = JSON.parse(JSON.stringify(user.downvotes))
                 newDownvotes.splice(indexDown, 1)
-                return Object.assign({}, user, {
-                    downvotes: newDownvotes
-                })
+                return Object.assign({}, user, {downvotes: newDownvotes})
             } else {
                 return user
             }
@@ -91,19 +80,15 @@ const UserReducer = (user = {}, action) => {
                 return user
             }
             return Object.assign({}, user, {
-                currentSubmission: Object.assign({}, user.currentSubmission, action.submission, {
-                    isLoading: false,
-                })
+                currentSubmission: Object.assign({}, user.currentSubmission, action.submission, {isLoading: false})
             })
         case REMOVE_CURRENT_SUBMISSION:
             if (action.error) {
                 return user
             }
-            return Object.assign({}, user, {
-                currentSubmission: null
-            })
+            return Object.assign({}, user, {currentSubmission: null})
         case CONFIRM_SUBMIT:
-            if(action.error){
+            if (action.error) {
                 return user
             }
             return Object.assign({}, user, {
@@ -113,14 +98,55 @@ const UserReducer = (user = {}, action) => {
                     ...user.submissions,
                     action.id
                 ]
-            })    
+            })
         case CANCEL_SUBMIT:
-            if(action.error){
+            if (action.error) {
                 return user
             }
-            return Object.assign({}, user, {
-                currentSubmission: null
-            })
+            return Object.assign({}, user, {currentSubmission: null})
+        case END_EDIT_PROFILE:
+        console.log('[UserReducer} - end edit profile: ' ,action);
+            if (action.error) {
+                return user
+            } else {
+                return Object.assign({}, user, {
+                    name: action.name,
+                    email: action.email,
+                    website: action.website,
+                    position: action.position
+                })
+            }
+        case SET_AVATAR_PICTURE:
+            if (action.error) {
+                return user;
+            } else {
+                return Object.assign({}, user, {
+                    activeAvatar: action.social,
+                    avatar: user[action.social].avatarURL
+                })
+            }
+
+        case TOGGLE_SOCIAL_HIDDEN:
+            console.log('[UserReducer] - toggle social: ', action);
+            if (action.error) {
+                return user
+            } else {
+                return Object.assign({}, user, {
+                    [action.social]: {
+                        ...user[action.social],
+                        hidden: !user[action.social].hidden
+                    }
+                })
+            }
+
+        case REMOVE_SOCIAL:
+            if (action.error) {
+                return user
+            } else {
+                return Object.assign({}, user, {
+                    [action.social]: null
+                })
+            }
 
         default:
             return user;
@@ -140,17 +166,15 @@ const AuthReducer = (state = {}, action) => {
                 user: action.user,
                 error: action.error,
                 token: action.token,
-                valid: action.error ?
-                    false :
-                    true,
-                isSignedIn: action.error ?
-                    false :
-                    true
+                valid: action.error
+                    ? false
+                    : true,
+                isSignedIn: action.error
+                    ? false
+                    : true
             })
         case START_SIGN_OUT:
-            return Object.assign({}, state, {
-                loading: true
-            })
+            return Object.assign({}, state, {loading: true})
         case END_SIGN_OUT:
             return Object.assign({}, state, {
                 loading: false,
@@ -167,7 +191,7 @@ const AuthReducer = (state = {}, action) => {
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action)
             })
-        case END_SUBMIT: 
+        case END_SUBMIT:
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action)
             })
@@ -207,6 +231,56 @@ const AuthReducer = (state = {}, action) => {
         case CANCEL_SUBMIT:
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action)
+            })
+
+        case BEGIN_EDIT_PROFILE:
+            return Object.assign({}, state, {editProfileLoading: true})
+        case END_EDIT_PROFILE:
+            return Object.assign({}, state, {
+                editProfileLoading: false,
+                editProfileError: action.error,
+                editProfileSuccess: action.error
+                    ? false
+                    : true,
+                user: UserReducer(state.user, action)
+            })
+        case TOGGLE_SOCIAL_HIDDEN:
+            var success = true;
+            if (action.error) {
+                success = false;
+            }
+            return Object.assign({}, state, {
+                user: UserReducer(state.user, action),
+                editProfileError: action.error
+                    ? true
+                    : false,
+                editProfileSuccess: success
+            })
+        case REMOVE_SOCIAL:
+            var success = true;
+            if (action.error) {
+                success = false;
+            }
+            return Object.assign({}, state, {
+                user: UserReducer(state.user, action),
+                editProfileError: action.error
+                    ? true
+                    : false,
+                editProfileSuccess: success
+
+            })
+        case SET_AVATAR_PICTURE:
+            var success = true;
+            if (action.error) {
+                success = false;
+            }
+            return Object.assign({}, state, {
+                user: UserReducer(state.user, action),
+                editProfileError: action.error
+                    ? true
+                    : false,
+                editProfileSuccess: success
+
             })
         default:
             return state;
