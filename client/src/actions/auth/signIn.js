@@ -2,6 +2,8 @@ import {
     authenticate,
     authenticateNewSocial
 } from '../../utils/authentication'
+import {loadState, saveState} from '../../utils/localStorage'
+import axios from 'axios';
 
 export const BEGIN_USER_AUTHENTICATION = 'BEGIN_USER_AUTHENTICATION'
 export const beginUserAuthentication = (provider) => {
@@ -44,6 +46,48 @@ const endAddSocial = ({
     }
 }
 
+export const BEGIN_REAUTHENTICATION = 'BEGIN_REAUTHENTICATION'
+const beginReauthentication = () => {
+    return {
+        type: BEGIN_REAUTHENTICATION
+    }
+}
+
+export const END_REAUTHENTICATION = 'END_REAUTHENTICATION'
+const endReauthentication = ({error, user, token}) => {
+    return {
+        type: END_REAUTHENTICATION,
+        error,
+        user,
+        token
+    }
+}
+
+export const reauthenticate = () => {
+    return (dispatch) => {
+        dispatch(beginReauthentication());
+        //get token from local storage
+        var localState = loadState();
+        if(localState && localState.token){
+            axios.get('/api/auth/validate-token',{
+                headers: {
+                    'Authorization': 'JWT ' + localState.token
+                }
+            }).then(response => {
+                if(response.data.user){
+                    dispatch(endReauthentication({
+                        user: response.data.user,
+                        token: localState.token
+                    }))
+                }
+            }).catch(err => {
+                dispatch(endReauthentication({error: err}));
+            })
+        } else {
+            dispatch(endReauthentication({error: 'No token saved'}));
+        }
+    }
+}
 
 export const addSocial = (provider, next) => {
     return function (dispatch) {
@@ -65,6 +109,7 @@ export const addSocial = (provider, next) => {
                 break
             case 'Twitter':
                 authenticateNewSocial('twitter').then(resp => {
+                    console.log('[SignInActions] - authenticate new twitter resp: ', resp);
                     dispatch(endAddSocial({
                         provider: 'twitter',
                         user: resp.data.user
@@ -120,6 +165,7 @@ export const signIn = (provider, next) => {
                 authenticate('github').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null))
+                    saveState({token: resp.credentials.token});
                     next(true);
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -135,6 +181,7 @@ export const signIn = (provider, next) => {
                 authenticate('twitter').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null))
+                    saveState({token: resp.credentials.token});
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -150,6 +197,7 @@ export const signIn = (provider, next) => {
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null))
+                    saveState({token: resp.credentials.token});
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -165,6 +213,7 @@ export const signIn = (provider, next) => {
                 authenticate('fb').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null))
+                    saveState({token: resp.credentials.token});
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')

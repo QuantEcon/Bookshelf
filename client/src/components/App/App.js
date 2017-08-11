@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
-
 import {BrowserRouter, Route, Switch} from 'react-router-dom';
+import {reauthenticate} from '../../actions/auth/signIn'
+import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
+
 // Containers
 import SubmissionContainer from '../../containers/submission/SubmissionContainer';
 import UserContainer from '../../containers/user/UserContainer'
@@ -17,6 +20,12 @@ import '../../assets/css/general.css'
 import '../../assets/css/formStyle.css'
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+    console.log('[App] - start authentication from localstorage: ', props);
+    props.actions.reauthenticate();
+  }
 
   render() {
     return (
@@ -41,4 +50,10 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapDispatchToProps = (dispatch) => {
+  return {
+    actions: bindActionCreators({reauthenticate}, dispatch)
+  }
+}
+
+export default connect(null, mapDispatchToProps)(App);

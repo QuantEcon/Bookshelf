@@ -1,6 +1,7 @@
 var passport = require('../../js/auth/twitter');
 var express = require('express');
 var isAuthenticated = require('./isAuthenticated').isAuthenticated;
+const jwtAuth = require('../../js/auth/jwt');
 const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const qs = require('query-string');
@@ -11,7 +12,7 @@ var referer = '';
 
 // add twitter to existing profile
 //TODO: implement jwt in this route
-app.get('/add', passport.authenticate('addTwitter', {
+app.get('/add', jwtAuth.authenticate('jwt', {session:false}), passport.authenticate('addTwitter', {
     scope: 'email'
 }));
 app.get('/callback/add', passport.authenticate('addTwitter'), function(req, res){
@@ -20,16 +21,7 @@ app.get('/callback/add', passport.authenticate('addTwitter'), function(req, res)
             res.status(500);
             res.send({error: true, message:err})
         } else if(user){
-            var token = jwt.sign({
-                user: {
-                    _id: user._id
-                }
-            }, "banana horse laser muffin");
-            var queryString = qs.stringify({
-                token,
-                uid: req.user._id
-            });
-            res.redirect(req.headers.referer + '?' + queryString);
+            res.redirect(req.headers.referer + '?' + 'success=true');
         } else {
             res.status(400);
             res.send({error: true, message:'No user found'});
@@ -38,11 +30,7 @@ app.get('/callback/add', passport.authenticate('addTwitter'), function(req, res)
 });
 
 // register/login with twitter
-app.get('/', function(req, res, next){
-    // console.log('[TwitterAuth] - req.headers: ', req.headers);
-    referer = req.headers.referer
-    next();
-}, passport.authenticate('twitter', {
+app.get('/', passport.authenticate('twitter', {
     scope: 'email'
 }));
 app.get('/callback',

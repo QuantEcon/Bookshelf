@@ -3,7 +3,7 @@ import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
 
-import Head from '../partials/Head';
+import HeadContainer from '../../containers/HeadContainer';
 
 class Submit extends Component {
 
@@ -191,7 +191,7 @@ class Submit extends Component {
     render() {
         return (
             <div>
-                <Head/>
+                <HeadContainer/>
                 <div className='row columns'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
@@ -362,7 +362,7 @@ class Submit extends Component {
                                 <label>
                                     <input type="checkbox" name="agreement" onChange={this.agreementChanged}/>
                                     I agree to the
-                                    <a>Terms and Conditions</a>
+                                    {' '}<a>Terms and Conditions</a>{' '}
                                     of publishing content and sint occaecat cupidatat non proident, sunt in culpa
                                     qui officia deserunt mollit anim id est laborum.
                                 </label>
@@ -378,7 +378,7 @@ class Submit extends Component {
                             <ul className='button-row'>
                                 <li>
                                     <button disabled={!this.state.valid}>
-                                        Submit
+                                        Preview
                                     </button>
                                 </li>
                             </ul>

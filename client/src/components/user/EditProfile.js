@@ -101,10 +101,18 @@ class EditProfile extends Component {
 
     showPositionPreview = false;
 
+    errorSaving = false;
+    successSaving = false;
+
+    componentWillReceiveProps(props){
+        this.errorSaving = props.editProfileError;
+        this.successSaving = props.editProfileSuccess;
+    }
+
     onAddSocialEnd = (success) => {
         this.hasSaved = true;
-        this.props.editProfileError = !success
-        this.props.editProfileSuccess = success
+        this.errorSaving = !success;
+        this.successSaving = success
     }
 
     toggleShowPositionPreview = () => {
@@ -282,7 +290,7 @@ class EditProfile extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/> {this.props.editProfileSuccess && this.hasSaved
+                <HeadContainer/> {this.successSaving && this.hasSaved
                     ? <div className="success callout">
                             <div className="row columns">
                                 <p className="callout-message">
@@ -293,7 +301,7 @@ class EditProfile extends Component {
                         </div>
                     : null}
 
-                {this.props.editProfileError && this.hasSaved
+                {this.errorSaving && this.hasSaved
                     ? <div className="warning callout">
                             <div className="row columns">
                                 <p className="callout-message">

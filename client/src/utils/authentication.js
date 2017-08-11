@@ -4,6 +4,10 @@ import {
     getParamByName
 } from './url'
 
+import axios from 'axios'
+
+import store from '../store/store'
+
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
     const popup = openPopup(provider, `http://localhost:8080/api/auth/${provider}`, `${provider} authentication`);
@@ -14,7 +18,7 @@ export const authenticate = (provider) => {
 export const authenticateNewSocial = (provider) => {
     const popup = openPopup(provider, `http://localhost:8080/api/auth/${provider}/add`, `${provider} authentication`);
 
-    return listenForCredentials(popup, provider);
+    return listenForDone(popup, provider);
 }
 
 const getAllParams = (url) => {
@@ -30,6 +34,41 @@ const getAllParams = (url) => {
 // function ProccessChildMessage(message){
 //     console.log('[Authentication] - received message from popup: ', message);
 // }
+
+const listenForDone = (popup, provider, resolve, reject) => {
+    if(!resolve){
+        return new Promise((resolve, reject) => {
+            listenForDone(popup, provider, resolve, reject);
+        });
+    } else {
+        let params
+        try {
+            params = getAllParams(popup.location);
+        } catch(err) {
+            console.log('[ListenForDone] - err: ', err);
+        }
+
+        if(params.success != null){
+            if(params.success){
+                popup.close();
+                axios.get('/api/auth/validate-token', {
+                    headers: {
+                        'Authorization': 'JWT ' + store.getState().auth.token
+                    }
+                }).then(response => {
+                    console.log('[ListenForDone] - response: ', response);
+                    resolve({
+                        data: response.data.credentials
+                    })
+                }).catch(error => {
+                    reject({error})
+                })
+            } else {
+                reject({error: 'Couldn\'t authenticate to add'})
+            }
+        }
+    }
+}
 
 const listenForCredentials = (popup, provider, resolve, reject) => {
     if (!resolve) {
