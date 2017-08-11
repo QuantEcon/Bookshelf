@@ -7,6 +7,7 @@ import NotebookPreview from '@nteract/notebook-preview';
 import '@nteract/notebook-preview/styles/main.css';
 import '@nteract/notebook-preview/styles/theme-light.css';
 import 'codemirror/lib/codemirror.css';
+import fileDownload from 'react-file-download';
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
@@ -39,14 +40,15 @@ class Submission extends Component {
         this.onSubmitComment = this
             .onSubmitComment
             .bind(this);
+        this.download = this
+            .download
+            .bind(this);
     }
 
-    // componentWillReceiveProps(props) {     console.log('[Submission] - received
-    // new props: ', props);     // console.log('Did upvote: ',
-    // this.props.currentUser &&
-    // this.props.currentUser.upvotes.indexOf(this.props.submissionID) > -1)     //
-    // if(this.props.currentUser){     //     console.log('Upvotes: ',
-    // this.props.currentUser.upvotes);     // } }
+    download() {
+        console.log('[Submission] - downloading notebook...');
+        fileDownload(JSON.stringify(this.props.submission.data.notebookJSON), this.props.submission.data.fileName)
+    }
 
     upvote() {
         console.log('upvote: ', this.props.submissionID);
