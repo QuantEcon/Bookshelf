@@ -17,15 +17,25 @@ class OAuthSignInButton extends Component {
 
     signIn() {
         console.log('[OAuthSignInButton] - provider: ', this.props.provider);
-        this
-            .props
-            .actions
-            .signIn(this.props.provider, this.props.next);
+        if (this.props.isAdd) {
+            this
+                .props
+                .actions
+                .addSocial(this.props.provider, this.props.next);
+        } else {
+            this
+                .props
+                .actions
+                .signIn(this.props.provider, this.props.next);
+        }
+
     }
 
     render() {
         return (<SignInButton
-            provider={this.props.provider}
+            provider={this.props.isAdd
+            ? 'Add ' + this.props.provider
+            : this.props.provider}
             icon={this.props.icon}
             onClick={this.signIn}/>)
     }

@@ -1,4 +1,4 @@
-import {BEGIN_USER_AUTHENTICATION, END_USER_AUTHENTICATION} from '../../actions/auth/signIn'
+import {BEGIN_USER_AUTHENTICATION, END_USER_AUTHENTICATION, END_ADD_SOCIAL, BEGIN_ADD_SOCIAL} from '../../actions/auth/signIn'
 import {START_SIGN_OUT, END_SIGN_OUT} from '../../actions/auth/signOut'
 import {BEGIN_SUBMIT, ADD_CURRENT_SUBMISSION, END_SUBMIT, CONFIRM_SUBMIT, CANCEL_SUBMIT} from '../../actions/submit';
 import {
@@ -185,6 +185,21 @@ const AuthReducer = (state = {}, action) => {
                 error: null,
                 valid: null,
                 isSignedIn: false
+            })
+        case BEGIN_ADD_SOCIAL:
+            if(action.error){
+                return state
+            }
+            return Object.assign({}, state, {
+                loading: true
+            })
+        case END_ADD_SOCIAL:
+            if(action.error){
+                return state;
+            }
+            return Object.assign({}, state, {
+                loading: false,
+                user: action.user
             })
 
         case BEGIN_SUBMIT:

@@ -126,11 +126,13 @@ passport.use('addGithub', new GithubStrategy({
 
                         user.oneSocial = (user.twitter == {}) && (user.fb == {}) && (user.google == {});
 
-                        user.save(function (err) {
+                        user.save(function (err, savedUser) {
                             if (err) {
+                                console.log('[GithubAuth] - error saving user')
                                 return done(err);
                             } else {
-                                return done(null, user);
+                                console.log('[GithubAuth] - added github: ', savedUser);
+                                return done(null, savedUser);
                             }
                         });
                     } else {

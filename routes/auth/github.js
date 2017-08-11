@@ -12,13 +12,32 @@ var app = express.Router();
 // github login =========================== app.use(function(req, res, next){
 // console.log('[GITHUB AUTH] req:', req);     next(); }); add github to profile
 //TODO: implement jwt in this route
-app.get('/add', isAuthenticated, passport.authenticate('addGithub', {
+app.get('/add', passport.authenticate('addGithub', {
     scope: 'email'
 }));
-app.get('/callback/add', passport.authenticate('addGithub', {
-    successRedirect: '/user/my-profile/edit',
-    failureRedirect: '/user/my-profile/add-failed'
-}));
+app.get('/callback/add', passport.authenticate('addGithub'), function(req, res){
+    console.log('[AddGithub] - req.user: ', req.user);
+    User.findById(req.user._id, function(err, user){
+        if(err){
+            res.status(500);
+            res.send({error: true, message:err})
+        } else if(user){
+            var token = jwt.sign({
+                user: {
+                    _id: user._id
+                }
+            }, "banana horse laser muffin");
+            var queryString = qs.stringify({
+                token,
+                uid: req.user._id
+            });
+            res.redirect(req.headers.referer + '?' + queryString);
+        } else {
+            res.status(400);
+            res.send({error: true, message:'No user found'});
+        }
+    })
+});
 // register with github
 app.get('/', passport.authenticate('github', {
     scope: 'email'

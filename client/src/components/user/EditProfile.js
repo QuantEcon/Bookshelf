@@ -3,8 +3,13 @@ import {Link} from 'react-router-dom'
 import HeadContainer from '../../containers/HeadContainer';
 import Markdown from 'react-markdown';
 
+import OAuthSignInButton from '../../containers/auth/OAuthSignInButton'
 import CheckmarkIcon from 'react-icons/lib/fa/check-circle-o'
 import ErrorIcon from 'react-icons/lib/md/error-outline'
+import TwitterIcon from 'react-icons/lib/fa/twitter'
+import GithubIcon from 'react-icons/lib/fa/github'
+import FacebookIcon from 'react-icons/lib/fa/facebook-square'
+import GoogleIcon from 'react-icons/lib/fa/google'
 
 class EditProfile extends Component {
     constructor(props) {
@@ -59,6 +64,9 @@ class EditProfile extends Component {
         this.useGooglePhoto = this
             .useGooglePhoto
             .bind(this);
+        this.onAddSocialEnd = this
+            .onAddSocialEnd
+            .bind(this);
 
     }
 
@@ -92,6 +100,12 @@ class EditProfile extends Component {
     hasSaved = false
 
     showPositionPreview = false;
+
+    onAddSocialEnd = (success) => {
+        this.hasSaved = true;
+        this.props.editProfileError = !success
+        this.props.editProfileSuccess = success
+    }
 
     toggleShowPositionPreview = () => {
 
@@ -418,9 +432,10 @@ class EditProfile extends Component {
                                                         </a>
                                                         {' | '}{this.props.user.github.hidden
                                                             ? <a onClick={this.toggleGithub}>Show</a>
-                                                            : <a onClick={this.toggleGithub}>Hide</a>} {' | '}<a
-onClick={this.useGithubPhoto}
-disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
+                                                            : <a onClick={this.toggleGithub}>Hide</a>} {' | '}
+                                                        <a
+                                                            onClick={this.useGithubPhoto}
+                                                            disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
                                                     </p>
                                                 </div>
                                             : <div>
@@ -428,7 +443,13 @@ disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
                                                 <br/>
                                                 <ul className='button-row'>
                                                     <li className='menu-submit'>
-                                                        <a onClick={this.addGithub}>Add Github</a>
+                                                        <OAuthSignInButton
+                                                            provider='Github'
+                                                            icon={GithubIcon()}
+                                                            next={this.onAddSocialEnd}
+                                                            isAdd={true}>
+                                                            Add Github
+                                                        </OAuthSignInButton>
                                                     </li>
                                                 </ul>
                                             </div>}
@@ -472,7 +493,13 @@ disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
                                                 <br/>
                                                 <ul className='button-row'>
                                                     <li className='menu-submit'>
-                                                        <a onClick={this.addFacebook}>Add Facebook</a>
+                                                        <OAuthSignInButton
+                                                            provider='Facebook'
+                                                            icon={FacebookIcon()}
+                                                            next={this.onAddSocialEnd}
+                                                            isAdd={true}>
+                                                            Add Facebook
+                                                        </OAuthSignInButton>
                                                     </li>
                                                 </ul>
                                             </div>}
@@ -518,7 +545,13 @@ disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
                                                 <br/>
                                                 <ul className='button-row'>
                                                     <li className='menu-submit'>
-                                                        <a onClick={this.addTwitter}>Add Twitter</a>
+                                                        <OAuthSignInButton
+                                                            provider='Twitter'
+                                                            icon={TwitterIcon()}
+                                                            next={this.onAddSocialEnd}
+                                                            isAdd={true}>
+                                                            Add Github
+                                                        </OAuthSignInButton>
                                                     </li>
                                                 </ul>
                                             </div>}
@@ -548,7 +581,13 @@ disabled={this.props.user.activeAvatar === 'github'}>Use this photo</a>
                                                 <br/>
                                                 <ul className='button-row'>
                                                     <li className='menu-submit'>
-                                                        <a onClick={this.addGoogle}>Add Google</a>
+                                                        <OAuthSignInButton
+                                                            provider='Google'
+                                                            icon={GoogleIcon()}
+                                                            next={this.onAddSocialEnd}
+                                                            isAdd={true}>
+                                                            Add Github
+                                                        </OAuthSignInButton>
                                                     </li>
                                                 </ul>
                                             </div>}

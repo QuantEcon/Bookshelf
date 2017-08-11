@@ -14,10 +14,28 @@ var referer = '';
 app.get('/add', passport.authenticate('addTwitter', {
     scope: 'email'
 }));
-app.get('/callback/add', passport.authenticate('addTwitter', {
-    successRedirect: '/user/my-profile/edit',
-    failureRedirect: '/user/my-profile/add-failed'
-}));
+app.get('/callback/add', passport.authenticate('addTwitter'), function(req, res){
+    User.findById(req.user._id, function(err, user){
+        if(err){
+            res.status(500);
+            res.send({error: true, message:err})
+        } else if(user){
+            var token = jwt.sign({
+                user: {
+                    _id: user._id
+                }
+            }, "banana horse laser muffin");
+            var queryString = qs.stringify({
+                token,
+                uid: req.user._id
+            });
+            res.redirect(req.headers.referer + '?' + queryString);
+        } else {
+            res.status(400);
+            res.send({error: true, message:'No user found'});
+        }
+    })
+});
 
 // register/login with twitter
 app.get('/', function(req, res, next){

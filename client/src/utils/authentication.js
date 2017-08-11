@@ -11,6 +11,12 @@ export const authenticate = (provider) => {
     return listenForCredentials(popup, provider)
 }
 
+export const authenticateNewSocial = (provider) => {
+    const popup = openPopup(provider, `http://localhost:8080/api/auth/${provider}/add`, `${provider} authentication`);
+
+    return listenForCredentials(popup, provider);
+}
+
 const getAllParams = (url) => {
     const token = getParamByName('token', url);
     const uid = getParamByName('uid', url);
