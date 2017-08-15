@@ -261,6 +261,7 @@ app.post('/comment', passport.authenticate('jwt', {
     newComment.save(function (err, c) {
         if (err) {
             res.status(500);
+            res.send({error: 'Error saving comment'});
         } else {
             Submission
                 .findOne({
@@ -268,6 +269,7 @@ app.post('/comment', passport.authenticate('jwt', {
                 }, function (err, submission) {
                     if (err) {
                         res.status(500);
+                        res.send({error: 'Error finding submission'});
                     } else if (submission) {
                         submission
                             .comments
@@ -276,16 +278,18 @@ app.post('/comment', passport.authenticate('jwt', {
                         submission.save(function (err) {
                             if (err) {
                                 res.status(500);
+                                res.send({error: err})
                             } else {
                                 console.log("Successfully submitted comment");
                                 res.send({
                                     comment: newComment,
-                                    submissionID: submission._id
+                                    submissionID: submission._id,
                                 });
                             }
                         })
                     } else {
                         res.status(400);
+                        res.send({error: 'No submission found'});
                     }
                 });
 
@@ -310,7 +314,7 @@ app.post('/reply', passport.authenticate('jwt', {
     var newReply = new Comment();
     newReply.author = req.user._id;
     newReply.timestamp = new Date();
-    newReply.content = req.body.content;
+    newReply.content = req.body.reply;
     newReply.replies = [];
     newReply.score = 0;
     newReply.flagged = false;
@@ -322,16 +326,17 @@ app.post('/reply', passport.authenticate('jwt', {
         if (err) {
             console.log("Error 1");
             res.status(500);
+            res.send({
+                error: err
+            })
         } else if (reply) {
-            Comment
-                .findOne({
-                    _id: req.body.inReplyTo
-                }, function (err, comment) {
+            Comment.findById(req.body.commentID, function (err, comment) {
                     if (err) {
                         // TODO: delete reply
                         console.log("Error 2");
                         res.status(500);
-                    } else if (comment) {
+                        res.send({error: err});
+                    } else if (comment) {     
                         comment
                             .replies
                             .push(reply._id);
@@ -340,6 +345,7 @@ app.post('/reply', passport.authenticate('jwt', {
                                 // TODO: delete reply
                                 console.log("Error 3");
                                 res.status(500);
+                                res.send({error: err});
                             } else {
                                 Submission
                                     .findOne({
@@ -347,23 +353,26 @@ app.post('/reply', passport.authenticate('jwt', {
                                     }, function (err, submission) {
                                         if (err) {
                                             res.status(500);
+                                            res.send({error: err})
                                         } else if (submission) {
                                             submission.totalComments += 1;
                                             submission.save(function (err) {
                                                 if (err) {
                                                     //TODO: clean up added documents?
                                                     res.status(500);
+                                                    res.send({error: err});
                                                 } else {
                                                     console.log("Successfully submitted reply");
                                                     res.send({
                                                         commentID: comment._id,
-                                                        reply: newReply,
+                                                        reply: reply,
                                                         submissionID: submission._id
                                                     });
                                                 }
                                             });
                                         } else {
                                             res.status(500);
+                                            res.send({error: 'Error finding submission'});
                                         }
                                     });
 
@@ -373,11 +382,13 @@ app.post('/reply', passport.authenticate('jwt', {
                         // TODO: delete reply
                         console.log("Error 4");
                         res.status(500);
+                        res.send({error: 'Error finding comment'})
                     }
                 })
         } else {
             console.log("Error 5");
             res.status(500);
+            res.send({error: 'Error saving reply'});
         }
     });
 

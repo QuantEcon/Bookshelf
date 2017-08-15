@@ -1,8 +1,8 @@
 export const getParamByName = (name, url) => {
-    if(!url){
+    if (!url) {
         url = window.location.href;
     }
-    name = name.replace(/[\]]/g, "\\$&");
+    name = name.replace(/[[\]]/g, "\\$&");
     var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
         results = regex.exec(url);
     if (!results) return null;
@@ -12,7 +12,7 @@ export const getParamByName = (name, url) => {
 
 export const parseResponse = (response) => {
     let json = response.json();
-    if(response.status >= 200 && response.status <= 300){
+    if (response.status >= 200 && response.status <= 300) {
         return json;
     } else {
         return json.then(err => Promise.reject(err));

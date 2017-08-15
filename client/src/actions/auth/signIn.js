@@ -35,12 +35,12 @@ const beginAddSocial = ({
 export const END_ADD_SOCIAL = 'END_ADD_SOCIAL'
 const endAddSocial = ({
     provider,
-    user,
+    profile,
     error
 }) => {
     return {
         type: END_ADD_SOCIAL,
-        user,
+        profile,
         provider,
         error
     }
@@ -64,6 +64,7 @@ const endReauthentication = ({error, user, token}) => {
 }
 
 export const reauthenticate = () => {
+    console.log('REAUTHENTICATE');
     return (dispatch) => {
         dispatch(beginReauthentication());
         //get token from local storage
@@ -82,6 +83,7 @@ export const reauthenticate = () => {
                 }
             }).catch(err => {
                 dispatch(endReauthentication({error: err}));
+                localStorage.removeItem('token');
             })
         } else {
             dispatch(endReauthentication({error: 'No token saved'}));
@@ -97,7 +99,7 @@ export const addSocial = (provider, next) => {
                 authenticateNewSocial('github').then(resp => {
                     dispatch(endAddSocial({
                         provider: 'github',
-                        user: resp.data.user
+                        profile: resp.data.profile,
                     }));
                     next(true);
                 }, error => {

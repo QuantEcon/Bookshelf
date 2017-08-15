@@ -37,10 +37,12 @@ export function downvoteSub(submissionID) {
 }
 
 export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT'
-export function downvoteCom(commentID) {
+export function downvoteCom({commentID, submissionID}) {
+    console.log('[SubmissionActions] - downvoteCom: ', commentID);
     return {
         type: DOWNVOTE_COMMENT,
-        commentID
+        commentID,
+        submissionID
     }
 }
 
@@ -53,10 +55,12 @@ export function upvoteSub(submissionID) {
 }
 
 export const UPVOTE_COMMENT = 'UPVOTE_COMMENT'
-export function upvoteCom(commentID) {
+export function upvoteCom({commentID, submissionID}) {
+    console.log('[SubmissionActions] - upvoteCom: ', commentID);
     return {
-        type: upvoteCom,
-        commentID
+        type: UPVOTE_COMMENT,
+        commentID,
+        submissionID
     }
 }
 

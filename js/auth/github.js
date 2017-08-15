@@ -102,6 +102,7 @@ passport.use('addGithub', new GithubStrategy({
         passReqToCallback: true
     },
     function (req, access_token, refresh_token, profile, done) {
+        console.log('[Github] - req: ', req);
         process.nextTick(function () {
             //todo: check if profile is already registered with another account
             User.findOne({_id: req.user._id}, function (err, user) {

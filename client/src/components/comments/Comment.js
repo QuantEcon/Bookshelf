@@ -29,16 +29,50 @@ class Comment extends Component {
             .toggleInsertReply
             .bind(this)
 
-        this.upvote = this.upvote.bind(this)
-        this.downvote = this.downvote.bind(this);
+        this.upvote = this
+            .upvote
+            .bind(this)
+        this.downvote = this
+            .downvote
+            .bind(this);
+        this.submitRepsonse = this
+            .submitRepsonse
+            .bind(this);
+        this.replyTextChanged = this
+            .replyTextChanged
+            .bind(this);
+        this.submitRepsonse = this
+            .submitRepsonse
+            .bind(this);
     }
 
-    upvote(){
+    replyText = '';
+
+    upvote() {
         console.log('[Comment] - Upvote comment: ', this.props.comment._id);
+        this
+            .props
+            .upvote(this.props.comment._id);
+        this.forceUpdate();
     }
 
-    downvote(){
+    downvote() {
         console.log('[Comment] - Downvote comment: ', this.props.comment._id);
+        this
+            .props
+            .downvote(this.props.comment._id);
+        this.forceUpdate();
+    }
+
+    submitRepsonse(e) {
+        e.preventDefault();
+        this
+            .props
+            .postReply({reply: this.state.replyText, commentID: this.props.comment._id});
+    }
+
+    replyTextChanged(e) {
+        this.setState({replyText: e.target.value})
     }
 
     toggleInsertReply() {
@@ -61,14 +95,30 @@ class Comment extends Component {
 
                     <ul className='comment-vote'>
                         <li>
-                            <a onClick={this.upvote}>
-                                <ThumbsUp/>
-                            </a>
+                            {this.props.currentUser && this
+                                .props
+                                .currentUser
+                                .upvotes
+                                .indexOf(this.props.comment._id) > -1
+                                ? <a onClick={this.upvote} className='active'>
+                                        <ThumbsUp/>
+                                    </a>
+                                : <a onClick={this.upvote}>
+                                    <ThumbsUp/>
+                                </a>}
                         </li>
                         <li>
-                            <a onClick={this.downvote}>
-                                <ThumbsDown/>
-                            </a>
+                            {this.props.currentUser && this
+                                .props
+                                .currentUser
+                                .downvotes
+                                .indexOf(this.props.comment._id) > -1
+                                ? <a onClick={this.downvote} className='active'>
+                                        <ThumbsDown/>
+                                    </a>
+                                : <a onClick={this.downvote}>
+                                    <ThumbsDown/>
+                                </a>}
                         </li>
                     </ul>
                 </div>
@@ -136,10 +186,12 @@ class Comment extends Component {
                     {this.state.showInsertReply && !this.state.isReply
                         ? <div className='comment-reply'>
                                 <form>
-                                    <textarea placeholder='You can use markdown here...'></textarea>
+                                    <textarea
+                                        placeholder='You can use markdown here...'
+                                        onChange={this.replyTextChanged}></textarea>
 
                                     <div className='post-reply'>
-                                        <button onClick={this.submitRepsonse}>
+                                        <button onClick={this.submitRepsonse} disabled={this.state.replyText === ''}>
                                             Submit
                                         </button>
                                     </div>
@@ -149,7 +201,7 @@ class Comment extends Component {
 
                     {/*Render all replies for this comment*/}
                     {this.state.replies
-                        ? <ReplyList replies={this.state.replies} authors={this.state.authors}/>
+                        ? <ReplyList replies={this.state.replies} authors={this.state.authors} currentUser={this.props.currentUser}/>
                         : null}
                 </div>
 

@@ -36,7 +36,22 @@ app.post('/', passport.authenticate('jwt', {
             user.email = req.body.email;
             user.website = req.body.website;
             user.position = req.body.position;
+            user.google = req.body.google;
+            user.fb = req.body.fb;
+            user.github = req.body.github;
+            user.twitter = req.body.twitter;
 
+            const twitter = (user.twitter == {});
+            const github = (user.github == {});
+            const fb = (user.fb == {});
+            const google = (user.google == {});
+            const total = twitter + google + fb + github;
+            if(total > 2){
+                user.oneSocial = true;
+            } else {
+                user.oneSocial = false
+            }
+            
             user.save(function (err, savedUser) {
                 if (err) {
                     res.status(500);

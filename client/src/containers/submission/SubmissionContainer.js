@@ -13,7 +13,6 @@ const actions = {
 class SubmissionContainer extends Component {
     constructor(props) {
         super(props);
-
         this.props.actions.fetchNBInfo(props.match.params.id);
     }
 

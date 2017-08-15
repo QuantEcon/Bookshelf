@@ -18,7 +18,7 @@ import {
     CANCEL_SUBMIT
 } from '../../actions/submit';
 import {
-    AUTH_POST_COMMENT,
+    // AUTH_POST_COMMENT,
     AUTH_POST_REPLY,
     AUTH_REMOVE_UPVOTE,
     AUTH_ADD_UPVOTE,
@@ -34,6 +34,7 @@ import {
 var REMOVE_CURRENT_SUBMISSION = 'REMOVE_CURRENT_SUBMISSION'
 
 const UserReducer = (user = {}, action) => {
+    console.log('[UserReducer] - action:', action);
     switch (action.type) {
         case AUTH_REMOVE_UPVOTE:
             const indexUp = user
@@ -139,7 +140,16 @@ const UserReducer = (user = {}, action) => {
                     name: action.name,
                     email: action.email,
                     website: action.website,
-                    position: action.position
+                    position: action.position,
+                    oneSocial: action.oneSocial
+                })
+            }
+        case END_ADD_SOCIAL:
+            if(action.error){
+                return user;
+            } else {
+                return Object.assign({}, user, {
+                    [action.provider]: action.profile 
                 })
             }
         case SET_AVATAR_PICTURE:
@@ -239,7 +249,7 @@ const AuthReducer = (state = {}, action) => {
             }
             return Object.assign({}, state, {
                 loading: false,
-                user: action.user
+                user: UserReducer(state.user, action)
             })
 
         case BEGIN_SUBMIT:
@@ -251,10 +261,10 @@ const AuthReducer = (state = {}, action) => {
                 user: UserReducer(state.user, action)
             })
 
-        case AUTH_POST_COMMENT:
-            return Object.assign({}, state, {
-                user: UserReducer(state.user, action)
-            })
+        // case AUTH_POST_COMMENT:
+        //     return Object.assign({}, state, {
+        //         user: UserReducer(state.user, action)
+        //     })
         case AUTH_POST_REPLY:
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action)

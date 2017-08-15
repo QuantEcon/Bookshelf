@@ -5,7 +5,7 @@ const _config = require('../../_config');
 const User = require('../db/models/User')
 
 var opts = {
-    jwtFromRequest: ExtractJwt.fromAuthHeader(),
+    jwtFromRequest: ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeader(), ExtractJwt.fromUrlQueryParameter('jwt')]),
     secretOrKey: "banana horse laser muffin"
 }
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +

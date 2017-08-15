@@ -77,6 +77,7 @@ app.use(function (req, res, next) {
     console.log("Looking for URL : " + req.url);
     console.log('\tmethod: ', req.method);
     console.log('\tbody: ', req.body);
+    console.log('\tauthorization: ', req.headers['authorization']);
     // console.log('req.headers: ', req.headers);
     // console.log('req.cookies:',req.cookies);
     console.log('\n');
@@ -116,6 +117,10 @@ app.use('/api/submit', submitRoutes);
 //vote
 app.use('/api/upvote', upvoteRoutes);
 app.use('/api/downvote', downvoteRoutes);
+
+app.get('/api/auth/popup/:provider', (req, res) => {
+    res.sendFile('./views/partials/popup.html', {root: __dirname});
+});
 
 
 

@@ -1,0 +1,12 @@
+<script>
+    window.onload = function(){
+        var url = new URL(window.location.href);
+        alert('Params: ' + url.searchParams.get('jwt'));
+        var provider = url.searchParams.get('provider');
+        var token = url.searchParams.get('jwt');
+
+        window.location.href = window.location.hostname + '/api/auth/' + provider + '/add'
+    }
+</script>
+<h1>hello world!</h1>
+<h3>this is the popup</h3>

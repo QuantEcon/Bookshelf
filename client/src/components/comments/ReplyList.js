@@ -27,7 +27,7 @@ class ReplyList extends Component {
                             .filter(function (user) {
                                 return user._id === reply.author;
                             });
-                        return <Reply reply={reply} author={author[0]} key={index}/>
+                        return <Reply reply={reply} author={author[0]} key={index} currentUser={this.props.currentUser}/>
                     })}
             </div>
         )

@@ -159,6 +159,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var notebook;
     var commentAuthorIDs;
     var replyIDs;
+    var mergedReplyIDs;
     var replyAuthorIDs;
 
     var notebookID = req.params.nbid;
@@ -173,7 +174,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     deleted: false
                 }, select, function (err, submission) {
                     if (err) callback(err);
-                    else {
+                    else if(submission){
                         notebook = submission;
                         //              fs.readFile(req.file.path, 'utf8', (err, notebookString) => {
                         // if (err) {
@@ -189,6 +190,8 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 callback(null, submission);
                             }
                         })
+                    } else {
+                        callback('Not found', null);
                     }
                 });
             },
@@ -235,9 +238,12 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         });
                         replyIDs = comments.map(function (comment) {
                             return comment.replies.map(function (reply) {
+                                console.log('\tReply: ', reply);
                                 return reply;
                             });
                         });
+                        mergedReplyIDs = [].concat.apply([], replyIDs);
+                        console.log('reply ids', replyIDs);
 
                         callback(null, comments)
                     }
@@ -248,7 +254,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 // todo: add select statement
                 Comment.find({
                     _id: {
-                        $in: replyIDs[0]
+                        $in: mergedReplyIDs
                     },
                     deleted: false
                 }, function (err, replies) {

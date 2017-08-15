@@ -15,7 +15,7 @@ class Reply extends Component {
     render(){
         return(
             <div className='comment-nested'>
-                <Comment comment={this.state.reply} author={this.state.author} isReply={true}/>
+                <Comment comment={this.state.reply} author={this.state.author} isReply={true} currentUser={this.props.currentUser}/>
             </div>
         )
     }

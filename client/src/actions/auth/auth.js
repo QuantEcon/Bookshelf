@@ -1,25 +1,32 @@
 import store from '../../store/store';
 import * as SubmissionActions from '../submission';
 import axios from 'axios'
-export const AUTH_POST_COMMENT = 'POST_COMMENT'
-export function postComment({
-    submissionID,
-    comment
-}) {
-    return {
-        type: AUTH_POST_COMMENT,
-        submissionID,
-        comment
-    }
-}
+
+// export const AUTH_POST_COMMENT = 'POST_COMMENT'
+// function authPostComment({
+//     submissionID,
+//     comment
+// }) {
+//     return {
+//         type: AUTH_POST_COMMENT,
+//         submissionID,
+//         comment
+//     }
+// }
 
 export const AUTH_POST_REPLY = 'POST_REPLY'
-export function postReply(submissionID, commentID, reply) {
+export function authPostReply({
+    submissionID,
+    commentID,
+    reply,
+    error
+}) {
     return {
         type: AUTH_POST_REPLY,
         submissionID,
         commentID,
-        reply
+        reply,
+        error
     }
 }
 export const AUTH_REMOVE_UPVOTE = 'AUTH_REMOVE_UPVOTE'
@@ -84,7 +91,8 @@ export const endEditProfile = ({
     name,
     position,
     website,
-    error
+    error,
+    oneSocial
 }) => {
     if (error) {
         return {
@@ -97,7 +105,8 @@ export const endEditProfile = ({
             email,
             name,
             position,
-            website
+            website,
+            oneSocial
         }
     }
 }
@@ -233,18 +242,24 @@ export const editProfile = ({
     website
 }) => {
     return function (dispatch) {
-        if (store.getState().auth.isSignedIn) {
+        const state = store.getState();
+        if (state.auth.isSignedIn) {
             dispatch(beginEditProfile({
                 email,
                 name,
                 position,
-                website
+                website,
             }));
             axios.post('/api/edit-profile/', {
                 email,
                 name,
                 position,
-                website
+                website,
+                fb: state.auth.user.fb,
+                google: state.auth.user.google,
+                github: state.auth.user.github,
+                twitter: state.auth.user.twitter,
+
             }, {
                 headers: {
                     'Authorization': 'JWT ' + store.getState().auth.token
@@ -260,7 +275,8 @@ export const editProfile = ({
                         email: response.data.user.email,
                         name: response.data.user.name,
                         position: response.data.user.position,
-                        website: response.data.user.website
+                        website: response.data.user.website,
+                        oneSocial: response.data.user.oneSocial
                     }))
                 }
             }).catch(error => {
@@ -287,6 +303,7 @@ export const upvoteSubmission = ({
                         .token
                 }
             }).then(response => {
+                console.log('[AuthActions] - upvote submission response: ', response);
                 if (response.data.error) {
                     console.log('[AuthActions] - error upvote submission: ', response.data.message);
                 }
@@ -372,7 +389,10 @@ export const downvoteSubmission = ({
     }
 }
 
-export const downvoteComment = (commentID) => {
+export const downvoteComment = ({
+    submissionID,
+    commentID
+}) => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             axios.post('/api/downvote/comment', {
@@ -395,17 +415,29 @@ export const downvoteComment = (commentID) => {
                     .user;
                 if (currentUser.downvotes.indexOf(commentID) > -1) {
                     dispatch(removeDownvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID) //has already upvoted
+                    dispatch(SubmissionActions.upvoteCom({
+                            commentID,
+                            submissionID
+                        }) //has already upvoted
                     );
                 } else if (currentUser.upvotes.indexOf(commentID) > -1) {
                     dispatch(removeUpvote(commentID));
                     dispatch(addDownvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID) //hasn't upvoted or downvoted
+                    dispatch(SubmissionActions.downvoteCom({
+                        commentID,
+                        submissionID
+                    }));
+                    dispatch(SubmissionActions.downvoteCom({
+                            commentID,
+                            submissionID
+                        }) //hasn't upvoted or downvoted
                     );
                 } else {
                     dispatch(addDownvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID));
+                    dispatch(SubmissionActions.downvoteCom({
+                        commentID,
+                        submissionID
+                    }));
                 }
             }).catch(error => {
                 console.log('[AuthActions] - error downvoting comment: ', error);
@@ -417,11 +449,16 @@ export const downvoteComment = (commentID) => {
     }
 }
 
-export const upvoteComment = (commentID) => {
+export const upvoteComment = ({
+    submissionID,
+    commentID
+}) => {
     return function (dispatch) {
+        console.log('[AuthActions] - upvote comment')
         if (store.getState().auth.isSignedIn) {
             axios.post('/api/upvote/comment', {
-                commentID
+                commentID,
+                submissionID
             }, {
                 headers: {
                     'Authorization': 'JWT ' + store
@@ -438,18 +475,29 @@ export const upvoteComment = (commentID) => {
                     .auth
                     .user;
                 if (currentUser.upvotes.indexOf(commentID) > -1) {
+                    console.log('[AuthActions] - already upvoted comment')
                     dispatch(removeUpvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom(commentID) //has already downvoted
-                    );
+                    dispatch(SubmissionActions.downvoteCom({
+                        commentID,
+                        submissionID
+                    }));
                 } else if (currentUser.downvotes.indexOf(commentID) > -1) {
                     dispatch(removeDownvote(commentID));
                     dispatch(addUpvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID) //hasn't upvoted or downvoted
-                    );
+                    dispatch(SubmissionActions.upvoteCom({
+                        commentID,
+                        submissionID
+                    }));
+                    dispatch(SubmissionActions.upvoteCom({
+                        commentID,
+                        submissionID
+                    }));
                 } else {
                     dispatch(addUpvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom(commentID));
+                    dispatch(SubmissionActions.upvoteCom({
+                        commentID,
+                        submissionID
+                    }));
                 }
             }).catch(error => {
                 console.log('[AuthActions] - error upvoting comment');
@@ -478,10 +526,10 @@ export const submitComment = (submissionID, comment) => {
             if (response.data.error) {
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
-            dispatch(postComment({
-                submissionID: response.data.submissionID,
-                comment: response.data.comment
-            }));
+            // dispatch(authPostComment({
+            //     submissionID: response.data.submissionID,
+            //     comment: response.data.comment
+            // }));
             console.log('dispatch submission actions post comment');
             dispatch(SubmissionActions.postComment({
                 submissionID: response.data.submissionID,
@@ -493,39 +541,38 @@ export const submitComment = (submissionID, comment) => {
     }
 }
 
-export const submitReply = (submissionID, commentID, reply) => {
+export const submitReply = ({
+    submissionID,
+    commentID,
+    reply
+}) => {
     return function (dispatch) {
-        //TODO: fetch post reply
-        fetch('/api/submit/comment/' + submissionID, {
-            method: 'POST',
-            headers: {
-                'Authorization': 'JWT ' + store
-                    .getState()
-                    .auth
-                    .token,
-                'content-type': 'application/json'
 
-            },
-            body: {
-                submissionID,
-                commentID,
-                reply
+        axios.post('/api/submit/reply/', {
+            submissionID,
+            commentID,
+            reply
+        }, {
+            headers: {
+                'Authorization': 'JWT ' + store.getState().auth.token
             }
         }).then(resp => {
-            return resp.json()
-        }, error => {
-            console.log("Error submitting reply:", error);
-        }).then(response => {
-            console.log('Submit reply successful: ', response);
-            dispatch(postReply({
-                submissionID: response.body.submissionID,
-                commentID: response.body.commentID,
-                reply: response.body.reply
-            }))
-            dispatch(SubmissionActions.postReply({
-                submissionID: response.body.submissionID,
-                commentID: response.body.commentID,
-                reply: response.body.reply
+            console.log('[AuthActions] - submit reply response: ', resp);
+            if (resp.data.error) {
+                console.log('[AuthActions] - submit reply error in response: ', resp.data.error);
+                dispatch(authPostReply({
+                    error: resp.data.error
+                }))
+            } else {
+                dispatch(authPostReply({
+                    submissionID: resp.data.submissionID,
+                    commentID: resp.data.commentID,
+                    reply: resp.data.reply
+                }))
+            }
+        }).catch(error => {
+            dispatch(authPostReply({
+                error
             }))
         })
     }
