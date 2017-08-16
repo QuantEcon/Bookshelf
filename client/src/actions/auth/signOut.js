@@ -1,26 +1,37 @@
-export const START_SIGN_OUT = 'START_SIGN_OUT';
-export const startSignOut = () => {
-    return {
-        type: START_SIGN_OUT
-    }
-}
+import axios from 'axios'
+import store from '../../store/store';
 
-export const END_SIGN_OUT = 'END_SIGN_OUT';
-export const endSignOut = () => {
+export const SIGN_OUT = 'SIGN_OUT'
+const signOutAction = ({
+    error
+}) => {
     return {
-        type: END_SIGN_OUT
+        type: SIGN_OUT,
+        error
     }
 }
 
 export const signOut = () => {
-    return function(dispatch) {
-        dispatch(startSignOut());
-        fetch('/api/auth/signout').then(
-            resp => {return resp.json();},
-            error => {console.log('[UserActions] - Error occurred signing out: ', error)}
-        ).then(results => {
-            console.log('[UserActions] - successfully signed out');
-            dispatch(endSignOut());
-        });
+    return function (dispatch) {
+        if (store.getState().auth.isSignedIn) {
+            axios.get('/api/auth/sign-out', {
+                headers: {
+                    'authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(resp => {
+                if(resp.data.error){
+                    console.log('[AuthActions] - error signing out: ', resp.data.error);
+                    dispatch(signOutAction({error: resp.data.error}));
+                } else {
+                    dispatch(signOutAction());
+                }
+            }).catch(error => {
+                dispatch(signOutAction({error}));
+            })
+        } else {
+            dispatch(signOutAction({
+                error: 'Not signed in'
+            }))
+        }
     }
 }

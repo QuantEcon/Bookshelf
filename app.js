@@ -26,6 +26,7 @@ const notebookRoutes = require('./routes/notebook/notebook');
 const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
+const signOutRoutes = require('./routes/auth/signOut');
 // =======================================================================================
 
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
@@ -110,6 +111,7 @@ app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
+app.use('/api/auth/sign-out', signOutRoutes)
 
 //submit
 app.use('/api/submit', submitRoutes);

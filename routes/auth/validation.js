@@ -18,19 +18,20 @@ app.options('/', function (req, res) {
 app.get('/', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
-    console.log('[ValidateToken] - req.url:',req.url);
+    console.log('[ValidateToken] - req.url:', req.url);
     const isAdd = getParameterByName('isAdd', req.url);
     const profile = getParameterByName('profile', req.url);
-    console.log('[ValidateToken] - idAdd: ', isAdd);    
+    console.log('[ValidateToken] - idAdd: ', isAdd);
     console.log('[ValidateToken] - profile: ', isAdd);
 
     if (isAdd) {
         console.log('[ValidateToken] - is add. delete and send')
-        User.findById(req.user._id).remove();
-        console.log('[ValidateToken] - req.user: ', req.user[profile]);
-        res.send({
-            profile: req.user[profile]
-        })
+        User.findById(req.user._id).remove(function () {
+            console.log('[ValidateToken] - req.user: ', req.user[profile]);
+            res.send({
+                profile: req.user[profile]
+            })
+        });
     } else {
         console.log('[ValidateToken] - normal login');
         res.send({

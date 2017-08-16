@@ -9,10 +9,7 @@ var opts = {
     secretOrKey: "banana horse laser muffin"
 }
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
-                ' avatar website email summary activeAvatar currentProvider github.username githu' +
-                'b.url github.hidden github.avatarURL fb.displayName fb.url fb.hidden fb.avatarUR' +
-                'L google.avatarURL google.hidden google.displayName twitter.username twitter.ava' +
-                'tarURL twitter.url twitter.hidden oneSocial';
+' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
     User.findOne({
         _id: jwt_payload.user._id

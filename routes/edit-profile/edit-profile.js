@@ -36,22 +36,37 @@ app.post('/', passport.authenticate('jwt', {
             user.email = req.body.email;
             user.website = req.body.website;
             user.position = req.body.position;
-            user.google = req.body.google;
-            user.fb = req.body.fb;
-            user.github = req.body.github;
-            user.twitter = req.body.twitter;
-
+            if (req.body.google) {
+                user.google = Object.assign({}, user.google, req.body.google);
+            } else {
+                user.google = {}
+            }
+            if (req.body.twitter) {
+                user.twitter = Object.assign({}, user.twitter, req.body.twitter);
+            } else {
+                user.twitter = {}
+            }
+            if (req.body.github) {
+                user.github = Object.assign({}, user.github, req.body.github);
+            } else {
+                user.github = {}
+            }
+            if (req.body.fb) {
+                user.fb = Object.assign({}, user.fb, req.body.fb);
+            } else {
+                user.fb = {}
+            }
             const twitter = (user.twitter == {});
             const github = (user.github == {});
             const fb = (user.fb == {});
             const google = (user.google == {});
             const total = twitter + google + fb + github;
-            if(total > 2){
+            if (total > 2) {
                 user.oneSocial = true;
             } else {
                 user.oneSocial = false
             }
-            
+
             user.save(function (err, savedUser) {
                 if (err) {
                     res.status(500);

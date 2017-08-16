@@ -21,7 +21,7 @@ class User extends Component {
     }
 
     signOut = () => {
-        this.props.actions.signOut();
+        this.props.signOut();
     }
 
     render() {

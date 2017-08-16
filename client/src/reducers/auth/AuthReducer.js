@@ -7,8 +7,7 @@ import {
     END_REAUTHENTICATION
 } from '../../actions/auth/signIn'
 import {
-    START_SIGN_OUT,
-    END_SIGN_OUT
+    SIGN_OUT
 } from '../../actions/auth/signOut'
 import {
     BEGIN_SUBMIT,
@@ -28,7 +27,7 @@ import {
     END_EDIT_PROFILE,
     SET_AVATAR_PICTURE,
     TOGGLE_SOCIAL_HIDDEN,
-    REMOVE_SOCIAL
+    REMOVE_SOCIAL,
 } from '../../actions/auth/auth'
 
 var REMOVE_CURRENT_SUBMISSION = 'REMOVE_CURRENT_SUBMISSION'
@@ -145,11 +144,11 @@ const UserReducer = (user = {}, action) => {
                 })
             }
         case END_ADD_SOCIAL:
-            if(action.error){
+            if (action.error) {
                 return user;
             } else {
                 return Object.assign({}, user, {
-                    [action.provider]: action.profile 
+                    [action.provider]: action.profile
                 })
             }
         case SET_AVATAR_PICTURE:
@@ -207,21 +206,6 @@ const AuthReducer = (state = {}, action) => {
                 isSignedIn: action.error ?
                     false : true
             })
-        case START_SIGN_OUT:
-            return Object.assign({}, state, {
-                loading: true
-            })
-        case END_SIGN_OUT:
-            return Object.assign({}, state, {
-                loading: false,
-                token: null,
-                uid: null,
-                user: {},
-                provider: null,
-                error: null,
-                valid: null,
-                isSignedIn: false
-            })
         case BEGIN_REAUTHENTICATION:
             return Object.assign({}, state, {
                 loading: true
@@ -261,10 +245,10 @@ const AuthReducer = (state = {}, action) => {
                 user: UserReducer(state.user, action)
             })
 
-        // case AUTH_POST_COMMENT:
-        //     return Object.assign({}, state, {
-        //         user: UserReducer(state.user, action)
-        //     })
+            // case AUTH_POST_COMMENT:
+            //     return Object.assign({}, state, {
+            //         user: UserReducer(state.user, action)
+            //     })
         case AUTH_POST_REPLY:
             return Object.assign({}, state, {
                 user: UserReducer(state.user, action)
@@ -344,6 +328,14 @@ const AuthReducer = (state = {}, action) => {
                     true : false,
                 editProfileSuccess: setAvatarSuccess
 
+            })
+        case SIGN_OUT:
+            localStorage.removeItem('token')
+            return Object.assign({}, state, {
+                token: null,
+                user: null,
+                isSignedIn: false,
+                valid: null
             })
         default:
             return state;
