@@ -168,28 +168,18 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published lang fileName ipynbFile";
+                var select = "_id title author views comments score summary published lang fileName notebookJSONString";
                 Submission.findOne({
                     _id: mdb.ObjectId(notebookID),
                     deleted: false
                 }, select, function (err, submission) {
                     if (err) callback(err);
-                    else if(submission){
+                    else if (submission) {
                         notebook = submission;
-                        //              fs.readFile(req.file.path, 'utf8', (err, notebookString) => {
-                        // if (err) {
-                        //     console.log('[Submit] - error reading file');
-                        //     res.status(500);
-                        //     res.send({error: true, message: 'Error reading file'})
-                        // } else {
-                        fs.readFile(submission.ipynbFile, 'utf8', (err, notebookString) => {
-                            if (err) {
-                                callback(err, null);
-                            } else {
-                                notebook.notebookJSON = JSON.parse(notebookString);
-                                callback(null, submission);
-                            }
-                        })
+                        notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
+                        console.log('[Search] - typeof notebookJSON: ', typeof(notebook.notebookJSON));
+                        callback(null, notebook);
+
                     } else {
                         callback('Not found', null);
                     }

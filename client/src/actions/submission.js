@@ -1,3 +1,6 @@
+import axios from 'axios'
+import store from '../store/store'
+
 // import {fetch as authFetch} from 'redux-auth';
 export const REQUEST_NB_INFO = 'REQUEST_NB_INFO';
 export function requestNBInfo(notebookID = null) {
@@ -80,6 +83,34 @@ export function postReply(submissionID, commentID, reply) {
         submissionID,
         commentID,
         reply
+    }
+}
+
+export const EDIT_SUBMISSION = 'EDIT_SUBMISSION'
+const editSubmissionAction = ({submissionID, error}) => {
+    return {
+        type: EDIT_SUBMISSION,
+        submissionID,
+        error
+    }
+}
+
+export const editSubmission = ({submissionData}) => {
+    console.log('[SubmissionActions] - edit submission: ', submissionData);
+    return (dispatch) => {
+        axios.post('/api/submit/edit-submission', {
+            submissionData
+        }, {
+            headers: {
+                'authorization' : 'JWT ' + store.getState().auth.token 
+            }
+        }).then(response => {
+            if(response.data.error){
+                dispatch(editSubmissionAction({error: response.data.error}))
+            } else {
+                dispatch(editSubmissionAction({submissionID: submissionData._id}));
+            }
+        })
     }
 }
 

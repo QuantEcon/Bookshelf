@@ -11,6 +11,8 @@ import MyProfileContainer from '../../containers/user/MyProfileContainer'
 import SubmitContainer from '../../containers/SubmitContainer'
 import PreviewContainer from '../../containers/PreviewContainer'
 import EditProfileContainer from '../../containers/user/EditProfileContainer'
+import EditSubmissionContainer from '../../containers/submission/EditSubmissionContainer';
+import EditSubmissionPreviewContainer from '../../containers/submission/EditSubmissionPreviewContainer';
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
@@ -34,6 +36,8 @@ class App extends Component {
             <Switch>
               <Route exact path='/' component={Home}/>
               <Route path='/submission/:id' component={SubmissionContainer}/>
+              <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
+              <ProtectedRoute exact path='/edit-submission/:id/preview' component={EditSubmissionPreviewContainer}/>
               <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
               <ProtectedRoute path='/submit' component={SubmitContainer}/>
               <Route path='/signin' exact component={SignIn}/>

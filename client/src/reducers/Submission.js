@@ -6,7 +6,8 @@ import {
     UPVOTE_COMMENT,
     UPVOTE_SUBMISSION,
     DOWNVOTE_COMMENT,
-    DOWNVOTE_SUBMISSION
+    DOWNVOTE_SUBMISSION,
+    EDIT_SUBMISSION
 } from '../actions/submission';
 
 //notebook.comments
@@ -199,6 +200,16 @@ const SubmissionReducer = (state = {}, action) => {
                             score: state[action.submissionID].data.notebook.score - 1
                         })
                     })
+                })
+            })
+        case EDIT_SUBMISSION:
+            if(action.error){
+                console.log('[SubmissionReducer] - error editing submission: ', action.error);
+                return state;
+            }
+            return Object.assign({}, state, {
+                [action.submissionID]: Object.assign({}, state[action.submissionID], {
+                    didInvalidate: true
                 })
             })
         default:

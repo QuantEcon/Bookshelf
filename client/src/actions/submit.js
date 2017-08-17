@@ -38,7 +38,9 @@ export const cancelSubmit = () => {
 }
 
 export const CONFIRM_SUBMIT = 'CONFIRM_SUBMIT'
-export const confirmSubmit = ({id}) => {
+export const confirmSubmit = ({
+    id
+}) => {
     return {
         type: CONFIRM_SUBMIT,
         id
@@ -49,35 +51,27 @@ export const submit = (formData, file) => {
     return function (dispatch) {
         console.log('[SubmitActions] - submit: ', formData, file);
         dispatch(beginSubmit());
-        let data = new FormData();
-        data.append('file', file);
-        data.append('formData', JSON.stringify(formData));
-        axios
-            .post('/api/submit/', data, {
-                headers: {
-                    'authorization': 'JWT ' + store
-                        .getState()
-                        .auth
-                        .token
-                }
-            })
-            .then(response => {
-                console.log('[SubmitActions] - sucess: ', response);
-                //TODO: support for multiple dispatches not working
-                // dispatch(endSubmit({
-                //     error: false
-                // }));
+        var submission = {
+            ...formData,
+            author: store.getState().auth.user,
+            lastUpdated: Date.now(),
+            published: Date.now(),
+        }
+        if (file) {
+            var reader = new FileReader();
+            reader.readAsText(file);
+            submission.fileName = file.name;
+            reader.onload = (event) => {
+                submission.notebookJSON = JSON.parse(event.target.result);
                 dispatch(addCurrentSubmission({
-                    submission: response.data.submission
+                    submission
                 }))
-            })
-            .catch(error => {
-                console.log('[SubmitActions] - error submitting: ', error)
-                dispatch(endSubmit({
-                    error
-                }))
-            })
-
+            }
+        } else {
+            dispatch(endSubmit({
+                error: 'No file submitted!'
+            }));
+        }
     }
 }
 
@@ -85,7 +79,9 @@ export const confirm = () => {
     return function (dispatch) {
         console.log('[SubmitActions] - confirm submit')
         //send confirm request to server
-        axios.get('/api/submit/confirm', {
+        axios.post('/api/submit/confirm', {
+            submission: store.getState().auth.user.currentSubmission
+        }, {
             headers: {
                 'Authorization': 'JWT ' + store.getState().auth.token
             }

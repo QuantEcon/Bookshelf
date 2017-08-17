@@ -10,9 +10,6 @@ export default function PrivateRoute({
 }) {
     const state = store.getState();
     const fromAPI = getParamByName('fromAPI', window.location.href);
-    console.log('window.location.href:', window.location.href);
-    console.log('From api: ', fromAPI);
-    console.log('In protected route: ', state.auth.isSignedIn);
     return (
         <Route
             {...rest}

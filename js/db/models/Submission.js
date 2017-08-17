@@ -13,7 +13,7 @@ var submissionSchema = new Schema({
     lang: String,
     summary: String,
     fileName: String,
-    notebookJSON: Object,
+    notebookJSONString: String,
     ipynbFile: String,
 
     author: ObjectId,

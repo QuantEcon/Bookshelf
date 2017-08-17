@@ -29,9 +29,11 @@ const upload = multer({
 
 var app = express.Router();
 
-app.use(bodyParser.json())
+app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
+    limit: '50mb',
+    parameterLimit:50000
 }));
 
 // app.use(function(req, res, next){     // console.log('[Submit] - req.headers:
@@ -120,26 +122,6 @@ app.post('/', passport.authenticate('jwt', {
     });
 });
 
-// app.get('/preview', passport.authenticate('jwt', {
-//     session: false
-// }), function (req, res) {
-//     if (req.user._doc.currentSubmission) {
-//         res.render('submissionPreview', {
-//             layout: 'breadcrumbs',
-//             title: req.user._doc.currentSubmission.title,
-//             data: {
-//                 currentUser: req.user,
-//                 submit: true
-//             }
-//         });
-//     } else {
-//         res.render('submit', {
-//             layout: 'breadcrumbs',
-//             title: 'Submission Preview'
-//         })
-//     }
-// });
-
 app.get('/cancel', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
@@ -163,42 +145,93 @@ app.get('/cancel', passport.authenticate('jwt', {
         })
 });
 
-app.get('/confirm', passport.authenticate('jwt', {
+app.post('/confirm', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
-    User
-        .findOne({
-            _id: req.user._id
-        }, function (err, user) {
-            if (err || !user) {
-                res.render('500');
-            } else if (user) {
+    var newSub = new Submission();
 
-                var newSub = new Submission(user.currentSubmission);
-                newSub.author = req.user._id;
-                newSub.save(function (err) {
-                    if (err) {
-                        console.log("ERROR SAVING NEW SUB: ", err);
-                        res.render('500');
-                    } else {
-                        user.currentSubmission = null;
-                        user
-                            .submissions
-                            .push(newSub._id);
-                        user.save(function (err) {
-                            if (err) {
-                                console.log("ERROR SAVING USER");
-                                res.render('500');
-                            } else {
-                                //save file in system
-                                res.status(200);
-                                res.send({id: newSub._doc._id});
-                            }
-                        })
-                    }
-                })
-            }
-        })
+    newSub.title = req.body.submission.title;
+
+    newSub.topicList = req.body.submission.topics;
+
+    newSub.lang = req.body.submission.lang;
+    newSub.summary = req.body.submission.summary;
+
+    //todo: not sure if we should have this or not newSub.file = file;
+
+    newSub.author = req.user._id;
+    //todo: parse co-authors newSub.coAuthors = coAuthors
+    newSub.comments = [];
+    newSub.totalComments = 0;
+
+    newSub.score = 0;
+    newSub.views = 0;
+
+    newSub.published = new Date();
+    newSub.lastUpdated = new Date();
+
+    newSub.deleted = false;
+    newSub.flagged = false;
+
+    newSub.fileName = req.body.submission.fileName;
+    newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
+
+    User.findById(req.user._id, (err, user) => {
+        if(err) {
+            res.status(500);
+            res.send({error: err});
+        } else if(user){
+            newSub.save((err, submission) => {
+                if(err){
+                    res.status(500);
+                    res.send({error: err});
+                } else {
+                    user.submissions.push(submission._id)
+
+                }
+            })
+        } else {
+            res.status(500);
+            res.send({error: 'No user found'});
+        }
+    })
+});
+
+app.post('/edit-submission', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    Submission.findById(req.body.submissionData._id, (err, submission) => {
+        if (err) {
+            res.status(500);
+            res.send({
+                error: err
+            });
+        } else if (submission) {
+            //TODO: 
+            submission.notebookJSON = JSON.stringify(req.body.submissionData.notebookJSON);
+            submission.title = req.body.submissionData.title;
+            submission.coAuthors = req.body.submissionData.coAuthors;
+            submission.summary = req.body.submissionData.summary;
+            submission.lang = req.body.submissionData.lang
+            submission.lastUpdated = new Date();
+
+            submission.save((err) => {
+                if (err) {
+                    res.status(500);
+                    res.send({
+                        error: err
+                    });
+                } else {
+                    res.sendStatus(200);
+                }
+            });
+        } else {
+            res.status(500);
+            res.send({
+                error: 'Coulnd\'t find submission'
+            });
+        }
+    })
 });
 
 app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
@@ -219,6 +252,9 @@ app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
                 comment.save(function (err) {
                     if (err) {
                         res.status(500);
+                        res.send({
+                            error: err
+                        })
                     } else {
                         res.send({
                             message: 'Redirect',
@@ -228,6 +264,9 @@ app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
                 })
             } else {
                 res.status(500);
+                res.send({
+                    error: "Couldn't find comment"
+                });
             }
         })
 });
@@ -261,7 +300,9 @@ app.post('/comment', passport.authenticate('jwt', {
     newComment.save(function (err, c) {
         if (err) {
             res.status(500);
-            res.send({error: 'Error saving comment'});
+            res.send({
+                error: 'Error saving comment'
+            });
         } else {
             Submission
                 .findOne({
@@ -269,7 +310,9 @@ app.post('/comment', passport.authenticate('jwt', {
                 }, function (err, submission) {
                     if (err) {
                         res.status(500);
-                        res.send({error: 'Error finding submission'});
+                        res.send({
+                            error: 'Error finding submission'
+                        });
                     } else if (submission) {
                         submission
                             .comments
@@ -278,7 +321,9 @@ app.post('/comment', passport.authenticate('jwt', {
                         submission.save(function (err) {
                             if (err) {
                                 res.status(500);
-                                res.send({error: err})
+                                res.send({
+                                    error: err
+                                })
                             } else {
                                 console.log("Successfully submitted comment");
                                 res.send({
@@ -289,7 +334,9 @@ app.post('/comment', passport.authenticate('jwt', {
                         })
                     } else {
                         res.status(400);
-                        res.send({error: 'No submission found'});
+                        res.send({
+                            error: 'No submission found'
+                        });
                     }
                 });
 
@@ -331,64 +378,78 @@ app.post('/reply', passport.authenticate('jwt', {
             })
         } else if (reply) {
             Comment.findById(req.body.commentID, function (err, comment) {
-                    if (err) {
-                        // TODO: delete reply
-                        console.log("Error 2");
-                        res.status(500);
-                        res.send({error: err});
-                    } else if (comment) {     
-                        comment
-                            .replies
-                            .push(reply._id);
-                        comment.save(function (err) {
-                            if (err) {
-                                // TODO: delete reply
-                                console.log("Error 3");
-                                res.status(500);
-                                res.send({error: err});
-                            } else {
-                                Submission
-                                    .findOne({
-                                        _id: comment.submission
-                                    }, function (err, submission) {
-                                        if (err) {
-                                            res.status(500);
-                                            res.send({error: err})
-                                        } else if (submission) {
-                                            submission.totalComments += 1;
-                                            submission.save(function (err) {
-                                                if (err) {
-                                                    //TODO: clean up added documents?
-                                                    res.status(500);
-                                                    res.send({error: err});
-                                                } else {
-                                                    console.log("Successfully submitted reply");
-                                                    res.send({
-                                                        commentID: comment._id,
-                                                        reply: reply,
-                                                        submissionID: submission._id
-                                                    });
-                                                }
-                                            });
-                                        } else {
-                                            res.status(500);
-                                            res.send({error: 'Error finding submission'});
-                                        }
-                                    });
+                if (err) {
+                    // TODO: delete reply
+                    console.log("Error 2");
+                    res.status(500);
+                    res.send({
+                        error: err
+                    });
+                } else if (comment) {
+                    comment
+                        .replies
+                        .push(reply._id);
+                    comment.save(function (err) {
+                        if (err) {
+                            // TODO: delete reply
+                            console.log("Error 3");
+                            res.status(500);
+                            res.send({
+                                error: err
+                            });
+                        } else {
+                            Submission
+                                .findOne({
+                                    _id: comment.submission
+                                }, function (err, submission) {
+                                    if (err) {
+                                        res.status(500);
+                                        res.send({
+                                            error: err
+                                        })
+                                    } else if (submission) {
+                                        submission.totalComments += 1;
+                                        submission.save(function (err) {
+                                            if (err) {
+                                                //TODO: clean up added documents?
+                                                res.status(500);
+                                                res.send({
+                                                    error: err
+                                                });
+                                            } else {
+                                                console.log("Successfully submitted reply");
+                                                res.send({
+                                                    commentID: comment._id,
+                                                    reply: reply,
+                                                    submissionID: submission._id
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        res.status(500);
+                                        res.send({
+                                            error: 'Error finding submission'
+                                        });
+                                    }
+                                });
 
-                            }
-                        })
-                    } else {
-                        // TODO: delete reply
-                        console.log("Error 4");
-                        res.status(500);
-                        res.send({error: 'Error finding comment'})
-                    }
-                })
+                        }
+                    })
+                } else {
+                    // TODO: delete reply
+                    console.log("Error 4");
+                    res.status(500);
+                    res.send({
+                        error: 'Error finding comment'
+                    })
+                }
+            })
         } else {
             console.log("Error 5");
             res.status(500);
-            res.send({error: 'Error saving reply'});
+            res.send({
+                error: 'Error saving reply'
+            });
         }
     });
 

@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
+import {Link} from 'react-router-dom'
+
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
 import '@nteract/notebook-preview/styles/main.css';
@@ -14,7 +16,7 @@ import {transforms, displayOrder} from '@nteract/transforms-full';
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
-import Gear from 'react-icons/lib/fa/cog'
+import GearIcon from 'react-icons/lib/fa/cog'
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
@@ -49,7 +51,16 @@ class Submission extends Component {
         this.download = this
             .download
             .bind(this);
-        this.submitReply=this.submitReply.bind(this);
+        this.submitReply = this
+            .submitReply
+            .bind(this);
+        this.printProps = this
+            .printProps
+            .bind(this);
+    }
+
+    printProps() {
+        console.log('[Submission] - props: ', this.props);
     }
 
     download() {
@@ -116,6 +127,10 @@ class Submission extends Component {
         });
     }
 
+    editSubmission() {
+        console.log('[Submission] - edit submission clicked');
+    }
+
     render() {
         return (
             <div>
@@ -171,15 +186,17 @@ class Submission extends Component {
                                             : <p>loading...</p>}
 
                                         {/*TODO: check current user id == notebook.author*/}
-                                        {!this.props.isLoading && this.props.myID && this.props.myID === this.props.submission.data.author._id
-                                            ? <ul className='details-options'>
-                                                    <li>
-                                                        <a>
-                                                            <Gear/>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            : null}
+                                        {this.props.isLoading
+                                            ? null
+                                            : <div>
+                                                {this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id
+                                                    ? <ul className='details-options'>
+                                                            <li>
+                                                                <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                            </li>
+                                                        </ul>
+                                                    : null}
+                                            </div>}
 
                                         <ul className='topics'>
                                             {/*Repeat for each topic in list*/}

@@ -35,9 +35,13 @@ class Preview extends Component {
 
     onSubmit() {
         console.log('[Preview] - clicked submit');
-        this
-            .props
-            .confirm()
+        if(this.props.isEdit){
+            this.props.save();
+        } else {
+            this
+                .props
+                .confirm()
+        }
     }
 
     render() {
@@ -215,7 +219,9 @@ class Preview extends Component {
                             </li>
                             <li>
                                 <button onClick={this.onSubmit}>
-                                    Submit
+                                    {this.props.isEdit
+                                    ? 'Save'
+                                    : 'Submit'}
                                 </button>
                             </li>
                         </ul>

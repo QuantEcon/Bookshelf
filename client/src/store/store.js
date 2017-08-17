@@ -6,7 +6,8 @@ var store = createStore({
     },
     submissionList: {
         isFetching: true
-    }
+    },
+    editSubmissionByID: {}
 })
 
 export default store;

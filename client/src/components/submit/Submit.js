@@ -38,8 +38,13 @@ class Submit extends Component {
 
         this.state = {
             accepted: [],
+            fileName: props.isEdit
+                ? this.props.submission.data.fileName
+                : '',
             rejected: [],
-            fileUploaded: false,
+            fileUploaded: props.isEdit
+                ? true
+                : false,
             uploadError: false,
             showSummaryPreview: false
         }
@@ -60,11 +65,21 @@ class Submit extends Component {
 
     formData = {
         agreement: false,
-        title: '',
-        summary: '',
-        lang: 'Python',
-        topics: [],
-        coAuthors: []
+        title: this.props.isEdit
+            ? this.props.submission.data.notebook.title
+            : '',
+        summary: this.props.isEdit
+            ? this.props.submission.data.notebook.summary
+            : '',
+        lang: this.props.isEdit
+            ? this.props.submission.data.notebook.lang
+            : 'Python',
+        topics: this.props.isEdit
+            ? this.props.submission.data.notebook.topics
+            : '',
+        coAuthors: this.props.isEdit
+            ? this.props.submission.data.coAuthors
+            : []
     }
 
     errors = {
@@ -111,7 +126,7 @@ class Submit extends Component {
 
         this.setState({
             valid
-        }, ()=>this.forceUpdate());
+        }, () => this.forceUpdate());
     }
 
     removeTopic = (topic, array) => {
@@ -134,7 +149,25 @@ class Submit extends Component {
 
     submit = (e) => {
         e.preventDefault();
-        this.props.submit(this.formData, this.state.accepted[0]);
+        if (this.props.isEdit) {
+            console.log('[EditSubmission] - preview clicked')
+            var file = this.state.accepted[0]
+                ? this.state.accepted[0]
+                : null
+            var notebookJSON = this.state.accepted[0]
+                ? null
+                : this.props.submission.data.notebookJSON
+            this.formData.score = this.props.submission.data.notebook.score
+            this.formData.views = this.props.submission.data.notebook.views
+            this.formData.published = this.props.submission.data.notebook.published
+            this
+                .props
+                .preview({formData: this.formData, file, notebookJSON});
+        } else {
+            this
+                .props
+                .submit(this.formData, this.state.accepted[0]);
+        }
     }
 
     langChanged = (event) => {
@@ -170,7 +203,8 @@ class Submit extends Component {
                 accepted,
                 rejected,
                 fileUploaded: true,
-                uploadError: false
+                uploadError: false,
+                fileName: accepted[0].name
             }, () => this.validate());
         } else if (!this.state.fileUploaded) {
             this.setState({
@@ -215,7 +249,7 @@ class Submit extends Component {
                                     <div className="dz-default dz-message">
                                         {this.state.fileUploaded
                                             ? <div>
-                                                    <h5 className='hint'>{this.state.accepted[0].name}</h5>
+                                                    <h5 className='hint'>{this.state.fileName}</h5>
                                                 </div>
                                             : <div>
                                                 <p className='hint'>
@@ -250,6 +284,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
+                                        defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
                                                 Title is required
@@ -331,7 +366,8 @@ class Submit extends Component {
                                     <textarea
                                         placeholder="Notebook summary"
                                         id="summary"
-                                        onChange={this.summaryChanged}></textarea>
+                                        onChange={this.summaryChanged}
+                                        defaultValue={this.formData.summary}></textarea>
 
                                     {this.state.showSummaryPreview
                                         ? <div>
@@ -339,7 +375,9 @@ class Submit extends Component {
                                                     source={this.formData.summary
                                                     ? this.formData.summary
                                                     : '*No summary*'}/>
-                                                <p className="input-hint-after input-hint orange bold" onClick={this.toggleSummaryPreview}>
+                                                <p
+                                                    className="input-hint-after input-hint orange bold"
+                                                    onClick={this.toggleSummaryPreview}>
                                                     Close Summary
                                                 </p>
                                             </div>
@@ -361,8 +399,7 @@ class Submit extends Component {
 
                                 <label>
                                     <input type="checkbox" name="agreement" onChange={this.agreementChanged}/>
-                                    I agree to the
-                                    {' '}<a>Terms and Conditions</a>{' '}
+                                    I agree to the {' '}<a>Terms and Conditions</a>{' '}
                                     of publishing content and sint occaecat cupidatat non proident, sunt in culpa
                                     qui officia deserunt mollit anim id est laborum.
                                 </label>
@@ -376,6 +413,13 @@ class Submit extends Component {
                             </div>
 
                             <ul className='button-row'>
+                                {this.props.isEdit
+                                    ? <li>
+                                            <Link to={'/submission/' + this.props.submission.data.notebook._id}>
+                                                Cancel
+                                            </Link>
+                                        </li>
+                                    : null}
                                 <li>
                                     <button disabled={!this.state.valid}>
                                         Preview

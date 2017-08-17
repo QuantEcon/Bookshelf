@@ -63,9 +63,11 @@ const app = express();
 // app.engine('handlebars', hbs.engine);
 // app.set('view engine', 'handlebars');
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: true,
+    limit: '50mb',
+    parameterLimit:50000
 }));
 
 

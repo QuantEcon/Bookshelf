@@ -91,7 +91,7 @@ const UserReducer = (user = {}, action) => {
             return Object.assign({}, user, {
                 currentSubmission: {
                     ...user.currentSubmission,
-                    isLoading: false
+                    isLoading: true
                 }
             })
         case ADD_CURRENT_SUBMISSION:
