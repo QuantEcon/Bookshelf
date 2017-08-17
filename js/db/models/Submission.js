@@ -9,7 +9,7 @@ var ObjectId = Schema.ObjectId;
 
 var submissionSchema = new Schema({
     title: String,
-    topicList: [String],
+    topics: [String],
     lang: String,
     summary: String,
     fileName: String,

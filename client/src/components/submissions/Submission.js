@@ -186,21 +186,30 @@ class Submission extends Component {
                                             : <p>loading...</p>}
 
                                         {/*TODO: check current user id == notebook.author*/}
-                                        {this.props.isLoading
-                                            ? null
-                                            : <div>
-                                                {this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id
-                                                    ? <ul className='details-options'>
-                                                            <li>
-                                                                <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
-                                                            </li>
-                                                        </ul>
-                                                    : null}
-                                            </div>}
-
-                                        <ul className='topics'>
-                                            {/*Repeat for each topic in list*/}
-                                        </ul>
+                                        {!this.props.isLoading && (this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id)
+                                            ? <ul className='details-options'>
+                                                    <li>
+                                                        <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                    </li>
+                                                </ul>
+                                            : null}
+                                        {!this.props.isLoading
+                                            ? <ul className='topics'>
+                                                    {this
+                                                        .props
+                                                        .submission
+                                                        .data
+                                                        .notebook
+                                                        .topics
+                                                        .map((topic, index) => {
+                                                            return (
+                                                                <li key={index}>
+                                                                    <a>{topic}</a>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                </ul>
+                                            : null}
 
                                     </div>
 
@@ -249,7 +258,7 @@ class Submission extends Component {
                                         <div className='side'>
                                             {!this.props.isLoading
                                                 ? <p className='avatar'>
-                                                        <a href={'/user/' + this.props.submission.data.author._id}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></a>
+                                                        <Link to={'/user/' + this.props.submission.data.author._id}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></Link>
                                                     </p>
                                                 : <p>loading</p>}
                                         </div>
@@ -259,7 +268,7 @@ class Submission extends Component {
                                                     {!this.props.isLoading
                                                         ? <div>
                                                                 <span>Author: {' '}</span>
-                                                                <a href={'/user/' + this.props.submission.data.author._id}>{this.props.submission.data.author.name}</a>
+                                                                <Link to={'/user/' + this.props.submission.data.author._id}>{this.props.submission.data.author.name}</Link>
                                                             </div>
                                                         : <p>loading...</p>}
 

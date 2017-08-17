@@ -76,7 +76,7 @@ class Submit extends Component {
             : 'Python',
         topics: this.props.isEdit
             ? this.props.submission.data.notebook.topics
-            : '',
+            : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
             : []
@@ -141,9 +141,9 @@ class Submit extends Component {
             this
                 .formData
                 .topics
-                .push(event.target.name);
+                .push(this.topics[event.target.name]);
         } else {
-            this.removeTopic(event.target.name, this.formData.topics);
+            this.removeTopic(this.topics[event.target.name], this.formData.topics);
         }
     }
 
@@ -428,6 +428,7 @@ class Submit extends Component {
                             </ul>
 
                         </form>
+                        
                     </div>
                 </div>
 

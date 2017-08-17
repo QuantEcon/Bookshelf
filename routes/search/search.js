@@ -168,7 +168,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published lang fileName notebookJSONString";
+                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString";
                 Submission.findOne({
                     _id: mdb.ObjectId(notebookID),
                     deleted: false
@@ -177,6 +177,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     else if (submission) {
                         notebook = submission;
                         notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
+                        notebook.notebookJSONString = null;
                         console.log('[Search] - typeof notebookJSON: ', typeof(notebook.notebookJSON));
                         callback(null, notebook);
 

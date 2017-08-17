@@ -35,8 +35,10 @@ class Preview extends Component {
 
     onSubmit() {
         console.log('[Preview] - clicked submit');
-        if(this.props.isEdit){
-            this.props.save();
+        if (this.props.isEdit) {
+            this
+                .props
+                .save();
         } else {
             this
                 .props
@@ -61,7 +63,7 @@ class Preview extends Component {
                                     </a>
 
                                     {!this.props.isLoading
-                                        ? <span className='score'>{this.props.submission.score}</span>
+                                        ? <span className='score'>{this.props.submission.score ? this.props.submission.score : '0'}</span>
                                         : <p>loading</p>}
 
                                     <a>
@@ -82,10 +84,21 @@ class Preview extends Component {
                                         {!this.props.isLoading
                                             ? <h1 className='title'>{this.props.submission.title}</h1>
                                             : <p>loading...</p>}
-
-                                        <ul className='topics'>
-                                            {/*Repeat for each topic in list*/}
-                                        </ul>
+                                        {!this.props.isLoading
+                                            ? <ul className='topics'>
+                                                    {this
+                                                        .props
+                                                        .submission
+                                                        .topics
+                                                        .map((topic, index) => {
+                                                            return (
+                                                                <li key={index}>
+                                                                    <a>{topic}</a>
+                                                                </li>
+                                                            )
+                                                        })}
+                                                </ul>
+                                            : null}
 
                                     </div>
 
@@ -220,8 +233,8 @@ class Preview extends Component {
                             <li>
                                 <button onClick={this.onSubmit}>
                                     {this.props.isEdit
-                                    ? 'Save'
-                                    : 'Submit'}
+                                        ? 'Save'
+                                        : 'Submit'}
                                 </button>
                             </li>
                         </ul>

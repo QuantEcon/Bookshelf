@@ -59,7 +59,7 @@ app.post('/', passport.authenticate('jwt', {
 
             newSub.title = formData.title;
 
-            newSub.topicList = formData.topics;
+            newSub.topics = formData.topics;
 
             newSub.lang = formData.lang;
             newSub.summary = formData.summary;
@@ -152,7 +152,7 @@ app.post('/confirm', passport.authenticate('jwt', {
 
     newSub.title = req.body.submission.title;
 
-    newSub.topicList = req.body.submission.topics;
+    newSub.topics = req.body.submission.topics;
 
     newSub.lang = req.body.submission.lang;
     newSub.summary = req.body.submission.summary;
@@ -453,119 +453,6 @@ app.post('/reply', passport.authenticate('jwt', {
         }
     });
 
-});
-
-app.post('/file', passport.authenticate('jwt', {
-    session: false
-}), multipartyMiddleware, function (req, res) {
-    var file = req.files.file;
-    console.log("Req.body: ", req.body);
-    console.log("File name: ", file.name);
-    console.log("File type: ", file.type);
-    User.findOne({
-        _id: req.user._id
-    }, function (err, user) {
-        if (err || !user) {
-            res.render('500');
-        } else if (user) {
-            var newSub = new Submission();
-
-            console.log("File: ", file);
-
-            newSub.title = req.body.title;
-
-            newSub.topicList = req.body.topicList;
-
-            newSub.lang = req.body.lang;
-            newSub.summary = req.body.summary;
-
-            //todo: not sure if we should have this or not newSub.file = file;
-
-            newSub.author = user._id;
-            //todo: parse co-authors newSub.coAuthors = coAuthors
-            newSub.comments = [];
-            newSub.totalComments = 0;
-
-            newSub.score = 0;
-            newSub.views = 0;
-
-            newSub.published = new Date();
-            newSub.lastUpdated = new Date();
-
-            newSub.deleted = false;
-            newSub.flagged = false;
-
-            newSub.fileName = file.name;
-
-            //=============================================================
-            var outputDir = __dirname + '/../../files/html/';
-            var fileSaveDir = __dirname + '/../../files/ipynb/';
-            var outputName = newSub._id;
-            //=============================================================
-
-            var notebookJSON = JSON.parse(fs.readFile(file.path, 'utf8'), function (err) {
-                if (err) {
-                    res.status(500);
-                } else {
-                    //save notebookJSON
-                    newSub.notebookJSON = notebookJSON;
-                    user.currentSubmission = newSub;
-                    user.save(function (err) {
-                        if (err) {
-                            res.status(500);
-                        } else {
-                            res.status(200);
-                            res.send('redirect');
-                        }
-                    })
-                }
-            })
-        }
-    });
-
-});
-
-//todo redirect to submission preview instead of instantly saving it?
-app.post('/file/edit/:nbID', passport.authenticate('jwt', {
-    session: false
-}), multipartyMiddleware, function (req, res) {
-    console.log("Got submit edit");
-    var file = req.files.file;
-    Submission.findOne({
-        _id: req.params.nbID
-    }, function (err, submission) {
-        if (err) {
-            console.log("Error 1");
-            res.status(500);
-            //TODO: return error
-        } else if (submission) {
-            var notebookJSON = JSON.parse(fs.readFile(file.path, 'utf8'), function (err) {
-                if (err) {
-                    res.status(500);
-                } else {
-                    submission.title = req.body.title;
-                    submission.topicList = req.body.topicList;
-                    submission.lang = req.body.lang;
-                    submission.summary = req.body.summary;
-                    submission.file = file.name;
-                    submission.lastUpdated = new Date();
-                    submission.notebookJSON = notebookJSON;
-                    submission.save(function (err) {
-                        if (err) {
-                            console.log('Error saving edited submission');
-                            res.status(500);
-                        } else {
-                            res.send(200);
-                        }
-                    });
-                }
-            });
-
-        } else {
-            console.log("Error 4");
-            res.status(500);
-        }
-    });
 });
 
 module.exports = app;

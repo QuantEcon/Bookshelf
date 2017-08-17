@@ -41,7 +41,7 @@ class PreviewContainer extends Component {
             this
                 .props
                 .history
-                .push('/submission/' + id);
+                .replace('/');
         } else {
             console.log('[PreviewContainer] - error confirming submission')
         }
