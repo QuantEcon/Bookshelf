@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {connect} from 'react-redux'
 
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
@@ -36,6 +37,12 @@ class SignIn extends Component {
             this.showErrorMessage = true;
         }
 
+    }
+
+    componentWillReceiveProps(props){
+        if(props.isSignedIn){
+            this.props.history.push('/')
+        }
     }
 
     render() {
@@ -100,4 +107,10 @@ class SignIn extends Component {
     }
 }
 
-export default SignIn;
+const mapStateToProps = (state, props) => {
+    return {
+        isSignedIn: state.auth.isSignedIn
+    }
+}
+
+export default connect(mapStateToProps, null)(SignIn);
