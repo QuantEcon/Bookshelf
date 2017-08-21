@@ -5,11 +5,11 @@ import {removeSocialAccount, setActiveAvatar, toggleSocial, editProfile} from '.
 import EditProfile from '../../components/user/EditProfile'
 
 class EditProfileContainer extends Component {
-    saveProfile = ({name, website, position, email}) => {
+    saveProfile = ({name, website, summary, email}) => {
         this
             .props
             .actions
-            .editProfile({name, website, position, email});
+            .editProfile({name, website, summary, email});
     }
 
     cancel = () => {

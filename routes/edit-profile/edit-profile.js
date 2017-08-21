@@ -35,7 +35,7 @@ app.post('/', passport.authenticate('jwt', {
             user.name = req.body.name;
             user.email = req.body.email;
             user.website = req.body.website;
-            user.position = req.body.position;
+            user.summary = req.body.summary;
             if (req.body.google) {
                 user.google = Object.assign({}, user.google, req.body.google);
             } else {

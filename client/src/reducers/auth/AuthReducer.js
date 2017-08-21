@@ -139,7 +139,7 @@ const UserReducer = (user = {}, action) => {
                     name: action.name,
                     email: action.email,
                     website: action.website,
-                    position: action.position,
+                    summary: action.summary,
                     oneSocial: action.oneSocial
                 })
             }

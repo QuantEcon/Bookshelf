@@ -21,8 +21,8 @@ class EditProfile extends Component {
         this.emailChanged = this
             .emailChanged
             .bind(this);
-        this.positionChanged = this
-            .positionChanged
+        this.summaryChanged = this
+            .summaryChanged
             .bind(this);
         this.nameChanged = this
             .nameChanged
@@ -30,9 +30,7 @@ class EditProfile extends Component {
         this.validate = this
             .validate
             .bind(this);
-        this.toggleShowPositionPreview = this
-            .toggleShowPositionPreview
-            .bind(this);
+
 
         this.removeFacebook = this
             .removeFacebook
@@ -71,26 +69,28 @@ class EditProfile extends Component {
     }
 
     componentWillReceiveProps = (props) => {
-        console.log('[EditProfile] - received new props: ', props);
+        // console.log('[EditProfile] - received new props: ', props);
+        this.errorSaving = props.editProfileError;
+        this.successSaving = props.editProfileSuccess;
     }
 
     formData = {
         name: this.props.user.name,
-        position: this.props.user.position,
+        summary: this.props.user.summary,
         email: this.props.user.email,
         website: this.props.user.website
     }
 
     dirtyFields = {
         name: false,
-        position: false,
+        summary: false,
         email: false,
         website: false
     }
 
     errors = {
         name: null,
-        position: null,
+        summary: null,
         email: null,
         website: null
     }
@@ -99,26 +99,13 @@ class EditProfile extends Component {
 
     hasSaved = false
 
-    showPositionPreview = false;
-
     errorSaving = false;
     successSaving = false;
-
-    componentWillReceiveProps(props){
-        this.errorSaving = props.editProfileError;
-        this.successSaving = props.editProfileSuccess;
-    }
 
     onAddSocialEnd = (success) => {
         this.hasSaved = true;
         this.errorSaving = !success;
         this.successSaving = success
-    }
-
-    toggleShowPositionPreview = () => {
-
-        this.showPositionPreview = !this.showPositionPreview
-        console.log('[EditProfile] - toggle show position preview: ', this.showPositionPreview)
     }
 
     websiteChanged = (e) => {
@@ -135,10 +122,10 @@ class EditProfile extends Component {
         this.validate();
     }
 
-    positionChanged = (e) => {
-        // console.log('[EditProfile] - position changed: ', e.target.value);
-        this.formData.position = e.target.value
-        this.dirtyFields.position = true;
+    summaryChanged = (e) => {
+        // console.log('[EditProfile] - summary changed: ', e.target.value);
+        this.formData.summary = e.target.value
+        this.dirtyFields.summary = true;
         this.validate();
     }
 
@@ -275,6 +262,7 @@ class EditProfile extends Component {
 
     saveProfile = (e) => {
         e.preventDefault();
+        console.log('[EditProfile] - form data: ', this.formData)
         this
             .props
             .saveProfile(this.formData);
@@ -353,9 +341,9 @@ class EditProfile extends Component {
                                     <textarea
                                         id="position"
                                         name='position'
-                                        defaultValue={this.formData.position}
+                                        defaultValue={this.formData.summary}
                                         placeholder='Position/Job Description'
-                                        onChange={this.positionChanged}></textarea>
+                                        onChange={this.summaryChanged}></textarea>
 
                                     {/* {this.showPositionPreview
                                         ? <div>
@@ -375,8 +363,8 @@ class EditProfile extends Component {
                                             </a>
                                         </p>} */}
                                     <Markdown
-                                        source={this.formData.position
-                                        ? this.formData.position
+                                        source={this.formData.summary
+                                        ? this.formData.summary
                                         : '*No description*'}/>
                                     <hr/>
 

@@ -65,7 +65,7 @@ export const BEGIN_EDIT_PROFILE = 'BEGIN_EDIT_PROFILE';
 export const beginEditProfile = ({
     email,
     name,
-    position,
+    summary,
     website,
     error
 }) => {
@@ -79,7 +79,7 @@ export const beginEditProfile = ({
             type: BEGIN_EDIT_PROFILE,
             email,
             name,
-            position,
+            summary,
             website
         }
     }
@@ -89,7 +89,7 @@ export const END_EDIT_PROFILE = 'END_EDIT_PROFILE';
 export const endEditProfile = ({
     email,
     name,
-    position,
+    summary,
     website,
     error,
     oneSocial
@@ -104,7 +104,7 @@ export const endEditProfile = ({
             type: END_EDIT_PROFILE,
             email,
             name,
-            position,
+            summary,
             website,
             oneSocial
         }
@@ -235,22 +235,28 @@ export const toggleSocial = ({
 export const editProfile = ({
     email,
     name,
-    position,
+    summary,
     website
 }) => {
     return function (dispatch) {
+        console.log('[AuthActions] edit profile data ', {
+            email,
+            name,
+            summary,
+            website
+        })
         const state = store.getState();
         if (state.auth.isSignedIn) {
             dispatch(beginEditProfile({
                 email,
                 name,
-                position,
+                summary,
                 website,
             }));
             axios.post('/api/edit-profile/', {
                 email,
                 name,
-                position,
+                summary,
                 website,
                 fb: state.auth.user.fb,
                 google: state.auth.user.google,
@@ -271,7 +277,7 @@ export const editProfile = ({
                     dispatch(endEditProfile({
                         email: response.data.user.email,
                         name: response.data.user.name,
-                        position: response.data.user.position,
+                        summary: response.data.user.summary,
                         website: response.data.user.website,
                         oneSocial: response.data.user.oneSocial
                     }))
