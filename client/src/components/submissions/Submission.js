@@ -3,13 +3,16 @@ import React, {Component} from 'react';
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
-
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
-import '@nteract/notebook-preview/styles/main.css';
-import '@nteract/notebook-preview/styles/theme-light.css';
+import 'normalize-css'
 import 'codemirror/lib/codemirror.css';
-import fileDownload from 'react-file-download';
+import 'typeface-source-code-pro'
+import 'typeface-source-sans-pro'
+import '@nteract/notebook-preview/styles/main.css';
+import FileSaver from 'file-saver'
+
+import MathJax from 'mathjax'
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
@@ -29,6 +32,8 @@ class Submission extends Component {
         this.state = {
             showNotebook: true
         }
+
+        console.log('MathJax: ', MathJax);
 
         this.toggleView = this
             .toggleView
@@ -59,13 +64,19 @@ class Submission extends Component {
             .bind(this);
     }
 
+    componentWillReceiveProps(props){
+        console.log('[Submission] - props: ', props);        
+    }
+
     printProps() {
         console.log('[Submission] - props: ', this.props);
     }
 
     download() {
         console.log('[Submission] - downloading notebook...');
-        fileDownload(JSON.stringify(this.props.submission.data.notebookJSON), this.props.submission.data.fileName)
+        // fileDownload(JSON.stringify(this.props.submission.data.notebookJSON), this.props.submission.data.fileName)
+        var file = new File([JSON.stringify(this.props.submission.data.notebookJSON)], this.props.submission.data.fileName, {type:'text/plain'});
+        FileSaver.saveAs(file)        
     }
 
     upvote() {
@@ -131,8 +142,17 @@ class Submission extends Component {
         console.log('[Submission] - edit submission clicked');
     }
 
+    // componentDidMount = (root) => {
+    //     MathJax.Hub.Queue(['Typeset', MathJax.Hub, root])
+    // }
+
+    // componentDidUpdate =(props, state, root) => {
+    //     MathJax.Hub.Queue(['Typeset', MathJax.Hub, root])        
+    // }
+
     render() {
         return (
+
             <div>
                 <HeadContainer/>
                 <div className='row'>
@@ -391,7 +411,6 @@ class Submission extends Component {
                     </div>
                 </div>
             </div>
-
         )
     }
 }
