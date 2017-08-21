@@ -16,8 +16,9 @@ const CommentsReducer = (comments = [], action) => {
     console.log('[CommentsReducer] - action: ', action);
     switch (action.type) {
         case POST_REPLY:
-            comments.forEach(function(comment, index) {
-                if(comment._id === action.commentID){
+            for (var index = 0; index < comments.length; index++) {
+                var comment = comments[index];
+                if (comment._id === action.commentID) {
                     var newCommentsArray = JSON.parse(JSON.stringify(comments));
                     newCommentsArray[index] = Object.assign({}, comment, {
                         replies: [
@@ -28,11 +29,25 @@ const CommentsReducer = (comments = [], action) => {
                     console.log('[CommentsReducer] - new comments array: ', newCommentsArray);
                     return newCommentsArray;
                 }
-            }, this);
+            }
+            // comments.forEach(function(comment, index) {
+            //     if(comment._id === action.commentID){
+            //         var newCommentsArray = JSON.parse(JSON.stringify(comments));
+            //         newCommentsArray[index] = Object.assign({}, comment, {
+            //             replies: [
+            //                 ...comment.replies,
+            //                 action.reply._id
+            //             ]
+            //         })
+            //         console.log('[CommentsReducer] - new comments array: ', newCommentsArray);
+            //         return newCommentsArray;
+            //     }
+            // }, this);
+            console.log('got here')
             return comments;
         case UPVOTE_COMMENT:
             comments.forEach(function (comment, index) {
-                console.log('comment: ' , comment);
+                console.log('comment: ', comment);
                 console.log('index: ', index);
                 if (comment._id === action.commentID)
                     return Object.assign({}, comments, {
@@ -44,7 +59,7 @@ const CommentsReducer = (comments = [], action) => {
             return comments;
         case DOWNVOTE_COMMENT:
             comments.forEach(function (comment, index) {
-                console.log('downvote comment: ' , comment);
+                console.log('downvote comment: ', comment);
                 console.log('index: ', index);
                 if (comment._id === action.commentID)
                     return Object.assign({}, comments, {
@@ -60,6 +75,8 @@ const CommentsReducer = (comments = [], action) => {
 }
 
 const RepliesReducer = (replies = [], action) => {
+    console.log('[RepliesReducer] - replies: ', replies);
+    console.log('[RepliesReducer] - action: ', action);
     switch (action.type) {
         case POST_REPLY:
             return Object.assign({}, replies, {
@@ -100,13 +117,17 @@ const DataReducer = (data = {}, action) => {
                 ]
             })
         case POST_REPLY:
-            return Object.assign({}, data, {
+            console.log('[SubmissionDataReducer] - old state: ', data);
+
+            var newState = Object.assign({}, data, {
                 comments: CommentsReducer(data.comments, action),
                 replies: [
                     ...data.replies,
                     action.reply
                 ]
-            })
+            });
+            console.log('[SubmissionDataReducer] - new state: ', newState);
+            return newState;
         case UPVOTE_COMMENT:
             console.log('[DataReducer] - upvote comment ', data, action)
             return Object.assign({}, data, {
@@ -125,7 +146,7 @@ const DataReducer = (data = {}, action) => {
 }
 
 const SubmissionReducer = (state = {}, action) => {
-    if(action.error){
+    if (action.error) {
         console.log('[SubmissionReducer] - error: ', action.error);
         return state;
     }
@@ -203,7 +224,7 @@ const SubmissionReducer = (state = {}, action) => {
                 })
             })
         case EDIT_SUBMISSION:
-            if(action.error){
+            if (action.error) {
                 console.log('[SubmissionReducer] - error editing submission: ', action.error);
                 return state;
             }

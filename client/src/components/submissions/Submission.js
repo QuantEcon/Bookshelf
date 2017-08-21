@@ -10,9 +10,8 @@ import 'codemirror/lib/codemirror.css';
 import 'typeface-source-code-pro'
 import 'typeface-source-sans-pro'
 import '@nteract/notebook-preview/styles/main.css';
+ 
 import FileSaver from 'file-saver'
-
-import MathJax from 'mathjax'
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
@@ -30,11 +29,10 @@ class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showNotebook: true
+            showNotebook: true,
+            flipper: true
         }
-
-        console.log('MathJax: ', MathJax);
-
+      
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -64,8 +62,14 @@ class Submission extends Component {
             .bind(this);
     }
 
+    componentDidMount(){
+        this.forceUpdate();
+    }
+
     componentWillReceiveProps(props){
         console.log('[Submission] - props: ', props);        
+        this.setState({flipper: !this.state.flipper})
+        this.forceUpdate();
     }
 
     printProps() {

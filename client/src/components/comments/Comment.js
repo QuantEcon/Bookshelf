@@ -46,6 +46,18 @@ class Comment extends Component {
             .bind(this);
     }
 
+    componentWillReceiveProps(props){
+        this.setState({
+            comment: props.comment,
+            replies: props.replies,
+            author: props.author,
+            showInsertReply: false,
+            authors: props.authors,
+            currentUser: props.currentUser,
+            isReply: props.isReply
+        })
+    }
+
     replyText = '';
 
     upvote() {

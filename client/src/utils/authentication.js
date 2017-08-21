@@ -6,12 +6,14 @@ import {
     getParamByName
 } from './url'
 
+import {url, serverPort} from '../_config.js'
+
 
 import store from '../store/store'
 
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
-    const popup = openPopup(provider, `http://localhost:8080/api/auth/${provider}`, `${provider} authentication`);
+    const popup = openPopup(provider, url+ ':' + serverPort + `/api/auth/${provider}`, `${provider} authentication`);
     //wait for authentication to complete
     return listenForCredentials({
         popup,
@@ -21,7 +23,7 @@ export const authenticate = (provider) => {
 
 export const authenticateNewSocial = (provider) => {
     console.log('[Authentication] - add new social: ', provider);
-    const popup = openPopup(provider, `http://localhost:8080/api/auth/${provider}/add?jwt=` + store.getState().auth.token, `${provider} authentication`);
+    const popup = openPopup(provider, url+ ':' + serverPort + `/api/auth/${provider}/add?jwt=` + store.getState().auth.token, `${provider} authentication`);
 
     return listenForCredentials({
         popup,

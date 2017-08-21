@@ -24,10 +24,10 @@ class CommentsThread extends Component {
         };
     }
 
-    // componentWillReceiveProps(props) {
-    //     console.log('[CommentsThread] - new props: ', props);
-    //     this.setState({comments: props.comments, commentAuthors: props.commentAuthors, replies: props.replies})
-    // }
+    componentWillReceiveProps(props) {
+        console.log('[CommentsThread] - new props: ', props);
+        this.setState({comments: props.comments, commentAuthors: props.commentAuthors, replies: props.replies})
+    }
 
     newCommentTextChange(e) {
         this.setState({newCommentText: e.target.value});

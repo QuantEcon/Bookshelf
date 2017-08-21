@@ -13,6 +13,13 @@ class ReplyList extends Component {
 
     }
 
+    componentWillReceiveProps(props){
+        console.log('[ReplyList] - will receive props: ', props);
+        this.setState({
+            replies: props.replies,
+            authors: props.authors
+        })
+    }
     render() {
         return (
             <div>

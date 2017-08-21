@@ -14,7 +14,7 @@ var userSchema = new Schema({
     numComments: Number,
     joinDate: Date,
     voteScore: Number,
-    position: String,
+    summary: String,
     submissions: [ObjectId],
     currentSubmission: Object,
     upvotes: [ObjectId],

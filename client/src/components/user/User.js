@@ -93,7 +93,7 @@ class User extends Component {
                                 <div className='details-primary'>
                                     {!this.props.isLoading
                                         ? <div>
-                                                <Markdown source={this.props.data.position ? this.props.data.position : '*No summary*'}/>
+                                                <Markdown source={this.props.data.summary ? this.props.data.summary : '*No summary*'}/>
                                                 <ul className='networks'>
                                                     {this.props.data.github && !this.props.data.github.hidden
                                                         ? <li>
