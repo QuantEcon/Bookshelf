@@ -20,6 +20,7 @@ class Comment extends Component {
             replies: props.replies,
             author: props.author,
             showInsertReply: false,
+            showEditComment: false,
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply
@@ -46,6 +47,8 @@ class Comment extends Component {
             .bind(this);
     }
 
+    
+
     componentWillReceiveProps(props){
         this.setState({
             comment: props.comment,
@@ -55,6 +58,12 @@ class Comment extends Component {
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply
+        })
+    }
+
+    toggleShowEditComment(){
+        this.setState({
+            showEditComment: !this.state.showEditComment
         })
     }
 
@@ -184,7 +193,7 @@ class Comment extends Component {
                             {/* TODO: insert edit and delete options */}
                             {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
                                 ? <div>
-                                        <a onClick={this.editComment}>
+                                        <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
                                         <a onClick={this.deleteComment}>
@@ -204,6 +213,21 @@ class Comment extends Component {
 
                                     <div className='post-reply'>
                                         <button onClick={this.submitRepsonse} disabled={this.state.replyText === ''}>
+                                            Submit
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        : null}
+                        {this.state.showEditComment
+                        ? <div className='comment-reply'>
+                                <form>
+                                    <textarea
+                                        placeholder='You can use markdown here...'
+                                        onChange={this.editCommentTextChanged}></textarea>
+
+                                    <div className='post-reply'>
+                                        <button onClick={this.editComment} disabled={this.state.replyText === ''}>
                                             Submit
                                         </button>
                                     </div>

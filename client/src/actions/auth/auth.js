@@ -204,7 +204,6 @@ export const setActiveAvatar = ({
 export const toggleSocial = ({
     social
 }) => {
-    console.log('[AuthActions] - toggle social: ', social);
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             console.log('[AuthActions] - send toggle social request: ', social)
@@ -215,13 +214,11 @@ export const toggleSocial = ({
                     'Authorization': 'JWT ' + store.getState().auth.token
                 }
             }).then(response => {
-                console.log('[AuthActions] - toggle social response: ', response);
                 if (response.data.error) {
                     dispatch(toggleSocialHidden({
                         error: response.data.message
                     }));
                 } else {
-                    console.log('[AuthActions] - success toggle social: ', social);
                     dispatch(toggleSocialHidden({
                         social
                     }));

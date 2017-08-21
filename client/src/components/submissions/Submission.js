@@ -67,7 +67,6 @@ class Submission extends Component {
     }
 
     componentWillReceiveProps(props){
-        console.log('[Submission] - props: ', props);        
         this.setState({flipper: !this.state.flipper})
         this.forceUpdate();
     }

@@ -21,9 +21,9 @@ class Head extends Component {
                         </div>
 
                         <p className="qe-logo">
-                            <Link to='https://quantecon.org/'>
+                            <a href='https://quantecon.org/'>
                                 <img src={logo} alt="QuantEcon logo"/>Quant<span>Econ</span>
-                            </Link>
+                            </a>
                         </p>
 
                         {this.props.isSignedIn

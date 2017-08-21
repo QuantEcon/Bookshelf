@@ -43,14 +43,12 @@ export const fetchUserInfo = (userID) => {
                 dispatch(requireSignIn());
                 return;
             }
-            console.log('[UserActions]: - state: ', state);
             userID = state.auth.user._id;
         }
         fetch('/api/search/users/?_id=' + userID).then(
             results => {return results.json();},
             error => {console.log('An error ocurred: ', error)}
         ).then(data => {
-            console.log('[UserActions] - received user data: ', data);
             dispatch(receiveUserInfo(userID, data))
         });
     }

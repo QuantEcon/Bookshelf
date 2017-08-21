@@ -147,7 +147,6 @@ const DataReducer = (data = {}, action) => {
 
 const SubmissionReducer = (state = {}, action) => {
     if (action.error) {
-        console.log('[SubmissionReducer] - error: ', action.error);
         return state;
     }
     switch (action.type) {

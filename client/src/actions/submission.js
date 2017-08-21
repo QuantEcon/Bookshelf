@@ -123,7 +123,6 @@ export const fetchNBInfo = (notebookID) => {
                 console.log('An error occured: ', error);
             }
         ).then(data => {
-            console.log('[SubmissionActions] - fetchNBInfo -> data: ', data);
             dispatch(receiveNBInfo(notebookID, data));
         })
     }
