@@ -14,6 +14,9 @@ class Home extends Component {
 
         );
     }
+    componentDidMount(){
+        document.title = 'QuantEcon'
+    }
 }
 
 export default Home;

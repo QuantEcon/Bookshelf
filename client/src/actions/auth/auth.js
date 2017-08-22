@@ -503,7 +503,7 @@ export const upvoteComment = ({
                     }));
                 }
             }).catch(error => {
-                console.log('[AuthActions] - error upvoting comment');
+                console.log('[AuthActions] - error upvoting comment: ', error);;
             })
         } else {
             //TODO: what to do if not authenticated?

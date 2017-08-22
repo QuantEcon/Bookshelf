@@ -10,6 +10,7 @@ import 'codemirror/lib/codemirror.css';
 import 'typeface-source-code-pro'
 import 'typeface-source-sans-pro'
 import '@nteract/notebook-preview/styles/main.css';
+import '../../assets/css/notebook-preview.css';
  
 import FileSaver from 'file-saver'
 
@@ -67,6 +68,9 @@ class Submission extends Component {
     }
 
     componentWillReceiveProps(props){
+        if(props.submission.data){
+            document.title = props.submission.data.notebook.title            
+        }
         this.setState({flipper: !this.state.flipper})
         this.forceUpdate();
     }

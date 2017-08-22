@@ -13,6 +13,7 @@ import store from '../store/store'
 
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
+    console.log('[Authentication] - open popup')
     const popup = openPopup(provider, url+ ':' + serverPort + `/api/auth/${provider}`, `${provider} authentication`);
     //wait for authentication to complete
     return listenForCredentials({
@@ -108,8 +109,7 @@ const listenForCredentials = ({
     isAdd,
     profile
 }) => {
-    console.log('[ListenForCredentials] - isAdd:',isAdd);
-    console.log('[ListenForCredentials] - profile:',profile);
+   
     if (!resolve) {
         console.log('No resolve');
         return new Promise((resolve, reject) => {
@@ -133,7 +133,9 @@ const listenForCredentials = ({
             // })
         }
         console.log('[ListenForCredentials] - credentials:',credentials);
-        if (credentials && credentials.uid && credentials.token) { //if we have credentials and a user id, continue
+        if (credentials && credentials.uid && credentials.token) {  //if we have credentials and a user id, continue
+            console.log('[ListenForCredentials] - isAdd:',isAdd);
+            console.log('[ListenForCredentials] - profile:',profile);
             popup.close();
             // validate token
             console.log('[ListenForCredentials] - /api/auth/validate-token?isAdd=' + isAdd + '&profile=' + profile);

@@ -63,6 +63,14 @@ class Submit extends Component {
             .bind(this);
     }
 
+    componentDidMount(){
+        if(this.props.isEdit){
+            document.title = 'Edit Submission'
+        } else {
+            document.title = 'Submit'
+        }
+    }
+
     formData = {
         agreement: false,
         title: this.props.isEdit

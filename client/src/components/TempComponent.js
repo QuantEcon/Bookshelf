@@ -4,7 +4,7 @@ class TempComponent extends Component {
     render(){
         return(
             <div>
-                <p>loading...</p>
+                loading....
             </div>
         )
     }

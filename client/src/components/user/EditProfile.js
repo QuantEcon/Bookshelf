@@ -68,6 +68,10 @@ class EditProfile extends Component {
 
     }
 
+    componentDidMount(){
+        document.title = 'Edit Profile'
+    }
+
     componentWillReceiveProps = (props) => {
         // console.log('[EditProfile] - received new props: ', props);
         this.errorSaving = props.editProfileError;
@@ -300,7 +304,7 @@ class EditProfile extends Component {
                         </div>
                     : null}
                 <form onSubmit={this.saveProfile}>
-                    <div className='row-columns'>
+                    <div className='row columns'>
                         <div className='edit-profile'>
                             <h1 className='page-title'>
                                 Edit Profile

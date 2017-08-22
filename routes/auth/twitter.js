@@ -5,6 +5,7 @@ const jwtAuth = require('../../js/auth/jwt');
 const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const qs = require('query-string');
+const appConfig = require('../../_config')
 
 var app = express.Router();
 var referer = '';
@@ -80,7 +81,9 @@ app.get('/callback',
                         res.sendStatus(500);
                     } else {
                         console.log('[TwitterAuth] - redirect back to client: ', req)
-                        res.redirect(req.headers.referer + '?' + queryString);
+                        var redirect = appConfig.hostName + ':3000/signin' + '?' + queryString;
+                        console.log('[TwitterAuth] - redirect url: ', redirect);
+                        res.redirect(redirect);
                     }
                 })
         });

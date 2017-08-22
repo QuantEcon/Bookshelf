@@ -16,7 +16,7 @@ var app = express.Router();
 
 app.get('/add', jwtAuth.authenticate('jwt', {
     session: false
-}),passport.authenticate('addFB', {
+}),passport.authenticate('facebook', {
     scope: 'email'
 }));
 app.get('/callback/add', passport.authenticate('addFB'), function (req, res) {

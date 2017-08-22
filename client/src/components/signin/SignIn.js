@@ -16,11 +16,18 @@ class SignIn extends Component {
     //TODO: need to style the modal. Text is aligned left. Need align center
     constructor(props) {
         super(props);
+        this.state = {
+            showErrorMessage: false
+        }
 
         this.onSignInEnd = this
             .onSignInEnd
             .bind(this);
 
+    }
+
+    componentDidMount(){
+        document.title='Sign In'
     }
 
     showErrorMessage = false;
@@ -43,13 +50,16 @@ class SignIn extends Component {
         if(props.isSignedIn){
             this.props.history.push('/')
         }
+        if(this.props.authError){
+            this.setState({showErrorMessage: true});
+        }
     }
 
     render() {
         return (
             <div>
                 <HeadContainer/>
-                {this.showErrorMessage 
+                {this.state.showErrorMessage 
                 ?<div className="warning callout">
                     <div className="row columns">
                         <p className="callout-message">
@@ -109,7 +119,8 @@ class SignIn extends Component {
 
 const mapStateToProps = (state, props) => {
     return {
-        isSignedIn: state.auth.isSignedIn
+        isSignedIn: state.auth.isSignedIn,
+        authError: state.auth.error
     }
 }
 

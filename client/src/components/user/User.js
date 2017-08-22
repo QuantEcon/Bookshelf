@@ -14,13 +14,33 @@ import EmailIcon from 'react-icons/lib/md/email'
 import GearIcon from 'react-icons/lib/fa/cog'
 
 class User extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
-        this.signOut = this.signOut.bind(this);
+        this.signOut = this
+            .signOut
+            .bind(this);
+    }
+
+    compoentDidMount(){
+        if(this.props.isMyProfile){
+            document.title = 'My Profile'
+        }
+    }
+
+    componentWillReceiveProps(props) {
+        if (props.data) {
+            if (props.isMyProfile) {
+                document.title = 'My Profile'
+            } else {
+                document.title = props.data.name
+            }
+        }
     }
 
     signOut = () => {
-        this.props.signOut();
+        this
+            .props
+            .signOut();
     }
 
     render() {
@@ -46,19 +66,19 @@ class User extends Component {
                                     {/*TODO: Insert my-page settings here*/}
                                     {this.props.isMyProfile
                                         ? <div>
-                                            <ul className='details-options'>
-                                                <li>
-                                                    <Link to="/user/my-profile/edit">
-                                                        <GearIcon/>
-                                                    </Link>
-                                                </li>
-                                                <li>
-                                                    <a onClick={this.signOut}>
-                                                        Sign Out
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
+                                                <ul className='details-options'>
+                                                    <li>
+                                                        <Link to="/user/my-profile/edit">
+                                                            <GearIcon/>
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <a onClick={this.signOut}>
+                                                            Sign Out
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         : null}
                                     <p className='date'>
                                         Joined {!this.props.isLoading
@@ -92,7 +112,10 @@ class User extends Component {
                                 <div className='details-primary'>
                                     {!this.props.isLoading
                                         ? <div>
-                                                <Markdown source={this.props.data.summary ? this.props.data.summary : '*No summary*'}/>
+                                                <Markdown
+                                                    source={this.props.data.summary
+                                                    ? this.props.data.summary
+                                                    : '*No summary*'}/>
                                                 <ul className='networks'>
                                                     {this.props.data.github && !this.props.data.github.hidden
                                                         ? <li>

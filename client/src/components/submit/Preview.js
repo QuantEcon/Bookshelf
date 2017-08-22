@@ -26,6 +26,10 @@ class Preview extends Component {
             .bind(this);
     }
 
+    componentDidMount(){
+        document.title = 'Preview Submission'
+    }
+
     onCancel() {
         console.log('[Preview] - clicked cancel');
         this

@@ -1232,7 +1232,8 @@ code, pre {
 }
 
 .modal .modal-body {
-    padding: 2rem 0
+    padding: 2rem 0;
+    text-align: center
 }
 
 .modal .social-login {

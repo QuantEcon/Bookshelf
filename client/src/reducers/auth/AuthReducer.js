@@ -33,7 +33,6 @@ import {
 var REMOVE_CURRENT_SUBMISSION = 'REMOVE_CURRENT_SUBMISSION'
 
 const UserReducer = (user = {}, action) => {
-    console.log('[UserReducer] - action:', action);
     switch (action.type) {
         case AUTH_REMOVE_UPVOTE:
             const indexUp = user
@@ -87,7 +86,6 @@ const UserReducer = (user = {}, action) => {
                 }
             })
         case END_SUBMIT:
-            console.log('[AuthActions] - end submit: ', action);
             return Object.assign({}, user, {
                 currentSubmission: {
                     ...user.currentSubmission,
@@ -95,7 +93,6 @@ const UserReducer = (user = {}, action) => {
                 }
             })
         case ADD_CURRENT_SUBMISSION:
-            console.log('[AuthActions] - add current submission: ', action);
             if (action.error) {
                 return user
             }
@@ -131,7 +128,6 @@ const UserReducer = (user = {}, action) => {
                 currentSubmission: null
             })
         case END_EDIT_PROFILE:
-            console.log('[UserReducer} - end edit profile: ', action);
             if (action.error) {
                 return user
             } else {
@@ -162,7 +158,6 @@ const UserReducer = (user = {}, action) => {
             }
 
         case TOGGLE_SOCIAL_HIDDEN:
-            console.log('[UserReducer] - toggle social: ', action);
             if (action.error) {
                 return user
             } else {

@@ -92,6 +92,7 @@ export const reauthenticate = () => {
 }
 
 export const addSocial = (provider, next) => {
+    console.log('[SignIn] - provider:', provider);
     return function (dispatch) {
         dispatch(beginAddSocial(provider));
         switch (provider) {
@@ -114,7 +115,7 @@ export const addSocial = (provider, next) => {
                     console.log('[SignInActions] - authenticate new twitter resp: ', resp);
                     dispatch(endAddSocial({
                         provider: 'twitter',
-                        user: resp.data.user
+                        profile: resp.data.profile
                     }))
                     next(true);
                 }, error => {
@@ -128,7 +129,7 @@ export const addSocial = (provider, next) => {
                 authenticateNewSocial('fb').then(resp => {
                     dispatch(endAddSocial({
                         provider: 'fb',
-                        user: resp.data.user
+                        profile: resp.data.profile
                     }))
                     next(true);
                 }, error => {
@@ -142,7 +143,7 @@ export const addSocial = (provider, next) => {
                 authenticateNewSocial('google').then(resp => {
                     dispatch(endAddSocial({
                         provider: 'google',
-                        user: resp.data.user
+                        profile: resp.data.profile
                     }))
                     next(true);
                 }, error => {

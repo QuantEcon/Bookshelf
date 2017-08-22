@@ -22,7 +22,7 @@ app.get('/', passport.authenticate('jwt', {
     const isAdd = getParameterByName('isAdd', req.url);
     const profile = getParameterByName('profile', req.url);
     console.log('[ValidateToken] - idAdd: ', isAdd);
-    console.log('[ValidateToken] - profile: ', isAdd);
+    console.log('[ValidateToken] - profile: ', profile);
 
     if (isAdd) {
         console.log('[ValidateToken] - is add. delete and send')
