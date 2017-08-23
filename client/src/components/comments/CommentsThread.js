@@ -1,4 +1,6 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom'
+
 
 import Comment from './Comment';
 
@@ -29,14 +31,24 @@ class CommentsThread extends Component {
     }
 
     newCommentTextChange(e) {
-        this.setState({newCommentText: e.target.value});
+        this.newCommentText = e.target.value
+        this.forceUpdate();
     }
 
+    newCommentText = "";
+
     submitNewComment() {
+        if(!this.props.currentUser){
+            this.setState({
+                submitError: true
+            })
+        }
         console.log('submit new comment: ', this.state.newCommentText);
         this
             .props
-            .postComment(this.state.newCommentText);
+            .postComment(this.newCommentText);
+        this.newCommentText="";
+        document.getElementById('newCommentTextArea').value = '';
     }
 
     postReply({reply, commentID}) {
@@ -85,12 +97,19 @@ class CommentsThread extends Component {
                         <label>Post a comment</label>
                         <textarea
                             name="newCommentContent"
-                            id='newCommentTextarea'
+                            id='newCommentTextArea'
                             placeholder='You can use markdown here...'
                             onChange={this.newCommentTextChange}></textarea>
                         <div className='submit-comment'>
-                            <button onClick={this.submitNewComment} disabled={!this.state.newCommentText}>Submit</button>
+                            <button onClick={this.submitNewComment} disabled={!this.newCommentText}>Submit</button>
                         </div>
+                        {this.state.submitError && !this.props.currentUser
+                                    ? <p className="error-help-text">
+                                            You must
+                                            {' '}<Link to='/signin'>sign in</Link>{' '}
+                                            to comment
+                                        </p>
+                                    : null}
                     </div>
                 </div>
             </div>

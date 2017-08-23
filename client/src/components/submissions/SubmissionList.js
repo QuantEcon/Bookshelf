@@ -7,6 +7,20 @@ import Searchbar from '../searchbar/Searchbar';
 import SubmissionPreview from './submissionPreview';
 
 class SubmissionList extends Component {
+
+    constructor(props){
+        super(props)
+        this.state = {
+            submissionPreviews: []
+        }
+    }
+
+    componentWillReceiveProps(props){
+        console.log('[SubmissionList] - received new props: ', props);
+        this.setState({
+            submissionPreviews: props.submissionPreviews
+        })
+    }
     render() {
         return (
             <div className="row">
@@ -20,7 +34,7 @@ class SubmissionList extends Component {
                                 ? <h3>loading...</h3>
                                 : <div>
                                     {this
-                                        .props
+                                        .state
                                         .submissionPreviews
                                         .map((submission, index) => {
                                             //get author

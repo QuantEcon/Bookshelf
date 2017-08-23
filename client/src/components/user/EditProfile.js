@@ -557,7 +557,7 @@ class EditProfile extends Component {
                                             </div>}
                                     </div>
                                     <hr/>
-                                    <div>
+                                    {/* <div>
                                         {this.props.user.google
                                             ? <div>
                                                     <label htmlFor="google" className='section-title'>
@@ -591,7 +591,7 @@ class EditProfile extends Component {
                                                     </li>
                                                 </ul>
                                             </div>}
-                                    </div>
+                                    </div> */}
 
                                 </div>
                                 {/* edit-profile-primary-group2 */}

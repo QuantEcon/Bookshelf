@@ -45,11 +45,11 @@ class Comment extends Component {
         this.submitRepsonse = this
             .submitRepsonse
             .bind(this);
+        this.toggleShowEditComment=this.toggleShowEditComment.bind(this);
+        this.editComment=this.editComment.bind(this);
     }
 
-    
-
-    componentWillReceiveProps(props){
+    componentWillReceiveProps(props) {
         this.setState({
             comment: props.comment,
             replies: props.replies,
@@ -61,10 +61,25 @@ class Comment extends Component {
         })
     }
 
-    toggleShowEditComment(){
+    toggleShowEditComment() {
         this.setState({
             showEditComment: !this.state.showEditComment
         })
+    }
+
+    editComment(e){
+        e.preventDefault();
+        var newText = document.getElementById('editCommentTextArea').value;
+        console.log('[Comment] - edit comment. new text: ', newText);
+        this.toggleShowEditComment();
+    }
+
+    flagComment(){
+        alert('Work in Progess\nThis will flag the comment');
+    }
+
+    deleteComment(){
+        alert('Work in Progess\nThis will delete the comment');
     }
 
     replyText = '';
@@ -87,6 +102,10 @@ class Comment extends Component {
 
     submitRepsonse(e) {
         e.preventDefault();
+        if(!this.state.currentUser){
+            this.setState({submitError: true});
+            return;
+        }
         this
             .props
             .postReply({reply: this.state.replyText, commentID: this.props.comment._id});
@@ -112,7 +131,7 @@ class Comment extends Component {
                         </a>
                     </div>
 
-                    <div className='comment-score'>{this.state.comment.score}</div>
+                    {/* <div className='comment-score'>{this.state.comment.score}</div>
 
                     <ul className='comment-vote'>
                         <li>
@@ -141,7 +160,7 @@ class Comment extends Component {
                                     <ThumbsDown/>
                                 </a>}
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
 
                 <div className='comment-main'>
@@ -219,12 +238,12 @@ class Comment extends Component {
                                 </form>
                             </div>
                         : null}
-                        {this.state.showEditComment
+                    {this.state.showEditComment
                         ? <div className='comment-reply'>
                                 <form>
                                     <textarea
-                                        placeholder='You can use markdown here...'
-                                        onChange={this.editCommentTextChanged}></textarea>
+                                        id='editCommentTextArea'
+                                        placeholder='You can use markdown here...'></textarea>
 
                                     <div className='post-reply'>
                                         <button onClick={this.editComment} disabled={this.state.replyText === ''}>
@@ -232,12 +251,16 @@ class Comment extends Component {
                                         </button>
                                     </div>
                                 </form>
+                                
                             </div>
                         : null}
 
                     {/*Render all replies for this comment*/}
                     {this.state.replies
-                        ? <ReplyList replies={this.state.replies} authors={this.state.authors} currentUser={this.props.currentUser}/>
+                        ? <ReplyList
+                                replies={this.state.replies}
+                                authors={this.state.authors}
+                                currentUser={this.props.currentUser}/>
                         : null}
                 </div>
 

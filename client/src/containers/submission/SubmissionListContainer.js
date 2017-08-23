@@ -48,21 +48,21 @@ function mapStateToProps(state, props) {
         page: 1,
         sortBy: 'Trending'
     }, state.submissionList.searchParams);
-if (props.userID) {
-    searchParams = Object.assign(searchParams, {author: props.userID});
-} else {
-    if (searchParams.author) {
-        delete searchParams.author;
-    }
+    if (props.userID) {
+        searchParams = Object.assign(searchParams, {author: props.userID});
+    } else {
+        if (searchParams.author) {
+            delete searchParams.author;
+        }
 
-}
-return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
+    }
+    return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
 }
 
 function mapDispatchToProps(dispatch) {
-return {
-    actions: bindActionCreators(SubmissionListActions, dispatch)
-}
+    return {
+        actions: bindActionCreators(SubmissionListActions, dispatch)
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SubmissionListContainer);

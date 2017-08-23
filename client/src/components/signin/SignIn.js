@@ -97,12 +97,12 @@ class SignIn extends Component {
                                     icon={FacebookIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
-                            <li>
+                            {/* <li>
                                 <OAuthSignInButton
                                     provider='Google'
                                     icon={GoogleIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
-                            </li>
+                            </li> */}
                         </ul>
                         <p>Singing in allows you to
                             <strong>{' '}Vote</strong>,
