@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
-import GoogleIcon from 'react-icons/lib/fa/google'
+// import GoogleIcon from 'react-icons/lib/fa/google'
 import ErrorIcon from 'react-icons/lib/md/error-outline'
 // import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';

@@ -234,12 +234,12 @@ app.post('/edit-submission', passport.authenticate('jwt', {
     })
 });
 
-app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
+app.post('/comment/edit', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
     Comment
         .findOne({
-            _id: req.params.commentID
+            _id: req.body.commentID
         }, function (err, comment) {
             if (err) {
                 res.status(500);
@@ -247,9 +247,9 @@ app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
                 //todo: need to save previous submissions for legal reasons?
                 console.log("Edit comment content: ", req.body);
                 comment.edited = true;
-                comment.content = req.body.content;
+                comment.content = req.body.newCommentText;
                 comment.editedDate = new Date();
-                comment.save(function (err) {
+                comment.save(function (err, savedComment) {
                     if (err) {
                         res.status(500);
                         res.send({
@@ -257,8 +257,7 @@ app.post('/comment/edit/:commentID', passport.authenticate('jwt', {
                         })
                     } else {
                         res.send({
-                            message: 'Redirect',
-                            error: false
+                            comment: savedComment
                         });
                     }
                 })

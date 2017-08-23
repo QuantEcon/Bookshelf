@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import ThumbsUp from 'react-icons/lib/md/thumb-up';
-import ThumbsDown from 'react-icons/lib/md/thumb-down';
+// import ThumbsUp from 'react-icons/lib/md/thumb-up';
+// import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import FlagIcon from 'react-icons/lib/md/flag';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
@@ -14,6 +14,8 @@ import ReplyList from './ReplyList';
 class Comment extends Component {
     constructor(props) {
         super(props);
+
+        console.log('[Comment] -props: ', props);
 
         this.state = {
             comment: props.comment,
@@ -70,8 +72,13 @@ class Comment extends Component {
     editComment(e){
         e.preventDefault();
         var newText = document.getElementById('editCommentTextArea').value;
+        document.getElementById('editCommentTextArea').value = '';
         console.log('[Comment] - edit comment. new text: ', newText);
         this.toggleShowEditComment();
+        this.props.editComment({
+            commentID: this.props.comment._id,
+            newCommentText: newText
+        })
     }
 
     flagComment(){
@@ -212,9 +219,9 @@ class Comment extends Component {
                             {/* TODO: insert edit and delete options */}
                             {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
                                 ? <div>
-                                        <a onClick={this.toggleShowEditComment}>
+                                        {/* <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
-                                        </a>
+                                        </a> */}
                                         <a onClick={this.deleteComment}>
                                             <DeleteIcon/>
                                         </a>

@@ -90,7 +90,8 @@ class CommentsThread extends Component {
                                     upvote={this.props.upvote}
                                     downvote={this.props.downvote}
                                     postReply={this.postReply}
-                                    currentUser={this.props.currentUser}/>
+                                    currentUser={this.props.currentUser}
+                                    editComment={this.props.editComment}/>
                             })}
                     </div>
                     <div className='comments-post'>

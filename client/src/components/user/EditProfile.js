@@ -9,7 +9,7 @@ import ErrorIcon from 'react-icons/lib/md/error-outline'
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
-import GoogleIcon from 'react-icons/lib/fa/google'
+// import GoogleIcon from 'react-icons/lib/fa/google'
 
 class EditProfile extends Component {
     constructor(props) {

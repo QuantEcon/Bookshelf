@@ -33,6 +33,8 @@ class Submission extends Component {
             showNotebook: true,
             flipper: true
         }
+
+        console.log('[Submission] - actions: ', props.actions);
       
         this.toggleView = this
             .toggleView
@@ -407,7 +409,8 @@ class Submission extends Component {
                                                 upvote={this.upvoteComment}
                                                 postComment={this.onSubmitComment}
                                                 postReply={this.submitReply}
-                                                currentUser={this.props.currentUser}/>
+                                                currentUser={this.props.currentUser}
+                                                editComment={this.props.actions.editComment}/>
                                         </div>}
 
                                 </div>

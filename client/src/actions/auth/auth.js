@@ -141,6 +141,20 @@ const removeSocial = ({
     }
 }
 
+export const EDIT_COMMENT = 'EDIT_COMMENT'
+const editCommentAction = ({
+    commentID,
+    submissionID,
+    newCommentText
+}) => {
+    return {
+        type: EDIT_COMMENT,
+        submissionID,
+        commentID,
+        newCommentText
+    }
+}
+
 export const removeSocialAccount = ({
     social
 }) => {
@@ -540,6 +554,27 @@ export const submitComment = (submissionID, comment) => {
             }))
         }).catch(error => {
             console.log('[AuthActions] - error submitting comment: ', error);
+        })
+    }
+}
+
+export const editComment =({
+    commentID,
+    newCommentText
+}) => {
+    return function(dispatch){
+        console.log('[EditComment]')
+        axios.post('/api/submit/comment/edit', {
+            commentID,
+            newCommentText
+        }, {
+            headers: {
+                'Authorization': 'JWT ' + store.getState().auth.token
+            }
+        }).then(resp => {
+            console.log('[AuthActions] - edit comment returned: ', resp);
+        }).catch(err => {
+    
         })
     }
 }

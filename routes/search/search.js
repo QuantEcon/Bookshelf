@@ -182,6 +182,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         callback(null, notebook);
 
                     } else {
+                        console.log('submission not found');
                         callback('Not found', null);
                     }
                 });
@@ -280,10 +281,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);
-                    res.render('500');
+                    res.sendStatus('500');
                 } else {
                     console.log("Couldn't find notebook");
-                    res.render('404');
+                    res.sendStatus('404');
+                    return;
                 }
             }
 
