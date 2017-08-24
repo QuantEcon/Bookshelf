@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-// import ThumbsUp from 'react-icons/lib/md/thumb-up';
-// import ThumbsDown from 'react-icons/lib/md/thumb-down';
+import ThumbsUp from 'react-icons/lib/md/thumb-up';
+import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import FlagIcon from 'react-icons/lib/md/flag';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
@@ -138,7 +138,7 @@ class Comment extends Component {
                         </a>
                     </div>
 
-                    {/* <div className='comment-score'>{this.state.comment.score}</div>
+                    <div className='comment-score'>{this.state.comment.score}</div>
 
                     <ul className='comment-vote'>
                         <li>
@@ -167,7 +167,7 @@ class Comment extends Component {
                                     <ThumbsDown/>
                                 </a>}
                         </li>
-                    </ul> */}
+                    </ul>
                 </div>
 
                 <div className='comment-main'>
@@ -219,9 +219,9 @@ class Comment extends Component {
                             {/* TODO: insert edit and delete options */}
                             {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
                                 ? <div>
-                                        {/* <a onClick={this.toggleShowEditComment}>
+                                        <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
-                                        </a> */}
+                                        </a>
                                         <a onClick={this.deleteComment}>
                                             <DeleteIcon/>
                                         </a>

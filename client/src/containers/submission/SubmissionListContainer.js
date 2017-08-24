@@ -7,10 +7,21 @@ import * as SubmissionListActions from '../../actions/submissionList';
 class SubmissionListContainer extends Component {
     constructor(props) {
         super(props);
+        console.log('[SubmissionListContainer] - searchP: ', props.searchP);
+        var params = Object.assign({}, {
+            lang: 'All',
+            time: 'All time',
+            topic: 'All',
+            author: props.userID,
+            keywords: '',
+            page: 1,
+            sortBy: 'Trending'
+        }, props.searchP);
+        console.log('[SubmissionListContainer] - params: ', params);
         this
             .props
             .actions
-            .fetchSubmissions(props.searchParams);
+            .fetchSubmissions(params);
     }
 
     render() {

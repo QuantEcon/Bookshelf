@@ -38,7 +38,7 @@ class SubmissionPreview extends Component {
                         </Link>
                         
                         in
-                        <a>{' '}{this.state.submission.lang}</a>
+                        <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
                     </p>
                     <Markdown
                         source={this.state.submission.summary

@@ -12,7 +12,9 @@ class Searchbar extends Component {
         this.state = {
             searchParams: props.searchParams,
             totalSubmissions: props.totalSubmissions,
-            showSearchBar: false
+            showSearchBar: false,
+            hasCurrentSearch: props.searchParams.keywords != '',
+            previousSearch: props.searchParams.keywords
         }
 
         this.submit = this

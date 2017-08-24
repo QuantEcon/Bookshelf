@@ -9,9 +9,9 @@ import 'normalize-css'
 import 'codemirror/lib/codemirror.css';
 import 'typeface-source-code-pro'
 import 'typeface-source-sans-pro'
-import '@nteract/notebook-preview/styles/main.css';
+import '../../assets/css/main-notebook-preview.css';
 import '../../assets/css/notebook-preview.css';
- 
+
 import FileSaver from 'file-saver'
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
@@ -35,7 +35,7 @@ class Submission extends Component {
         }
 
         console.log('[Submission] - actions: ', props.actions);
-      
+
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -65,15 +65,17 @@ class Submission extends Component {
             .bind(this);
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.forceUpdate();
     }
 
-    componentWillReceiveProps(props){
-        if(props.submission.data){
-            document.title = props.submission.data.notebook.title            
+    componentWillReceiveProps(props) {
+        if (props.submission.data) {
+            document.title = props.submission.data.notebook.title
         }
-        this.setState({flipper: !this.state.flipper})
+        this.setState({
+            flipper: !this.state.flipper
+        })
         this.forceUpdate();
     }
 
@@ -83,9 +85,10 @@ class Submission extends Component {
 
     download() {
         console.log('[Submission] - downloading notebook...');
-        // fileDownload(JSON.stringify(this.props.submission.data.notebookJSON), this.props.submission.data.fileName)
-        var file = new File([JSON.stringify(this.props.submission.data.notebookJSON)], this.props.submission.data.fileName, {type:'text/plain'});
-        FileSaver.saveAs(file)        
+        // fileDownload(JSON.stringify(this.props.submission.data.notebookJSON),
+        // this.props.submission.data.fileName)
+        var file = new File([JSON.stringify(this.props.submission.data.notebookJSON)], this.props.submission.data.fileName, {type: 'text/plain'});
+        FileSaver.saveAs(file)
     }
 
     upvote() {
@@ -151,13 +154,9 @@ class Submission extends Component {
         console.log('[Submission] - edit submission clicked');
     }
 
-    // componentDidMount = (root) => {
-    //     MathJax.Hub.Queue(['Typeset', MathJax.Hub, root])
-    // }
-
-    // componentDidUpdate =(props, state, root) => {
-    //     MathJax.Hub.Queue(['Typeset', MathJax.Hub, root])        
-    // }
+    // componentDidMount = (root) => {     MathJax.Hub.Queue(['Typeset',
+    // MathJax.Hub, root]) } componentDidUpdate =(props, state, root) => {
+    // MathJax.Hub.Queue(['Typeset', MathJax.Hub, root]) }
 
     render() {
         return (
@@ -233,7 +232,7 @@ class Submission extends Component {
                                                         .map((topic, index) => {
                                                             return (
                                                                 <li key={index}>
-                                                                    <a>{topic}</a>
+                                                                    <Link>{topic}</Link>
                                                                 </li>
                                                             )
                                                         })}
@@ -313,7 +312,7 @@ class Submission extends Component {
                                                     {/*TODO: Link to homepage with language search query*/}
                                                     {!this.props.isLoading
                                                         ? <div>
-                                                                {' '}<a>{this.props.submission.data.notebook.lang}</a>
+                                                                {' '}<Link to={'/?lang=' + this.props.submission.data.notebook.lang}>{this.props.submission.data.notebook.lang}</Link>
                                                             </div>
 
                                                         : <p>loading...</p>}
@@ -412,12 +411,8 @@ class Submission extends Component {
                                                 currentUser={this.props.currentUser}
                                                 editComment={this.props.actions.editComment}/>
                                         </div>}
-
-                                </div>
-}
-
+                                </div>}
                         </div>
-
                     </div>
                 </div>
             </div>
