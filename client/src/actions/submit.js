@@ -1,5 +1,6 @@
 import store from '../store/store'
 import axios from 'axios'
+import {fetchSubmissions} from './submissionList';
 
 export const BEGIN_SUBMIT = 'BEGIN_SUBMIT'
 export const beginSubmit = () => {
@@ -88,6 +89,7 @@ export const confirm = ({submission}) => {
             dispatch(confirmSubmit({
                 id: response.data.id
             }))
+            dispatch(fetchSubmissions());
             return response.data.id;
         }).catch(error => {
             console.log('[SubmitActions] - error in confirm submit: ', error);

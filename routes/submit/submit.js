@@ -187,7 +187,7 @@ app.post('/confirm', passport.authenticate('jwt', {
                     res.send({error: err});
                 } else {
                     user.submissions.push(submission._id)
-
+                    res.send({submissionID: submission._id});
                 }
             })
         } else {
