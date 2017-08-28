@@ -5,6 +5,7 @@ import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import FlagIcon from 'react-icons/lib/md/flag';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
+import Modal from 'react-modal'
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
@@ -47,8 +48,18 @@ class Comment extends Component {
         this.submitRepsonse = this
             .submitRepsonse
             .bind(this);
-        this.toggleShowEditComment=this.toggleShowEditComment.bind(this);
-        this.editComment=this.editComment.bind(this);
+        this.toggleShowEditComment = this
+            .toggleShowEditComment
+            .bind(this);
+        this.editComment = this
+            .editComment
+            .bind(this);
+        this.toggleDeleteModal = this
+            .toggleDeleteModal
+            .bind(this);
+        this.deleteComment = this
+            .deleteComment
+            .bind(this);
     }
 
     componentWillReceiveProps(props) {
@@ -70,24 +81,23 @@ class Comment extends Component {
         })
     }
 
-    editComment(e){
+    editComment(e) {
         e.preventDefault();
-        var newText = document.getElementById('editCommentTextArea').value;
-        document.getElementById('editCommentTextArea').value = '';
+        var newText = document
+            .getElementById('editCommentTextArea')
+            .value;
+        document
+            .getElementById('editCommentTextArea')
+            .value = '';
         console.log('[Comment] - edit comment. new text: ', newText);
         this.toggleShowEditComment();
-        this.props.editComment({
-            commentID: this.props.comment._id,
-            newCommentText: newText
-        })
+        this
+            .props
+            .editComment({commentID: this.props.comment._id, newCommentText: newText})
     }
 
-    flagComment(){
+    flagComment() {
         alert('Work in Progess\nThis will flag the comment');
-    }
-
-    deleteComment(){
-        alert('Work in Progess\nThis will delete the comment');
     }
 
     replyText = '';
@@ -110,7 +120,7 @@ class Comment extends Component {
 
     submitRepsonse(e) {
         e.preventDefault();
-        if(!this.state.currentUser){
+        if (!this.state.currentUser) {
             this.setState({submitError: true});
             return;
         }
@@ -129,9 +139,44 @@ class Comment extends Component {
         })
     }
 
+    deleteComment() {
+        console.log('[Comment] - delete comment clicked');
+        this.toggleDeleteModal();
+    }
+
+    toggleDeleteModal() {
+        console.log('[Comment] - toggle delete modal: ', this.state.deleteModalOpen);
+        this.setState({
+            deleteModalOpen: !this.state.deleteModalOpen
+        });
+    }
+
     render() {
         return (
             <div className='comment'>
+                <Modal
+                    isOpen={this.state.deleteModalOpen}
+                    contentLabel='Delete Comment'
+                    className='overlay'
+                    style='display: block'>
+                    <div className='reveal modal'>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>Delete Comment</h1>
+                        </div>
+                        <div className='modal-body'>
+                            <p className='text-center'>Are you sure you want to delete this comment?</p>
+                            <ul className='button-row'>
+                                <li>
+                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
+                                </li>
+                                <li>
+                                    <button onClick={this.deleteComment}>Delete</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </Modal>
                 <div className='comment-side'>
                     <div className='comment-avatar'>
                         <a href={'/user/' + this.state.author._id}>
@@ -223,7 +268,7 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        <a onClick={this.deleteComment}>
+                                        <a onClick={this.toggleDeleteModal}>
                                             <DeleteIcon/>
                                         </a>
                                     </div>
@@ -249,9 +294,7 @@ class Comment extends Component {
                     {this.state.showEditComment
                         ? <div className='comment-reply'>
                                 <form>
-                                    <textarea
-                                        id='editCommentTextArea'
-                                        placeholder='You can use markdown here...'></textarea>
+                                    <textarea id='editCommentTextArea' placeholder='You can use markdown here...'></textarea>
 
                                     <div className='post-reply'>
                                         <button onClick={this.editComment} disabled={this.state.replyText === ''}>
@@ -259,7 +302,7 @@ class Comment extends Component {
                                         </button>
                                     </div>
                                 </form>
-                                
+
                             </div>
                         : null}
 

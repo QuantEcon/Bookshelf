@@ -20,6 +20,7 @@ import SignIn from '../signin/SignIn';
 import '../../assets/css/app.css'
 import '../../assets/css/general.css'
 import '../../assets/css/formStyle.css'
+import '../../assets/css/modal.css'
 
 class App extends Component {
 
