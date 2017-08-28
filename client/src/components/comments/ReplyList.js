@@ -13,12 +13,9 @@ class ReplyList extends Component {
 
     }
 
-    componentWillReceiveProps(props){
+    componentWillReceiveProps(props) {
         console.log('[ReplyList] - will receive props: ', props);
-        this.setState({
-            replies: props.replies,
-            authors: props.authors
-        })
+        this.setState({replies: props.replies, authors: props.authors})
     }
     render() {
         return (
@@ -34,7 +31,13 @@ class ReplyList extends Component {
                             .filter(function (user) {
                                 return user._id === reply.author;
                             });
-                        return <Reply reply={reply} author={author[0]} key={index} currentUser={this.props.currentUser}/>
+                        return <Reply
+                            reply={reply}
+                            author={author[0]}
+                            key={index}
+                            currentUser={this.props.currentUser}
+                            upvote={this.props.upvote}
+                            downvote={this.props.downvote}/>
                     })}
             </div>
         )

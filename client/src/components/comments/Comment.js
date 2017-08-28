@@ -15,7 +15,7 @@ class Comment extends Component {
     constructor(props) {
         super(props);
 
-        console.log('[Comment] -props: ', props);
+        console.log('[Comment] - props: ', props);
 
         this.state = {
             comment: props.comment,
@@ -52,6 +52,7 @@ class Comment extends Component {
     }
 
     componentWillReceiveProps(props) {
+        console.log('[Comment] - received new props: ', props);
         this.setState({
             comment: props.comment,
             replies: props.replies,
@@ -193,7 +194,7 @@ class Comment extends Component {
                         <Markdown source={this.state.comment.content}/>
                         <div>
                             {this.state.comment.edited
-                                ? <p className='edited-tag'><Time value={this.comment.editedDate} relative/></p>
+                                ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
                                 : null}
                         </div>
 
@@ -267,7 +268,9 @@ class Comment extends Component {
                         ? <ReplyList
                                 replies={this.state.replies}
                                 authors={this.state.authors}
-                                currentUser={this.props.currentUser}/>
+                                currentUser={this.props.currentUser}
+                                upvote={this.props.upvoteReply}
+                                downvote={this.props.downvoteReply}/>
                         : null}
                 </div>
 

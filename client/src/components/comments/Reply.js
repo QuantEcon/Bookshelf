@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 import Comment from './Comment';
 
 class Reply extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
 
         this.state = {
@@ -12,10 +12,16 @@ class Reply extends Component {
         }
     }
 
-    render(){
-        return(
+    render() {
+        return (
             <div className='comment-nested'>
-                <Comment comment={this.state.reply} author={this.state.author} isReply={true} currentUser={this.props.currentUser}/>
+                <Comment
+                    comment={this.state.reply}
+                    author={this.state.author}
+                    isReply={true}
+                    currentUser={this.props.currentUser}
+                    upvote={this.props.upvote}
+                    downvote={this.props.downvote}/>
             </div>
         )
     }

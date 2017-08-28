@@ -5,7 +5,11 @@ class EditSubmission extends Component {
     render() {
         return (
             <div>
-                <Submit isEdit={true} submission={this.props.submission} user={this.props.currentUser} preview={this.props.preview}/>
+                <Submit
+                    isEdit={true}
+                    submission={this.props.submission}
+                    user={this.props.currentUser}
+                    save={this.props.save}/>
             </div>
         )
     }

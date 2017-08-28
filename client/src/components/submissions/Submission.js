@@ -54,6 +54,12 @@ class Submission extends Component {
         this.downvoteComment = this
             .downvoteComment
             .bind(this);
+        this.upvoteReply = this
+            .upvoteReply
+            .bind(this);
+        this.downvoteReply = this
+            .downvoteReply
+            .bind(this);
         this.download = this
             .download
             .bind(this);
@@ -85,8 +91,6 @@ class Submission extends Component {
 
     download() {
         console.log('[Submission] - downloading notebook...');
-        // fileDownload(JSON.stringify(this.props.submission.data.notebookJSON),
-        // this.props.submission.data.fileName)
         var file = new File([JSON.stringify(this.props.submission.data.notebookJSON)], this.props.submission.data.fileName, {type: 'text/plain'});
         FileSaver.saveAs(file)
     }
@@ -123,6 +127,20 @@ class Submission extends Component {
             .actions
             .downvoteComment({commentID, submissionID: this.props.submissionID});
     }
+    upvoteReply({replyID, commentID}) {
+        console.log('[Submission] - upvote comment: ', commentID);
+        this
+            .props
+            .actions
+            .upvoteReply({commentID, replyID, submissionID: this.props.submissionID});
+    }
+
+    downvoteReply({replyID, commentID}) {
+        this
+            .props
+            .actions
+            .downvoteReply({commentID, replyID, submissionID: this.props.submissionID});
+    }
 
     encounteredURI(uri) {
         console.log('encountered uri in markdown: ', uri);
@@ -149,14 +167,6 @@ class Submission extends Component {
             showNotebook: !this.state.showNotebook
         });
     }
-
-    editSubmission() {
-        console.log('[Submission] - edit submission clicked');
-    }
-
-    // componentDidMount = (root) => {     MathJax.Hub.Queue(['Typeset',
-    // MathJax.Hub, root]) } componentDidUpdate =(props, state, root) => {
-    // MathJax.Hub.Queue(['Typeset', MathJax.Hub, root]) }
 
     render() {
         return (
@@ -406,6 +416,8 @@ class Submission extends Component {
                                                 commentAuthors={this.props.submission.data.commentAuthors}
                                                 downvote={this.downvoteComment}
                                                 upvote={this.upvoteComment}
+                                                upvoteReply={this.upvoteReply}
+                                                downvoteReply={this.downvoteReply}
                                                 postComment={this.onSubmitComment}
                                                 postReply={this.submitReply}
                                                 currentUser={this.props.currentUser}

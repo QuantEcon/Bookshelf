@@ -615,3 +615,15 @@ export const submitReply = ({
         })
     }
 }
+
+export const upvoteReply = ({commentID, replyID, submissionID}) => {
+    return (dipatch) => {
+        console.log('[AuthActions] - upvote reply: ', commentID, replyID, submissionID);
+    }
+}
+
+export const downvoteReply = ({commentID, replyID, submissionID}) => {
+    return (dispatch) => {
+        console.log('[AuthActions] - downvote reply: ', commentID, replyID, submissionID);
+    }
+}

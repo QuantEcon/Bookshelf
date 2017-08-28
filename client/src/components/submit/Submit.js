@@ -176,7 +176,7 @@ class Submit extends Component {
             this.formData.published = this.props.submission.data.notebook.published
             this
                 .props
-                .preview({formData: this.formData, file, notebookJSON});
+                .save({formData: this.formData, file, notebookJSON});
         } else {
             console.log('[EditSubmission] - not edit')
             

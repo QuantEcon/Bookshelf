@@ -3,22 +3,23 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import EditSubmission from '../../components/submissions/EditSubmission'
 import * as actions from '../../actions/editSubmission'
+import {editSubmission} from '../../actions/submission'
 
 class EditSubmissionContainer extends Component {
     constructor(props) {
         super(props);
 
-        this.preview = this
-            .preview
+        this.save = this
+            .save
             .bind(this);
     }
 
-    preview = ({formData, file, notebookJSON}) => {
+    save = ({formData, file, notebookJSON}) => {
         this
             .props
             .actions
-            .buildSubmissionPreview({formData, file, notebookJSON, submissionID: this.props.match.params.id});
-        this.props.history.push('/edit-submission/' + this.props.match.params.id + '/preview');
+            .editSubmission({formData, file, notebookJSON, submissionID: this.props.match.params.id});
+        this.props.history.push('/submission/' + this.props.match.params.id);
     }
 
     render() {
@@ -27,7 +28,7 @@ class EditSubmissionContainer extends Component {
                 <EditSubmission
                     submission={this.props.submission}
                     currentUser={this.props.currentUser}
-                    preview={this.preview}/>
+                    save={this.save}/>
             </div>
         )
     }
@@ -40,7 +41,7 @@ const mapStateToProps = (state, props) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        actions: bindActionCreators(actions, dispatch)
+        actions: bindActionCreators({editSubmission}, dispatch)
     }
 }
 

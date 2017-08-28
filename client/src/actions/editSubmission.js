@@ -34,11 +34,11 @@ const previewAction = ({
 
 export const SAVE_SUBMISSION = 'SAVE_SUBMISSION';
 const saveSubmissionAction = ({
-    submissionID
+    submission
 }) => {
     return {
         type: SAVE_SUBMISSION,
-        submissionID
+        submission
     }
 }
 
@@ -50,10 +50,39 @@ export const buildSubmissionPreview = ({
     notebookJSON,
     submissionID
 }) => {
+
+    var submission = {
+        ...formData,
+        lastUpdated: Date.now(),
+        _id: submissionID,
+        author: store.getState().auth.user
+    };
+    if (file) {
+        //read and parse file
+        var reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = (event) => {
+            submission.notebookJSON = JSON.parse(event.target.result);
+            return submission
+        }
+    } else if (notebookJSON) {
+        submission.notebookJSON = notebookJSON
+        return submission
+    } else {
+        return {
+            error: 'No notebook given'
+        }
+    }
+
+}
+
+export const buildAndSave = ({
+    formData,
+    file,
+    notebookJSON,
+    submissionID
+}) => {
     return (dispatch) => {
-        dispatch(previewAction({
-            submissionID
-        }));
         var submission = {
             ...formData,
             lastUpdated: Date.now(),
@@ -66,35 +95,37 @@ export const buildSubmissionPreview = ({
             reader.readAsText(file);
             reader.onload = (event) => {
                 submission.notebookJSON = JSON.parse(event.target.result);
-                dispatch(buildSubmissionPreviewAction({submission}));
+                dispatch(saveSubmissionAction({
+                    submission
+                }))
             }
         } else if (notebookJSON) {
             submission.notebookJSON = notebookJSON
-            dispatch(buildSubmissionPreviewAction({
+            dispatch(saveSubmissionAction({
                 submission
             }));
         } else {
-            dispatch(buildSubmissionPreviewAction({
-                error: 'Couldn\'t find submission json'
-            }))
+            dispatch(saveSubmissionAction({
+                error: 'No notebook given'
+            }));
         }
     }
 }
 
-export const saveSubmission = ({
-    submissionID
-}) => {
-    return (dispatch) => {
-        dispatch(saveSubmissionAction(submissionID));
-    }
-}
+// export const saveSubmission = ({
+//     submissionID
+// }) => {
+//     return (dispatch) => {
+//         dispatch(saveSubmissionAction(submissionID));
+//     }
+// }
 
-export const cancelPreview = ({
-    submissionID
-}) => {
-    return (dispatch) => {
-        dispatch(cancelPreviewAction({
-            submissionID
-        }));
-    }
-}
+// export const cancelPreview = ({
+//     submissionID
+// }) => {
+//     return (dispatch) => {
+//         dispatch(cancelPreviewAction({
+//             submissionID
+//         }));
+//     }
+// }

@@ -40,7 +40,10 @@ export function downvoteSub(submissionID) {
 }
 
 export const DOWNVOTE_COMMENT = 'DOWNVOTE_COMMENT'
-export function downvoteCom({commentID, submissionID}) {
+export function downvoteCom({
+    commentID,
+    submissionID
+}) {
     console.log('[SubmissionActions] - downvoteCom: ', commentID);
     return {
         type: DOWNVOTE_COMMENT,
@@ -58,7 +61,10 @@ export function upvoteSub(submissionID) {
 }
 
 export const UPVOTE_COMMENT = 'UPVOTE_COMMENT'
-export function upvoteCom({commentID, submissionID}) {
+export function upvoteCom({
+    commentID,
+    submissionID
+}) {
     console.log('[SubmissionActions] - upvoteCom: ', commentID);
     return {
         type: UPVOTE_COMMENT,
@@ -68,7 +74,10 @@ export function upvoteCom({commentID, submissionID}) {
 }
 
 export const POST_COMMENT = 'POST_COMMENT'
-export function postComment({submissionID, comment}) {
+export function postComment({
+    submissionID,
+    comment
+}) {
     return {
         type: POST_COMMENT,
         submissionID,
@@ -87,30 +96,98 @@ export function postReply(submissionID, commentID, reply) {
 }
 
 export const EDIT_SUBMISSION = 'EDIT_SUBMISSION'
-const editSubmissionAction = ({submissionID, error}) => {
+const editSubmissionAction = ({
+    submission,
+    error
+}) => {
     return {
         type: EDIT_SUBMISSION,
-        submissionID,
+        submission,
         error
     }
 }
 
-export const editSubmission = ({submissionData}) => {
-    console.log('[SubmissionActions] - edit submission: ', submissionData);
+export const editSubmission = ({
+    formData,
+    file,
+    notebookJSON,
+    submissionID
+}) => {
+    // console.log('[SubmissionActions] - edit submission: ', submissionData);
+    // return (dispatch) => {
+    //     axios.post('/api/submit/edit-submission', {
+    //         submissionData
+    //     }, {
+    //         headers: {
+    //             'authorization': 'JWT ' + store.getState().auth.token
+    //         }
+    //     }).then(response => {
+    //         if (response.data.error) {
+    //             dispatch(editSubmissionAction({
+    //                 error: response.data.error
+    //             }))
+    //         } else {
+    //             dispatch(editSubmissionAction({
+    //                 submission: submissionData
+    //             }));
+    //         }
+    //     })
+    // }
     return (dispatch) => {
-        axios.post('/api/submit/edit-submission', {
-            submissionData
-        }, {
-            headers: {
-                'authorization' : 'JWT ' + store.getState().auth.token 
+        var submission = {
+            ...formData,
+            lastUpdated: Date.now(),
+            _id: submissionID,
+            author: store.getState().auth.user
+        };
+        if (file) {
+            //read and parse file
+            var reader = new FileReader();
+            reader.readAsText(file);
+            reader.onload = (event) => {
+                submission.notebookJSON = JSON.parse(event.target.result);
+                axios.post('/api/submit/edit-submission', {
+                    submissionData: submission
+                }, {
+                    headers: {
+                        'authorization': 'JWT ' + store.getState().auth.token
+                    }
+                }).then(response => {
+                    if (response.data.error) {
+                        dispatch(editSubmissionAction({
+                            error: response.data.error
+                        }))
+                    } else {
+                        dispatch(editSubmissionAction({
+                            submission
+                        }));
+                    }
+                })
             }
-        }).then(response => {
-            if(response.data.error){
-                dispatch(editSubmissionAction({error: response.data.error}))
-            } else {
-                dispatch(editSubmissionAction({submissionID: submissionData._id}));
-            }
-        })
+        } else if (notebookJSON) {
+            submission.notebookJSON = notebookJSON
+            axios.post('/api/submit/edit-submission', {
+                submissionData: submission
+            }, {
+                headers: {
+                    'authorization': 'JWT ' + store.getState().auth.token
+                }
+            }).then(response => {
+                if (response.data.error) {
+                    dispatch(editSubmissionAction({
+                        error: response.data.error
+                    }))
+                } else {
+                    dispatch(editSubmissionAction({
+                        submission
+                    }));
+                }
+            })
+        } else {
+            dispatch(editSubmissionAction({
+                error: 'No notebook given'
+            }));
+        }
     }
 }
 

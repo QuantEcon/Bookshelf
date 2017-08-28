@@ -30,19 +30,19 @@ const CommentsReducer = (comments = [], action) => {
                     return newCommentsArray;
                 }
             }
-            // comments.forEach(function(comment, index) {
-            //     if(comment._id === action.commentID){
-            //         var newCommentsArray = JSON.parse(JSON.stringify(comments));
-            //         newCommentsArray[index] = Object.assign({}, comment, {
-            //             replies: [
-            //                 ...comment.replies,
-            //                 action.reply._id
-            //             ]
-            //         })
-            //         console.log('[CommentsReducer] - new comments array: ', newCommentsArray);
-            //         return newCommentsArray;
-            //     }
-            // }, this);
+            comments.forEach(function(comment, index) {
+                if(comment._id === action.commentID){
+                    var newCommentsArray = JSON.parse(JSON.stringify(comments));
+                    newCommentsArray[index] = Object.assign({}, comment, {
+                        replies: [
+                            ...comment.replies,
+                            action.reply._id
+                        ]
+                    })
+                    console.log('[CommentsReducer] - new comments array: ', newCommentsArray);
+                    return newCommentsArray;
+                }
+            }, this);
             console.log('got here')
             return comments;
         case UPVOTE_COMMENT:
@@ -52,19 +52,19 @@ const CommentsReducer = (comments = [], action) => {
                 if (comment._id === action.commentID)
                     return Object.assign({}, comments, {
                         index: Object.assign({}, comments[index], {
-                            score: comments[action.commentID].score + 1
+                            score: comment.score + 1
                         })
                     })
             }, this);
             return comments;
         case DOWNVOTE_COMMENT:
             comments.forEach(function (comment, index) {
-                console.log('downvote comment: ', comment);
+                console.log('[CommentsReducer] - downvote comment: ', comment);
                 console.log('index: ', index);
                 if (comment._id === action.commentID)
                     return Object.assign({}, comments, {
                         index: Object.assign({}, comments[index], {
-                            score: comments[action.commentID].score - 1
+                            score: comment.score - 1
                         })
                     })
             }, this);
