@@ -410,10 +410,10 @@ class Submit extends Component {
                                         <span className='mandatory'>*</span>
                                     </label>
                                     <select name="lang" defaultValue='python' onChange={this.langChanged}>
-                                        <option value="python">Python</option>
-                                        <option value="julia">Julia</option>
-                                        <option value="r">R</option>
-                                        <option value="other">Other</option>
+                                        <option value="Python">Python</option>
+                                        <option value="Julia">Julia</option>
+                                        <option value="R">R</option>
+                                        <option value="Other">Other</option>
                                     </select>
 
                                     <hr/>

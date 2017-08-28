@@ -239,6 +239,7 @@ class Searchbar extends Component {
                                         <option value="Python">Python</option>
                                         <option value="Julia">Julia</option>
                                         <option value="R">R</option>
+                                        <option value='Other'>Other</option>
                                     </select>
                                 </label>
 

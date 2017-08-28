@@ -293,7 +293,7 @@ class Comment extends Component {
                     {this.state.showEditComment
                         ? <div className='comment-reply'>
                                 <form>
-                                    <textarea id='editCommentTextArea' placeholder='You can use markdown here...'></textarea>
+                                    <textarea id='editCommentTextArea' placeholder='You can use markdown here...' defaultValue={this.state.comment.content}></textarea>
 
                                     <div className='post-reply'>
                                         <button onClick={this.editComment} disabled={this.state.replyText === ''}>
