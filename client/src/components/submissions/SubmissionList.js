@@ -5,28 +5,41 @@ import React, {Component} from 'react';
 
 import Searchbar from '../searchbar/Searchbar';
 import SubmissionPreview from './submissionPreview';
+import ReactPaginate from 'react-paginate'
 
 class SubmissionList extends Component {
 
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
-            submissionPreviews: []
+            submissionPreviews: [],
         }
     }
 
-    componentWillReceiveProps(props){
+    componentWillReceiveProps(props) {
         console.log('[SubmissionList] - received new props: ', props);
-        this.setState({
-            submissionPreviews: props.submissionPreviews
-        })
+        this.setState({submissionPreviews: props.submissionPreviews})
     }
+    
+    onSearch = (searchParams) => {
+        this.props.actions.fetchSubmissions(searchParams);
+    }
+
+    onPageChange = (page) => {
+        console.log('[SubmissionList] - page changed: ', page);
+    }
+
+
     render() {
         return (
             <div className="row">
                 <div className="column">
                     <div className="tile">
-                        <Searchbar searchParams={this.props.searchParams} totalSubmissions={this.props.totalSubmissions} actions={this.props.actions}/>
+                        <Searchbar
+                            searchParams={this.props.searchParams}
+                            totalSubmissions={this.props.totalSubmissions}
+                            actions={this.props.actions}
+                            onSearch={this.onSearch}/>
                         <div className="summaries">
                             {/*Repeat for each notebook*/}
 
@@ -49,6 +62,20 @@ class SubmissionList extends Component {
 }
                                 </div>}
                         </div>
+                        <ReactPaginate 
+                            onPageChange={this.onPageChange}
+                            pageCount={this.props.totalSubmissions/10}
+                            pageRangeDisplayed ={this.props.totalSubmissions/10}
+                            marginPageDisplayed={3}
+                            previousLabel='Prev'
+                            nextLabel='Next'
+                            breakLabel='...'
+                            initialPage={this.props.searchParams.page? this.props.searchParams.page - 1 : 0}
+                            containerClassName='pagination text-center'
+                            activeClassName='current'
+                            previousClassName='pagination-previous'
+                            nextClassName='pagination-next'
+                            disabledClassName='disabled'/>
                     </div>
                 </div>
             </div>

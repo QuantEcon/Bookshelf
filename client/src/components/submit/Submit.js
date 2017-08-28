@@ -2,7 +2,10 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
-
+import Modal from 'react-modal';
+import NotebookPreview from '@nteract/notebook-preview';
+import {transforms, displayOrder} from '@nteract/transforms-full';
+import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 
 class Submit extends Component {
@@ -46,7 +49,10 @@ class Submit extends Component {
                 ? true
                 : false,
             uploadError: false,
-            showSummaryPreview: false
+            showSummaryPreview: false,
+            modalOpen: false,
+            notebookDataReady: false,
+            notebookJSON: {}
         }
 
         this.onDrop = this
@@ -63,8 +69,8 @@ class Submit extends Component {
             .bind(this);
     }
 
-    componentDidMount(){
-        if(this.props.isEdit){
+    componentDidMount() {
+        if (this.props.isEdit) {
             document.title = 'Edit Submission'
         } else {
             document.title = 'Submit'
@@ -172,6 +178,8 @@ class Submit extends Component {
                 .props
                 .preview({formData: this.formData, file, notebookJSON});
         } else {
+            console.log('[EditSubmission] - not edit')
+            
             this
                 .props
                 .submit(this.formData, this.state.accepted[0]);
@@ -207,18 +215,46 @@ class Submit extends Component {
 
     onDrop(accepted, rejected) {
         if (accepted.length) {
-            this.setState({
-                accepted,
-                rejected,
-                fileUploaded: true,
-                uploadError: false,
-                fileName: accepted[0].name
-            }, () => this.validate());
+            var reader = new FileReader();
+            this.setState({notebookDataReady: false});
+            reader.readAsText(accepted[0]);
+            reader.onload = (event) => {
+                this.setState({
+                    notebookJSON: JSON.parse(event.target.result),
+                    notebookDataReady: true,
+                    accepted,
+                    rejected,
+                    fileUploaded: true,
+                    uploadError: false,
+                    fileName: accepted[0].name
+                }, () => this.validate())
+            }
         } else if (!this.state.fileUploaded) {
             this.setState({
                 uploadError: true
             }, () => this.validate());
         }
+    }
+
+    toggleOpenModal = () => {
+        this.setState({
+            modalOpen: !this.state.modalOpen
+        })
+    }
+
+    readNotebookFile = () => {
+        if (!this.state.notebookDataReady) {
+            var reader = new FileReader();
+            this.setState({notebookDataReady: false});
+            reader.readAsText(this.state.accepted[0]);
+            reader.onload = (event) => {
+                this.setState({
+                    notebookJSON: JSON.parse(event.target.result),
+                    notebookDataReady: true
+                })
+            }
+        }
+        this.toggleOpenModal();
     }
 
     printState() {
@@ -234,6 +270,13 @@ class Submit extends Component {
         return (
             <div>
                 <HeadContainer/>
+                <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
+                    <CloseIcon onClick={this.toggleOpenModal}/>
+                    <NotebookPreview
+                        notebook={this.state.notebookJSON}
+                        transforms={transforms}
+                        displayOrder={displayOrder}/>
+                </Modal>
                 <div className='row columns'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
@@ -280,6 +323,14 @@ class Submit extends Component {
 
                                     </div>
                                 </Dropzone>
+                                <ul className='button-row'>
+                                    <li>
+                                        <button disabled={!this.state.fileUploaded || !this.state.notebookDataReady} onClick={this.toggleOpenModal}>
+                                            Preview
+                                        </button>
+                                    </li>
+                                </ul>
+
                             </div>
 
                             <div className='submit-header'>
@@ -358,7 +409,7 @@ class Submit extends Component {
                                     <label className='section-title'>Language
                                         <span className='mandatory'>*</span>
                                     </label>
-                                    <select name="lang" value='python' onChange={this.langChanged}>
+                                    <select name="lang" defaultValue='python' onChange={this.langChanged}>
                                         <option value="python">Python</option>
                                         <option value="julia">Julia</option>
                                         <option value="r">R</option>
@@ -430,13 +481,13 @@ class Submit extends Component {
                                     : null}
                                 <li>
                                     <button disabled={!this.state.valid}>
-                                        Preview
+                                        Submit
                                     </button>
                                 </li>
                             </ul>
 
                         </form>
-                        
+
                     </div>
                 </div>
 

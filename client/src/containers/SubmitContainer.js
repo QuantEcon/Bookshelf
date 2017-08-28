@@ -16,7 +16,7 @@ class SubmitContainer extends Component {
             .props
             .actions
             .submit(formData, file);
-        this.props.history.push('/submit/preview')
+        this.props.history.push('/')
     }
 
     render() {

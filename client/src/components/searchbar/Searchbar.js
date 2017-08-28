@@ -13,7 +13,7 @@ class Searchbar extends Component {
             searchParams: props.searchParams,
             totalSubmissions: props.totalSubmissions,
             showSearchBar: false,
-            hasCurrentSearch: props.searchParams.keywords != '',
+            hasCurrentSearch: props.searchParams.keywords !== '',
             previousSearch: props.searchParams.keywords
         }
 
@@ -110,8 +110,7 @@ class Searchbar extends Component {
         }
         this
             .props
-            .actions
-            .fetchSubmissions(this.state.searchParams);
+            .onSearch(this.state.searchParams);
     }
 
     sortByChanged(e) {

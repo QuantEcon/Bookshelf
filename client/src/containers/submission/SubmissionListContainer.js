@@ -23,7 +23,6 @@ class SubmissionListContainer extends Component {
             .actions
             .fetchSubmissions(params);
     }
-
     render() {
         return (
             <div>
@@ -42,6 +41,7 @@ class SubmissionListContainer extends Component {
                         page: 1,
                         sortBy: 'Trending'
                     }}
+                    onPageChange={this.onPageChange}
                     authors={this.props.authors}
                     actions={this.props.actions}/>
             </div>

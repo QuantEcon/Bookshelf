@@ -57,15 +57,13 @@ export const submit = (formData, file) => {
             lastUpdated: Date.now(),
             published: Date.now(),
         }
-        if (file) {
+        if (file) {            
             var reader = new FileReader();
             reader.readAsText(file);
             submission.fileName = file.name;
             reader.onload = (event) => {
                 submission.notebookJSON = JSON.parse(event.target.result);
-                dispatch(addCurrentSubmission({
-                    submission
-                }))
+                confirm({submission})(dispatch)
             }
         } else {
             dispatch(endSubmit({
@@ -75,12 +73,12 @@ export const submit = (formData, file) => {
     }
 }
 
-export const confirm = () => {
+export const confirm = ({submission}) => {
     return function (dispatch) {
         console.log('[SubmitActions] - confirm submit')
         //send confirm request to server
         axios.post('/api/submit/confirm', {
-            submission: store.getState().auth.user.currentSubmission
+            submission: submission
         }, {
             headers: {
                 'Authorization': 'JWT ' + store.getState().auth.token
