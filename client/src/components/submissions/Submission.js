@@ -285,7 +285,7 @@ class Submission extends Component {
                                                         .map((topic, index) => {
                                                             return (
                                                                 <li key={index}>
-                                                                    <Link>{topic}</Link>
+                                                                    <Link to={'/?topic=' + encodeURIComponent(topic)}>{topic}</Link>
                                                                 </li>
                                                             )
                                                         })}

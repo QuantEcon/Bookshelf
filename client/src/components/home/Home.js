@@ -10,7 +10,12 @@ class Home extends Component {
         super(props);
 
         var searchParams = this.getUrlVars(window.location.href);
-        console.log('[Home] - url search params: ', searchParams.lang);
+        if(searchParams.topic){
+            searchParams.topic = decodeURIComponent(searchParams.topic);
+            
+        }
+        console.log('[Home] - url search params: ', searchParams);
+        
         this.state = {
             searchParams: searchParams
         }

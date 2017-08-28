@@ -32,7 +32,8 @@ app.get('/all-submissions', function (req, res) {
         searchParams.lang = req.query.lang
     }
     if (req.query.topic !== 'All') {
-        searchParams.topicList = req.query.topic;
+        console.log('[Search] - topic: ', req.query.topic)
+        searchParams.topics = req.query.topic;
     }
     if (req.query.author) {
         if (req.query.author === 'my-profile') {

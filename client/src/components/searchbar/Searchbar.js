@@ -53,7 +53,34 @@ class Searchbar extends Component {
             .bind(this);
     }
 
+    topics = [
+        'All',
+        'General Economics and Teaching',
+        'History of Economic Thought, Methodology, and Heterodox Approaches',
+        'Mathematical and Quantitative Methods',
+        'Microeconomics',
+        'Macroeconomics and Monetary Economics',
+        'International Economics',
+        'Financial Economics',
+        'Public Economics',
+        'Health, Education, and Welfare',
+        'Labor and Demographic Economics',
+        'Law and Economics',
+        'Industrial Organization',
+        'Business Administration and Business Economics • Marketing • Accounting • Person' +
+                'nel Economics',
+        'Economic History',
+        'Economic Development, Innovation, Technological Change, and Growth',
+        'Economic Systems',
+        'Agricultural and Natural Resource Economics • Environmental and Ecological Econo' +
+                'mics',
+        'Urban, Rural, Regional, Real Estate, and Transportation Economics',
+        'Miscellaneous',
+        'Other'
+    ];
+
     componentWillReceiveProps(props) {
+        console.log('[SearchBar] - new props: ', props);
         this.setState({searchParams: props.searchParams, totalSubmissions: props.totalSubmissions})
     }
 
@@ -225,8 +252,13 @@ class Searchbar extends Component {
                                         type="submit"
                                         onChange={this.topicChanged}
                                         value={this.state.searchParams.topic}>
-                                        <option value='topic'>topic</option>
-                                        <option value="All">All</option>
+                                        {this.topics.map(function(topic, index) {
+                                            return (
+                                                <option key={index}>
+                                                    {topic}
+                                                </option>
+                                            )
+                                        }, this)}
                                     </select>
                                 </label>
 
