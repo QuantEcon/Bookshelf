@@ -3,6 +3,7 @@ import React, {Component} from 'react';
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
+import Modal from 'react-modal'
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
 import 'normalize-css'
@@ -20,6 +21,7 @@ import {transforms, displayOrder} from '@nteract/transforms-full';
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
 import GearIcon from 'react-icons/lib/fa/cog'
+import DeleteIcon from 'react-icons/lib/md/delete';
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
@@ -31,7 +33,8 @@ class Submission extends Component {
         super(props);
         this.state = {
             showNotebook: true,
-            flipper: true
+            flipper: true,
+            deleteModalOpen: false
         }
 
         console.log('[Submission] - actions: ', props.actions);
@@ -68,6 +71,9 @@ class Submission extends Component {
             .bind(this);
         this.printProps = this
             .printProps
+            .bind(this);
+        this.toggleDeleteModal = this
+            .toggleDeleteModal
             .bind(this);
     }
 
@@ -168,13 +174,47 @@ class Submission extends Component {
         });
     }
 
+    toggleDeleteModal() {
+        this.setState({
+            deleteModalOpen: !this.state.deleteModalOpen
+        });
+    }
+
+    deleteSubmission() {
+        console.log('[Submission] - delete submission clicked');
+        alert('This hasn\'t been implemented yet');
+        this.toggleDeleteModal();
+    }
+
     render() {
         return (
-
             <div>
                 <HeadContainer/>
+                <Modal
+                    isOpen={this.state.deleteModalOpen}
+                    contentLabel='Delete Submission'
+                    className='overlay'>
+                    <div className='reveal modal'>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>Delete Submission</h1>
+                        </div>
+                        <div className='modal-body'>
+                            <p className='text-center'>Are you sure you want to delete this submission?</p>
+                            <ul className='button-row'>
+                                <li>
+                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
+                                </li>
+                                <li>
+                                    <button onClick={this.deleteSubmission}>Delete</button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </Modal>
                 <div className='row'>
                     <div className='column'>
+
                         {/* TODO: extract to component? */}
                         <div className='details'>
                             <div className="details-side">
@@ -228,6 +268,9 @@ class Submission extends Component {
                                             ? <ul className='details-options'>
                                                     <li>
                                                         <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                    </li>
+                                                    <li>
+                                                        <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>
                                                     </li>
                                                 </ul>
                                             : null}

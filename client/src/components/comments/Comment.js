@@ -21,7 +21,7 @@ class Comment extends Component {
         this.state = {
             comment: props.comment,
             replies: props.replies,
-            author: props.author,
+            author: props.author ? props.author : props.currentUser,
             showInsertReply: false,
             showEditComment: false,
             authors: props.authors,
@@ -157,8 +157,7 @@ class Comment extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Comment'
-                    className='overlay'
-                    style='display: block'>
+                    className='overlay'>
                     <div className='reveal modal'>
                         <div className='modal-header'>
                             <h1 className='modal-title'>Delete Comment</h1>
