@@ -7,21 +7,23 @@ import * as SubmissionListActions from '../../actions/submissionList';
 class SubmissionListContainer extends Component {
     constructor(props) {
         super(props);
-        console.log('[SubmissionListContainer] - searchP: ', props.searchP);
-        var params = Object.assign({}, {
-            lang: 'All',
-            time: 'All time',
-            topic: 'All',
-            author: props.userID,
-            keywords: '',
-            page: 1,
-            sortBy: 'Trending'
-        }, props.searchP);
-        console.log('[SubmissionListContainer] - params: ', params);
-        this
-            .props
-            .actions
-            .fetchSubmissions(params);
+        this.state = {
+            searchParams: Object.assign({}, props.searchParams, props.searchP)
+        }
+        this.onSearch=this.onSearch.bind(this);
+        
+        console.log('[SubmissionListContainer] - params: ', this.state.searchParams);
+        // this
+        //     .props
+        //     .actions
+        //     .fetchSubmissions(this.state.searchParams);
+    }
+
+    onSearch = (searchParams) => {
+        this.setState({
+            searchParams: searchParams
+        })
+        this.props.actions.fetchSubmissions(searchParams);
     }
     render() {
         return (
@@ -30,9 +32,9 @@ class SubmissionListContainer extends Component {
                     isLoading={this.props.isLoading}
                     submissionPreviews={this.props.submissionPreviews}
                     totalSubmissions={this.props.totalSubmissions}
-                    fetchSubmissions={this.props.actions.fetchSubmissions}
-                    searchParams={this.props.searchParams
-                    ? this.props.searchParams
+                    onSearch={this.onSearch}
+                    searchParams={this.state.searchParams
+                    ? this.state.searchParams
                     : {
                         lang: 'All',
                         time: 'All time',

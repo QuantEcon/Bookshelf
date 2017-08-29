@@ -80,7 +80,7 @@ class Searchbar extends Component {
     ];
 
     componentWillReceiveProps(props) {
-        console.log('[SearchBar] - new props: ', props);
+        // console.log('[SearchBar] - new props: ', props);
         this.setState({searchParams: props.searchParams, totalSubmissions: props.totalSubmissions})
     }
 
@@ -160,10 +160,9 @@ class Searchbar extends Component {
     }
     topicChanged(e) {
         this.setState({
-            searchParams: {
-                ...this.state.searchParams,
+            searchParams: Object.assign({}, this.state.searchParams, {
                 topic: e.target.value
-            }
+            })
         }, this.submit);
         console.log("Topic changed: ", e.target.value);
     }

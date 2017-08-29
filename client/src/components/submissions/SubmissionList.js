@@ -13,25 +13,28 @@ class SubmissionList extends Component {
         super(props)
         this.state = {
             submissionPreviews: [],
+            searchParams: props.searchParams
         }
     }
 
     componentWillReceiveProps(props) {
-        console.log('[SubmissionList] - received new props: ', props);
+        // console.log('[SubmissionList] - received new props: ', props);
         this.setState({submissionPreviews: props.submissionPreviews})
     }
     
     onSearch = (searchParams) => {
-        this.searchParams = searchParams;
-        this.props.actions.fetchSubmissions(searchParams);
+        console.log('[SubmissionList] - on search: ',searchParams);
+        this.setState({
+            searchParams
+        })
+        this.props.onSearch(searchParams);
     }
-
     onPageChange = (page) => {
-        console.log('[SubmissionList] - page changed: ', page);
-        this.props.fetchSubmissions({searchParams: {
-            ...this.searchParams,
-            page
-        }});
+        console.log('[SubmissionList] - page changed: ', page, this.state.searchParams);
+        var newSearchParams = Object.assign({}, this.state.searchParams, {
+            page: page
+        })
+        this.onSearch(newSearchParams);
     }
 
 

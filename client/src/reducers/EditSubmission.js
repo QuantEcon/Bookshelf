@@ -17,7 +17,7 @@ const SubmissionReducer = (submission = {}, action) => {
         case SAVE_SUBMISSION:
             return null
         default:
-            console.warn('[SubmissionReducer] - returning default in reducer');
+            // console.warn('[SubmissionReducer] - returning default in reducer');
             return submission
     }
 
@@ -60,7 +60,7 @@ const EditSubmissionRecucer = (editSubmissionByID = {}, action) => {
             //     })
 
         default:
-            console.warn('[EditSubmissionReducer] - returning default in reducer');
+            // console.warn('[EditSubmissionReducer] - returning default in reducer');
             return editSubmissionByID
     }
 }

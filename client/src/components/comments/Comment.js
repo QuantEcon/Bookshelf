@@ -184,7 +184,7 @@ class Comment extends Component {
                         </a>
                     </div>
 
-                    <div className='comment-score'>{this.state.comment.score}</div>
+                    {/* <div className='comment-score'>{this.state.comment.score}</div>
 
                     <ul className='comment-vote'>
                         <li>
@@ -213,7 +213,7 @@ class Comment extends Component {
                                     <ThumbsDown/>
                                 </a>}
                         </li>
-                    </ul>
+                    </ul> */}
                 </div>
 
                 <div className='comment-main'>
