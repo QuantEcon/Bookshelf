@@ -32,7 +32,7 @@ class SubmissionList extends Component {
     onPageChange = (page) => {
         console.log('[SubmissionList] - page changed: ', page, this.state.searchParams);
         var newSearchParams = Object.assign({}, this.state.searchParams, {
-            page: page
+            page: page.selected + 1
         })
         this.onSearch(newSearchParams);
     }
