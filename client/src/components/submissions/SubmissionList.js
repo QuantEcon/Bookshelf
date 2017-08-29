@@ -22,11 +22,16 @@ class SubmissionList extends Component {
     }
     
     onSearch = (searchParams) => {
+        this.searchParams = searchParams;
         this.props.actions.fetchSubmissions(searchParams);
     }
 
     onPageChange = (page) => {
         console.log('[SubmissionList] - page changed: ', page);
+        this.props.fetchSubmissions({searchParams: {
+            ...this.searchParams,
+            page
+        }});
     }
 
 

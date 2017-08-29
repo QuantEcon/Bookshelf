@@ -14,18 +14,12 @@ class Head extends Component {
 
                         <div className="site-title">
                             <Link to='/'>
-                                <h2 className="site-name">QuantEconLib</h2>
+                                <h2 className="site-name">QuantEconLib (beta)</h2>
                                 <p className="site-tag">Open notebook library for economic modeling</p>
                             </Link>
 
                         </div>
-
-                        <p className="qe-logo">
-                            <a href='https://quantecon.org/'>
-                                <img src={logo} alt="QuantEcon logo"/>Quant<span>Econ</span>
-                            </a>
-                        </p>
-
+                        
                         {this.props.isSignedIn
                             ? <ul className='site-menu'>
                                     <li className='menu-user'>

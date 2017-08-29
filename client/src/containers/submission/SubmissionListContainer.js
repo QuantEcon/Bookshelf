@@ -30,6 +30,7 @@ class SubmissionListContainer extends Component {
                     isLoading={this.props.isLoading}
                     submissionPreviews={this.props.submissionPreviews}
                     totalSubmissions={this.props.totalSubmissions}
+                    fetchSubmissions={this.props.actions.fetchSubmissions}
                     searchParams={this.props.searchParams
                     ? this.props.searchParams
                     : {
