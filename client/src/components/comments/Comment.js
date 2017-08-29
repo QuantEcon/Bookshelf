@@ -141,6 +141,7 @@ class Comment extends Component {
 
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
+        alert('This hasn\'t been implemented yet' )
         this.toggleDeleteModal();
     }
 
@@ -158,7 +159,7 @@ class Comment extends Component {
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Comment'
                     className='overlay'>
-                    <div className='reveal modal'>
+                    <div className='my-modal'>
                         <div className='modal-header'>
                             <h1 className='modal-title'>Delete Comment</h1>
                         </div>

@@ -3,9 +3,7 @@ import React, {Component} from 'react';
 // import SubmissionList from '../submissions/SubmissionList';
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
-import QENavBar from '../partials/QENavBar'
 import BetaBanner from '../partials/BetaBanner';
-import * as SubmissionListActions from '../../actions/submissionList';
 
 class Home extends Component {
     constructor(props){
@@ -38,7 +36,6 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <QENavBar/>
                 <HeadContainer/>
                 <BetaBanner/>
                 <hr/>

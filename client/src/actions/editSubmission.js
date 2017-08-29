@@ -1,36 +1,36 @@
 import store from '../store/store'
 
-export const BUILD_SUBMISSION_PREVIEW = 'BUILD_SUBMISSION_PREVIEW'
-const buildSubmissionPreviewAction = ({
-    submission,
-    error
-}) => {
-    return {
-        type: BUILD_SUBMISSION_PREVIEW,
-        submission,
-        error
-    }
-}
+// export const BUILD_SUBMISSION_PREVIEW = 'BUILD_SUBMISSION_PREVIEW'
+// const buildSubmissionPreviewAction = ({
+//     submission,
+//     error
+// }) => {
+//     return {
+//         type: BUILD_SUBMISSION_PREVIEW,
+//         submission,
+//         error
+//     }
+// }
 
-export const CANCEL_PREVIEW = 'CANCEL_PREVIEW'
-const cancelPreviewAction = ({
-    submissionID
-}) => {
-    return {
-        type: CANCEL_PREVIEW,
-        submissionID
-    }
-}
+// export const CANCEL_PREVIEW = 'CANCEL_PREVIEW'
+// const cancelPreviewAction = ({
+//     submissionID
+// }) => {
+//     return {
+//         type: CANCEL_PREVIEW,
+//         submissionID
+//     }
+// }
 
-export const PREVIEW = 'PREVIEW'
-const previewAction = ({
-    submissionID
-}) => {
-    return {
-        type: PREVIEW,
-        submissionID
-    }
-}
+// export const PREVIEW = 'PREVIEW'
+// const previewAction = ({
+//     submissionID
+// }) => {
+//     return {
+//         type: PREVIEW,
+//         submissionID
+//     }
+// }
 
 export const SAVE_SUBMISSION = 'SAVE_SUBMISSION';
 const saveSubmissionAction = ({

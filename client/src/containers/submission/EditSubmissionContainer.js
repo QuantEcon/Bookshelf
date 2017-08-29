@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import EditSubmission from '../../components/submissions/EditSubmission'
-import * as actions from '../../actions/editSubmission'
 import {editSubmission} from '../../actions/submission'
 
 class EditSubmissionContainer extends Component {

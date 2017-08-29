@@ -141,19 +141,19 @@ const removeSocial = ({
     }
 }
 
-export const EDIT_COMMENT = 'EDIT_COMMENT'
-const editCommentAction = ({
-    commentID,
-    submissionID,
-    newCommentText
-}) => {
-    return {
-        type: EDIT_COMMENT,
-        submissionID,
-        commentID,
-        newCommentText
-    }
-}
+// export const EDIT_COMMENT = 'EDIT_COMMENT'
+// const editCommentAction = ({
+//     commentID,
+//     submissionID,
+//     newCommentText
+// }) => {
+//     return {
+//         type: EDIT_COMMENT,
+//         submissionID,
+//         commentID,
+//         newCommentText
+//     }
+// }
 
 export const removeSocialAccount = ({
     social

@@ -6295,7 +6295,7 @@ figure {
 
 code {
     padding: .15625rem .39062rem .07812rem;
-    border: 1px solid #cacaca;
+    border: none;
     font-weight: 400
 }
 

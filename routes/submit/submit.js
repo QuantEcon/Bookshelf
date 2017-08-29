@@ -19,7 +19,7 @@ var multipartyMiddleware = multiparty();
 const storage = multer.diskStorage({
     destination: './files',
     filename(req, file, cb) {
-        cb(null, `${new Date()}-${file.originalname}`)
+        cb(null, `${Date.now()}-${file.originalname}`)
     }
 });
 
@@ -74,8 +74,8 @@ app.post('/', passport.authenticate('jwt', {
             newSub.score = 0;
             newSub.views = 0;
 
-            newSub.published = new Date();
-            newSub.lastUpdated = new Date();
+            newSub.published = Date.now();
+            newSub.lastUpdated = Date.now();
 
             newSub.deleted = false;
             newSub.flagged = false;
@@ -167,8 +167,8 @@ app.post('/confirm', passport.authenticate('jwt', {
     newSub.score = 0;
     newSub.views = 0;
 
-    newSub.published = new Date();
-    newSub.lastUpdated = new Date();
+    newSub.published = Date.now();
+    newSub.lastUpdated = Date.now();
 
     newSub.deleted = false;
     newSub.flagged = false;
@@ -213,7 +213,8 @@ app.post('/edit-submission', passport.authenticate('jwt', {
             submission.coAuthors = req.body.submissionData.coAuthors;
             submission.summary = req.body.submissionData.summary;
             submission.lang = req.body.submissionData.lang
-            submission.lastUpdated = new Date();
+            submission.lastUpdated = Date.now();
+            submission.topics = req.body.submissionData.topics
 
             submission.save((err) => {
                 if (err) {
@@ -248,7 +249,7 @@ app.post('/comment/edit', passport.authenticate('jwt', {
                 console.log("Edit comment content: ", req.body);
                 comment.edited = true;
                 comment.content = req.body.newCommentText;
-                comment.editedDate = new Date();
+                comment.editedDate = Date.now()
                 comment.save(function (err, savedComment) {
                     if (err) {
                         res.status(500);
@@ -286,7 +287,7 @@ app.post('/comment', passport.authenticate('jwt', {
 
     var newComment = new Comment();
     newComment.author = req.user._id;
-    newComment.timestamp = new Date();
+    newComment.timestamp = Date.now();
     newComment.content = req.body.content;
     newComment.replies = [];
     newComment.score = 0;
@@ -359,7 +360,7 @@ app.post('/reply', passport.authenticate('jwt', {
 
     var newReply = new Comment();
     newReply.author = req.user._id;
-    newReply.timestamp = new Date();
+    newReply.timestamp = Date.now();
     newReply.content = req.body.reply;
     newReply.replies = [];
     newReply.score = 0;

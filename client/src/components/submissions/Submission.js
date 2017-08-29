@@ -1,17 +1,19 @@
 import React, {Component} from 'react';
 
+
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
-// import Linkify from 'react-linkify';
-import NotebookPreview from '@nteract/notebook-preview';
+
 import 'normalize-css'
-import 'codemirror/lib/codemirror.css';
 import 'typeface-source-code-pro'
 import 'typeface-source-sans-pro'
-import '../../assets/css/main-notebook-preview.css';
-import '../../assets/css/notebook-preview.css';
+import 'codemirror/lib/codemirror.css';
+import '@nteract/notebook-preview/styles/main.css';
+import '@nteract/notebook-preview/styles/theme-light.css'
+
+import NotebookPreview from '@nteract/notebook-preview';
 
 import FileSaver from 'file-saver'
 
@@ -26,6 +28,7 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
+
 
 class Submission extends Component {
 
@@ -75,6 +78,7 @@ class Submission extends Component {
         this.toggleDeleteModal = this
             .toggleDeleteModal
             .bind(this);
+        this.deleteSubmission = this.deleteSubmission.bind(this);
     }
 
     componentDidMount() {
@@ -194,7 +198,7 @@ class Submission extends Component {
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
                     className='overlay'>
-                    <div className='reveal modal'>
+                    <div className='my-modal'>
                         <div className='modal-header'>
                             <h1 className='modal-title'>Delete Submission</h1>
                         </div>
