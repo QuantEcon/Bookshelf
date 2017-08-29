@@ -19,6 +19,7 @@ class BetaBanner extends Component {
         this.emailTextChanged = this
             .emailTextChanged
             .bind(this);
+        this.submit = this.submit.bind(this);
     }
 
     validateEmail = (email) => {
@@ -41,6 +42,7 @@ class BetaBanner extends Component {
 
     submit(e) {
         e.preventDefault();
+        console.log('[BetaBanner] - submit clicked: ', this.state.email)
         axios
             .post('/add-notify-email', {email: this.state.email})
             .then(resp => {
@@ -81,7 +83,7 @@ class BetaBanner extends Component {
                                             </button>
                                         </li>
                                         <li>
-                                            <button disabled={!this.state.emailValid}>
+                                            <button disabled={!this.state.emailValid} onClick={this.submit}>
                                                 Submit
                                             </button>
                                         </li>

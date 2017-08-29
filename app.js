@@ -45,6 +45,7 @@ const mongoose = require('./js/db/mongoose');
 const User = require('./js/db/models/User');
 const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
+const EmailList = require('./js/db/models/EmailList');
 
 // config ================================================================================
 const port = require('./_config').port;
@@ -63,17 +64,58 @@ const app = express();
 // app.engine('handlebars', hbs.engine);
 // app.set('view engine', 'handlebars');
 
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.json({
+    limit: '50mb'
+}))
 app.use(bodyParser.urlencoded({
     extended: true,
     limit: '50mb',
-    parameterLimit:50000
+    parameterLimit: 50000
 }));
 
 
 // set location of assets
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(__dirname + "/public"));
+
+app.post('/add-notify-email', (req, res) => {
+    EmailList.findOne({
+        name: 'emailList'
+    }, (err, list) => {
+        if (err) {
+            res.status(500);
+            res.send({
+                error: err
+            });
+        } else if (list) {
+            list.emails.push(req.body.email);
+            list.save((err) => {
+                if (err) {
+                    res.status(500);
+                    res.send({
+                        error: err
+                    });
+                } else {
+                    res.sendStatus(200);
+                }
+            })
+        } else {
+            var emailList = new EmailList();
+            emailList.name = 'emailList'
+            emailList.emails = [req.body.email];
+            emailList.save((err) => {
+                if (err) {
+                    res.status(500);
+                    res.send({
+                        error: err
+                    });
+                } else {
+                    res.sendStatus(200);
+                }
+            })
+        }
+    })
+})
 
 app.use(function (req, res, next) {
     console.log('----------------------------------------------------------------\n')
@@ -123,7 +165,9 @@ app.use('/api/upvote', upvoteRoutes);
 app.use('/api/downvote', downvoteRoutes);
 
 app.get('/api/auth/popup/:provider', (req, res) => {
-    res.sendFile('./views/partials/popup.html', {root: __dirname});
+    res.sendFile('./views/partials/popup.html', {
+        root: __dirname
+    });
 });
 
 
