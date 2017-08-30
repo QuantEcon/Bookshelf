@@ -10,6 +10,7 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 // import GoogleIcon from 'react-icons/lib/fa/google'
+import Breadcrumbs from '../partials/Breadcrumbs'
 
 class EditProfile extends Component {
     constructor(props) {
@@ -303,6 +304,7 @@ class EditProfile extends Component {
                             </div>
                         </div>
                     : null}
+                <Breadcrumbs title='Edit-Profile'/>
                 <form onSubmit={this.saveProfile}>
                     <div className='row columns'>
                         <div className='edit-profile'>

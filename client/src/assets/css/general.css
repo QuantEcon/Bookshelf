@@ -17,6 +17,17 @@
     top: 0;
 }
 
+ul.links {
+    list-style-type: none;
+}
+
+li.link {
+    display: inline-block;
+    padding-top: .5rem;
+    padding-right:1rem;
+    padding-left: 1rem;
+}
+
 .comment-body .edited-tag {
     color: #888;
 }
@@ -79,4 +90,9 @@ img.text-loading-medium {
 img.loading-avatar {
     height: 100%;
     width: 200%;
+}
+
+.beta-banner {
+    background: white;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);    
 }

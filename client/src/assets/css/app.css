@@ -1729,7 +1729,7 @@ code, pre {
     transform: rotate(-135deg)
 }
 
-@-webkit-keyframes a {
+/* @-webkit-keyframes a {
     0% {
         background-color: #4d4d4d
     }
@@ -3056,7 +3056,7 @@ h1:hover .anchor-link, h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .a
 
 .imgwrap {
     text-align: center
-}
+} */
 
 @media (max-width: 767px) {
     div.input, div.output_area {

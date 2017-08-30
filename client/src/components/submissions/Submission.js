@@ -28,6 +28,7 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
+import Breadcrumbs from '../partials/Breadcrumbs'
 
 
 class Submission extends Component {
@@ -216,6 +217,9 @@ class Submission extends Component {
                     </div>
 
                 </Modal>
+                {this.props.isLoading 
+                ? null
+                : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
                 <div className='row'>
                     <div className='column'>
 

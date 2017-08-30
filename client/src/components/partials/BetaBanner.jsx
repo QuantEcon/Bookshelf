@@ -19,7 +19,9 @@ class BetaBanner extends Component {
         this.emailTextChanged = this
             .emailTextChanged
             .bind(this);
-        this.submit = this.submit.bind(this);
+        this.submit = this
+            .submit
+            .bind(this);
     }
 
     validateEmail = (email) => {
@@ -58,39 +60,44 @@ class BetaBanner extends Component {
     render() {
         return (
             <div>
-
+                <Modal
+                    isOpen={this.state.showModal}
+                    contentLabel='Notify Me'
+                    className='overlay'>
+                    <div className='my-modal'>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>
+                                Notify Me
+                            </h1>
+                        </div>
+                        <div className='modal-body'>
+                            <p className='padded-below'>
+                                If you would like to be notified when version 1.0 is released, please enter your
+                                email in here and submit.
+                            </p>
+                            <input
+                                className='center'
+                                type="text"
+                                placeholder='Email'
+                                onChange={this.emailTextChanged}/>
+                            <ul className='button-row'>
+                                <li>
+                                    <button className='alt' onClick={this.toggleShowModal}>
+                                        Cancel
+                                    </button>
+                                </li>
+                                <li>
+                                    <button disabled={!this.state.emailValid} onClick={this.submit}>
+                                        Submit
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </Modal>
                 <div className='row'>
                     <div className='column'>
-                        <Modal
-                            isOpen={this.state.showModal}
-                            contentLabel='Notify Me'
-                            className='overlay'>
-                            <div className='my-modal'>
-                                <div className='modal-header'>
-                                    <h1 className='modal-title'>
-                                        Notify Me
-                                    </h1>
-                                </div>
-                                <div className='modal-body'>
-                                    <p className='padded-below'>
-                                        If you would like to be notified when version 1.0 is released, please enter your email in here and submit.
-                                    </p>
-                                    <input className='center' type="text" placeholder='Email' onChange={this.emailTextChanged}/>
-                                    <ul className='button-row'>
-                                        <li>
-                                            <button className='alt' onClick={this.toggleShowModal}>
-                                                Cancel
-                                            </button>
-                                        </li>
-                                        <li>
-                                            <button disabled={!this.state.emailValid} onClick={this.submit}>
-                                                Submit
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </Modal>
+
                         <ul className='horizontal'>
                             <li className='center'>
                                 <p className='banner-center'>
@@ -107,6 +114,7 @@ class BetaBanner extends Component {
 
                     </div>
                 </div>
+                <hr/>
             </div>
         )
     }

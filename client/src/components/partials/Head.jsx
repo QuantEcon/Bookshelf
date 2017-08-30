@@ -12,20 +12,30 @@ class Head extends Component {
 
                         <div className="site-title">
                             <Link to='/'>
-                                <h2 className="site-name">QuantEconLib (beta)</h2>
+                                <h2 className="site-name">Bookshelf (beta)</h2>
                                 <p className="site-tag">Open notebook library for economic modeling</p>
                             </Link>
 
                         </div>
-                        
+
+                        <ul className='links'>
+                            <li className='link'>
+                                <Link to='/'>Home</Link>
+                            </li>
+                            <li className='link'>
+                                <Link to='/faq'>FAQ</Link>
+                            </li>
+                            <li className='link'>
+                                <Link to='/about'>About</Link>
+                            </li>
+                        </ul>
+
                         {this.props.isSignedIn
                             ? <ul className='site-menu'>
                                     <li className='menu-user'>
                                         <Link to="/user/my-profile">
                                             <div className='avatar'>
-                                                <img
-                                                    src={this.props.user.avatar}
-                                                    alt="My Avatar"/>
+                                                <img src={this.props.user.avatar} alt="My Avatar"/>
                                             </div>
                                             <span>My Profile</span>
                                         </Link>

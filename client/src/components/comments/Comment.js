@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import ThumbsUp from 'react-icons/lib/md/thumb-up';
-import ThumbsDown from 'react-icons/lib/md/thumb-down';
+// import ThumbsUp from 'react-icons/lib/md/thumb-up';
+// import ThumbsDown from 'react-icons/lib/md/thumb-down';
 import FlagIcon from 'react-icons/lib/md/flag';
 import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';

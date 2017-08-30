@@ -7,6 +7,7 @@ import NotebookPreview from '@nteract/notebook-preview';
 import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
+import Breadcrumbs from '../partials/Breadcrumbs'
 
 class Submit extends Component {
 
@@ -270,6 +271,7 @@ class Submit extends Component {
         return (
             <div>
                 <HeadContainer/>
+                <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview
@@ -277,6 +279,7 @@ class Submit extends Component {
                         transforms={transforms}
                         displayOrder={displayOrder}/>
                 </Modal>
+               
                 <div className='row columns'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
@@ -437,7 +440,7 @@ class Submit extends Component {
                                                 <p
                                                     className="input-hint-after input-hint orange bold"
                                                     onClick={this.toggleSummaryPreview}>
-                                                    Close Summary
+                                                    Close Preview
                                                 </p>
                                             </div>
                                         : <p className="input-hint input-hint-after">

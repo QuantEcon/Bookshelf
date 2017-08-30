@@ -6,6 +6,7 @@ import Markdown from 'react-markdown';
 
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
+import Breadcrumbs from '../partials/Breadcrumbs'
 
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
@@ -21,8 +22,8 @@ class User extends Component {
             .bind(this);
     }
 
-    compoentDidMount(){
-        if(this.props.isMyProfile){
+    compoentDidMount() {
+        if (this.props.isMyProfile) {
             document.title = 'My Profile'
         }
     }
@@ -46,7 +47,9 @@ class User extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer/> {this.props.isLoading
+                    ? null
+                    : <Breadcrumbs title={this.props.data.name}/>}
                 <div className='row columns'>
                     <div className='details'>
                         <div className='details-side'>

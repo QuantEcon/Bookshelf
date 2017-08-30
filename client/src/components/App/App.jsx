@@ -17,6 +17,9 @@ import EditSubmissionPreviewContainer from '../../containers/submission/EditSubm
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
 import SignIn from '../signin/SignIn';
+import FAQ from '../FAQ';
+import About from '../About';
+
 import '../../assets/css/app.css'
 import '../../assets/css/general.css'
 import '../../assets/css/formStyle.css'
@@ -36,6 +39,8 @@ class App extends Component {
           <div>
             <Switch>
               <Route exact path='/' component={Home}/>
+              <Route path='/faq' component={FAQ}/>
+              <Route path='/about' component={About}/>
               <Route path='/submission/:id' component={SubmissionContainer}/>
               <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
               <ProtectedRoute exact path='/edit-submission/:id/preview' component={EditSubmissionPreviewContainer}/>
