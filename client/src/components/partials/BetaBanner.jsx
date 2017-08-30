@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import Modal from 'react-modal'
 import axios from 'axios'
+import CheckmarkIcon from 'react-icons/lib/fa/check-circle-o'
+import ErrorIcon from 'react-icons/lib/md/error-outline'
 
 class BetaBanner extends Component {
     constructor(props) {
@@ -8,7 +10,8 @@ class BetaBanner extends Component {
         this.state = {
             showModal: false,
             emailValid: false,
-            email: ''
+            email: '',
+            submitted: false
         }
         this.toggleShowModal = this
             .toggleShowModal
@@ -49,11 +52,11 @@ class BetaBanner extends Component {
             .post('/add-notify-email', {email: this.state.email})
             .then(resp => {
                 console.log('[NotifyModal] - success adding email notify list: ', resp);
-                this.setState({showModal: false, email: ''})
+                this.setState({showModal: false, email: '', submitted: true, error: false})
             })
             .catch(err => {
                 console.log('[NotifyModal] - there was an error: ', err);
-                this.setState({showModal: false, email: ''})
+                this.setState({showModal: false, email: '', submitted: true, error: true})
             })
     }
 
@@ -95,6 +98,27 @@ class BetaBanner extends Component {
                         </div>
                     </div>
                 </Modal>
+                {this.state.submitted && !this.state.error
+                    ? <div className="success callout">
+                            <div className="row columns">
+                                <p className="callout-message">
+                                    <CheckmarkIcon/>
+                                    Thank you! We'll email you when version 1.0 is released
+                                </p>
+                            </div>
+                        </div>
+                    : null}
+
+                {this.state.submitted && this.state.error
+                    ? <div className="warning callout">
+                            <div className="row columns">
+                                <p className="callout-message">
+                                    <ErrorIcon/>
+                                    Sorry! An error has occurred
+                                </p>
+                            </div>
+                        </div>
+                    : null}
                 <div className='row'>
                     <div className='column'>
 
