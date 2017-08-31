@@ -3,31 +3,34 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
+import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
 import {fetchNBInfo} from '../../actions/submission'
 
 const actions = {
     ...AuthActions,
-    fetchNBInfo
+    fetchNBInfo,
+    downvoteSubmission,
+    upvoteSubmission
 }
 
 class SubmissionContainer extends Component {
     constructor(props) {
         super(props);
-        this.props.actions.fetchNBInfo(props.match.params.id);
+        this
+            .props
+            .actions
+            .fetchNBInfo(props.match.params.id);
     }
-
-    // componentWillReceiveProps(props){
-    //     console.log('[SubmissionContainer] - received new props: ', props);
-    // }
 
     render() {
         return (
             <div>
-                <Submission submission={this.props.submission} 
-                submissionID={this.props.match.params.id} 
-                isLoading={this.props.isLoading} 
-                currentUser={this.props.currentUser}
-                actions={this.props.actions}/>
+                <Submission
+                    submission={this.props.submission}
+                    submissionID={this.props.match.params.id}
+                    isLoading={this.props.isLoading}
+                    currentUser={this.props.currentUser}
+                    actions={this.props.actions}/>
             </div>
         )
 
@@ -36,12 +39,14 @@ class SubmissionContainer extends Component {
 
 function mapStateToProps(state, props) {
     var il = true;
-    if(state.submissionByID[props.match.params.id]){
+    if (state.submissionByID[props.match.params.id]) {
         il = state.submissionByID[props.match.params.id].isFetching
-    } 
+    }
     return {
         submission: state.submissionByID[props.match.params.id],
-        currentUser: state.auth.isSignedIn ? state.auth.user : null,
+        currentUser: state.auth.isSignedIn
+            ? state.auth.user
+            : null,
         isLoading: il
     }
 }

@@ -37,7 +37,6 @@ class Home extends Component {
         return (
             <div>
                 <HeadContainer/>
-                
                 <BetaBanner/>
                 <SubmissionListContainer searchP={this.state.searchParams}/>
             </div>

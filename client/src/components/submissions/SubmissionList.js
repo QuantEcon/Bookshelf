@@ -5,7 +5,7 @@ import React, {Component} from 'react';
 
 import Searchbar from '../searchbar/Searchbar';
 import SubmissionPreview from './submissionPreview';
-import ReactPaginate from 'react-paginate'
+import Paginate from 'react-paginate'
 
 class SubmissionList extends Component {
 
@@ -70,7 +70,7 @@ class SubmissionList extends Component {
 }
                                 </div>}
                         </div>
-                        <ReactPaginate 
+                        <Paginate 
                             onPageChange={this.onPageChange}
                             pageCount={this.props.totalSubmissions/10}
                             pageRangeDisplayed ={this.props.totalSubmissions/10}

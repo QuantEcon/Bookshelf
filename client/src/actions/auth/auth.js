@@ -2,18 +2,6 @@ import store from '../../store/store';
 import * as SubmissionActions from '../submission';
 import axios from 'axios'
 
-// export const AUTH_POST_COMMENT = 'POST_COMMENT'
-// function authPostComment({
-//     submissionID,
-//     comment
-// }) {
-//     return {
-//         type: AUTH_POST_COMMENT,
-//         submissionID,
-//         comment
-//     }
-// }
-
 export const AUTH_POST_REPLY = 'POST_REPLY'
 export function authPostReply({
     submissionID,
@@ -27,37 +15,6 @@ export function authPostReply({
         commentID,
         reply,
         error
-    }
-}
-export const AUTH_REMOVE_UPVOTE = 'AUTH_REMOVE_UPVOTE'
-export function removeUpvote(id) {
-    return {
-        type: AUTH_REMOVE_UPVOTE,
-        id
-    }
-}
-
-export const AUTH_ADD_UPVOTE = 'AUTH_ADD_UPVOTE'
-export function addUpvote(id) {
-    return {
-        type: AUTH_ADD_UPVOTE,
-        id
-    }
-}
-
-export const AUTH_REMOVE_DOWNVOTE = 'AUTH_REMOVE_DOWNVOTE'
-export function removeDownvote(id) {
-    return {
-        type: AUTH_REMOVE_DOWNVOTE,
-        id
-    }
-}
-
-export const AUTH_ADD_DOWNVOTE = 'AUTH_ADD_DOWNVOTE'
-export function addDownvote(id) {
-    return {
-        type: AUTH_ADD_DOWNVOTE,
-        id
     }
 }
 
@@ -140,20 +97,6 @@ const removeSocial = ({
         social
     }
 }
-
-// export const EDIT_COMMENT = 'EDIT_COMMENT'
-// const editCommentAction = ({
-//     commentID,
-//     submissionID,
-//     newCommentText
-// }) => {
-//     return {
-//         type: EDIT_COMMENT,
-//         submissionID,
-//         commentID,
-//         newCommentText
-//     }
-// }
 
 export const removeSocialAccount = ({
     social
@@ -304,228 +247,6 @@ export const editProfile = ({
     }
 }
 
-export const upvoteSubmission = ({
-    submissionID
-}) => {
-    console.log('[AuthActions] - upvote submission : ', submissionID)
-    return function (dispatch) {
-        if (store.getState().auth.isSignedIn) {
-            axios.post('/api/upvote/submission', {
-                submissionID
-            }, {
-                headers: {
-                    'Authorization': 'JWT ' + store
-                        .getState()
-                        .auth
-                        .token
-                }
-            }).then(response => {
-                console.log('[AuthActions] - upvote submission response: ', response);
-                if (response.data.error) {
-                    console.log('[AuthActions] - error upvote submission: ', response.data.message);
-                }
-                const currentUser = store
-                    .getState()
-                    .auth
-                    .user;
-                if (currentUser.upvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from upvotes
-                    dispatch(removeUpvote(submissionID));
-                    dispatch(SubmissionActions.downvoteSub(submissionID) //has already downvoted
-                    )
-                } else if (currentUser.downvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from downvotes
-                    dispatch(removeDownvote(submissionID))
-                    dispatch(addUpvote(submissionID))
-                    dispatch(SubmissionActions.upvoteSub(submissionID))
-                    dispatch(SubmissionActions.upvoteSub(submissionID) //hasn't downvoted or upvoted
-                    )
-                } else {
-                    dispatch(addUpvote(submissionID))
-                    dispatch(SubmissionActions.upvoteSub(submissionID))
-                }
-            }).catch(error => {
-                console.log('[AuthActions] - error upvoting submission: ', error);
-            })
-        } else {
-            //TODO: what to do if not authenticated?
-            console.log('not signed in')
-        }
-    }
-}
-
-export const downvoteSubmission = ({
-    submissionID
-}) => {
-    console.log('[AuthActions] - downvote submission : ', submissionID)
-    return function (dispatch) {
-        if (store.getState().auth.isSignedIn) {
-            axios.post('/api/downvote/submission', {
-                submissionID
-            }, {
-                headers: {
-                    'Authorization': 'JWT ' + store
-                        .getState()
-                        .auth
-                        .token
-                }
-            }).then(response => {
-                if (response.data.error) {
-                    console.log('[AuthActions] - error downvote submission: ', response.data.message);
-                    return;
-                }
-                const currentUser = store
-                    .getState()
-                    .auth
-                    .user;
-                if (currentUser.downvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from downvotes
-                    console.log('[AuthActions] - has already downvoted');
-                    dispatch(removeDownvote(submissionID));
-                    dispatch(SubmissionActions.upvoteSub(submissionID))
-                } else if (currentUser.upvotes.indexOf(submissionID) > -1) {
-                    //TODO: remove from upvotes
-                    console.log('[AuthActions] - has already upvoted')
-                    dispatch(removeUpvote(submissionID))
-                    dispatch(addDownvote(submissionID))
-                    dispatch(SubmissionActions.downvoteSub(submissionID))
-                    dispatch(SubmissionActions.downvoteSub(submissionID) //hasn't downvoted or upvoted
-                    )
-                } else {
-                    dispatch(addDownvote(submissionID))
-                    dispatch(SubmissionActions.downvoteSub(submissionID))
-                }
-            }).catch(error => {
-                console.log('[AuthActions] - error downvoting submission: ', error);
-            })
-
-        } else {
-            //TODO: what to do if not authenticated?
-            console.log('not signed in')
-        }
-    }
-}
-
-export const downvoteComment = ({
-    submissionID,
-    commentID
-}) => {
-    return function (dispatch) {
-        if (store.getState().auth.isSignedIn) {
-            axios.post('/api/downvote/comment', {
-                commentID
-            }, {
-                headers: {
-                    'Authorization': 'JWT ' + store
-                        .getState()
-                        .auth
-                        .token
-                }
-            }).then(response => {
-                if (response.data.error) {
-                    console.log('[AuthActions] - server returned error downvoting comment: ', response.data.message)
-                    return;
-                }
-                const currentUser = store
-                    .getState()
-                    .auth
-                    .user;
-                if (currentUser.downvotes.indexOf(commentID) > -1) {
-                    dispatch(removeDownvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom({
-                            commentID,
-                            submissionID
-                        }) //has already upvoted
-                    );
-                } else if (currentUser.upvotes.indexOf(commentID) > -1) {
-                    dispatch(removeUpvote(commentID));
-                    dispatch(addDownvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                    dispatch(SubmissionActions.downvoteCom({
-                            commentID,
-                            submissionID
-                        }) //hasn't upvoted or downvoted
-                    );
-                } else {
-                    dispatch(addDownvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                }
-            }).catch(error => {
-                console.log('[AuthActions] - error downvoting comment: ', error);
-            })
-        } else {
-            //TODO: what to do if not authenticated?
-            console.log('not signed in')
-        }
-    }
-}
-
-export const upvoteComment = ({
-    submissionID,
-    commentID
-}) => {
-    return function (dispatch) {
-        console.log('[AuthActions] - upvote comment')
-        if (store.getState().auth.isSignedIn) {
-            axios.post('/api/upvote/comment', {
-                commentID,
-                submissionID
-            }, {
-                headers: {
-                    'Authorization': 'JWT ' + store
-                        .getState()
-                        .auth
-                        .token
-                }
-            }).then(response => {
-                if (response.data.error) {
-                    console.log('[AuthActions] - Server returned error upvoting comment: ', response.data.message);
-                }
-                const currentUser = store
-                    .getState()
-                    .auth
-                    .user;
-                if (currentUser.upvotes.indexOf(commentID) > -1) {
-                    console.log('[AuthActions] - already upvoted comment')
-                    dispatch(removeUpvote(commentID));
-                    dispatch(SubmissionActions.downvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                } else if (currentUser.downvotes.indexOf(commentID) > -1) {
-                    dispatch(removeDownvote(commentID));
-                    dispatch(addUpvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                    dispatch(SubmissionActions.upvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                } else {
-                    dispatch(addUpvote(commentID));
-                    dispatch(SubmissionActions.upvoteCom({
-                        commentID,
-                        submissionID
-                    }));
-                }
-            }).catch(error => {
-                console.log('[AuthActions] - error upvoting comment: ', error);;
-            })
-        } else {
-            //TODO: what to do if not authenticated?
-            console.log('not signed in')
-        }
-    }
-}
-
 export const submitComment = (submissionID, comment) => {
     return function (dispatch) {
         axios.post('/api/submit/comment/', {
@@ -613,17 +334,5 @@ export const submitReply = ({
                 error
             }))
         })
-    }
-}
-
-export const upvoteReply = ({commentID, replyID, submissionID}) => {
-    return (dipatch) => {
-        console.log('[AuthActions] - upvote reply: ', commentID, replyID, submissionID);
-    }
-}
-
-export const downvoteReply = ({commentID, replyID, submissionID}) => {
-    return (dispatch) => {
-        console.log('[AuthActions] - downvote reply: ', commentID, replyID, submissionID);
     }
 }
