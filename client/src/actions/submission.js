@@ -1,6 +1,13 @@
 import axios from 'axios'
 import store from '../store/store'
 
+export const DELETE_SUBMISSION = 'DELETE_SUBMISSION'
+const deleteSubmissionAction = ({submissionID}) => {
+    return {
+        type: DELETE_SUBMISSION,
+        submissionID
+    }
+}
 // import {fetch as authFetch} from 'redux-auth';
 export const REQUEST_NB_INFO = 'REQUEST_NB_INFO';
 export function requestNBInfo(notebookID = null) {
@@ -113,26 +120,6 @@ export const editSubmission = ({
     notebookJSON,
     submissionID
 }) => {
-    // console.log('[SubmissionActions] - edit submission: ', submissionData);
-    // return (dispatch) => {
-    //     axios.post('/api/submit/edit-submission', {
-    //         submissionData
-    //     }, {
-    //         headers: {
-    //             'authorization': 'JWT ' + store.getState().auth.token
-    //         }
-    //     }).then(response => {
-    //         if (response.data.error) {
-    //             dispatch(editSubmissionAction({
-    //                 error: response.data.error
-    //             }))
-    //         } else {
-    //             dispatch(editSubmissionAction({
-    //                 submission: submissionData
-    //             }));
-    //         }
-    //     })
-    // }
     return (dispatch) => {
         var submission = {
             ...formData,
@@ -191,9 +178,36 @@ export const editSubmission = ({
     }
 }
 
-export const fetchNBInfo = (notebookID) => {
+export const deleteSubmission = (submissionID) => {
     return function (dispatch) {
-        if (needToFetch(store.getState(), notebookID)) {
+        if (store.getState().auth.isSignedIn) {
+            //check if the submission is the user's
+            if (store.getState().auth.user.submissions.indexOf(submissionID) > -1) {
+                axios.post('/api/delete/submission', {
+                    submissionID
+                }, {
+                    headers: {
+                        'Authorization': 'JWT ' + store.getState().auth.token
+                    }
+                }).then(resp => {
+                    if (resp.error) {
+                        console.error('[SubmissionActions] - Server returned an error when deleting a submission:', resp.error);
+                    } else {
+                        dispatch(deleteSubmissionAction({submissionID}));
+                    }
+                }).catch(err => {
+                    console.error('[SubmissionActions] - An error occurred while deleting a submission: ', err);
+                })
+            } else {
+                console.log('[SubmissionActions] - Submission doesn\'t belong to the user. Can\'t delete');
+            }
+        }
+    }
+}
+
+export const fetchNBInfo = ({notebookID, forced}) => {
+    return function (dispatch) {
+        if (needToFetch(store.getState(), notebookID) || forced) {
             console.log('[FetchSub] - fetching for ', notebookID)
             dispatch(requestNBInfo(notebookID));
             fetch('/api/search/notebook/' + notebookID).then(

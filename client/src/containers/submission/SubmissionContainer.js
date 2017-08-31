@@ -4,13 +4,14 @@ import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
 import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
-import {fetchNBInfo} from '../../actions/submission'
+import {fetchNBInfo, deleteSubmission} from '../../actions/submission'
 
 const actions = {
     ...AuthActions,
     fetchNBInfo,
     downvoteSubmission,
-    upvoteSubmission
+    upvoteSubmission,
+    deleteSubmission
 }
 
 class SubmissionContainer extends Component {
@@ -19,7 +20,7 @@ class SubmissionContainer extends Component {
         this
             .props
             .actions
-            .fetchNBInfo(props.match.params.id);
+            .fetchNBInfo({notebookID: props.match.params.id});
     }
 
     render() {

@@ -87,10 +87,10 @@ export const confirm = ({submission}) => {
         }).then(response => {
             console.log('[SubmitActions] - confirmation success: ', response);
             dispatch(confirmSubmit({
-                id: response.data.id
+                id: response.data.submissionID
             }))
-            dispatch(fetchSubmissions());
-            return response.data.id;
+            dispatch(fetchSubmissions({forced: true}));
+            return response.data.submissionID;
         }).catch(error => {
             console.log('[SubmitActions] - error in confirm submit: ', error);
             dispatch(confirmSubmit({

@@ -175,22 +175,33 @@ app.post('/confirm', passport.authenticate('jwt', {
 
     newSub.fileName = req.body.submission.fileName;
     newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
-
+    console.log('[Submit] - created submission: ', newSub);
     User.findById(req.user._id, (err, user) => {
         if(err) {
+            console.err('[Submit] - error finding user: ', err);
             res.status(500);
             res.send({error: err});
         } else if(user){
             newSub.save((err, submission) => {
                 if(err){
+                    console.err('[Submit] - error saving user: ', err);
                     res.status(500);
                     res.send({error: err});
                 } else {
+                    console.log('[Submit] - add to user.submissions: ', submission._id);
                     user.submissions.push(submission._id)
+                    user.save((err, savedUser) => {
+                        if(err){
+                            console.error('[Submit] - error saving user: ', err);
+                        } else {
+                            console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
+                        }
+                    });
                     res.send({submissionID: submission._id});
                 }
             })
         } else {
+            console.warn('[Submit] - no user was found');
             res.status(500);
             res.send({error: 'No user found'});
         }

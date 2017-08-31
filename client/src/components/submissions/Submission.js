@@ -179,7 +179,7 @@ class Submission extends Component {
 
     deleteSubmission() {
         console.log('[Submission] - delete submission clicked');
-        alert('This hasn\'t been implemented yet');
+        this.props.actions.deleteSubmission(this.props.submissionID);
         this.toggleDeleteModal();
     }
 

@@ -40,7 +40,7 @@ export function invalidateSubmissionList() {
 
 //TODO: Dispatch on error action
 
-export const fetchSubmissions = (searchParams = {}) => {
+export const fetchSubmissions = ({searchParams, forced}) => {
     var sp = Object.assign({}, {
         lang: 'All',
         time: 'All time',
@@ -51,7 +51,7 @@ export const fetchSubmissions = (searchParams = {}) => {
         sortBy: 'Trending'
     }, searchParams)
     return function (dispatch) {
-        if (shouldFetchSummaries(store.getState(), sp)) {
+        if (shouldFetchSummaries(store.getState(), sp) || forced) {
             dispatch(requestSubmissionPreviews(sp));
             var qs = queryString.stringify(sp);
             return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {
