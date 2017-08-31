@@ -13,8 +13,6 @@ Please work in branches and make PR's
 * Run `npm run start-client` to start the Webpack Development server for the client side React app
 * Run `npm run build-client` to package the React client app for usage in production
 
-NOTE: if you are working on the React client-side application, you will need to switch to the `react-client` branch using `git checkout react-client`
-
 #### Needed files
 There are some config files that are not on the repo because they contain sensitive information. These include:
 * `./_config.js`
@@ -67,7 +65,9 @@ There are some config files that are not on the repo because they contain sensit
 
         module.exports = ids;
 
-Once you have made these files, you can use the commands to get the server up and running.
+In addition to these files, you will need to spin up your own instance of a Mongo database.
+
+Once you have done this, you can use the commands to get the server up and running.
 
 ### Testing
 Please review existing issues before submitting a new one. If no related issue exists, feel free to create a new one.
@@ -78,5 +78,3 @@ Please review existing issues before submitting a new one. If no related issue e
 #### Enchancement requests:
 * Label the issue with 'enchancement'
 * Provide detailed description of what enchancement you would like
-#### JS Library Requests
-* If a notebook requires a specific JS library, open and issue with a link to the library
