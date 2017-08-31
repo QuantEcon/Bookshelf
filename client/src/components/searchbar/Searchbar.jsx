@@ -131,7 +131,6 @@ class Searchbar extends Component {
         if(e){
             e.preventDefault();
         }
-        console.log('[Searchbar] - search params: ', this.state.searchParams)
         if(this.state.searchParams.keywords !== ''){
             this.setState({hasCurrentSearch: true, previousSearch: this.state.searchParams.keywords, showSearchBar: false})
         }
@@ -147,7 +146,6 @@ class Searchbar extends Component {
                 sortBy: e.target.value
             }
         }, this.submit);
-        console.log("Sort by changed: ", e.target.value);
     }
     timeChanged(e) {
         this.setState({
@@ -156,7 +154,6 @@ class Searchbar extends Component {
                 time: e.target.value
             }
         }, this.submit);
-        console.log("Time changed: ", e.target.value);
     }
     topicChanged(e) {
         this.setState({
@@ -164,7 +161,6 @@ class Searchbar extends Component {
                 topic: e.target.value
             })
         }, this.submit);
-        console.log("Topic changed: ", e.target.value);
     }
     langChanged(e) {
         this.setState({
@@ -173,7 +169,6 @@ class Searchbar extends Component {
                 lang: e.target.value
             }
         }, this.submit);
-        console.log("lang changed: ", e.target.value);
     }
 
     keywordsChanged(e) {

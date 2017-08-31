@@ -193,14 +193,29 @@ export const editSubmission = ({
 
 export const fetchNBInfo = (notebookID) => {
     return function (dispatch) {
-        dispatch(requestNBInfo(notebookID));
-        fetch('/api/search/notebook/' + notebookID).then(
-            response => response.json(),
-            error => {
-                console.log('An error occured: ', error);
-            }
-        ).then(data => {
-            dispatch(receiveNBInfo(notebookID, data));
-        })
+        if (needToFetch(store.getState(), notebookID)) {
+            console.log('[FetchSub] - fetching for ', notebookID)
+            dispatch(requestNBInfo(notebookID));
+            fetch('/api/search/notebook/' + notebookID).then(
+                response => response.json(),
+                error => {
+                    console.log('An error occured: ', error);
+                }
+            ).then(data => {
+                dispatch(receiveNBInfo(notebookID, data));
+            })
+        } else {
+            console.log('[FetchSub] - don\'t need to fetch');
+        }
+    }
+}
+
+const needToFetch = (state, submissionID) => {
+    if (!state.submissionByID[submissionID]) {
+        return true;
+    } else if (state.submissionByID[submissionID].didInvalidate) {
+        return true;
+    } else {
+        return false;
     }
 }

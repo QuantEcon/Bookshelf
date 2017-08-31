@@ -11,12 +11,6 @@ class SubmissionListContainer extends Component {
             searchParams: Object.assign({}, props.searchParams, props.searchP)
         }
         this.onSearch=this.onSearch.bind(this);
-        
-        console.log('[SubmissionListContainer] - params: ', this.state.searchParams);
-        // this
-        //     .props
-        //     .actions
-        //     .fetchSubmissions(this.state.searchParams);
     }
 
     onSearch = (searchParams) => {

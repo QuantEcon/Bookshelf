@@ -23,14 +23,12 @@ class SubmissionList extends Component {
     }
     
     onSearch = (searchParams) => {
-        console.log('[SubmissionList] - on search: ',searchParams);
         this.setState({
             searchParams
         })
         this.props.onSearch(searchParams);
     }
     onPageChange = (page) => {
-        console.log('[SubmissionList] - page changed: ', page, this.state.searchParams);
         var newSearchParams = Object.assign({}, this.state.searchParams, {
             page: page.selected + 1
         })

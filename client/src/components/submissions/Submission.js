@@ -41,8 +41,6 @@ class Submission extends Component {
             deleteModalOpen: false
         }
 
-        console.log('[Submission] - actions: ', props.actions);
-
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -107,7 +105,6 @@ class Submission extends Component {
     }
 
     upvote() {
-        console.log('upvote: ', this.props.submissionID);
         this
             .props
             .actions
@@ -116,7 +113,6 @@ class Submission extends Component {
     }
 
     downvote() {
-        console.log('downvote');
         this
             .props
             .actions
@@ -125,7 +121,6 @@ class Submission extends Component {
     }
 
     upvoteComment(commentID) {
-        console.log('[Submission] - upvote comment: ', commentID);
         this
             .props
             .actions
@@ -139,7 +134,6 @@ class Submission extends Component {
             .downvoteComment({commentID, submissionID: this.props.submissionID});
     }
     upvoteReply({replyID, commentID}) {
-        console.log('[Submission] - upvote comment: ', commentID);
         this
             .props
             .actions
@@ -158,7 +152,6 @@ class Submission extends Component {
     }
 
     onSubmitComment(comment) {
-        console.log('[Submission] - submit new comment: ', comment);
         this
             .props
             .actions
@@ -166,7 +159,6 @@ class Submission extends Component {
     }
 
     submitReply({reply, commentID}) {
-        console.log('[Submission] - reply and commentID:', reply, commentID)
         this
             .props
             .actions

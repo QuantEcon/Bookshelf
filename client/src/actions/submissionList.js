@@ -1,4 +1,5 @@
 import queryString from 'query-string';
+import store from '../store/store'
 // import {fetch as authFetch} from 'redux-auth'
 
 export const REQUEST_SUBMISSION_PREVIEWS = 'REQUEST_SUBMISSION_PREVIEWS'
@@ -25,15 +26,15 @@ export function receiveSubmissionPreviews(searchParams, json) {
         submissionList: json.submissions,
         authors: json.authors,
         totalSubmissions: json.totalSubmissions,
-        receivedAt: Date.now()
+        receivedAt: new Date()
     }
 }
 
 export const INVALIDATE_SUBMISSION_LIST = 'INVALIDATE_SUBMISSION_LIST';
-export function invalidateSubmissionList(searchParams) {
+export function invalidateSubmissionList() {
     return {
         type: INVALIDATE_SUBMISSION_LIST,
-        searchParams
+        
     }
 }
 
@@ -49,22 +50,38 @@ export const fetchSubmissions = (searchParams = {}) => {
         page: 1,
         sortBy: 'Trending'
     }, searchParams)
-    console.log('[FetchSubmissions] - search params: ', sp);
     return function (dispatch) {
-        dispatch(requestSubmissionPreviews(sp));
-        var qs = queryString.stringify(sp);
-        return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {
-            dispatch(receiveSubmissionPreviews(sp, json));
-        });
+        if (shouldFetchSummaries(store.getState(), sp)) {
+            dispatch(requestSubmissionPreviews(sp));
+            var qs = queryString.stringify(sp);
+            return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {
+                dispatch(receiveSubmissionPreviews(sp, json));
+            });
+        } else {
+            console.log('[FetchSubmissions] - don\'t need to fetch');
+        }
     }
 }
 
 export const shouldFetchSummaries = (state, searchParams) => {
     if (!state.submissionList) {
+        console.log('[ShouldFetch] - !state.submissionList')
         return true;
     } else if (state.isFetching) {
+        console.log('[ShouldFetch] - state.isFetching')
         return false;
     } else if (state.didInvalidate) {
+        console.log('[ShouldFetch] - state.didInvalidate')
         return true;
+    } else if(JSON.stringify(searchParams) !== JSON.stringify(state.submissionList.searchParams)){
+        console.log('[ShouldFetch] - search params not equal: ');
+        return true
+    } else if(new Date() > new Date(state.submissionList.lastUpdated.getTime() + 5*60000)){
+        console.log('[ShouldFetch] - time expired');
+        return true;
+    } else {
+        var expiresAt = new Date(state.submissionList.lastUpdated.getTime() + 5*60000);
+        console.log('[ShouldFetch] - expires at: ', expiresAt.getHours() + ':'+ expiresAt.getMinutes());
+        return false;
     }
 }
