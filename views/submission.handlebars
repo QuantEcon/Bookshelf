@@ -34,7 +34,7 @@
 
 
                 <ul class="admin-options">
-                    <li><a href="#" title="Flag notebook" data-open="flagNotebookModal"><span
+                    <li><a href="#" title="Flag notebook" ng-click="showFlagModal"><span
                             class="fi-flag"></span></a></li>
                     {{#if currentUser.isAdmin}}
                         <li><a href="#" title="Delete notebook" data-open="deleteContentModal"><span
@@ -119,7 +119,7 @@
                             <p ng-show="!dataReady" class="avatar"><img src="/assets/img/default-avatar.png"
                                                                         class="loading-avatar"></p>
                             <p class="avatar" ng-show="dataReady"><a href="/user/{[{author._id}]}/"><img
-                                    src={[{author.avatar}]}></a></p>
+                                    src='/assets/img/quant-econ-avatar.png'></a></p>
 
                         </div>
 
@@ -240,7 +240,7 @@
 
                                 <a href="/user/{[{comment.author}]}/"
                                    ng-repeat="commentAuthor in commentAuthors | filter: {_id: comment.author}">
-                                    <img src={[{commentAuthor.avatar}]}>
+                                    <img src='/assets/img/quant-econ-avatar.png'>
                                 </a>
 
                             </div> <!-- .comment-avatar -->
@@ -400,7 +400,7 @@
                                         <div class="comment-avatar">
 
                                             <a href="/user/{[{reply.author}]}/">
-                                                <img src="{[{author.avatar}]}">
+                                                <img src="/assets/img/quant-econ-avatar.png">
                                             </a>
 
                                         </div> <!-- .comment-avatar -->

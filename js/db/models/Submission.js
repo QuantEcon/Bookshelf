@@ -9,14 +9,12 @@ var ObjectId = Schema.ObjectId;
 
 var submissionSchema = new Schema({
     title: String,
-    topicList: [String],
+    topics: [String],
     lang: String,
     summary: String,
-    notebook: String, // html of notebook
-    filepath: String, // path to file,
     fileName: String,
-    file: Object,
-
+    notebookJSONString: String,
+    ipynbFile: String,
 
     author: ObjectId,
     coAuthors: [ObjectId],
@@ -34,7 +32,6 @@ var submissionSchema = new Schema({
 });
 
 submissionSchema.plugin(mongoosePaginate);
-console.log("Set indexes");
 submissionSchema.index({title: 'text', summary: 'text'});
 
 

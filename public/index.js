@@ -8,4 +8,5 @@ var ngPaginate = require('angular-utils-pagination');
 var moment = require('angular-moment');
 var FileSaver = require('angular-file-saver');
 var ngstorage = require('ngstorage');
-
+var reCaptcha = require('angular-recaptcha');
+var angularModal = require('angular-modal-service');

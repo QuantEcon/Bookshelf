@@ -12,15 +12,28 @@ var path = require('path');
 
 var app = express.Router();
 
-
+/*
+    Query the url with the following parameters
+    {
+        lang: 'language the notebook is in'
+        topic: 'topic of the notebook'
+        author: 'id of author of notebook'
+        time: 'time filter'
+        keywords: 'string of key words to search for'
+        page: 'current page # to search for'
+        sortBy: 'sorting by characteristic'
+    }
+*/
 app.get('/all-submissions', function (req, res) {
-    console.log("req.query: ", req.query);
-    var searchParams = {};
+    var searchParams = {
+        deleted: false
+    };
     if (req.query.lang !== 'All') {
         searchParams.lang = req.query.lang
     }
     if (req.query.topic !== 'All') {
-        searchParams.topicList = req.query.topic;
+        console.log('[Search] - topic: ', req.query.topic)
+        searchParams.topics = req.query.topic;
     }
     if (req.query.author) {
         if (req.query.author === 'my-profile') {
@@ -34,14 +47,17 @@ app.get('/all-submissions', function (req, res) {
 
     var options = {
         limit: 10,
-        sort: {published: -1},
+        sort: {
+            published: -1
+        },
         page: page,
         select: select
     };
 
     if (req.query.keywords !== "") {
-        console.log("Search has keywords");
-        searchParams.$text = {$search: req.query.keywords};
+        searchParams.$text = {
+            $search: req.query.keywords
+        };
     }
 
     if (req.query.time) {
@@ -50,21 +66,27 @@ app.get('/all-submissions', function (req, res) {
                 var today = new Date();
                 //todo: subtract 24 hours, don't just set to 00:00
                 today.setHours(today.getHours() - 24);
-                searchParams.published = {$gt: today};
+                searchParams.published = {
+                    $gt: today
+                };
                 break;
             case 'This month':
                 var month = new Date();
                 //todo: subtract 30 days, don't just set to 1st
                 month.setDate(month.getDate() - 30);
                 month.setHours(0, 0, 0, 0);
-                searchParams.published = {$gt: month};
+                searchParams.published = {
+                    $gt: month
+                };
                 break;
             case 'This year':
                 var year = new Date();
                 //todo: subtract 365 days, don't just set to Jan 1st
                 year.setDate(year.getDate() - 365);
                 year.setHours(0, 0, 0, 0);
-                searchParams.published = {$gt: year};
+                searchParams.published = {
+                    $gt: year
+                };
                 break;
             case 'All time':
                 break;
@@ -75,14 +97,20 @@ app.get('/all-submissions', function (req, res) {
             case 'Date':
                 break;
             case 'Comments':
-                options.sort = {'totalComments': -1, 'published': -1};
+                options.sort = {
+                    'totalComments': -1,
+                    'published': -1
+                };
                 break;
             case 'Trending':
                 break;
             case 'Views':
                 break;
             case 'Votes':
-                options.sort = {'score': -1, 'published': -1};
+                options.sort = {
+                    'score': -1,
+                    'published': -1
+                };
         }
 
     }
@@ -106,13 +134,16 @@ app.get('/all-submissions', function (req, res) {
             var authorIds = submissions.map(function (submission) {
                 return submission.author;
             });
-            User.find({_id: {$in: authorIds}}, 'name avatar _id isAdmin', function (err, authors) {
+            User.find({
+                _id: {
+                    $in: authorIds
+                }
+            }, 'name avatar _id', function (err, authors) {
                 if (err) {
                     console.log("Error occurred finding authors");
                     res.status(500);
                     res.send("Error occurred finding authors");
                 } else {
-                    res.status(200);
                     res.send({
                         submissions: submissions,
                         totalSubmissions: result.total,
@@ -129,6 +160,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var notebook;
     var commentAuthorIDs;
     var replyIDs;
+    var mergedReplyIDs;
     var replyAuthorIDs;
 
     var notebookID = req.params.nbid;
@@ -137,12 +169,22 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary published lang notebook fileName";
-                Submission.findOne({_id: mdb.ObjectId(notebookID), deleted: false}, select, function (err, submission) {
+                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString";
+                Submission.findOne({
+                    _id: mdb.ObjectId(notebookID),
+                    deleted: false
+                }, select, function (err, submission) {
                     if (err) callback(err);
-                    else {
+                    else if (submission) {
                         notebook = submission;
-                        callback(null, submission);
+                        notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
+                        notebook.notebookJSONString = null;
+                        console.log('[Search] - typeof notebookJSON: ', typeof(notebook.notebookJSON));
+                        callback(null, notebook);
+
+                    } else {
+                        console.log('submission not found');
+                        callback('Not found', null);
                     }
                 });
             },
@@ -150,7 +192,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             auth: function (callback) {
                 var select = "_id avatar name";
 
-                User.findOne({_id: mdb.ObjectId(notebook.author)}, select, function (err, author) {
+                User.findOne({
+                    _id: mdb.ObjectId(notebook.author)
+                }, select, function (err, author) {
                     if (err) callback(err);
                     else {
                         callback(null, author);
@@ -160,7 +204,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             //get co-authors
             coAuth: function (callback) {
                 var select = "_id avatar name";
-                User.find({_id: {$in: notebook.coAuthors}}, function (err, coAuthors) {
+                User.find({
+                    _id: {
+                        $in: notebook.coAuthors
+                    }
+                }, function (err, coAuthors) {
                     if (err) callback(err);
                     else {
                         callback(null, coAuthors);
@@ -170,7 +218,12 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             //get comments
             coms: function (callback) {
                 // todo: add select statement
-                Comment.find({_id: {$in: notebook.comments}, deleted: false}, function (err, comments) {
+                Comment.find({
+                    _id: {
+                        $in: notebook.comments
+                    },
+                    deleted: false
+                }, function (err, comments) {
                     if (err) callback(err);
                     else {
                         commentAuthorIDs = comments.map(function (comment) {
@@ -178,9 +231,12 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         });
                         replyIDs = comments.map(function (comment) {
                             return comment.replies.map(function (reply) {
+                                console.log('\tReply: ', reply);
                                 return reply;
                             });
                         });
+                        mergedReplyIDs = [].concat.apply([], replyIDs);
+                        console.log('reply ids', replyIDs);
 
                         callback(null, comments)
                     }
@@ -189,7 +245,12 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             reps: function (callback) {
                 //get replies
                 // todo: add select statement
-                Comment.find({_id: {$in: replyIDs[0]}, deleted: false}, function (err, replies) {
+                Comment.find({
+                    _id: {
+                        $in: mergedReplyIDs
+                    },
+                    deleted: false
+                }, function (err, replies) {
                     if (err) callback(err);
                     else {
                         replyAuthorIDs = replies.map(function (reply) {
@@ -204,7 +265,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 //only get name, id, and avatar from comment/reply authors
                 var select = "_id avatar name";
                 var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
-                User.find({_id: {$in: mergedAuthorIDs}}, select, function (err, commentAuthors) {
+                User.find({
+                    _id: {
+                        $in: mergedAuthorIDs
+                    }
+                }, select, function (err, commentAuthors) {
                     if (err) callback(err);
                     else {
                         callback(null, commentAuthors);
@@ -217,19 +282,23 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);
-                    res.render('500');
+                    res.sendStatus('500');
                 } else {
                     console.log("Couldn't find notebook");
-                    res.render('404');
+                    res.sendStatus('404');
+                    return;
                 }
             }
 
             var location = __dirname + notebook.notebook;
-            var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
+            // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
+            //TODO: refactor to store JSON on submission then send that
+            console.log('dirname: ', __dirname);
 
             var data = {
                 notebook: results.nb,
-                notebookHTML: notebookHTML,
+                // notebookHTML: notebookHTML,
+                notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
                 coAuthors: results.coAuth,
@@ -263,7 +332,7 @@ app.get('/users', function (req, res) {
 
     console.log("Searching users: ", params);
 
-    var select = "_id avatar name summary joinDate facebook.url github.url twitter.url email oneSocial";
+    var select = "_id avatar name summary joinDate fb.url github.url twitter.url email oneSocial submissions";
 
     User.find(params, select, function (err, users) {
         if (err) {

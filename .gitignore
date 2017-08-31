@@ -5,6 +5,7 @@ npm-debug.log
 frontend
 data/
 files/
+client/src/assets/MathJax
 
 #config
 _config.js

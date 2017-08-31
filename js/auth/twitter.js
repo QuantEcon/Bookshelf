@@ -97,6 +97,7 @@ passport.use('addTwitter', new TwitterStrategy({
         passReqToCallback: true
     },
     function (req, access_token, token_secret, profile, done) {
+        console.log('[AddTwitter] - in method:', req.user);
         process.nextTick(function () {
             //todo: check if profile is already registered with another account
             //find user with req.user._id

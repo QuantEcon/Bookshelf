@@ -1,6 +1,8 @@
 var express = require('express');
-var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var multiparty = require('connect-multiparty');
+const passport = require('../../js/auth/jwt');
+const bodyParser = require('body-parser');
+const multer = require('multer');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -14,135 +16,278 @@ var path = require('path');
 
 var multipartyMiddleware = multiparty();
 
-
-var app = express.Router();
-
-app.get('/', isAuthenticated, function (req, res) {
-    User.findOne({_id: req.user._id}, function (err, user) {
-        if (err) {
-            res.render('500');
-        } else if (user) {
-            if (user.currentSubmission) {
-                res.redirect('/submit/preview');
-            } else {
-                res.render('submit', {
-                    layout: 'breadcrumbs',
-                    title: 'Submit Notebook',
-                    data: {
-                        currentUser: req.user,
-                        submit: true
-                    }
-                });
-            }
-        }
-    });
-});
-
-app.get('/preview', isAuthenticated, function (req, res) {
-    if (req.user._doc.currentSubmission) {
-        res.render('submissionPreview', {
-            layout: 'breadcrumbs',
-            title: req.user._doc.currentSubmission.title,
-            data: {
-                currentUser: req.user,
-                submit: true
-            }
-        });
-    } else {
-        res.render('submit', {
-            layout: 'breadcrumbs',
-            title: 'Submission Preview'
-        })
+const storage = multer.diskStorage({
+    destination: './files',
+    filename(req, file, cb) {
+        cb(null, `${Date.now()}-${file.originalname}`)
     }
 });
 
-app.get('/cancel', isAuthenticated, function (req, res) {
-    User.findOne({_id: req.user._id}, function (err, user) {
-        if (err || !user) {
-            res.render('500');
-        } else if (user) {
-            user.currentSubmission = null;
-            user.save(function (err) {
-                if (err) {
-                    res.render('500');
-                } else {
-                    res.status(200);
-                    res.send('redirect');
-                }
-            })
-        }
-    })
+const upload = multer({
+    storage
 });
 
-app.get('/confirm', isAuthenticated, function (req, res) {
-    User.findOne({_id: req.user._id}, function (err, user) {
-        if (err || !user) {
-            res.render('500');
-        } else if (user) {
+var app = express.Router();
 
-            var newSub = new Submission(user.currentSubmission);
-            newSub.author = req.user._id;
-            newSub.save(function (err) {
+app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.urlencoded({
+    extended: true,
+    limit: '50mb',
+    parameterLimit:50000
+}));
+
+// app.use(function(req, res, next){     // console.log('[Submit] - req.headers:
+// ', req.headers)     // console.log('[Submit] - req.body: ', req.body);
+// console.log('[Submit] - req: ', req);     next(); })
+
+app.post('/', passport.authenticate('jwt', {
+    session: 'false'
+}), upload.single('file'), (req, res) => {
+    let formData = JSON.parse(req.body.formData);
+    console.log('[Submit] - req.body: ', formData);
+    console.log('[Submit] - req.file: ', req.file);
+
+    User.findById(req.user._id, function (err, user) {
+        if (err) {
+            console.log('[Submit] - error finding user');
+            res.status(500);
+            res.send({
+                error: 'Error finding user'
+            })
+        } else if (user) {
+            var newSub = new Submission();
+
+            newSub.title = formData.title;
+
+            newSub.topics = formData.topics;
+
+            newSub.lang = formData.lang;
+            newSub.summary = formData.summary;
+
+            //todo: not sure if we should have this or not newSub.file = file;
+
+            newSub.author = user._id;
+            //todo: parse co-authors newSub.coAuthors = coAuthors
+            newSub.comments = [];
+            newSub.totalComments = 0;
+
+            newSub.score = 0;
+            newSub.views = 0;
+
+            newSub.published = Date.now();
+            newSub.lastUpdated = Date.now();
+
+            newSub.deleted = false;
+            newSub.flagged = false;
+
+            newSub.fileName = req.file.originalname;
+            newSub.ipynbFile = req.file.path;
+
+            user.currentSubmission = newSub;
+
+            user.save((err) => {
                 if (err) {
-                    console.log("ERROR SAVING NEW SUB: ", err);
-                    res.render('500');
+                    console.log('[Submit] - error saving user: ', err);
+                    res.status(500);
+                    res.send({
+                        error: true,
+                        message: 'Error saving user'
+                    })
                 } else {
-                    user.currentSubmission = null;
-                    user.submissions.push(newSub._id);
-                    user.save(function (err) {
+                    res.status(200);
+                    console.log('[Submit] - success');
+                    fs.readFile(req.file.path, 'utf8', (err, notebookString) => {
                         if (err) {
-                            console.log("ERROR SAVING USER");
-                            res.render('500');
+                            res.status(500);
+                            res.send({
+                                error: true,
+                                message: 'Error reading file'
+                            })
                         } else {
-                            //save file in system
-                            res.status(200);
-                            res.send(newSub._doc._id);
+                            var sub = newSub;
+                            sub.notebookJSON = JSON.parse(notebookString);
+                            res.send({
+                                submission: sub
+                            })
                         }
                     })
                 }
             })
+        } else {
+            res.status(400);
+            res.send({
+                error: 'Coudldn\'t find user'
+            })
         }
-    })
+    });
 });
 
-app.post('/comment/edit/:commentID', isAuthenticated, function (req, res) {
-    Comment.findOne({_id: req.params.commentID}, function (err, comment) {
-        if (err) {
+app.get('/cancel', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
+    User
+        .findOne({
+            _id: req.user._id
+        }, function (err, user) {
+            if (err || !user) {
+                res.render('500');
+            } else if (user) {
+                user.currentSubmission = null;
+                user.save(function (err) {
+                    if (err) {
+                        res.render('500');
+                    } else {
+                        res.status(200);
+                        res.send('redirect');
+                    }
+                })
+            }
+        })
+});
+
+app.post('/confirm', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
+    var newSub = new Submission();
+
+    newSub.title = req.body.submission.title;
+
+    newSub.topics = req.body.submission.topics;
+
+    newSub.lang = req.body.submission.lang;
+    newSub.summary = req.body.submission.summary;
+
+    //todo: not sure if we should have this or not newSub.file = file;
+
+    newSub.author = req.user._id;
+    //todo: parse co-authors newSub.coAuthors = coAuthors
+    newSub.comments = [];
+    newSub.totalComments = 0;
+
+    newSub.score = 0;
+    newSub.views = 0;
+
+    newSub.published = Date.now();
+    newSub.lastUpdated = Date.now();
+
+    newSub.deleted = false;
+    newSub.flagged = false;
+
+    newSub.fileName = req.body.submission.fileName;
+    newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
+
+    User.findById(req.user._id, (err, user) => {
+        if(err) {
             res.status(500);
-        } else if (comment) {
-            //todo: need to save previous submissions for legal reasons?
-            console.log("Edit comment content: ", req.body);
-            comment.edited = true;
-            comment.content = req.body.content;
-            comment.editedDate = new Date();
-            comment.save(function (err) {
-                if (err) {
+            res.send({error: err});
+        } else if(user){
+            newSub.save((err, submission) => {
+                if(err){
                     res.status(500);
+                    res.send({error: err});
                 } else {
-                    res.send({
-                        message: 'Redirect',
-                        error: false
-                    });
+                    user.submissions.push(submission._id)
+                    res.send({submissionID: submission._id});
                 }
             })
         } else {
             res.status(500);
+            res.send({error: 'No user found'});
         }
     })
 });
 
-app.post('/comment', isAuthenticated, function (req, res) {
+app.post('/edit-submission', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    Submission.findById(req.body.submissionData._id, (err, submission) => {
+        if (err) {
+            res.status(500);
+            res.send({
+                error: err
+            });
+        } else if (submission) {
+            //TODO: 
+            submission.notebookJSON = JSON.stringify(req.body.submissionData.notebookJSON);
+            submission.title = req.body.submissionData.title;
+            submission.coAuthors = req.body.submissionData.coAuthors;
+            submission.summary = req.body.submissionData.summary;
+            submission.lang = req.body.submissionData.lang
+            submission.lastUpdated = Date.now();
+            submission.topics = req.body.submissionData.topics
+
+            submission.save((err) => {
+                if (err) {
+                    res.status(500);
+                    res.send({
+                        error: err
+                    });
+                } else {
+                    res.sendStatus(200);
+                }
+            });
+        } else {
+            res.status(500);
+            res.send({
+                error: 'Coulnd\'t find submission'
+            });
+        }
+    })
+});
+
+app.post('/comment/edit', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
+    Comment
+        .findOne({
+            _id: req.body.commentID
+        }, function (err, comment) {
+            if (err) {
+                res.status(500);
+            } else if (comment) {
+                //todo: need to save previous submissions for legal reasons?
+                console.log("Edit comment content: ", req.body);
+                comment.edited = true;
+                comment.content = req.body.newCommentText;
+                comment.editedDate = Date.now()
+                comment.save(function (err, savedComment) {
+                    if (err) {
+                        res.status(500);
+                        res.send({
+                            error: err
+                        })
+                    } else {
+                        res.send({
+                            comment: savedComment
+                        });
+                    }
+                })
+            } else {
+                res.status(500);
+                res.send({
+                    error: "Couldn't find comment"
+                });
+            }
+        })
+});
+
+app.post('/comment', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
     console.log("Received submit comment: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
         res.status(400);
-        res.send({code: 1, message: 'Login Required'});
+        res.send({
+            code: 1,
+            message: 'Login Required'
+        });
         return;
     }
 
     var newComment = new Comment();
     newComment.author = req.user._id;
-    newComment.timestamp = new Date();
+    newComment.timestamp = Date.now();
     newComment.content = req.body.content;
     newComment.replies = [];
     newComment.score = 0;
@@ -155,43 +300,68 @@ app.post('/comment', isAuthenticated, function (req, res) {
     newComment.save(function (err, c) {
         if (err) {
             res.status(500);
-        } else {
-            Submission.findOne({_id: req.body.submissionID}, function (err, submission) {
-                if (err) {
-                    res.status(500);
-                } else if (submission) {
-                    submission.comments.push(c._id);
-                    submission.totalComments += 1;
-                    submission.save(function (err) {
-                        if (err) {
-                            res.status(500);
-                        } else {
-                            console.log("Successfully submitted comment");
-                            res.send("Success");
-                        }
-                    })
-                } else {
-                    res.status(400);
-                }
+            res.send({
+                error: 'Error saving comment'
             });
+        } else {
+            Submission
+                .findOne({
+                    _id: req.body.submissionID
+                }, function (err, submission) {
+                    if (err) {
+                        res.status(500);
+                        res.send({
+                            error: 'Error finding submission'
+                        });
+                    } else if (submission) {
+                        submission
+                            .comments
+                            .push(c._id);
+                        submission.totalComments += 1;
+                        submission.save(function (err) {
+                            if (err) {
+                                res.status(500);
+                                res.send({
+                                    error: err
+                                })
+                            } else {
+                                console.log("Successfully submitted comment");
+                                res.send({
+                                    comment: newComment,
+                                    submissionID: submission._id,
+                                });
+                            }
+                        })
+                    } else {
+                        res.status(400);
+                        res.send({
+                            error: 'No submission found'
+                        });
+                    }
+                });
 
         }
     })
 });
 
-app.post('/reply', isAuthenticated, function (req, res) {
+app.post('/reply', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
     console.log("Received submit reply: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
         res.status(400);
-        res.send({code: 1, message: 'Login Required'});
+        res.send({
+            code: 1,
+            message: 'Login Required'
+        });
         return;
     }
 
     var newReply = new Comment();
     newReply.author = req.user._id;
-    newReply.timestamp = new Date();
-    newReply.content = req.body.content;
+    newReply.timestamp = Date.now();
+    newReply.content = req.body.reply;
     newReply.replies = [];
     newReply.score = 0;
     newReply.flagged = false;
@@ -203,199 +373,86 @@ app.post('/reply', isAuthenticated, function (req, res) {
         if (err) {
             console.log("Error 1");
             res.status(500);
+            res.send({
+                error: err
+            })
         } else if (reply) {
-            Comment.findOne({_id: req.body.inReplyTo}, function (err, comment) {
+            Comment.findById(req.body.commentID, function (err, comment) {
                 if (err) {
-                    // todo: delete reply
+                    // TODO: delete reply
                     console.log("Error 2");
                     res.status(500);
+                    res.send({
+                        error: err
+                    });
                 } else if (comment) {
-                    comment.replies.push(reply._id);
+                    comment
+                        .replies
+                        .push(reply._id);
                     comment.save(function (err) {
                         if (err) {
-                            // todo: delete reply
+                            // TODO: delete reply
                             console.log("Error 3");
                             res.status(500);
-                        } else {
-                            Submission.findOne({_id: comment.submission}, function (err, submission) {
-                                if (err) {
-                                    res.status(500);
-                                } else if (submission) {
-                                    submission.totalComments += 1;
-                                    submission.save(function (err) {
-                                        if (err) {
-                                            //todo: clean up added documents?
-                                            res.status(500);
-                                        } else {
-                                            console.log("Successfully submitted reply");
-                                            res.send("Success");
-                                        }
-                                    });
-                                } else {
-                                    res.status(500);
-                                }
+                            res.send({
+                                error: err
                             });
+                        } else {
+                            Submission
+                                .findOne({
+                                    _id: comment.submission
+                                }, function (err, submission) {
+                                    if (err) {
+                                        res.status(500);
+                                        res.send({
+                                            error: err
+                                        })
+                                    } else if (submission) {
+                                        submission.totalComments += 1;
+                                        submission.save(function (err) {
+                                            if (err) {
+                                                //TODO: clean up added documents?
+                                                res.status(500);
+                                                res.send({
+                                                    error: err
+                                                });
+                                            } else {
+                                                console.log("Successfully submitted reply");
+                                                res.send({
+                                                    commentID: comment._id,
+                                                    reply: reply,
+                                                    submissionID: submission._id
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        res.status(500);
+                                        res.send({
+                                            error: 'Error finding submission'
+                                        });
+                                    }
+                                });
 
                         }
                     })
                 } else {
-                    // todo: delete reply
+                    // TODO: delete reply
                     console.log("Error 4");
                     res.status(500);
+                    res.send({
+                        error: 'Error finding comment'
+                    })
                 }
             })
         } else {
             console.log("Error 5");
             res.status(500);
-        }
-    });
-
-});
-
-app.post('/file', isAuthenticated, multipartyMiddleware, function (req, res) {
-    var file = req.files.file;
-    console.log("Req.body: ", req.body);
-    console.log("File name: ", file.name);
-    console.log("File type: ", file.type);
-    User.findOne({_id: req.user._id}, function (err, user) {
-        if (err || !user) {
-            res.render('500');
-        } else if (user) {
-            var newSub = new Submission();
-
-            console.log("File: ", file);
-
-            newSub.title = req.body.title;
-
-            newSub.topicList = req.body.topicList;
-
-            newSub.lang = req.body.lang;
-            newSub.summary = req.body.summary;
-
-            //todo: not sure if we should have this or not
-            //newSub.file = file;
-
-            newSub.author = user._id;
-            //todo: parse co-authors
-            // newSub.coAuthors = coAuthors
-            newSub.comments = [];
-            newSub.totalComments = 0;
-
-            newSub.score = 0;
-            newSub.views = 0;
-
-            newSub.published = new Date();
-            newSub.lastUpdated = new Date();
-
-            newSub.deleted = false;
-            newSub.flagged = false;
-
-            newSub.fileName = file.name;
-
-            //=============================================================
-            var outputDir = __dirname + '/../../files/html/';
-            var fileSaveDir = __dirname + '/../../files/ipynb/';
-            var outputName = newSub._id;
-            //=============================================================
-
-            var templateLocation = __dirname + '/../../assets/nbconvert/templates/notebookHTML.tpl';
-            var command = sprintf('jupyter nbconvert %s --output=%s --output-dir=%s --template=%s', file.path, outputName, outputDir, templateLocation);
-            console.log("command: ", command);
-
-            exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
-                console.log("stderr: ", stderr);
-                console.log("err: ", err);
-                console.log("stdout: ", stdout);
-
-                if (err) {
-                    res.status(500);
-                } else {
-
-                    newSub.notebook = '/../../files/html/' + outputName + '.html';
-                    console.log("New sub: ", newSub);
-
-                    //==========================================================
-                    // save file
-                    var readStream = fs.createReadStream(file.path);
-                    readStream.once('error', function (err) {
-                        console.log(err);
-                        res.status(500);
-                    });
-                    readStream.once('done', function () {
-                        console.log("Done copying file");
-                    });
-
-                    var fileSavePath = '/../../files/ipynb/' + outputName + '.ipynb';
-
-                    readStream.pipe(fs.createWriteStream(__dirname + fileSavePath));
-
-                    newSub.filepath = fileSavePath;
-                    //==========================================================
-
-                    user.currentSubmission = newSub;
-                    user.save(function (err) {
-                        if (err) {
-                            res.render('500');
-                        } else {
-
-                            console.log("Saved user");
-                            res.status(200);
-                            res.send('redirect');
-                        }
-                    });
-                }
+            res.send({
+                error: 'Error saving reply'
             });
-
-
         }
     });
 
-});
-
-//todo redirect to submission preview instead of instantly saving it?
-app.post('/file/edit/:nbID', isAuthenticated, multipartyMiddleware, function (req, res) {
-    console.log("Got submit edit");
-    var file = req.files.file;
-    Submission.findOne({_id: req.params.nbID}, function (err, submission) {
-        if (err) {
-            console.log("Error 1");
-            res.status(500);
-            //todo: return error
-        } else if (submission) {
-            submission.title = req.body.title;
-            submission.topicList = req.body.topicList;
-            submission.lang = req.body.lang;
-            submission.summary = req.body.summary;
-            submission.file = file.name;
-            submission.lastUpdated = new Date();
-
-            //todo: update file and html
-            // var command = sprintf('jupyter nbconvert --to html %s --stdout', file.path);
-            // exec(command, {maxBuffer: 1024 * 500}, function (err, stdout, stderr) {
-            //     if (err) {
-            //         console.log("Error 2");
-            //         res.status(500);
-            //     } else {
-            //         submission.notebook = stdout.replace(/<title[^>]*>[^<]*<\/title>/, "");
-            //         submission.save(function (err) {
-            //             if (err) {
-            //                 console.log("Error 3: ", err);
-            //                 res.status(500);
-            //             } else {
-            //                 res.send({
-            //                     nbID: submission._id,
-            //                     message: 'redirect'
-            //                 })
-            //             }
-            //         })
-            //     }
-            // });
-
-        } else {
-            console.log("Error 4");
-            res.status(500);
-        }
-    });
 });
 
 module.exports = app;

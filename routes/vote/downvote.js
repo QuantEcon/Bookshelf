@@ -1,5 +1,8 @@
 var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
+const passport = require('../../js/auth/jwt');
+
+const bodyParser = require('body-parser');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -7,7 +10,17 @@ var Comment = require('../../js/db/models/Comment');
 
 var app = express.Router();
 
-app.post('/submission', isAuthenticated, function (req, res) {
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+app.use(function(req, res, next){
+    console.log('[Downvote] - body: ', req.body);
+    next();
+})
+
+app.post('/submission',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received downvote submission: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
@@ -22,13 +35,15 @@ app.post('/submission', isAuthenticated, function (req, res) {
             // get user
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
-                    res.status(500);
+                    res.sendStatus(500);
                 } else if (user) {
 
                     //has not downvoted
                     if (req.user.downvotes.indexOf(req.body.submissionID) === -1) {
+                        console.log('[Downvote] - has not downvoted');
                         //has not upvoted
                         if (req.user.upvotes.indexOf(req.body.submissionID) !== -1) {
+                            console.log('[Downvote] - has not upvoted');
                             // no downvote, upvote
                             //remove commentID from user.upvotes
                             user.upvotes.remove(req.body.submissionID);
@@ -41,14 +56,18 @@ app.post('/submission', isAuthenticated, function (req, res) {
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
-                                //save comment
+                                //save submission
                                 submission.save(function (err, comment) {
                                     if (err) {
-                                        res.status(500);
+                                        console.log('[Downvote] - error saving submission');
+                                        res.sendStatus(500);
                                     } else {
-                                        res.send('Success');
+                                        console.log('[Downvote] - success');
+                                        res.send({
+                                            submissionID: submission._id
+                                        });
                                     }
                                 });
                             }
@@ -57,6 +76,7 @@ app.post('/submission', isAuthenticated, function (req, res) {
 
                     // has downvoted
                     else {
+                        console.log('[Downvote] - has downvoted');
                         //remove commentID from user.downvotes
                         user.downvotes.remove(req.body.submissionID);
                         //increment comment score
@@ -64,14 +84,16 @@ app.post('/submission', isAuthenticated, function (req, res) {
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
                                 //save comment
                                 submission.save(function (err, submission) {
                                     if (err) {
-                                        res.status(500);
+                                        res.sendStatus(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            submissionID: submission._id
+                                        });
                                     }
                                 });
                             }
@@ -79,32 +101,32 @@ app.post('/submission', isAuthenticated, function (req, res) {
                     }
 
                 } else {
-                    res.status(500);
+                    res.sendStatus(500);
                 }
             });
         } else {
-            res.status(500);
+            res.sendStatus(500);
         }
     });
 
 });
 
-app.post('/comment', isAuthenticated, function (req, res) {
+app.post('/comment',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received downvote comment: ", req.body);
     if (!req.user) {
         console.log("User not logged in");
-        res.status(400);
+        res.sendStatus(400);
         res.send({code: 1, message: 'Login Required'});
         return;
     }
     Comment.findOne({_id: req.body.commentID}, function (err, comment) {
         if (err) {
-            res.status(500);
+            res.sendStatus(500);
         } else if (comment) {
             // get user
             User.findOne({_id: req.user._id}, function (err, user) {
                 if (err) {
-                    res.status(500);
+                    res.sendStatus(500);
                 } else if (user) {
                     //has not downvoted
                     if (user.downvotes.indexOf(req.body.commentID) === -1) {
@@ -122,14 +144,16 @@ app.post('/comment', isAuthenticated, function (req, res) {
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
                                 //save comment
                                 comment.save(function (err, comment) {
                                     if (err) {
-                                        res.status(500);
+                                        res.sendStatus(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            commentID: comment._id
+                                        });
                                     }
                                 });
                             }
@@ -143,26 +167,28 @@ app.post('/comment', isAuthenticated, function (req, res) {
                         //save user
                         user.save(function (err, user) {
                             if (err) {
-                                res.status(500);
+                                res.sendStatus(500);
                             } else {
                                 //save comment
                                 comment.save(function (err, comment) {
                                     if (err) {
-                                        res.status(500);
+                                        res.sendStatus(500);
                                     } else {
-                                        res.send('Success');
+                                        res.send({
+                                            commentID: comment._id
+                                        });
                                     }
                                 });
                             }
                         });
                     }
                 } else {
-                    res.status(500);
+                    res.sendStatus(500);
                 }
             })
 
         } else {
-            res.status(500);
+            res.sendStatus(500);
         }
     });
 });

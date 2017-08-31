@@ -22,6 +22,15 @@ p.has-error {
 p.error-help-text {
     color: #d84d0a;
     font-style: italic;
+    align-self: center
+}
+
+p.orange {
+    color: #d84d0a;
+}
+
+p.bold {
+    font-style: bold
 }
 
 input.has-error {
@@ -52,7 +61,7 @@ a.profile-link {
     font-size: large;
 }
 
-div.dragover {
+.dragover {
     border-color: #00a000 !important;
     border-radius: 5px !important;
 }

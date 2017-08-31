@@ -14,8 +14,10 @@ passport.use('github', new GithubStrategy({
         callbackURL: config.github.callbackURL
     },
     function (access_token, refresh_token, profile, done) {
+        console.log("In github callback");
+        console.log('[GithubStrategy] - access_token: ', access_token);
+        console.log('[GithubStrategy] - refresh_token: ', refresh_token);
         process.nextTick(function () {
-            console.log("In github callback");
             User.findOne({'github.id': profile.id}, function (err, user) {
                 if (err) {
                     return done(err);
@@ -100,6 +102,7 @@ passport.use('addGithub', new GithubStrategy({
         passReqToCallback: true
     },
     function (req, access_token, refresh_token, profile, done) {
+        console.log('[Github] - req: ', req);
         process.nextTick(function () {
             //todo: check if profile is already registered with another account
             User.findOne({_id: req.user._id}, function (err, user) {
@@ -124,11 +127,13 @@ passport.use('addGithub', new GithubStrategy({
 
                         user.oneSocial = (user.twitter == {}) && (user.fb == {}) && (user.google == {});
 
-                        user.save(function (err) {
+                        user.save(function (err, savedUser) {
                             if (err) {
+                                console.log('[GithubAuth] - error saving user')
                                 return done(err);
                             } else {
-                                return done(null, user);
+                                console.log('[GithubAuth] - added github: ', savedUser);
+                                return done(null, savedUser);
                             }
                         });
                     } else {

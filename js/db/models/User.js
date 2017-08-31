@@ -14,7 +14,7 @@ var userSchema = new Schema({
     numComments: Number,
     joinDate: Date,
     voteScore: Number,
-    position: String,
+    summary: String,
     submissions: [ObjectId],
     currentSubmission: Object,
     upvotes: [ObjectId],
@@ -41,14 +41,6 @@ var userSchema = new Schema({
         hidden: Boolean,
         avatarURL: String,
     },
-    // linkedin: {
-    //     id: String,
-    //     access_token: String,
-    //     url: String,
-    //     displayName: String,
-    //     hidden: Boolean,
-    //     avatarURL: String,
-    // },
     google: {
         id: String,
         avatarURL: String,
@@ -61,9 +53,12 @@ var userSchema = new Schema({
         access_token: String,
         username: String,
         avatarURL: String,
-        url: String
+        url: String,
+        hidden: Boolean
     },
     oneSocial: Boolean,
+    currentToken: String,
+    currentProvider: String,
     // meta
     flagged: Boolean,
     deleted: Boolean
