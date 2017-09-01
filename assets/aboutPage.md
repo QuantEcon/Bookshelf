@@ -1,6 +1,6 @@
 ## Summary
 
-QuantEcon Bookshelf is an open notebook gallery and archive that hosts 
+QuantEcon Bookshelf is an open notebook repository and archive that hosts 
 Jupyter notebooks related to all areas of economics and econometrics.
 
 Anyone can submit a notebook on either of these topics. Peer review is
