@@ -12,7 +12,7 @@ class Head extends Component {
 
                         <div className="site-title">
                             <Link to='/'>
-                                <h2 className="site-name">Bookshelf (beta)</h2>
+                                <h2 className="site-name">QuantEcon Bookshelf (beta)</h2>
                                 <p className="site-tag">Open notebook library for economic modeling</p>
                             </Link>
 

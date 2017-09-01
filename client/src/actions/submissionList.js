@@ -64,6 +64,7 @@ export const fetchSubmissions = ({searchParams, forced}) => {
 }
 
 export const shouldFetchSummaries = (state, searchParams) => {
+    return true;
     if (!state.submissionList) {
         console.log('[ShouldFetch] - !state.submissionList')
         return true;

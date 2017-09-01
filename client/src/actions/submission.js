@@ -225,6 +225,7 @@ export const fetchNBInfo = ({notebookID, forced}) => {
 }
 
 const needToFetch = (state, submissionID) => {
+    return true;
     if (!state.submissionByID[submissionID]) {
         return true;
     } else if (state.submissionByID[submissionID].didInvalidate) {
