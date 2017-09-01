@@ -81,7 +81,7 @@ app.get('/callback',
                         res.sendStatus(500);
                     } else {
                         console.log('[TwitterAuth] - redirect back to client: ', req)
-                        var redirect = appConfig.hostName + ':3000/signin' + '?' + queryString;
+                        var redirect = appConfig.hostName + '/signin' + '?' + queryString;
                         console.log('[TwitterAuth] - redirect url: ', redirect);
                         res.redirect(redirect);
                     }

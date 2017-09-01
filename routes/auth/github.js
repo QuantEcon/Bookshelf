@@ -90,7 +90,7 @@ app.get('/callback', passport.authenticate('github', {
                     res.sendStatus(500);
                 } else {
                     console.log('[Github] - redirect: ', req.headers.referer + '?' + queryString)
-                    res.redirect(req.headers.referer + '?' + queryString);
+                    res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
                 }
             })
     });
