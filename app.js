@@ -79,6 +79,21 @@ app.use(bodyParser.urlencoded({
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
+app.get('/api/about', (req, res) => {
+    //read file and send
+
+    fs.readFile('./assets/aboutPage.md', 'utf8', (err, aboutContent) => {
+        if(err){
+            res.status(500);
+            res.send({error: err});
+        } else {
+            res.send({
+                content: aboutContent
+            })
+        }
+    });
+})
+
 app.post('/add-notify-email', (req, res) => {
     EmailList.findOne({
         name: 'emailList'
