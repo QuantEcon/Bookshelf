@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
+import {a} from 'react-router-dom'
 
 import logo from '../../assets/img/qe-logo-horizontal.png';
 
@@ -9,29 +9,29 @@ class QENavBar extends Component {
             // <div className='row column'>
                 <div className="qe-nav">
                     <p className="qe-logo">
-                        <Link to="https://quantecon.org/" title="quantecon.org">
+                        <a href="https://quantecon.org/" title="quantecon.org">
                             <img src={logo} alt="QuantEcon logo"/>
                             Quant<span>Econ</span>
-                        </Link>
+                        </a>
                     </p>
                     <ul className="qe-menu">
                         <li>
-                            <Link to="https://lectures.quantecon.org/">Lectures</Link>
+                            <a href="https://lectures.quantecon.org/">Lectures</a>
                         </li>
                         <li>
-                            <Link to="https://quantecon.org/quantecon-py">QuantEcon.Py</Link>
+                            <a href="https://quantecon.org/quantecon-py">QuantEcon.Py</a>
                         </li>
                         <li>
-                            <Link to="https://quantecon.org/quantecon-jl">QuantEcon.jl</Link>
+                            <a href="https://quantecon.org/quantecon-jl">QuantEcon.jl</a>
                         </li>
                         <li>
-                            <Link to="https://cheatsheets.quantecon.org/">Cheatsheets</Link>
+                            <a href="https://cheatsheets.quantecon.org/">Cheatsheets</a>
                         </li>
                         <li>
-                            <Link to="http://discourse.quantecon.org/">Forum</Link>
+                            <a href="http://discourse.quantecon.org/">Forum</a>
                         </li>
                         <li>
-                            <Link to="https://github.com/QuantEcon/">Repository</Link>
+                            <a href="https://github.com/QuantEcon/">Reposihrefry</a>
                         </li>
                     </ul>
                 </div>
