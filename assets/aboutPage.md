@@ -14,7 +14,7 @@ submissions.
 We hope that votes will be determined by the quality and perceived value of
 the content of a given notebook to economic research and public policy.
 
-One the site goes beyond beta status, URLs to individual notebooks will be
+Once the site goes beyond beta status, URLs to individual notebooks will be
 permanent and can be used in citations.
 
 QuantEcon Bookshelf is a [QuantEcon](https://quantecon.org) project funded by
