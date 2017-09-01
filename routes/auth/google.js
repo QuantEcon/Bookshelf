@@ -5,6 +5,7 @@ const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const qs = require('query-string');
 const jwtAuth = require('../../js/auth/jwt');
+const appConfig = require('../../_config')
 
 
 var app = express.Router();

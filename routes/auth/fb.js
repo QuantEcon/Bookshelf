@@ -6,6 +6,8 @@ const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const jwtAuth = require('../../js/auth/jwt');
 
+const appConfig = require('../../_config')
+
 
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
 ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'

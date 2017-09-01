@@ -5,6 +5,8 @@ const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const secret = require('../../_config').secret
 const jwtAuth = require('../../js/auth/jwt');
+const appConfig = require('../../_config')
+
 
 const qs = require('query-string');
 
