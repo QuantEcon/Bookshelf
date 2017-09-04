@@ -12,6 +12,7 @@ import 'typeface-source-sans-pro'
 import 'codemirror/lib/codemirror.css';
 import '@nteract/notebook-preview/styles/main.css';
 import '@nteract/notebook-preview/styles/theme-light.css'
+import '../../assets/css/notebookPreview.css'
 
 import NotebookPreview from '@nteract/notebook-preview';
 

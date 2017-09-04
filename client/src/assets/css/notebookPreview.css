@@ -1,0 +1,13 @@
+.cell code {
+    display: block !important;
+    padding: .5rem;
+}
+
+.input-container {
+    background-color: blue !important;
+}
+
+.outputs {
+    dispaly: block !important;
+    background-color: #eeeeee !important
+}

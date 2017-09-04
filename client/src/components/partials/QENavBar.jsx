@@ -31,7 +31,7 @@ class QENavBar extends Component {
                             <a href="http://discourse.quantecon.org/">Forum</a>
                         </li>
                         <li>
-                            <a href="https://github.com/QuantEcon/">Reposihrefry</a>
+                            <a href="https://github.com/QuantEcon/">Repository</a>
                         </li>
                     </ul>
                 </div>
