@@ -9,7 +9,7 @@ import ErrorIcon from 'react-icons/lib/md/error-outline'
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
-// import GoogleIcon from 'react-icons/lib/fa/google'
+import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
 
 class EditProfile extends Component {
@@ -559,7 +559,7 @@ class EditProfile extends Component {
                                             </div>}
                                     </div>
                                     <hr/>
-                                    {/* <div>
+                                    <div>
                                         {this.props.user.google
                                             ? <div>
                                                     <label htmlFor="google" className='section-title'>
@@ -593,7 +593,7 @@ class EditProfile extends Component {
                                                     </li>
                                                 </ul>
                                             </div>}
-                                    </div> */}
+                                    </div>
 
                                 </div>
                                 {/* edit-profile-primary-group2 */}

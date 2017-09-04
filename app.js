@@ -83,9 +83,11 @@ app.get('/api/about', (req, res) => {
     //read file and send
 
     fs.readFile('./assets/aboutPage.md', 'utf8', (err, aboutContent) => {
-        if(err){
+        if (err) {
             res.status(500);
-            res.send({error: err});
+            res.send({
+                error: err
+            });
         } else {
             res.send({
                 content: aboutContent
@@ -185,6 +187,14 @@ app.use('/api/downvote', downvoteRoutes);
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
         root: __dirname
+    }, (err) => {
+        if (err) {
+            console.log('React app not found');
+            res.status(500);
+            res.send('React app not found')
+        } else {
+            console.log('Sent');
+        }
     });
 });
 
@@ -192,7 +202,7 @@ app.get('/api/auth/popup/:provider', (req, res) => {
 
 app.get('*', (req, res) => {
     console.log('Sending react app')
-    res.sendFile(path.join(__dirname, '/client/build/index.html'));
+    res.sendFile(path.join(__dirname, '/client/build/index.html'))
 });
 // =========================================================================================
 

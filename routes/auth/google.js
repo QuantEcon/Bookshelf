@@ -82,7 +82,7 @@ app.get('/callback', passport.authenticate('google', {
                 if (err) {
                     res.sendStatus(500);
                 } else {
-                    res.redirect(req.headers.referer + '?' + queryString);
+                    res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
                 }
             })
     });
