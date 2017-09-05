@@ -1,4 +1,4 @@
-.cell code {
+div.outputs .cell code {
     display: block !important;
     padding: .5rem;
 }
