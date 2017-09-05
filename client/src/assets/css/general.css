@@ -28,6 +28,14 @@ li.link {
     padding-left: 1rem;
 }
 
+ul.terms-and-conditions {
+    list-style-type: none;
+}
+
+span.title {
+    font-weight: bold;
+}
+
 .comment-body .edited-tag {
     color: #888;
 }

@@ -34,7 +34,7 @@ class Submit extends Component {
         "Microeconomics",
         "Monetary Economics",
         "Public Economics",
-        "Other",
+        "Other"
     ];
 
     constructor(props) {
@@ -68,6 +68,9 @@ class Submit extends Component {
         this.topicChanged = this
             .topicChanged
             .bind(this);
+        this.toggleTermsAndConditionsModal = this
+            .toggleTermsAndConditionsModal
+            .bind(this);
     }
 
     componentDidMount() {
@@ -76,6 +79,12 @@ class Submit extends Component {
         } else {
             document.title = 'Submit'
         }
+    }
+
+    toggleTermsAndConditionsModal = () => {
+        this.setState({
+            termsAndConditionsModalOpen: !this.termsAndConditionsModalOpen
+        })
     }
 
     formData = {
@@ -180,7 +189,7 @@ class Submit extends Component {
                 .save({formData: this.formData, file, notebookJSON});
         } else {
             console.log('[EditSubmission] - not edit')
-            
+
             this
                 .props
                 .submit(this.formData, this.state.accepted[0]);
@@ -279,7 +288,40 @@ class Submit extends Component {
                         transforms={transforms}
                         displayOrder={displayOrder}/>
                 </Modal>
-               
+                <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
+                    <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>
+                    <div className='submit-footer'>
+                        <p className='section-title'>
+                            Terms
+                            <span className='mandatory'>*</span>
+                        </p>
+                        <label>
+                            By submitting to `QuantEconLib` you acknowledge:
+                            <ul>
+                                <li>
+                                    1. the content in your notebook is available and shared with the public internet
+                                </li>
+                                <li>
+                                    2. your notebook does not contain any illegal or copyrighted material
+                                </li>
+                                <li>
+                                    3. any notebook that is submitted to this service may be viewed and downloaded
+                                    by users visiting this website.
+                                </li>
+                                <li>
+                                    4. all software contained in the notebooks are considered to be released under a
+                                    BSD-3 license.
+                                </li>
+                                <li>
+                                    5. QuantEcon reserves the right the delete your notebook if found to violate
+                                    these terms and conditions
+                                </li>
+                            </ul>
+
+                        </label>
+                    </div>
+                </Modal>
+
                 <div className='row columns'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
@@ -328,7 +370,9 @@ class Submit extends Component {
                                 </Dropzone>
                                 <ul className='button-row'>
                                     <li>
-                                        <button disabled={!this.state.fileUploaded || !this.state.notebookDataReady} onClick={this.toggleOpenModal}>
+                                        <button
+                                            disabled={!this.state.fileUploaded || !this.state.notebookDataReady}
+                                            onClick={this.toggleOpenModal}>
                                             Preview
                                         </button>
                                     </li>
@@ -462,8 +506,30 @@ class Submit extends Component {
                                 <label>
                                     <input type="checkbox" name="agreement" onChange={this.agreementChanged}/>
                                     I agree to the {' '}<a>Terms and Conditions</a>{' '}
-                                    of publishing content and sint occaecat cupidatat non proident, sunt in culpa
-                                    qui officia deserunt mollit anim id est laborum.
+                                    of publishing content: 
+                                    <br/>
+                                    <br/>
+                                    By submitting to <span className='title'>QuantEcon Bookshelf</span> you acknowledge:
+                                    <ol className='terms-and-conditions'>
+                                        <li>
+                                            The content in your notebook is available and shared with the public internet
+                                        </li>
+                                        <li>
+                                            Your notebook does not contain any illegal or copyrighted material
+                                        </li>
+                                        <li>
+                                            Any notebook that is submitted to this service may be viewed and downloaded
+                                            by users visiting this website.
+                                        </li>
+                                        <li>
+                                            All software contained in the notebooks are considered to be released under a
+                                            BSD-3 license.
+                                        </li>
+                                        <li>
+                                            QuantEcon reserves the right the delete your notebook if found to violate
+                                            these terms and conditions
+                                        </li>
+                                    </ol>
                                 </label>
 
                                 {this.errors.agreement
@@ -493,8 +559,6 @@ class Submit extends Component {
 
                     </div>
                 </div>
-
-                <button onClick={this.printState}>Print State</button>
             </div>
         )
     }
