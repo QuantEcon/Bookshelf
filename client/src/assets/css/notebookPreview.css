@@ -1,13 +1,12 @@
+/* Changes you would like to make to the styling of the NotebookPreview should be put here
+Please include the '!important' tag to ensure the changes occur and are not overwritten */
+
 div.outputs .cell code {
     display: block !important;
     padding: .5rem;
 }
 
-.input-container {
-    background-color: blue !important;
-}
-
 .outputs {
-    dispaly: block !important;
+    display: block !important;
     background-color: #eeeeee !important
 }
