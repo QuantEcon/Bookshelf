@@ -6,7 +6,7 @@ import {
     getParamByName
 } from './url'
 
-import {url, serverPort} from '../_config.js'
+import * as config from '../_config.js'
 
 
 import store from '../store/store'
@@ -14,7 +14,12 @@ import store from '../store/store'
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
     console.log('[Authentication] - open popup')
-    const popup = openPopup(provider, url + `/api/auth/${provider}`, `${provider} authentication`);
+    var popup;
+    if(config.urlPlusPort){
+        popup = openPopup(provider, config.urlPlusPort + `/api/auth/${provider}`, `${provider} authentication`);
+    } else {
+        popup = openPopup(provider, config.url + `/api/auth/${provider}`, `${provider} authentication`);
+    }
     //wait for authentication to complete
     return listenForCredentials({
         popup,
@@ -24,7 +29,13 @@ export const authenticate = (provider) => {
 
 export const authenticateNewSocial = (provider) => {
     console.log('[Authentication] - add new social: ', provider);
-    const popup = openPopup(provider, url + `/api/auth/${provider}/add?jwt=` + store.getState().auth.token, `${provider} authentication`);
+    var popup
+    if(config.urlPlusPort){
+        popup = openPopup(provider, config.urlPlusPort + `/api/auth/${provider}/add?jwt=` + store.getState().auth.token, `${provider} authentication`);
+        
+    } else {
+        popup = openPopup(provider, config.url + `/api/auth/${provider}/add?jwt=` + store.getState().auth.token, `${provider} authentication`);
+    }
 
     return listenForCredentials({
         popup,
@@ -43,63 +54,6 @@ const getAllParams = (url) => {
         uid
     }
 }
-
-// function ProccessChildMessage(message){
-//     console.log('[Authentication] - received message from popup: ', message);
-// }
-
-// const listenForDone = ({
-//     popup,
-//     provider,
-//     resolve,
-//     reject,
-//     isAdd
-// }) => {
-//     if (!resolve) {
-//         return new Promise((resolve, reject) => {
-//             listenForDone(popup, provider, resolve, reject);
-//         });
-//     } else {
-//         let params
-//         try {
-//             params = getAllParams(popup.location);
-//         } catch (err) {
-//             console.error('[ListenForDone] - err: ', err);
-//         }
-
-//         if (params && params.success != null) {
-//             if (params.success) {
-//                 popup.close();
-//                 axios.get('/api/auth/validate-token', {
-//                     headers: {
-//                         'Authorization': 'JWT ' + store.getState().auth.token
-//                     }
-//                 }).then(response => {
-//                     console.log('[ListenForDone] - response: ', response);
-//                     resolve({
-//                         data: response.data.credentials
-//                     })
-//                 }).catch(error => {
-//                     reject({
-//                         error
-//                     })
-//                 })
-//             } else {
-//                 reject({
-//                     error: 'Couldn\'t authenticate to add'
-//                 })
-//             }
-//         } else if (popup.closed) {
-//             reject({
-//                 errors: 'Authentication was cancelled'
-//             })
-//         } else {
-//             setTimeout(function () {
-//                 listenForDone(popup, provider, resolve, reject);
-//             }, 1000);
-//         }
-//     }
-// }
 
 const listenForCredentials = ({
     popup,

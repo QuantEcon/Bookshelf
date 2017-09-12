@@ -50,6 +50,7 @@ export const fetchSubmissions = ({searchParams, forced}) => {
         page: 1,
         sortBy: 'Trending'
     }, searchParams)
+    console.log('[Search] - search params: ', sp);
     return function (dispatch) {
         if (shouldFetchSummaries(store.getState(), sp) || forced) {
             dispatch(requestSubmissionPreviews(sp));

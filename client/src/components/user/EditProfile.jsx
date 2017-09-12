@@ -216,6 +216,11 @@ class EditProfile extends Component {
         this.hasSaved = true;
     }
 
+    removeGoogle = () => {
+        this.props.removeSocial({social: 'google'});
+        this.hasSaved = true;
+    }
+
     validateEmail = (email) => {
         var re = /^(([^<>()\]\\.,;:\s@"]+(\.[^<>()\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return re.test(email);
@@ -430,7 +435,7 @@ class EditProfile extends Component {
                                                     </div>
                                                     <p className='input-hint input-hint-after'>
                                                         <a onClick={this.removeGithub} disabled={this.props.user.oneSocial}>
-                                                            Remove {' | '}
+                                                            Remove
                                                         </a>
                                                         {' | '}{this.props.user.github.hidden
                                                             ? <a onClick={this.toggleGithub}>Show</a>
@@ -576,7 +581,15 @@ class EditProfile extends Component {
                                                             </span>
                                                         </div>
                                                     </div>
-                                                    <a onClick={this.useGooglePhoto}>Use this photo</a>
+                                                    <p className='input-hint input-hint-after'>
+                                                        <a onClick={this.removeGoogle} disabled={this.props.user.oneSocial}>
+                                                            Remove
+                                                        </a>
+                                                        {' | '}
+                                                        <a onClick={this.useGooglePhoto} disabled={this.props.user.activeAvatar === 'google'}>
+                                                            Use this photo
+                                                        </a>
+                                                    </p>
                                                 </div>
                                             : <div>
                                                 <label htmlFor="google" className='section-title'>Google Profile</label>

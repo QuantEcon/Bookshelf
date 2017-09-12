@@ -1,12 +1,15 @@
-FROM node:latest
+FROM node:alpine
 
-ADD package.json package.json
+RUN mkdir /app
+WORKDIR /app
+ADD package.json /app
 RUN npm install
-ADD client/package.json client/package.json
-RUN cd client && npm install
-ADD . .
-RUN cd client && npm run build
+ADD client/package.json /app/client/package.json
+RUN cd /app/client && npm install
+ADD client /app/client/
+RUN cd /app/client && npm run build
+ADD . /app
 
 EXPOSE 8080
 
-CMD ['npm', 'start']
+CMD ["npm", "start"]

@@ -55,6 +55,7 @@ app.get('/all-submissions', function (req, res) {
     };
 
     if (req.query.keywords !== "") {
+        console.log('[Search] - has keywords: ', req.query.keywords)
         searchParams.$text = {
             $search: req.query.keywords
         };

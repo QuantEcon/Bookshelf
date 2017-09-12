@@ -14,10 +14,11 @@ class SubmissionListContainer extends Component {
     }
 
     onSearch = (searchParams) => {
+        console.log('[SubmissionListContainer] - search params: ', searchParams);
         this.setState({
             searchParams: searchParams
         })
-        this.props.actions.fetchSubmissions(searchParams);
+        this.props.actions.fetchSubmissions({searchParams, forced: true});
     }
     render() {
         return (
