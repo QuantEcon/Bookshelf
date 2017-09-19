@@ -3,25 +3,23 @@ import HeadContainer from '../containers/HeadContainer';
 import Breadcrumbs from './partials/Breadcrumbs'
 import Markdown from 'react-markdown'
 import axios from 'axios'
+
 class About extends Component {
     constructor(props) {
         super(props);
-        this.state ={
+        this.state = {
             content: 'loading...'
         }
         console.log('[About] - fetching about page');
-        axios.get('/api/about')
+        axios
+            .get('/api/about')
             .then(resp => {
                 console.log('[About] - returned resp: ', resp);
-                this.setState({
-                    content: resp.data.content
-                })
+                this.setState({content: resp.data.content})
             })
             .catch(err => {
                 console.log('[About] - err:', err);
-                this.setState({
-                    error: err
-                })
+                this.setState({error: err})
             })
     }
 
@@ -37,6 +35,14 @@ class About extends Component {
                         </h2>
                     </div>
                     <div className='column'>
+                        <div>
+                            <p>
+                                If you run into any issues or bugs, please follow
+                                <a href="http://discourse.quantecon.org"> this link </a>
+                                to post an issue. Submit the issue under the category 'bookshelf'. 
+                            </p>
+                            <p>Thank you for your help.</p>
+                        </div>
                         <Markdown source={this.state.content}/>
                     </div>
                 </div>

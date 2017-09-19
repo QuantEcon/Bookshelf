@@ -86,7 +86,7 @@ app.get('/callback', passport.authenticate('facebook', {
                         res.send({error: err});
                     } else {
                         console.log('[FBAuth] - redirect: ', req.headers.referer + '?' + queryString);
-                        res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
+                        res.redirect(req.headers.referer + '?' + queryString);
                     }
                 })
         } else {

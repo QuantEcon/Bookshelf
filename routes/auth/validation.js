@@ -25,13 +25,26 @@ app.get('/', passport.authenticate('jwt', {
     console.log('[ValidateToken] - profile: ', profile);
 
     if (isAdd) {
+        //check to see if it already exists
         console.log('[ValidateToken] - is add. delete and send')
-        User.findById(req.user._id).remove(function () {
-            console.log('[ValidateToken] - req.user: ', req.user[profile]);
+        if (req.user.isNew) {
+            User.findById(req.user._id).remove(function () {
+                console.log('[ValidateToken] - req.user: ', req.user[profile]);
+                res.send({
+                    profile: req.user[profile]
+                })
+            });
+        } else {
+            // profile is not new, ask if user wants to merge
             res.send({
-                profile: req.user[profile]
+                error: {
+                    status: 4,
+                    message: 'A user alread exists with given social account'
+                },
+                user: req.user
             })
-        });
+        }
+
     } else {
         console.log('[ValidateToken] - normal login');
         res.send({

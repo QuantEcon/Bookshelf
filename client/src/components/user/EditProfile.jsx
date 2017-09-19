@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
 import HeadContainer from '../../containers/HeadContainer';
 import Markdown from 'react-markdown';
+import {withRouter} from 'react-router'
+import Modal from 'react-modal'
 
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton'
 import CheckmarkIcon from 'react-icons/lib/fa/check-circle-o'
@@ -16,6 +18,9 @@ class EditProfile extends Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            showMergeModal: false
+        }
         this.websiteChanged = this
             .websiteChanged
             .bind(this);
@@ -31,7 +36,6 @@ class EditProfile extends Component {
         this.validate = this
             .validate
             .bind(this);
-
 
         this.removeFacebook = this
             .removeFacebook
@@ -66,11 +70,27 @@ class EditProfile extends Component {
         this.onAddSocialEnd = this
             .onAddSocialEnd
             .bind(this);
+        this.componentDidMount = this
+            .componentDidMount
+            .bind(this);
+        this.toggleMergeModal = this
+            .toggleMergeModal
+            .bind(this)
+        this.mergeAccounts = this
+            .mergeAccounts
+            .bind(this)
+        this.cancelMerge = this
+            .cancelMerge
+            .bind(this);
 
     }
 
-    componentDidMount(){
+    componentDidMount() {
         document.title = 'Edit Profile'
+        // this     .props     .router     .setRouteLeaveHook(this.props.route, () => {
+        // if (this.dirtyFields.name ||             this.dirtyFields.email ||
+        // this.dirtyFields.summary ||             this.dirtyFields.website) {
+        // console.log('[EditProfile] - leaving page with unsaved changes')       } });
     }
 
     componentWillReceiveProps = (props) => {
@@ -107,10 +127,52 @@ class EditProfile extends Component {
     errorSaving = false;
     successSaving = false;
 
-    onAddSocialEnd = (success) => {
+    toggleMergeModal = (provider) => {
+        this.setState({
+            showMergeModal: !this.state.showMergeModal,
+            accountToMerge: provider
+        })
+    }
+
+    onMergeAccountsEnd = (success) => {
         this.hasSaved = true;
         this.errorSaving = !success;
         this.successSaving = success
+    }
+
+    mergeAccounts = () => {
+        this
+            .props
+            .mergeAccounts({accountToMerge: this.state.accountToMerge, next: this.onMergeAccountsEnd})
+        this.toggleMergeModal();
+    }
+
+    cancelMerge = () => {
+        if (this.state.accountToMerge) {
+            this
+                .props
+                .removeSocial({social: this.state.accountToMerge})
+        } else {
+            console.warn('[EditProfile] - cancel merge: no accountToMerge in state!');
+        }
+        this.toggleMergeModal();
+    }
+
+    onAddSocialEnd = (success, provider) => {
+        if (success) {
+            this.hasSaved = true;
+            this.errorSaving = !success;
+            this.successSaving = success
+        } else {
+            if (this.props.user[provider].needToMerge) {
+                this.toggleMergeModal(provider)
+            } else {
+                this.hasSaved = true;
+                this.errorSaving = !success;
+                this.successSaving = success
+            }
+        }
+
     }
 
     websiteChanged = (e) => {
@@ -217,7 +279,9 @@ class EditProfile extends Component {
     }
 
     removeGoogle = () => {
-        this.props.removeSocial({social: 'google'});
+        this
+            .props
+            .removeSocial({social: 'google'});
         this.hasSaved = true;
     }
 
@@ -288,6 +352,91 @@ class EditProfile extends Component {
     render() {
         return (
             <div>
+                <Modal
+                    isOpen={this.state.showMergeModal}
+                    contentLabel='Merge Accounts'
+                    className='overlay'>
+                    <div className='my-modal'>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>
+                                Merge Accounts
+                            </h1>
+                        </div>
+                        <div className='modal-body'>
+                            <p className='padded-below'>
+                                There is already an account associated with that social login. Would you like to
+                                merge these two accounts?
+                            </p>
+
+                            <label htmlFor="currentAccount" className='section-title'>
+                                Current Account
+                            </label>
+                            <div className='edit-profile-header'>
+                                <div className='avatar'>
+                                    <a >
+                                        <img src={this.props.user.avatar} alt="Current avatar"/>
+                                    </a>
+                                    <span>
+                                        <a>
+                                            {this.props.user.name}
+                                        </a>
+                                        
+                                    </span>
+                                    <p>
+                                            ({this.props.user.submissions.length}
+                                                {this.props.user.submissions.length === 1
+                                                ? ' submission)'
+                                                : ' submissions)'}
+                                    </p>
+                                </div>
+
+                            </div>
+                            <hr/>
+                            <label htmlFor="toMerge" className='section-title'>
+                                To Merge
+                            </label>
+                            <div className='edit-profile-header'>
+                                <div className='avatar'>
+                                    <a>
+                                        <img
+                                            src={this.props.user[this.state.accountToMerge]
+                                            ? this.props.user[this.state.accountToMerge].avatarURL
+                                            : null}
+                                            alt="Avatar"/>
+                                    </a>
+                                    <span>
+                                        <a
+                                            href={this.props.user[this.state.accountToMerge]
+                                            ? this.props.user[this.state.accountToMerge].url
+                                            : null}>
+                                            {this.props.user[this.state.accountToMerge]
+                                                ? <div>
+                                                        {this.props.user[this.state.accountToMerge].username}
+                                                        
+                                                    </div>
+                                                : null}
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <ul className='button-row'>
+                                <li>
+                                    <button className='alt' onClick={this.cancelMerge}>
+                                        Cancel
+                                    </button>
+                                </li>
+                                <li>
+                                    <button onClick={this.mergeAccounts}>
+                                        Merge
+                                    </button>
+                                </li>
+                            </ul>
+
+                        </div>
+                    </div>
+
+                </Modal>
                 <HeadContainer/> {this.successSaving && this.hasSaved
                     ? <div className="success callout">
                             <div className="row columns">
@@ -586,7 +735,9 @@ class EditProfile extends Component {
                                                             Remove
                                                         </a>
                                                         {' | '}
-                                                        <a onClick={this.useGooglePhoto} disabled={this.props.user.activeAvatar === 'google'}>
+                                                        <a
+                                                            onClick={this.useGooglePhoto}
+                                                            disabled={this.props.user.activeAvatar === 'google'}>
                                                             Use this photo
                                                         </a>
                                                     </p>
@@ -636,4 +787,4 @@ class EditProfile extends Component {
     }
 }
 
-export default EditProfile;
+export default withRouter(EditProfile);

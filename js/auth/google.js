@@ -55,6 +55,8 @@ passport.use('google', new GoogleStrategy({
                         newUser.flagged = false;
                         newUser.deleted = false;
 
+                        newUser.isNew = true;
+
                         newUser.save(function (err) {
                             if (err) {
                                 console.log("Error creating new google user: ", err);

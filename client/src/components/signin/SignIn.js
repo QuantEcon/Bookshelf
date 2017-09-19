@@ -26,18 +26,27 @@ class SignIn extends Component {
 
     }
 
-    componentDidMount(){
-        document.title='Sign In'
+    componentDidMount() {
+        document.title = 'Sign In'
     }
 
     showErrorMessage = false;
 
     onSignInEnd(didAuthenticate) {
         if (didAuthenticate) {
-            this
-                .props
-                .history
-                .push('/');
+            if (this.props.user.isNew) {
+                console.log('[SignIn] - brand new user. Move to registration page');
+                this
+                    .props
+                    .history
+                    .push('/user/my-profile/edit')
+            } else {
+                this
+                    .props
+                    .history
+                    .push('/');
+            }
+
         } else {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner
@@ -46,11 +55,14 @@ class SignIn extends Component {
 
     }
 
-    componentWillReceiveProps(props){
-        if(props.isSignedIn){
-            this.props.history.push('/')
+    componentWillReceiveProps(props) {
+        if (props.isSignedIn) {
+            this
+                .props
+                .history
+                .push('/')
         }
-        if(this.props.authError){
+        if (this.props.authError) {
             this.setState({showErrorMessage: true});
         }
     }
@@ -58,17 +70,17 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
-                {this.state.showErrorMessage 
-                ?<div className="warning callout">
-                    <div className="row columns">
-                        <p className="callout-message">
-                            <ErrorIcon/> An error occurred while trying to login
-                            </p>
-                    </div>
-                </div>
-                :null}
-                
+                <HeadContainer/> {this.state.showErrorMessage
+                    ? <div className="warning callout">
+                            <div className="row columns">
+                                <p className="callout-message">
+                                    <ErrorIcon/>
+                                    An error occurred while trying to login
+                                </p>
+                            </div>
+                        </div>
+                    : null}
+
                 <div className='modal'>
                     <div className='modal-header'>
                         <h1 className='modal-title'>Sign In</h1>
@@ -118,10 +130,7 @@ class SignIn extends Component {
 }
 
 const mapStateToProps = (state, props) => {
-    return {
-        isSignedIn: state.auth.isSignedIn,
-        authError: state.auth.error
-    }
+    return {isSignedIn: state.auth.isSignedIn, authError: state.auth.error, user: state.auth.user}
 }
 
 export default connect(mapStateToProps, null)(SignIn);

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
 import {removeSocialAccount, setActiveAvatar, toggleSocial, editProfile} from '../../actions/auth/auth';
+import {mergeAccounts} from '../../actions/auth/signIn'
 import EditProfile from '../../components/user/EditProfile'
 
 class EditProfileContainer extends Component {
@@ -42,6 +43,13 @@ class EditProfileContainer extends Component {
             .removeSocialAccount({social});
     }
 
+    mergeAccounts = ({accountToMerge, next}) => {
+        this.props.actions.mergeAccounts({
+            accountToMerge,
+            next
+        })
+    }
+
     render() {
         return (
             <div>
@@ -53,7 +61,8 @@ class EditProfileContainer extends Component {
                     setAvatar={this.setAvatar}
                     removeSocial={this.removeSocial}
                     editProfileError={this.props.editProfileError}
-                    editProfileSuccess={this.props.editProfileSuccess}/>
+                    editProfileSuccess={this.props.editProfileSuccess}
+                    mergeAccounts={this.mergeAccounts}/>
             </div>
         )
     }
@@ -79,7 +88,8 @@ function mapDispatchToProps(dispatch) {
             removeSocialAccount,
             setActiveAvatar,
             toggleSocial,
-            editProfile
+            editProfile,
+            mergeAccounts
         }, dispatch)
     }
 }

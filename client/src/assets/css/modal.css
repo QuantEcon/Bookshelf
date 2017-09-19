@@ -67,3 +67,33 @@ div.my-modal {
     margin-left: auto;
     overflow-y: auto;
 }
+
+.my-modal div.edit-profile-header {
+    display: block;
+    box-sizing: inherit
+}
+
+.my-modal div.edit-profile-header .avatar{
+    margin: 2.5rem 0;
+    padding: 0 2rem 0 0;
+    height: 75px;
+    overflow: hidden;
+    text-align: center;
+}
+.my-modal div.edit-profile-header .avatar img{
+    border: 1px solid #cacaca;
+    border-radius: 5px;
+    width: 75px;
+    display: inline-block;
+    vertical-align: middle;
+    max-width: 100%;
+}    
+
+.my-modal label.section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+}
+
+.my-modal div.edit-profile-header span {
+    padding-left: 1rem;
+}

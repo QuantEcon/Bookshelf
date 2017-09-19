@@ -2,9 +2,11 @@ var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 const bodyParser = require('body-parser');
 const passport = require('../../js/auth/jwt');
+const sprintf = require('sprintf')
 
 
 var User = require('../../js/db/models/User');
+const Submission= require('../../js/db/models/Submission')
 
 var app = express.Router();
 
@@ -67,6 +69,8 @@ app.post('/', passport.authenticate('jwt', {
                 user.oneSocial = false
             }
 
+            user.new = false;
+
             user.save(function (err, savedUser) {
                 if (err) {
                     res.status(500);
@@ -119,6 +123,7 @@ app.post('/remove-social', passport.authenticate('jwt', {
                     console.log("Now only have one social");
                     user.oneSocial = true;
                 }
+                user.new = false;
                 user.save(function (err) {
                     if (err) {
                         res.status(500);
@@ -167,6 +172,7 @@ app.post('/toggle-social', passport.authenticate('jwt', {
                 } else if (type === 'google') {
                     user.google.hidden = !user.google.hidden;
                 }
+                user.new = false;
 
                 user.save(function (err) {
                     if (err) {
@@ -230,6 +236,7 @@ app.post('/set-avatar', passport.authenticate('jwt', {
                     user.avatar = user.google.avatarURL;
                     user.activeAvatar = 'google';
                 }
+                user.new = false;
                 user.save(function (err) {
                     if (err) {
                         res.status(500);
@@ -253,4 +260,112 @@ app.post('/set-avatar', passport.authenticate('jwt', {
     }
 });
 
+
+app.post('/merge-accounts', passport.authenticate('jwt', {
+    session: false
+}), (req, res) => {
+    var socialToMerge = req.body.accountToMerge;
+    var socialID = req.body.socialID;
+    if (!socialToMerge || !socialID) {
+        res.status(400);
+        console.log('[MergeAccounts] no socialToMerge or socialID: ', socialToMerge, socialID)
+        res.send({
+            error: 'Bad request. Must include the name of the social to merge and the social account\'s id'
+        })
+        return;
+    }
+    User.findById(req.user._id, (err, user) => {
+        if (err) {
+            // res.status(500);
+            res.send({
+                error: err
+            })
+        } else if (user) {
+            var options;
+            switch (socialToMerge) {
+                case 'google':
+                    options = {
+                        'google.id': socialID
+                    }
+                    break;
+                case 'fb':
+                    options = {
+                        'fb.id': socialID
+                    }
+                    break
+                case 'github':
+                    options = {
+                        'github.id': socialID
+                    }
+                    break
+                case 'twitter':
+                    options = {
+                        'twitter.id':socialID
+                    }
+                    break
+            }
+
+            User.findOne(options, (err, userToMerge) => {
+                if (err) {
+                    // res.status(500);
+                    res.send({
+                        error: err
+                    })
+                } else if (userToMerge) {
+                    console.log('[MergeAccounts] - user to merge: ', userToMerge);
+                    //change author of all submissions to user._id
+                    //move all submission._id's from userToMerge.submissions to user.submissions
+                    Submission.find({
+                        author: userToMerge._id
+                    }, (err, submissions) => {
+                        submissions.forEach(function (submission) {
+                            submission.author = user._id;
+                            submission.save();
+                        }, this);
+                    })
+                    userToMerge.submissions.forEach((submissionID) => {
+                        user.submissions.push(submissionID);
+                    })
+                    user[socialToMerge] = userToMerge[socialToMerge]
+                    console.log('[MergeAccounts] - done moving submissions')
+                    user.save((err) => {
+                        if (err) {
+                            // res.status(500)
+                            console.log('[MergeAccounts] - Error saving user');
+                            res.send({
+                                error: 'Error saving user'
+                            })
+                        } else {
+                            userToMerge.remove((err) => {
+                                if (err) {
+                                    // res.status(500);
+                                    console.log('[MergeAccounts] - Error removing user');
+                                    res.send({
+                                        error: 'Error deleting old user'
+                                    })
+                                } else {
+                                    console.log('[MergeAccounts] - success')
+                                    res.send('Success')
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    console.log('[MergeAccounts] - Couldn\'t find user with associated social account')
+                    // res.status(404);
+                    res.send({
+                        error: 'Couldn\'t find user with associated social account'
+                    })
+                }
+
+            });
+        } else {
+            console.log('[MergeAccounts] - Coulnd\'t find user');
+            // res.status(404);
+            res.send({
+                error: 'Couln\'t find user'
+            })
+        }
+    });
+})
 module.exports = app;

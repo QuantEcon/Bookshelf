@@ -1,8 +1,13 @@
+import store from '../../store/store'
+
 import {
     authenticate,
     authenticateNewSocial
 } from '../../utils/authentication'
-import {loadState, saveState} from '../../utils/localStorage'
+import {
+    loadState,
+    saveState
+} from '../../utils/localStorage'
 import axios from 'axios';
 
 export const BEGIN_USER_AUTHENTICATION = 'BEGIN_USER_AUTHENTICATION'
@@ -36,13 +41,17 @@ export const END_ADD_SOCIAL = 'END_ADD_SOCIAL'
 const endAddSocial = ({
     provider,
     profile,
-    error
+    error,
+    existingProfile,
+    existingUser
 }) => {
     return {
         type: END_ADD_SOCIAL,
         profile,
         provider,
-        error
+        error,
+        existingProfile,
+        existingUser
     }
 }
 
@@ -54,7 +63,11 @@ const beginReauthentication = () => {
 }
 
 export const END_REAUTHENTICATION = 'END_REAUTHENTICATION'
-const endReauthentication = ({error, user, token}) => {
+const endReauthentication = ({
+    error,
+    user,
+    token
+}) => {
     return {
         type: END_REAUTHENTICATION,
         error,
@@ -69,25 +82,59 @@ export const reauthenticate = () => {
         dispatch(beginReauthentication());
         //get token from local storage
         var localState = loadState();
-        if(localState && localState.token){
-            axios.get('/api/auth/validate-token',{
+        if (localState && localState.token) {
+            axios.get('/api/auth/validate-token', {
                 headers: {
                     'Authorization': 'JWT ' + localState.token
                 }
             }).then(response => {
-                if(response.data.user){
+                if (response.data.user) {
                     dispatch(endReauthentication({
                         user: response.data.user,
                         token: localState.token
                     }))
                 }
             }).catch(err => {
-                dispatch(endReauthentication({error: err}));
+                dispatch(endReauthentication({
+                    error: err
+                }));
                 localStorage.removeItem('token');
             })
         } else {
-            dispatch(endReauthentication({error: 'No token saved'}));
+            dispatch(endReauthentication({
+                error: 'No token saved'
+            }));
         }
+    }
+}
+
+export const mergeAccounts = ({accountToMerge, next}) => {
+    return function(dispatch){
+        axios.post('/api/edit-profile/merge-accounts',{
+            accountToMerge,
+            socialID: store.getState().auth.user[accountToMerge].id
+        }, {
+            headers: {
+                'Authorization' : 'JWT ' + store.getState().auth.token
+            }
+        }).then(resp => {
+            if(resp.data.error){
+                console.error('[MergeAccounts] - error returned from server: ', resp.data.error);
+                dispatch(endAddSocial({
+                    provider: accountToMerge,
+                    profile: null
+                }))
+                next(false)
+            } else {
+                dispatch(endAddSocial({
+                    provider: accountToMerge,
+                    profile: resp.data.profile
+                }))
+                next(true)
+            }
+        }).catch(err => {
+            console.error('[MergeAccountsAction] - error occurred merging accounts: ', err);
+        })
     }
 }
 
@@ -98,11 +145,23 @@ export const addSocial = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticateNewSocial('github').then(resp => {
-                    dispatch(endAddSocial({
-                        provider: 'github',
-                        profile: resp.data.profile,
-                    }));
-                    next(true);
+                    if (resp.data.error) {
+                        if (resp.data.error.status === 4) {
+                            dispatch(endAddSocial({
+                                provider: 'github',
+                                profile: resp.data.user['github'],
+                                existingProfile: true
+                                
+                            }))
+                            next(false, 'github')
+                        }
+                    } else {
+                        dispatch(endAddSocial({
+                            provider: 'github',
+                            profile: resp.data.profile,
+                        }));
+                        next(true);
+                    }
                 }, error => {
                     dispatch(endAddSocial({
                         error: 'Error adding github'
@@ -112,12 +171,24 @@ export const addSocial = (provider, next) => {
                 break
             case 'Twitter':
                 authenticateNewSocial('twitter').then(resp => {
-                    console.log('[SignInActions] - authenticate new twitter resp: ', resp);
-                    dispatch(endAddSocial({
-                        provider: 'twitter',
-                        profile: resp.data.profile
-                    }))
-                    next(true);
+                    if (resp.data.error) {
+                        if (resp.data.error.status === 4) {
+                            console.log('[SignInActions] - user profile already exists');
+                            dispatch(endAddSocial({
+                                provider: 'twitter',
+                                profile: resp.data.user['twitter'],
+                                existingProfile: true
+                                
+                            }))
+                            next(false, 'twitter')
+                        }
+                    } else {
+                        dispatch(endAddSocial({
+                            provider: 'twitter',
+                            profile: resp.data.profile
+                        }))
+                        next(true);
+                    }
                 }, error => {
                     dispatch(endAddSocial({
                         error: 'Error adding twitter'
@@ -127,11 +198,25 @@ export const addSocial = (provider, next) => {
                 break
             case 'Facebook':
                 authenticateNewSocial('fb').then(resp => {
-                    dispatch(endAddSocial({
-                        provider: 'fb',
-                        profile: resp.data.profile
-                    }))
-                    next(true);
+                    if (resp.data.error) {
+                        if (resp.data.error.staus === 4) {
+                            console.log('[SignInActions] - user profile already exists');
+                            //TODO: ask user if he/she wants to merge accounts
+                            dispatch(endAddSocial({
+                                provider: 'fb',
+                                profile: resp.data.user['fb'],
+                                existingProfile: true
+                            }))
+                            next(false, 'fb')
+                        }
+                    } else {
+                        dispatch(endAddSocial({
+                            provider: 'fb',
+                            profile: resp.data.profile
+                        }))
+                        next(true);
+                    }
+
                 }, error => {
                     dispatch(endAddSocial({
                         error: 'Error adding fb'
@@ -141,11 +226,23 @@ export const addSocial = (provider, next) => {
                 break;
             case 'Google':
                 authenticateNewSocial('google').then(resp => {
-                    dispatch(endAddSocial({
-                        provider: 'google',
-                        profile: resp.data.profile
-                    }))
-                    next(true);
+                    if (resp.data.error) {
+                        if (resp.data.error.status === 4) {
+                            console.log('[SignInActions] - user profile already exists');
+                            dispatch(endAddSocial({
+                                provider: 'google',
+                                existingUser: resp.data.user,
+                                existingProfile: true
+                            }))
+                            next(false, 'google')
+                        }
+                    } else {
+                        dispatch(endAddSocial({
+                            provider: 'google',
+                            profile: resp.data.profile,
+                        }))
+                        next(true);
+                    }
                 }, error => {
                     dispatch(endAddSocial({
                         error: 'Error adding google'
@@ -166,9 +263,10 @@ export const signIn = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticate('github').then(resp => {
-                    console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null))
-                    saveState({token: resp.credentials.token});
+                    saveState({
+                        token: resp.credentials.token
+                    });
                     next(true);
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -184,7 +282,9 @@ export const signIn = (provider, next) => {
                 authenticate('twitter').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null))
-                    saveState({token: resp.credentials.token});
+                    saveState({
+                        token: resp.credentials.token
+                    });
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -200,7 +300,9 @@ export const signIn = (provider, next) => {
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null))
-                    saveState({token: resp.credentials.token});
+                    saveState({
+                        token: resp.credentials.token
+                    });
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
@@ -216,7 +318,9 @@ export const signIn = (provider, next) => {
                 authenticate('fb').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
                     dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null))
-                    saveState({token: resp.credentials.token});
+                    saveState({
+                        token: resp.credentials.token
+                    });
                     next(true)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')

@@ -15,7 +15,8 @@ export const authenticate = (provider) => {
     //TODO: extract url to central config file
     console.log('[Authentication] - open popup')
     var popup;
-    if(config.urlPlusPort){
+    if(config.debug){
+        console.log('[Authentication] - open popup with port: ', config.urlPlusPort)
         popup = openPopup(provider, config.urlPlusPort + `/api/auth/${provider}`, `${provider} authentication`);
     } else {
         popup = openPopup(provider, config.url + `/api/auth/${provider}`, `${provider} authentication`);
@@ -86,21 +87,15 @@ const listenForCredentials = ({
             //     errors: 'Error parsing credentials'
             // })
         }
-        console.log('[ListenForCredentials] - credentials:',credentials);
         if (credentials && credentials.uid && credentials.token) {  //if we have credentials and a user id, continue
-            console.log('[ListenForCredentials] - isAdd:',isAdd);
-            console.log('[ListenForCredentials] - profile:',profile);
             popup.close();
             // validate token
-            console.log('[ListenForCredentials] - /api/auth/validate-token?isAdd=' + isAdd + '&profile=' + profile);
             var url = '';
             if(isAdd && profile != null){
-                console.log('[ListenForCredentials] - isAdd and profile');
                 url = '/api/auth/validate-token?isAdd=' + isAdd + '&profile=' + profile;
             } else {
                 url = '/api/auth/validate-token'
             }
-            console.log('[ListenForCredentials] - fetch url: ', url);
             fetch(url, {
                     headers: {
                         'Authorization': "JWT " + credentials.token
@@ -108,11 +103,19 @@ const listenForCredentials = ({
                 })
                 .then(parseResponse)
                 .then(data => {
-                    console.log('[Authentication] - data: ', data);
-                    resolve({
-                        data,
-                        credentials
-                    });
+                    if(isAdd && data.status === 4){
+                        resolve({
+                            data,
+                            credentials,
+                            error: data.error
+                        })
+                    } else {
+                        resolve({
+                            data,
+                            credentials
+                        });
+                    }
+                    
                 })
                 .catch(error => {
                     reject({

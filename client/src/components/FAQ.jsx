@@ -35,7 +35,7 @@ class FAQ extends Component {
                             <p className='answer'>
                                 Sort of. There is no kernel running, so you cannot execute code cells. However,
                                 libraries such as PlotlyJS that use JavaScript allow a notebook's output cells
-                                to be interactive
+                                to be interactive.
                             </p>
                         </div>
                         <div className='qa'>
@@ -52,6 +52,17 @@ class FAQ extends Component {
                             </p>
                             <p className='answer'>
                                 Yes! We encourage you to share your work and discover others' work!
+                            </p>
+                        </div>
+                        <div className='qa'>
+                            <p className='question'>
+                                What should I do if I find an issue with the website?
+                            </p>
+                            <p className='answer'>
+                                Follow
+                                <a href="http://discourse.quantecon.org"> this link </a>
+                                and post an issue. Please provide a detailed description of the issue and what
+                                you were doing at the time. Submit the issue under the category "bookshelf".
                             </p>
                         </div>
 

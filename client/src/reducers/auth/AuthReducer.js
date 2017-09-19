@@ -150,9 +150,18 @@ const UserReducer = (user = {}, action) => {
             if (action.error) {
                 return user;
             } else {
-                return Object.assign({}, user, {
-                    [action.provider]: action.profile
-                })
+                if (action.existingProfile) {
+                    return Object.assign({}, user, {
+                        [action.provider]: Object.assign({}, action.existingUser[action.provider], {
+                            needToMerge: true,
+                            user: action.existingUser
+                        })
+                    })
+                } else {
+                    return Object.assign({}, user, {
+                        [action.provider]: action.profile
+                    })
+                }
             }
         case SET_AVATAR_PICTURE:
             if (action.error) {
