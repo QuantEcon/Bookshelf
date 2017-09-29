@@ -26,8 +26,9 @@ app.get('/', passport.authenticate('jwt', {
 
     if (isAdd) {
         //check to see if it already exists
-        console.log('[ValidateToken] - is add. delete and send')
+        console.log('[ValidateToken] - is add')
         if (req.user.isNew) {
+            console.log('[ValidateToken] - profile is new')
             User.findById(req.user._id).remove(function () {
                 console.log('[ValidateToken] - req.user: ', req.user[profile]);
                 res.send({
@@ -36,6 +37,7 @@ app.get('/', passport.authenticate('jwt', {
             });
         } else {
             // profile is not new, ask if user wants to merge
+            console.log('[ValidateToken] - profile already exists')
             res.send({
                 error: {
                     status: 4,

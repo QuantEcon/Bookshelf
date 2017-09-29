@@ -147,6 +147,7 @@ const UserReducer = (user = {}, action) => {
                 })
             }
         case END_ADD_SOCIAL:
+            console.log('[AuthReducer] - action: ', action);
             if (action.error) {
                 return user;
             } else {

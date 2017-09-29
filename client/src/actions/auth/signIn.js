@@ -112,12 +112,13 @@ export const mergeAccounts = ({accountToMerge, next}) => {
     return function(dispatch){
         axios.post('/api/edit-profile/merge-accounts',{
             accountToMerge,
-            socialID: store.getState().auth.user[accountToMerge].id
+            socialID: store.getState().auth.user[accountToMerge].user.id
         }, {
             headers: {
                 'Authorization' : 'JWT ' + store.getState().auth.token
             }
         }).then(resp => {
+            console.log('[MergeAccounts] - resp:', resp)
             if(resp.data.error){
                 console.error('[MergeAccounts] - error returned from server: ', resp.data.error);
                 dispatch(endAddSocial({
@@ -145,17 +146,19 @@ export const addSocial = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticateNewSocial('github').then(resp => {
+                    console.log('[AddSocial] - resp: ', resp);
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             dispatch(endAddSocial({
                                 provider: 'github',
-                                profile: resp.data.user['github'],
+                                existingUser: resp.data.user['github'],
                                 existingProfile: true
                                 
                             }))
                             next(false, 'github')
                         }
                     } else {
+                        console.log('[AddSocial] - no error');
                         dispatch(endAddSocial({
                             provider: 'github',
                             profile: resp.data.profile,
@@ -171,18 +174,20 @@ export const addSocial = (provider, next) => {
                 break
             case 'Twitter':
                 authenticateNewSocial('twitter').then(resp => {
+                    console.log('[AddSocial] - resp: ', resp);
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
                             dispatch(endAddSocial({
                                 provider: 'twitter',
-                                profile: resp.data.user['twitter'],
+                                existingUser: resp.data.user['twitter'],
                                 existingProfile: true
                                 
                             }))
                             next(false, 'twitter')
                         }
                     } else {
+                        console.log('[AddSocial] - no error');
                         dispatch(endAddSocial({
                             provider: 'twitter',
                             profile: resp.data.profile
@@ -198,18 +203,20 @@ export const addSocial = (provider, next) => {
                 break
             case 'Facebook':
                 authenticateNewSocial('fb').then(resp => {
+                    console.log('[AddSocial] - resp: ', resp);
                     if (resp.data.error) {
-                        if (resp.data.error.staus === 4) {
+                        if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
                             //TODO: ask user if he/she wants to merge accounts
                             dispatch(endAddSocial({
                                 provider: 'fb',
-                                profile: resp.data.user['fb'],
+                                existingUser: resp.data.user['fb'],
                                 existingProfile: true
                             }))
                             next(false, 'fb')
                         }
                     } else {
+                        console.log('[AddSocial] - no error');
                         dispatch(endAddSocial({
                             provider: 'fb',
                             profile: resp.data.profile
@@ -226,6 +233,7 @@ export const addSocial = (provider, next) => {
                 break;
             case 'Google':
                 authenticateNewSocial('google').then(resp => {
+                    console.log('[AddSocial] - resp: ', resp);
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
@@ -237,6 +245,7 @@ export const addSocial = (provider, next) => {
                             next(false, 'google')
                         }
                     } else {
+                        console.log('[AddSocial] - no error');
                         dispatch(endAddSocial({
                             provider: 'google',
                             profile: resp.data.profile,
