@@ -11,6 +11,7 @@
     "mathjax": "^2.7.1",
     "moment": "^2.18.1",
     "normalize-css": "^2.3.1",
+    "object-sizeof": "^1.2.0",
     "react": "^15.6.1",
     "react-bootstrap": "^0.31.0",
     "react-dom": "^15.6.1",

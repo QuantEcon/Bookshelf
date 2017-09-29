@@ -1,8 +1,16 @@
 import axios from 'axios'
 import store from '../store/store'
+import {
+    logRequestSubmissionEndAction,
+    logRequestSubmissionStartAction
+} from './utils'
+
+import sizeof from 'object-sizeof'
 
 export const DELETE_SUBMISSION = 'DELETE_SUBMISSION'
-const deleteSubmissionAction = ({submissionID}) => {
+const deleteSubmissionAction = ({
+    submissionID
+}) => {
     return {
         type: DELETE_SUBMISSION,
         submissionID
@@ -193,7 +201,9 @@ export const deleteSubmission = (submissionID) => {
                     if (resp.error) {
                         console.error('[SubmissionActions] - Server returned an error when deleting a submission:', resp.error);
                     } else {
-                        dispatch(deleteSubmissionAction({submissionID}));
+                        dispatch(deleteSubmissionAction({
+                            submissionID
+                        }));
                     }
                 }).catch(err => {
                     console.error('[SubmissionActions] - An error occurred while deleting a submission: ', err);
@@ -205,19 +215,57 @@ export const deleteSubmission = (submissionID) => {
     }
 }
 
-export const fetchNBInfo = ({notebookID, forced}) => {
+export const fetchNBInfo = ({
+    notebookID,
+    forced
+}) => {
     return function (dispatch) {
         if (needToFetch(store.getState(), notebookID) || forced) {
             console.log('[FetchSub] - fetching for ', notebookID)
+            var request = {
+                id: Date.now(),
+                submissionID: notebookID
+            }
             dispatch(requestNBInfo(notebookID));
-            fetch('/api/search/notebook/' + notebookID).then(
-                response => response.json(),
-                error => {
-                    console.log('An error occured: ', error);
+
+            // logRequestSubmissionStart({
+            //     request
+            // })
+            dispatch(logRequestSubmissionStartAction({
+                submissionID: request.submissionID,
+                id: request.id
+            }))
+            axios.get('/api/search/notebook/' + notebookID).then(
+                resp => {
+                    var sizeKB = sizeof(resp.data) / 1000;
+                    console.log('size of response in KB: ', sizeKB);
+                    request.size = sizeKB
+                    // logRequestSubmissionEnd({
+                    //     request
+                    // })
+                    dispatch(logRequestSubmissionEndAction({
+                        submissionID: request.submissionID,
+                        id: request.id,
+                        size: request.size
+                    }))
+                    dispatch(receiveNBInfo(notebookID, resp.data))
+                },
+                err => {
+
                 }
-            ).then(data => {
-                dispatch(receiveNBInfo(notebookID, data));
-            })
+            )
+            // fetch('/api/search/notebook/' + notebookID).then(
+            //     response => response.json(),
+            //     error => {
+            //         console.log('An error occured: ', error);
+            //     }
+            // ).then(data => {
+            //     console.log('[RequestSubmission] - data received: ', data);
+            //     logRequestSubmissionEnd({
+            //         request
+            //     })
+            //     dispatch(receiveNBInfo(notebookID, data));
+            // })
         } else {
             console.log('[FetchSub] - don\'t need to fetch');
         }
