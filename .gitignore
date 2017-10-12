@@ -9,3 +9,5 @@ client/src/assets/MathJax
 
 #config
 _config.js
+
+.DS_store

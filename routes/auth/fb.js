@@ -85,8 +85,14 @@ app.get('/callback', passport.authenticate('facebook', {
                         res.status(500);
                         res.send({error: err});
                     } else {
-                        console.log('[FBAuth] - redirect: ', req.headers.referer + '?' + queryString);
-                        res.redirect(req.headers.referer + '?' + queryString);
+                        console.log('[FBAuth] - headers: ', req.headers)
+                        if(req.headers.referer){
+                            console.log('[FBAuth] - redirect: ', req.headers.referer + '?' + queryString);
+                            res.redirect(req.headers.referer + '?' + queryString);
+                        } else {
+                            console.log('[FBAuth] - no referer header. Redirect: ', appConfig.url + '/signin' + '?' + queryString)
+                            res.redirect(appConfig.url + '/signin' + '?' + queryString);
+                        }
                     }
                 })
         } else {
