@@ -138,9 +138,10 @@ app.post('/add-notify-email', (req, res) => {
 app.use(function (req, res, next) {
     console.log('----------------------------------------------------------------\n')
     console.log("Looking for URL : " + req.url);
-    console.log('\tmethod: ', req.method);
-    console.log('\tbody: ', req.body);
-    console.log('\tauthorization: ', req.headers['authorization']);
+    // console.log('\tmethod: ', req.method);
+    // console.log('\tbody: ', req.body);
+    // console.log('\tauthorization: ', req.headers['authorization']);
+    console.log('\theaders: ', req.headers);
     // console.log('req.headers: ', req.headers);
     // console.log('req.cookies:',req.cookies);
     console.log('\n');
