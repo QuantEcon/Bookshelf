@@ -11,7 +11,7 @@ passport.use('google', new GoogleStrategy({
         clientID: config.google.clientID,
         clientSecret: config.google.clientSecret,
         callbackURL: config.google.callbackURL,
-        realm: appConfig.url
+        realm: appConfig.urlAndPort
     },
     function (accessToken, refreshToken, profile, done) {
         process.nextTick(function () {

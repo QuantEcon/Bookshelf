@@ -21,7 +21,8 @@ There are some config files that are not on the repo because they contain sensit
         var port = YOUR-PORT-HERE;
         module.exports = {
             port: port,
-            url: 'YOUR-URL-HERE' + port
+            urlAndPort: 'YOUR-URL-HERE' + ':' + port,
+            hostName: 'YOUR-URL-HERE'
         };
 * `./js/db/_config.js`
     * contains the `url` to the mongo database:
@@ -39,27 +40,27 @@ There are some config files that are not on the repo because they contain sensit
             github: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.url + '/auth/github/callback',
-                addCallbackURL: appConfig.url + '/auth/github/callback/add'
+                callbackURL: appConfig.urlAndPort + '/auth/github/callback',
+                addCallbackURL: appConfig.urlAndPort + '/auth/github/callback/add'
             },
             twitter: {
                 consumerKey: 'YOUR-KEY-HERE',
                 consumerSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.url + '/auth/twitter/callback',
-                addCallbackURL: appConfig.url + '/auth/twitter/callback/add'
+                callbackURL: appConfig.urlAndPort + '/auth/twitter/callback',
+                addCallbackURL: appConfig.urlAndPort + '/auth/twitter/callback/add'
 
             },
             google: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.url + '/auth/google/callback',
-                addCallbackURL: appConfig.url + '/auth/google/callback/add'
+                callbackURL: appConfig.urlAndPort + '/auth/google/callback',
+                addCallbackURL: appConfig.urlAndPort + '/auth/google/callback/add'
             },
             facebook: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.url + '/auth/fb/callback',
-                addCallbackURL: appConfig.url + '/auth/fb/callback/add'
+                callbackURL: appConfig.urlAndPort + '/auth/fb/callback',
+                addCallbackURL: appConfig.urlAndPort + '/auth/fb/callback/add'
             }
         };
 
