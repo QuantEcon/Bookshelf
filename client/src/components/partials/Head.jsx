@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
 
 class Head extends Component {
     render() {
@@ -12,8 +13,14 @@ class Head extends Component {
 
                         <div className="site-title">
                             <Link to='/'>
-                                <h2 className="site-name">QuantEcon Bookshelf (beta)</h2>
-                                <p className="site-tag">Open notebook library for economic modeling</p>
+                                <span>
+                                    <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                    <div>
+                                        <h2 className="site-name">Bookshelf (beta)</h2>
+                                        <p className="site-tag">Open notebook library for economic modeling</p>
+                                    </div>
+                                </span>
+
                             </Link>
 
                         </div>
