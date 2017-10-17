@@ -9,8 +9,8 @@ Welcome to QuantEcon Bookshelf's documentation!
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
-
-
+   
+.. autofunction:: buildSubmissionPreview
 
 Indices and tables
 ==================

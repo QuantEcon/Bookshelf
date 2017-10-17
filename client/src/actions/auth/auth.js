@@ -98,6 +98,15 @@ const removeSocial = ({
     }
 }
 
+// ==============================================================================================
+
+/**
+ * REDUX ACTION: Makes an API request call to remove the given social account from the user's account.
+ * Then dispatches an action to modify the local chagnes in redux
+ * 
+ * @param {Object} data
+ * @param {String} data.social - The name of the social account to remove. This can be "fb", "google", "github", or "twitter"
+ */
 export const removeSocialAccount = ({
     social
 }) => {
@@ -127,6 +136,12 @@ export const removeSocialAccount = ({
         }
     }
 }
+
+/**
+ * REDUX ACTION: 
+ * @param {Object} data
+ * @param {Object} data.social - The name of the social account. This can be "fb", "google", "github", or "twitter"
+ */
 
 export const setActiveAvatar = ({
     social
