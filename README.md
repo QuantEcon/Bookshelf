@@ -6,12 +6,29 @@ Please work in branches and make PR's
 
 ### Setup
 
-#### Commands 
-* Pull from repository using `git pull`
-* Run `node run install-all` to install all dependencies.
-* Run `npm start` to start the server
-* Run `npm run start-client` to start the Webpack Development server for the client side React app
-* Run `npm run build-client` to package the React client app for usage in production
+#### Installation Commands 
+Ensure you have `npm v5+` and `node v6+` installed. I am currently using `npm 5.5.1` and `node v6.11.4`
+1. Pull from repository using `git pull`
+2. Update npm using the command `node install -g npm`
+3. Run `npm install -g create-react-app`
+4. Run `npm run install-all` to install all dependencies.
+#### Running Commands
+If you are in developement mode, you will need to have _both_ the webpack developement server for the React client _and_ the node express server running. To do this, run these commands:
+
+1. `npm start` from the `/` directory
+2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
+
+You then will be able to connect to the website through the React client's port (default is 3000)
+
+If you would like to test a production build, run `npm run build` from inside the `/client/` directory.
+
+**Warning**: This takes a _long_ time (15+ min) and shouldn't be used until you actually need it.
+
+1. Run `npm run build-client` **_OR_** `cd client && npm run build` from the `/` directory
+2. Run `npm start` to start the server
+
+If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
+
 
 #### Needed files
 There are some config files that are not on the repo because they contain sensitive information. These include:
@@ -19,11 +36,13 @@ There are some config files that are not on the repo because they contain sensit
     * contains the `url` and `port` the server is running on:
         ```
         var port = YOUR-PORT-HERE;
-        module.exports = {
+            module.exports = {
             port: port,
-            urlAndPort: 'YOUR-URL-HERE' + ':' + port,
+            urlAndPort: 'YOUR-URL-HERE' + port,
+            secret: 'YOUR-SECRET-HERE',
             hostName: 'YOUR-URL-HERE'
         };
+
 * `./js/db/_config.js`
     * contains the `url` to the mongo database:
         ```
