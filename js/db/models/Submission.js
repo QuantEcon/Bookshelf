@@ -28,7 +28,9 @@ var submissionSchema = new Schema({
     lastUpdated: Date,
 
     flagged: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+
+    preRendered: Boolean
 });
 
 submissionSchema.plugin(mongoosePaginate);

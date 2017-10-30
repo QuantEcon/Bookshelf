@@ -240,9 +240,6 @@ export const fetchNBInfo = ({
                     var sizeKB = sizeof(resp.data) / 1000;
                     console.log('size of response in KB: ', sizeKB);
                     request.size = sizeKB
-                    // logRequestSubmissionEnd({
-                    //     request
-                    // })
                     dispatch(logRequestSubmissionEndAction({
                         submissionID: request.submissionID,
                         id: request.id,
@@ -254,18 +251,6 @@ export const fetchNBInfo = ({
 
                 }
             )
-            // fetch('/api/search/notebook/' + notebookID).then(
-            //     response => response.json(),
-            //     error => {
-            //         console.log('An error occured: ', error);
-            //     }
-            // ).then(data => {
-            //     console.log('[RequestSubmission] - data received: ', data);
-            //     logRequestSubmissionEnd({
-            //         request
-            //     })
-            //     dispatch(receiveNBInfo(notebookID, data));
-            // })
         } else {
             console.log('[FetchSub] - don\'t need to fetch');
         }

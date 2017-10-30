@@ -12,6 +12,8 @@ var path = require('path');
 
 var app = express.Router();
 
+var config = require('../../_config');
+
 /*
     Query the url with the following parameters
     {
@@ -170,7 +172,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString";
+                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered";
                 Submission.findOne({
                     _id: mdb.ObjectId(notebookID),
                     deleted: false
@@ -180,6 +182,18 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         notebook = submission;
                         notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
                         notebook.notebookJSONString = null;
+                        // Check if has been preRendered
+                        if(submission.preRendered){
+                            // Get html from preRendered file
+                            var fileName = config.rootDirectory + config.filesDirectory + '/' + submission._id + '.html'
+                            console.log('File path: ', fileName);
+                            try{
+                                notebook.html = fs.readFileSync(fileName).toString();
+                            }catch(ex){
+                                console.warn('Error: ', ex, "\nDoes that file exist?")
+                            }
+                            
+                        }
                         console.log('[Search] - typeof notebookJSON: ', typeof(notebook.notebookJSON));
                         callback(null, notebook);
 
@@ -294,11 +308,10 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             var location = __dirname + notebook.notebook;
             // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
             //TODO: refactor to store JSON on submission then send that
-            console.log('dirname: ', __dirname);
 
             var data = {
                 notebook: results.nb,
-                // notebookHTML: notebookHTML,
+                html: results.nb.html,
                 notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,

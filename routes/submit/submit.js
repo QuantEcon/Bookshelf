@@ -14,6 +14,10 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var path = require('path');
 
+var config = require('../../_config')
+
+var renderer = require('../../js/render');
+
 var multipartyMiddleware = multiparty();
 
 const storage = multer.diskStorage({
@@ -29,11 +33,13 @@ const upload = multer({
 
 var app = express.Router();
 
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.json({
+    limit: '50mb'
+}))
 app.use(bodyParser.urlencoded({
     extended: true,
     limit: '50mb',
-    parameterLimit:50000
+    parameterLimit: 50000
 }));
 
 // app.use(function(req, res, next){     // console.log('[Submit] - req.headers:
@@ -175,35 +181,52 @@ app.post('/confirm', passport.authenticate('jwt', {
 
     newSub.fileName = req.body.submission.fileName;
     newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
-    console.log('[Submit] - created submission: ', newSub);
+
+
     User.findById(req.user._id, (err, user) => {
-        if(err) {
+        if (err) {
             console.err('[Submit] - error finding user: ', err);
             res.status(500);
-            res.send({error: err});
-        } else if(user){
+            res.send({
+                error: err
+            });
+        } else if (user) {
             newSub.save((err, submission) => {
-                if(err){
+                if (err) {
                     console.err('[Submit] - error saving user: ', err);
                     res.status(500);
-                    res.send({error: err});
+                    res.send({
+                        error: err
+                    });
                 } else {
+                    // TODO insert pre-render support here========================================
+                    if (config.preRender) {
+                        renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
+                        submission.preRendered = true;
+                        submission.save();
+                    }
+                    // ============================================================================
+
                     console.log('[Submit] - add to user.submissions: ', submission._id);
                     user.submissions.push(submission._id)
                     user.save((err, savedUser) => {
-                        if(err){
+                        if (err) {
                             console.error('[Submit] - error saving user: ', err);
                         } else {
                             console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
                         }
                     });
-                    res.send({submissionID: submission._id});
+                    res.send({
+                        submissionID: submission._id
+                    });
                 }
             })
         } else {
             console.warn('[Submit] - no user was found');
             res.status(500);
-            res.send({error: 'No user found'});
+            res.send({
+                error: 'No user found'
+            });
         }
     })
 });
@@ -220,6 +243,13 @@ app.post('/edit-submission', passport.authenticate('jwt', {
         } else if (submission) {
             //TODO: 
             submission.notebookJSON = JSON.stringify(req.body.submissionData.notebookJSON);
+            // TODO insert pre-render support here========================================
+            if (config.preRender) {
+                var filePath = renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
+                submission.htmlFilePath = filePath;
+                submission.save();
+            }
+            // ============================================================================
             submission.title = req.body.submissionData.title;
             submission.coAuthors = req.body.submissionData.coAuthors;
             submission.summary = req.body.submissionData.summary;

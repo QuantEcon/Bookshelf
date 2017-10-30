@@ -21,6 +21,7 @@
     "react-modal": "^3.0.0",
     "react-paginate": "^5.0.0",
     "react-redux": "^5.0.5",
+    "react-render-html": "^0.5.2",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^4.0.8",

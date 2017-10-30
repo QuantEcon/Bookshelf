@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 
-
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
+import renderHTML from 'react-render-html'
 
 import 'normalize-css'
 import 'typeface-source-code-pro'
@@ -30,7 +30,6 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
-
 
 class Submission extends Component {
 
@@ -78,7 +77,9 @@ class Submission extends Component {
         this.toggleDeleteModal = this
             .toggleDeleteModal
             .bind(this);
-        this.deleteSubmission = this.deleteSubmission.bind(this);
+        this.deleteSubmission = this
+            .deleteSubmission
+            .bind(this);
     }
 
     componentDidMount() {
@@ -180,7 +181,10 @@ class Submission extends Component {
 
     deleteSubmission() {
         console.log('[Submission] - delete submission clicked');
-        this.props.actions.deleteSubmission(this.props.submissionID);
+        this
+            .props
+            .actions
+            .deleteSubmission(this.props.submissionID);
         this.toggleDeleteModal();
     }
 
@@ -210,9 +214,9 @@ class Submission extends Component {
                     </div>
 
                 </Modal>
-                {this.props.isLoading 
-                ? null
-                : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
+                {this.props.isLoading
+                    ? null
+                    : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
                 <div className='row'>
                     <div className='column'>
 
@@ -429,15 +433,19 @@ class Submission extends Component {
                                                         </li>
                                                     </ul>
                                                 </div>
-                                                {/* {this.state.notebook.notebookJSON
-                                                        ? <NotebookPreview notebook='../../assets/files/UN_demography.ipynb'/>
-                                                        : null} */}
-                                                <div id='notebook'>
-                                                    <NotebookPreview
-                                                        notebook={this.props.submission.data.notebookJSON}
-                                                        transforms={transforms}
-                                                        displayOrder={displayOrder}/>
-                                                </div>
+
+                                                {this.props.submission.data.html
+                                                    ? <div
+                                                            dangerouslySetInnerHTML={{
+                                                            __html: this.props.submission.data.html
+                                                        }}></div>
+                                                    : <div id='notebook'>
+                                                        <NotebookPreview
+                                                            notebook={this.props.submission.data.notebookJSON}
+                                                            transforms={transforms}
+                                                            displayOrder={displayOrder}/>
+                                                    </div>}
+
                                             </div>
                                         : <div>
                                             <div className='tile-header'>

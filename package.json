@@ -51,6 +51,8 @@
     "passport-twitter": "^1.0.4",
     "passport-youtube-v3": "^2.0.0",
     "query-string": "^5.x.x",
-    "sprintf": "^0.1.5"
+    "react-jupyter": "^0.1.0",
+    "sprintf": "^0.1.5",
+    "tmp": "0.0.33"
   }
 }
