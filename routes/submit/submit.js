@@ -237,15 +237,17 @@ app.post('/edit-submission', passport.authenticate('jwt', {
     Submission.findById(req.body.submissionData._id, (err, submission) => {
         if (err) {
             res.status(500);
+            console.log("Error finding submission: ", err);
             res.send({
                 error: err
             });
         } else if (submission) {
             //TODO: 
-            submission.notebookJSON = JSON.stringify(req.body.submissionData.notebookJSON);
+            submission.notebookJSONString = JSON.stringify(req.body.submissionData.notebookJSON);
             // TODO insert pre-render support here========================================
             if (config.preRender) {
-                var filePath = renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
+                console.log("Pre-rendering submission...");
+                var filePath = renderer.renderHTMLFromJSON(submission.notebookJSON, submission._id);
                 submission.htmlFilePath = filePath;
                 submission.save();
             }
@@ -259,15 +261,18 @@ app.post('/edit-submission', passport.authenticate('jwt', {
 
             submission.save((err) => {
                 if (err) {
+                    console.log('Error saving submission: ', err)
                     res.status(500);
                     res.send({
                         error: err
                     });
                 } else {
+                    console.log('Submission saved!')
                     res.sendStatus(200);
                 }
             });
         } else {
+            console.log("Couldn't find submission");
             res.status(500);
             res.send({
                 error: 'Coulnd\'t find submission'

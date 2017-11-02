@@ -251,7 +251,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             });
                         });
                         mergedReplyIDs = [].concat.apply([], replyIDs);
-                        console.log('reply ids', replyIDs);
 
                         callback(null, comments)
                     }

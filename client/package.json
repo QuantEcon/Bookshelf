@@ -16,6 +16,7 @@
     "react-bootstrap": "^0.31.0",
     "react-dom": "^16.0.0",
     "react-dropzone": "^4.2.0",
+    "react-html-parser": "^2.0.1",
     "react-icons": "^2.2.5",
     "react-markdown": "^2.5.0",
     "react-modal": "^3.0.0",

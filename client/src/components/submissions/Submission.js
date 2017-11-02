@@ -4,7 +4,8 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
-import renderHTML from 'react-render-html'
+import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+
 
 import 'normalize-css'
 import 'typeface-source-code-pro'
@@ -30,6 +31,7 @@ import DeleteIcon from 'react-icons/lib/md/delete';
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
+import NotebookFromHTML from '../NotebookFromHTML';
 
 class Submission extends Component {
 
@@ -435,10 +437,7 @@ class Submission extends Component {
                                                 </div>
 
                                                 {this.props.submission.data.html
-                                                    ? <div
-                                                            dangerouslySetInnerHTML={{
-                                                            __html: this.props.submission.data.html
-                                                        }}></div>
+                                                    ? <NotebookFromHTML html={this.props.submission.data.html}/>
                                                     : <div id='notebook'>
                                                         <NotebookPreview
                                                             notebook={this.props.submission.data.notebookJSON}

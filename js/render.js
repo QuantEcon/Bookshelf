@@ -35,22 +35,22 @@ var fs = require('fs');
         postfix: '.json'
     });
 
-    console.log('tmpObj: ', tmpObj);
-    console.log('Output dir: ', outputDir);
+    console.log('\ttmpObj: ', tmpObj);
+    console.log('\tOutput dir: ', outputDir);
 
     fs.writeFileSync(tmpObj.name, json);
 
     var command = sprintf('jupyter nbconvert %s --output=%s --output-dir=%s --template=%s', tmpObj.name, outputName, outputDir, templateLocation);
 
-    console.log('Execute command');
+    console.log('\tExecute command');
     exec(command, {
         maxBuffer: 1024*500
     }, (err, stdout, stderr) => {
         if(err){
-            console.log('Error executing command: ', err);
+            console.log('\tError executing command: ', err);
             return {error: err}
         } else {
-            console.log('No error executing command');
+            console.log('\tNo error executing command');
         }
     })
  }
