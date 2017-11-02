@@ -337,8 +337,9 @@ class Submission extends Component {
                                     <div className='details-primary'>
                                         {!this.props.isLoading
                                             ? <Markdown
-                                                    source={this.props.submission.data.notebook.summary}
-                                                    transformLinkUri={this.encounteredURI}/>
+                                                    source={this.props.submission.data.notebook.summary
+                                                    ? this.props.submission.data.notebook.summary
+                                                    : '*No summary*'}/>
                                             : <p>loading...</p>}
 
                                     </div>
