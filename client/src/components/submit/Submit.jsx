@@ -159,6 +159,7 @@ class Submit extends Component {
             array.splice(index, 1);
         }
     }
+
     topicChanged(event) {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
@@ -272,6 +273,13 @@ class Submit extends Component {
         console.log('errors: ', this.errors);
         console.log('dirty fields: ', this.dirtyFields);
         console.log('formdata: ', this.formData);
+    }
+
+    isTopicSelected(topic) {
+        return this
+            .formData
+            .topics
+            .indexOf(topic) > -1;
     }
 
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
@@ -445,7 +453,11 @@ class Submit extends Component {
                                             .map(function (topic, index) {
                                                 return (
                                                     <li key={index}>
-                                                        <input type="checkbox" name={index} onChange={this.topicChanged}/>
+                                                        <input
+                                                            type="checkbox"
+                                                            name={index}
+                                                            onChange={this.topicChanged}
+                                                            defaultChecked={this.props.isEdit && this.isTopicSelected(topic)}/>
                                                         <label>{topic}</label>
                                                     </li>
                                                 );
@@ -506,10 +518,12 @@ class Submit extends Component {
                                 <label>
                                     <input type="checkbox" name="agreement" onChange={this.agreementChanged}/>
                                     I agree to the {' '}<a>Terms and Conditions</a>{' '}
-                                    of publishing content: 
+                                    of publishing content:
                                     <br/>
                                     <br/>
-                                    By submitting to <span className='title'>QuantEcon Bookshelf</span> you acknowledge:
+                                    By submitting to
+                                    <span className='title'>QuantEcon Bookshelf</span>
+                                    you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>
                                             The content in your notebook is available and shared with the public internet
@@ -518,16 +532,16 @@ class Submit extends Component {
                                             Your notebook does not contain any illegal or copyrighted material
                                         </li>
                                         <li>
-                                            Any notebook that is submitted to this service may be viewed and downloaded
-                                            by users visiting this website.
+                                            Any notebook that is submitted to this service may be viewed and downloaded by
+                                            users visiting this website.
                                         </li>
                                         <li>
                                             All software contained in the notebooks are considered to be released under a
                                             BSD-3 license.
                                         </li>
                                         <li>
-                                            QuantEcon reserves the right the delete your notebook if found to violate
-                                            these terms and conditions
+                                            QuantEcon reserves the right the delete your notebook if found to violate these
+                                            terms and conditions
                                         </li>
                                     </ol>
                                 </label>
