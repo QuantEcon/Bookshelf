@@ -58,6 +58,41 @@ code, pre {
     color: #999
 }
 
+.qe-nav .qe-menu li::before {
+    display: block;
+    float: left;
+    margin-right: 5px;
+    content: " ";
+    width: 16px;
+    height: 16px;
+    background-image: url("../img/qe-menubar-icons.png");
+    background-size: 144px 16px;
+}
+
+.qe-nav .qe-menu li:nth-child(1)::before {
+    background-position: 0 0;
+}
+
+.qe-nav .qe-menu li:nth-child(2)::before {
+    background-position: -16px 0;
+}
+
+.qe-nav .qe-menu li:nth-child(3)::before {
+    background-position: -32px 0;
+}
+
+.qe-nav .qe-menu li:nth-child(4)::before {
+    background-position: -64px 0;
+}
+
+.qe-nav .qe-menu li:nth-child(5)::before {
+    background-position: -96px 0;
+}
+
+.qe-nav .qe-menu li:nth-child(6)::before {
+    background-position: -112px 0;
+}
+
 .header {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
     background: #fff
