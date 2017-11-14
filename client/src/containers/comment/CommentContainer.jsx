@@ -4,9 +4,11 @@ import {bindActionCreators} from 'redux'
 import Comment from '../../components/comments/Comment'
 
 import {upvoteComment, downvoteComment} from '../../actions/auth/vote';
+import {editComment} from '../../actions/auth/comment'
 var actions = {
     upvoteComment,
-    downvoteComment
+    downvoteComment,
+    editComment
 }
 
 class CommentContainer extends Component {

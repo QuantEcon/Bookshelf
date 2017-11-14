@@ -93,6 +93,7 @@ class Comment extends Component {
         this.toggleShowEditComment();
         this
             .props
+            .actions
             .editComment({commentID: this.props.comment._id, newCommentText: newText})
     }
 

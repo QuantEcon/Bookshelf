@@ -6,7 +6,7 @@ class NotFound extends Component {
         return(
             <div>
                 <Head/>
-                <h3> 404: Not Found react client</h3>
+                <h3> 404: Not Found</h3>
             </div>
         )
     }

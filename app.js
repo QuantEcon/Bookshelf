@@ -3,7 +3,8 @@
  * Entry point for server.
  */
 
-// modules ===============================================================================
+// modules
+// ==============================================================================
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require("fs");
@@ -12,8 +13,9 @@ const waterfall = require('async/waterfall');
 const path = require('path');
 const cors = require('cors');
 
-// routes ================================================================================
-//auth
+// routes
+// ==============================================================================
+// auth
 const fbAuthRoutes = require('./routes/auth/fb');
 const githubAuthRoutes = require('./routes/auth/github');
 const twitterAuthRoutes = require('./routes/auth/twitter');
@@ -28,8 +30,7 @@ const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
-// =======================================================================================
-
+// =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
 // passport modules
@@ -42,38 +43,20 @@ const multiparty = require('connect-multiparty');
 
 //db
 const mongoose = require('./js/db/mongoose');
-// db Models ================
 const User = require('./js/db/models/User');
 const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
 
-// config ================================================================================
+// config
+// ==============================================================================
 const port = require('./_config').port;
 const secret = require('./_config').secret
 
-// template engine
-// const hbs = require('express-handlebars').create({
-//     defaultLayout: 'mainLayout'
-// });
-
 const app = express();
 
-// app.use(cors());
-
-//set rendering engine
-// app.engine('handlebars', hbs.engine);
-// app.set('view engine', 'handlebars');
-
-app.use(bodyParser.json({
-    limit: '50mb'
-}))
-app.use(bodyParser.urlencoded({
-    extended: true,
-    limit: '50mb',
-    parameterLimit: 50000
-}));
-
+app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
 
 // set location of assets
 app.use(express.static(path.join(__dirname, 'client/build')));
@@ -85,13 +68,9 @@ app.get('/api/about', (req, res) => {
     fs.readFile('./assets/aboutPage.md', 'utf8', (err, aboutContent) => {
         if (err) {
             res.status(500);
-            res.send({
-                error: err
-            });
+            res.send({error: err});
         } else {
-            res.send({
-                content: aboutContent
-            })
+            res.send({content: aboutContent})
         }
     });
 })
@@ -102,17 +81,15 @@ app.post('/add-notify-email', (req, res) => {
     }, (err, list) => {
         if (err) {
             res.status(500);
-            res.send({
-                error: err
-            });
+            res.send({error: err});
         } else if (list) {
-            list.emails.push(req.body.email);
+            list
+                .emails
+                .push(req.body.email);
             list.save((err) => {
                 if (err) {
                     res.status(500);
-                    res.send({
-                        error: err
-                    });
+                    res.send({error: err});
                 } else {
                     res.sendStatus(200);
                 }
@@ -124,9 +101,7 @@ app.post('/add-notify-email', (req, res) => {
             emailList.save((err) => {
                 if (err) {
                     res.status(500);
-                    res.send({
-                        error: err
-                    });
+                    res.send({error: err});
                 } else {
                     res.sendStatus(200);
                 }
@@ -141,29 +116,24 @@ app.use(function (req, res, next) {
     console.log('\tmethod: ', req.method);
     console.log('\tbody: ', req.body);
     console.log('\tauthorization: ', req.headers['authorization']);
-    // console.log('\theaders: ', req.headers);
     console.log('\n');
-    
+
     res.header("Access-Control-Allow-Origin", "http://localhost:3000");
     res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization " +
-        "Access-Control-Allow-Credentials, Access-Control-Allow-Origin");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization Access-Control-All" +
+            "ow-Credentials, Access-Control-Allow-Origin");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header('Access-Control-Request-Headers', 'access-token,authorization,if-modified-since,uid');
     next();
 });
 
-app.use(session({
-    secret: secret,
-    resave: true,
-    saveUninitialized: true
-}));
+app.use(session({secret: secret, resave: true, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 passportInit();
 
-// ROUTES ==================================================================================
-// search pages
+// ROUTES
+// ==============================================================================
 app.use("/api/search", searchRoutes);
 
 app.use('/api/delete', deleteRoutes);
@@ -198,14 +168,16 @@ app.get('/api/auth/popup/:provider', (req, res) => {
     });
 });
 
-
-
 app.get('*', (req, res) => {
     console.log('Sending react app')
-    res.sendFile(path.join(__dirname, '/client/build/index.html'))
+    try {
+        res.sendFile(path.join(__dirname, '/client/build/index.html'))
+    } catch (ex) {
+        //TODO send back html page with this info
+        res.send("Server is down for maintenance")
+    }
 });
-// =========================================================================================
-
+// =============================================================================
 // start server
 app.listen(port, function () {
     console.log("Server listening on port %d", port);

@@ -317,6 +317,7 @@ app.post('/comment/edit', passport.authenticate('jwt', {
         })
 });
 
+
 app.post('/comment', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
@@ -372,6 +373,7 @@ app.post('/comment', passport.authenticate('jwt', {
                                 })
                             } else {
                                 console.log("Successfully submitted comment");
+                                //TODO: Get Submission Author's email and send notification to author
                                 res.send({
                                     comment: newComment,
                                     submissionID: submission._id,
@@ -464,6 +466,7 @@ app.post('/reply', passport.authenticate('jwt', {
                                                 });
                                             } else {
                                                 console.log("Successfully submitted reply");
+                                                //TODO: Get Comment author's email and send notification to author
                                                 res.send({
                                                     commentID: comment._id,
                                                     reply: reply,
