@@ -522,7 +522,7 @@ class Submit extends Component {
                                     <br/>
                                     <br/>
                                     By submitting to
-                                    <span className='title'>QuantEcon Bookshelf</span>
+                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>
@@ -533,11 +533,11 @@ class Submit extends Component {
                                         </li>
                                         <li>
                                             Any notebook that is submitted to this service may be viewed and downloaded by
-                                            users visiting this website.
+                                            users visiting this website
                                         </li>
                                         <li>
                                             All software contained in the notebooks are considered to be released under a
-                                            BSD-3 license.
+                                            BSD-3 license
                                         </li>
                                         <li>
                                             QuantEcon reserves the right the delete your notebook if found to violate these
