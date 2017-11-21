@@ -182,8 +182,8 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         notebook = submission;
                         notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
                         notebook.notebookJSONString = null;
-                        // Check if has been preRendered
-                        if(submission.preRendered){
+                        // Check if has been preRendered and we want to send the pre-rendered notebook
+                        if(submission.preRendered && config.preRender){
                             // Get html from preRendered file
                             var fileName = config.rootDirectory + config.filesDirectory + '/' + submission._id + '.html'
                             console.log('File path: ', fileName);
