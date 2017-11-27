@@ -1,0 +1,82 @@
+//  pagination.scss
+//  Pagination styles
+
+.pagination {
+  margin-left: 0;
+  margin-bottom: 1rem;
+  border-top:1px solid #e5e5e5;
+  padding: 2rem 0 0 0;
+  text-align: center;
+  &::before {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    display: table;
+    content: ' ';
+    clear: both;
+  }
+  li {
+    margin-right: 0.07812rem;
+    font-size: 1.09375rem;
+    display: none;
+    border-radius: 5px;
+    overflow: hidden;
+    &:last-child, &:first-child {
+      display: inline-block;
+    }
+  }
+  a, button {
+    display: block;
+    padding: 0.23438rem 0.78125rem;
+    border-radius: 0;
+    color: #0a0a0a;
+  }
+  a:hover, button:hover {
+    background: #f1f1f1;
+  }
+  .current {
+    padding: 0.23438rem 0.78125rem;
+    color: #fefefe;
+    border:1px solid $color-primary;
+    background: transparent;
+    color: $color-primary;
+    font-weight: bold;
+  }
+  .disabled {
+    padding: 0.23438rem 0.78125rem;
+    color: #888;
+    cursor: not-allowed;
+    &:hover {
+      background: transparent;
+    }
+  }
+  .ellipsis::after {
+    padding: 0.23438rem 0.78125rem;
+    content: '\2026';
+    color: #0a0a0a;
+  }
+}
+
+@media print, screen and (min-width: 40em) {
+  .pagination li {
+    display: inline-block;
+  }
+}
+
+.pagination-previous {
+  a::before, &.disabled::before {
+    display: inline-block;
+    margin-right: 0.5rem;
+    content: '\00ab';
+  }
+}
+
+.pagination-next {
+  a::after, &.disabled::after {
+    display: inline-block;
+    margin-left: 0.5rem;
+    content: '\00bb';
+  }
+}
+

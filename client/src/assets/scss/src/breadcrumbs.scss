@@ -1,0 +1,41 @@
+//  breadcrumbs.scss
+//  Breadcrumb styles
+
+.breadcrumbs {
+  padding:2rem 2rem 0 2rem;
+  margin:0;
+  list-style: none;
+  &::before {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    display: table;
+    content: ' ';
+    clear: both;
+  }
+  li {
+    float: left;
+    font-size: 0.85938rem;
+    color: $color-light;
+    cursor: default;
+    &:not(:last-child)::after {
+      position: relative;
+      top: 1px;
+      margin: 0 0.75rem;
+      opacity: 1;
+      content: "/";
+      color: #cacaca;
+    }
+  }
+  a {
+    font-weight:bold;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .disabled {
+    color: #cacaca;
+    cursor: not-allowed;
+  }
+}
