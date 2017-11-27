@@ -7,90 +7,120 @@ code, pre {
     white-space: pre-line
 }
 
-.qe-nav {
-    border-bottom: 1px solid #ccc;
-    background: #fff;
-    padding: 2px 25px;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    -ms-flex-align: center;
-    align-items: center
+.qe-menubar {
+   border-bottom:1px solid #ccc;
+   background:#fff;
+   padding:2px 25px;
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+ }
+ .qe-menubar-logo {
+   margin:0;
+   font-family: 'Exo', sans-serif;
+   font-weight:200;
+   font-size:15px;
+   position: relative;
+   top:2px;
+ }
+ .qe-menubar-logo   a {
+   color: #000;
+   text-decoration: none;
+   font-weight: 200;
+ }
+ .qe-menubar-logo   img {
+   position: relative;
+   top: -2px;
+   margin: 0 5px 0 0;
+ }
+ .qe-menubar-logo span {
+   font-weight: 400;
+ }
+ .qe-menubar-nav {
+   list-style: none;
+   padding:0;
+   margin:0;
+   font-family: 'Roboto', sans-serif;
+   font-size: 12px;
+   display: flex;
+   justify-content: space-between;
+ }
+ .qe-menubar-nav    li {
+   margin:0 0 0 15px;
+   padding:0;
+ }
+.qe-menubar-nav li  a {
+  color: #000;
+  font-weight: normal;
+  text-decoration: none;
+  position: relative;
+  padding: 0 15px 0 20px;
+}
+.qe-menubar-nav li:last-child   a {
+  padding-right:0;
+}
+.qe-menubar-nav li  a:before {
+  content: " ";
+  width:16px;
+  height:16px;
+  position: absolute;
+  left: 0;
+  top: -1px;
+  background:url(../img/qe-menubar-icons.png) no-repeat left top;
+  background-size: 144px 16px;
+}
+.qe-menubar-nav li  a:after {
+  position: absolute;
+  content: "â€¢";
+  top:0;
+  right:0;
+  font-family: sans-serif;
+}
+.qe-menubar-nav li:last-child   a:after {
+  content:"";
+}
+.qe-menubar-nav li:nth-child(1) a:before {
+  background-position: 0 0;
+}
+.qe-menubar-nav li:nth-child(2) a:before {
+  background-position: -16px 0;
+}
+.qe-menubar-nav li:nth-child(3) a:before {
+  background-position: -32px 0;
+}
+.qe-menubar-nav li:nth-child(4) a:before {
+  background-position: -48px 0;
+}
+.qe-menubar-nav li:nth-child(5) a:before {
+  background-position: -64px 0;
+}
+.qe-menubar-nav li:nth-child(6) a:before {
+  background-position: -80px 0;
+}
+.qe-menubar-nav li:nth-child(7) a:before {
+  background-position: -96px 0;
+}
+.qe-menubar-nav li:nth-child(8) a:before {
+  background-position: -112px 0;
+}
+.qe-menubar-nav li:nth-child(9) a:before {
+  background-position: -128px 0;
+}
+.show-for-sr {
+    position: absolute!important;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
 }
 
-.qe-nav .qe-logo {
-    margin: 0;
-    font-family: Exo, sans-serif;
-    font-weight: 200;
-    font-size: 15px
-}
-
-.qe-nav .qe-logo a {
-    color: #000
-}
-
-.qe-nav .qe-logo img {
-    height: 25px
-}
-
-.qe-nav .qe-logo span {
-    font-weight: 400
-}
-
-.qe-nav .qe-menu {
-    width: 50%;
-    list-style: none;
-    font-family: Helvetica Neue, Helvetica, Roboto, Arial, sans-serif;
-    font-size: .8rem;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: justify;
-    justify-content: space-between
-}
-
-.qe-nav .qe-menu, .qe-nav .qe-menu li {
-    padding: 0;
-    margin: 0
-}
-
-.qe-nav .qe-menu li a {
-    color: #999
-}
-
-.qe-nav .qe-menu li::before {
-    display: block;
-    float: left;
-    margin-right: 5px;
-    content: " ";
-    width: 16px;
-    height: 16px;
-    background-image: url("../img/qe-menubar-icons.png");
-    background-size: 144px 16px;
-}
-
-.qe-nav .qe-menu li:nth-child(1)::before {
-    background-position: 0 0;
-}
-
-.qe-nav .qe-menu li:nth-child(2)::before {
-    background-position: -16px 0;
-}
-
-.qe-nav .qe-menu li:nth-child(3)::before {
-    background-position: -32px 0;
-}
-
-.qe-nav .qe-menu li:nth-child(4)::before {
-    background-position: -64px 0;
-}
-
-.qe-nav .qe-menu li:nth-child(5)::before {
-    background-position: -96px 0;
-}
-
-.qe-nav .qe-menu li:nth-child(6)::before {
-    background-position: -112px 0;
+@media (max-width: 1024px) {
+  .qe-menubar {
+    justify-content: center;
+  }
+  .qe-menubar-nav {
+    display:none;
+  }
 }
 
 .header {
@@ -4836,6 +4866,7 @@ body {
     margin: 0;
     padding: 0;
     background: #f1f1f1;
+    font-size:1rem;
     font-family: Raleway, sans-serif;
     font-weight: 400;
     line-height: 1.5;
