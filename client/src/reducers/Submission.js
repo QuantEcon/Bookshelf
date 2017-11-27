@@ -146,9 +146,9 @@ const DataReducer = (data = {}, action) => {
 }
 
 const SubmissionReducer = (state = {}, action) => {
-    if (action.error) {
-        return state;
-    }
+    // if (action.error) {
+    //     return state;
+    // }
     switch (action.type) {
         case REQUEST_NB_INFO:
             return Object.assign({}, state, {
@@ -160,15 +160,28 @@ const SubmissionReducer = (state = {}, action) => {
 
             });
         case RECEIVE_NB_INFO:
-            return Object.assign({}, state, {
-                isFetching: false,
-                [action.notebookID]: {
+            if(action.error){
+                return Object.assign({}, state, {
                     isFetching: false,
-                    didInvalidate: false,
-                    lastUpdated: action.receivedAt,
-                    data: action.data
-                }
-            })
+                    [action.notebookID]: {
+                        isFetching: false,
+                        didInvalidate: false,
+                        lastUpdated: action.receivedAt,
+                        error: action.error
+                    }
+                })
+            } else {
+                return Object.assign({}, state, {
+                    isFetching: false,
+                    [action.notebookID]: {
+                        isFetching: false,
+                        didInvalidate: false,
+                        lastUpdated: action.receivedAt,
+                        data: action.data
+                    }
+                })
+            }
+            
         case POST_COMMENT:
             console.log('[SubmissionActions] - post comment action: ', action);
             return Object.assign({}, state, {

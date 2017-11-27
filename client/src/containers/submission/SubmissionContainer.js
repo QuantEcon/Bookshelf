@@ -5,6 +5,7 @@ import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
 import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
 import {fetchNBInfo, deleteSubmission} from '../../actions/submission'
+import NotFound from '../../components/NotFound'
 
 const actions = {
     ...AuthActions,
@@ -24,16 +25,25 @@ class SubmissionContainer extends Component {
     }
 
     render() {
-        return (
-            <div>
-                <Submission
-                    submission={this.props.submission}
-                    submissionID={this.props.match.params.id}
-                    isLoading={this.props.isLoading}
-                    currentUser={this.props.currentUser}
-                    actions={this.props.actions}/>
-            </div>
-        )
+        if(this.props.submission && this.props.submission.error){
+            return (
+                <div>
+                    <NotFound/>
+                </div>
+            )
+        } else {
+            return (
+                <div>
+                    <Submission
+                        submission={this.props.submission}
+                        submissionID={this.props.match.params.id}
+                        isLoading={this.props.isLoading}
+                        currentUser={this.props.currentUser}
+                        actions={this.props.actions}/>
+                </div>
+            )
+        }
+        
 
     }
 }
@@ -43,6 +53,7 @@ function mapStateToProps(state, props) {
     if (state.submissionByID[props.match.params.id]) {
         il = state.submissionByID[props.match.params.id].isFetching
     }
+    console.log("[SubmissionComponent] - map state to props: ", state)
     return {
         submission: state.submissionByID[props.match.params.id],
         currentUser: state.auth.isSignedIn

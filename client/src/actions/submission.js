@@ -27,14 +27,28 @@ export function requestNBInfo(notebookID = null) {
 }
 
 export const RECEIVE_NB_INFO = 'RECEIVE_NB_INFO';
-export function receiveNBInfo(notebookID, json) {
+export function receiveNBInfo({
+    notebookID,
+    json,
+    error
+}) {
     // console.log('[Submission Actions] - receive nb info: ', json);
-    return {
-        type: RECEIVE_NB_INFO,
-        notebookID,
-        data: json,
-        receivedAt: Date.now(),
+    if (error) {
+        return {
+            type: RECEIVE_NB_INFO,
+            notebookID,
+            error,
+            receivedAt: Date.now()
+        }
+    } else {
+        return {
+            type: RECEIVE_NB_INFO,
+            notebookID,
+            data: json,
+            receivedAt: Date.now(),
+        }
     }
+    
 }
 
 export const INVALIDATE_NB_INFO = 'INVALIDATE_NB_INFO';
@@ -240,15 +254,29 @@ export const fetchNBInfo = ({
                     var sizeKB = sizeof(resp.data) / 1000;
                     console.log('size of response in KB: ', sizeKB);
                     request.size = sizeKB
+
+                    //Used for network analysis
                     dispatch(logRequestSubmissionEndAction({
                         submissionID: request.submissionID,
                         id: request.id,
                         size: request.size
                     }))
-                    dispatch(receiveNBInfo(notebookID, resp.data))
+
+                    dispatch(receiveNBInfo({
+                        notebookID,
+                        json: resp.data
+                    }))
                 },
                 err => {
+                    console.warn("[FetchNBInfo] error fetching: ", err.response);
 
+                    dispatch(receiveNBInfo({
+                        error: {
+                            status: err.response.status,
+                            message: err.response.data
+                        },
+                        notebookID
+                    }))
                 }
             )
         } else {
