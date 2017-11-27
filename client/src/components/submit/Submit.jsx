@@ -247,7 +247,9 @@ class Submit extends Component {
         }
     }
 
-    toggleOpenModal = () => {
+    toggleOpenModal = (e) => {
+        console.log("Clicked preview: ", e)
+        e.preventDefault()
         this.setState({
             modalOpen: !this.state.modalOpen
         })
