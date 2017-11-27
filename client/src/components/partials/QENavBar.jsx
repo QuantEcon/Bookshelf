@@ -6,11 +6,11 @@ import logo from '../../assets/img/qe-logo-horizontal.png';
 class QENavBar extends Component {
     render() {
         return (
-        <div class="qe-menubar">
+        <div className="qe-menubar">
         
-            <p class="qe-menubar-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src="{logo}" alt="QuantEcon logo" /> Quant<span>Econ</span></a></p>
+            <p className="qe-menubar-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src="{logo}" alt="QuantEcon logo" /> Quant<span>Econ</span></a></p>
         
-            <ul class="qe-menubar-nav">
+            <ul className="qe-menubar-nav">
                 <li><a href="https://lectures.quantecon.org/" title="Lectures">Lectures</a></li>
                 <li><a href="https://quantecon.org/python_index.html" title="QuantEcon.py">QuantEcon.py</a></li>
                 <li><a href="https://quantecon.org/julia_index.html" title="QuantEcon.jl">QuantEcon.jl</a></li>
@@ -18,8 +18,8 @@ class QENavBar extends Component {
                 <li><a href="http://cheatsheets.quantecon.org/" title="Cheatsheets">Cheatsheets</a></li>
                 <li><a href="https://quantecon.org/workshops" title="Workshops">Workshops</a></li>
                 <li><a href="http://discourse.quantecon.org/" title="Forum">Forum</a></li>
-                <li><a href="https://github.com/QuantEcon/" title="Repository"><span class="show-for-sr">Repository</span></a></li>
-                <li><a href="https://twitter.com/quantecon" title="Twitter"><span class="show-for-sr">Twitter</span></a></li>
+                <li><a href="https://github.com/QuantEcon/" title="Repository"><span className="show-for-sr">Repository</span></a></li>
+                <li><a href="https://twitter.com/quantecon" title="Twitter"><span className="show-for-sr">Twitter</span></a></li>
             </ul>
 
         </div>
