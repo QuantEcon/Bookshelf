@@ -1,7 +1,6 @@
 var gulp = require('gulp'),
     gutil = require('gulp-util'),
     sass = require('gulp-sass'),
-    browserSync = require('browser-sync'),
     autoprefixer = require('gulp-autoprefixer'),
     header  = require('gulp-header'),
     rename = require('gulp-rename'),
@@ -24,12 +23,11 @@ gulp.task('default', function () {
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer('last 4 version'))
-    .pipe(gulp.dest('../css/'))
+    .pipe(gulp.dest('dist'))
     .pipe(cssnano())
     .pipe(rename({ suffix: '.min' }))
     .pipe(header(banner, { package : package }))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('../css/'))
-    .pipe(browserSync.reload({stream:true}));
+    .pipe(gulp.dest('dist'));
 });
 

@@ -3,8 +3,8 @@
   "title": "QuantEcon Bookshelf",
   "author": "QuantEcon",
   "url": "http://quantecon.org/",
-  "repository" : " ",
-  "license" : "UNLICENSED",
+  "repository": " ",
+  "license": "UNLICENSED",
   "devDependencies": {
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^3.1.0",

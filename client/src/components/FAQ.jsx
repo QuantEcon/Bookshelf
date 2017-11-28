@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import HeadContainer from '../containers/HeadContainer'
 import Breadcrumbs from './partials/Breadcrumbs';
 
-import '../assets/css/faq.css'
+//import '../assets/css/faq.css'
 
 class FAQ extends Component {
     render() {

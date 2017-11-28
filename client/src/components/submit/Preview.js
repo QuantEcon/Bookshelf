@@ -3,9 +3,9 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
-import '@nteract/notebook-preview/styles/main.css';
-import '@nteract/notebook-preview/styles/theme-light.css';
-import 'codemirror/lib/codemirror.css';
+//import '@nteract/notebook-preview/styles/main.css';
+//import '@nteract/notebook-preview/styles/theme-light.css';
+//import 'codemirror/lib/codemirror.css';
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
