@@ -12,7 +12,7 @@ var gulp = require('gulp'),
 
 var banner = [
   '/*!\n' +
-  ' * <%= package.name %>\n' +
+  ' * <%= package.title %>\n' +
   ' * <%= package.author %>\n' +
   ' * @author <%= package.url %>\n' +
   ' */',

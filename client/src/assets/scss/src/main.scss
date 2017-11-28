@@ -1,6 +1,6 @@
 @import '_normalize.scss';  //  normalize.css v7.0.0
 @import '_html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
-@import '_font-awesome.scss';   //  Font Awesome 4.7.0
+@import '_foundation-icons.scss';   //  Foundation Icons v 3.0
 @import '_qe-menubar.scss'; // QuantEcon menubar styles
 @import '_settings.scss';   //  Default element styles, variables, mixins
 @import 'header.scss';  // Template header styles
@@ -14,7 +14,7 @@
 @import 'dropzone.scss';    // Dropzone file submission upload styles
 @import 'comments.scss';    //  Submission commenting styles
 @import 'notebook-render.scss'; //  Notebook rendering styles
-
+@import 'misc.scss';	// Miscellaneous styles
 
 
 

@@ -301,3 +301,117 @@
         padding: 0 2rem;
     }
 }
+
+
+div.has-error {
+    border-radius: 5px !important;
+    border-color: #d84d0a !important;
+}
+
+h2.has-error {
+    color: #d84d0a !important;
+}
+
+label.has-error {
+    color: #d84d0a;
+}
+
+label.success {
+    color: #00a000;
+}
+
+p.has-error {
+    color: #d84d0a !important;
+}
+
+p.error-help-text {
+    color: #d84d0a;
+    font-style: italic;
+    align-self: center
+}
+
+p.orange {
+    color: #d84d0a;
+}
+
+p.bold {
+    font-style: bold
+}
+
+input.has-error {
+    border-color: #d84d0a !important;
+    border-radius: 5px !important;
+}
+
+select.has-error {
+    border-color: #d84d0a;
+    border-radius: 5px;
+}
+
+button:disabled,
+button[disabled] {
+    border-color: lightgrey !important;
+    color: lightgrey !important;
+    pointer-events: none !important;
+}
+
+a:disabled, a[disabled] {
+    color: lightgrey !important;
+    pointer-events: none !important;
+}
+
+a.profile-link {
+    color: #d84d0a;
+    font-family: Raleway, sans-serif;
+    font-size: large;
+}
+
+.dragover {
+    border-color: #00a000 !important;
+    border-radius: 5px !important;
+}
+
+div.md-summary {
+    border-radius: 5px;
+    font-size: larger;
+}
+
+div.md-summary > p.input-hint {
+    color: #d84d0a !important;
+    font-weight: bold;
+    font-size: smaller;
+}
+
+.submit-form.submit-upload.dropzone.valid {
+    border-style: solid !important;
+}
+
+.submit-comment button {
+    font-family: Raleway, sans-serif !important;
+    font-size: 1.5rem !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    color: #d84d0a;
+
+    padding: 5px 25px;
+    border: 1px solid #d84d0a;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 1rem 0 0
+}
+
+.post-reply button {
+    font-family: Raleway, sans-serif !important;
+    font-size: 1.0rem !important;
+    cursor: pointer !important;
+    line-height: 1 !important;
+    color: #d84d0a;
+
+    padding: 5px 5px;
+    border: 1px solid #d84d0a;
+    border-radius: 5px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 1rem 0 0
+}
