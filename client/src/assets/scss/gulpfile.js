@@ -23,11 +23,11 @@ gulp.task('default', function () {
     .pipe(sourcemaps.init())
     .pipe(sass().on('error', sass.logError))
     .pipe(autoprefixer('last 4 version'))
-    .pipe(gulp.dest('dist'))
+    .pipe(gulp.dest('../css/'))
     .pipe(cssnano())
     .pipe(rename({ suffix: '.min' }))
     .pipe(header(banner, { package : package }))
     .pipe(sourcemaps.write())
-    .pipe(gulp.dest('dist'));
+    .pipe(gulp.dest('../css/'));
 });
 
