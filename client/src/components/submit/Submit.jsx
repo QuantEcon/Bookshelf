@@ -332,7 +332,7 @@ class Submit extends Component {
                     </div>
                 </Modal>
 
-                <div className='row columns'>
+                <div className='container'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
                             <div className='submit-upload'>

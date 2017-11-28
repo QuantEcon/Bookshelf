@@ -54,8 +54,7 @@ class Preview extends Component {
         return (
             <div>
                 <HeadContainer/>
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
                         {/* TODO: extract to component? */}
                         <div className='details'>
                             <div className="details-side">
@@ -243,7 +242,6 @@ class Preview extends Component {
                             </li>
                         </ul>
 
-                    </div>
                 </div>
             </div>
         )

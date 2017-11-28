@@ -100,7 +100,7 @@ class BetaBanner extends Component {
                 </Modal>
                 {this.state.submitted && !this.state.error
                     ? <div className="success callout">
-                            <div className="row columns">
+                            <div className="container">
                                 <p className="callout-message">
                                     <CheckmarkIcon/>
                                     Thank you! We'll email you when version 1.0 is released
@@ -111,7 +111,7 @@ class BetaBanner extends Component {
 
                 {this.state.submitted && this.state.error
                     ? <div className="warning callout">
-                            <div className="row columns">
+                            <div className="container">
                                 <p className="callout-message">
                                     <ErrorIcon/>
                                     Sorry! An error has occurred
@@ -119,34 +119,30 @@ class BetaBanner extends Component {
                             </div>
                         </div>
                     : null}
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
 
-                        <ul className='horizontal'>
-                            <li className='center'>
-                                <p className='banner-center'>
-                                    The website is currently in the beta stages. If you would like to be notified
-                                    when the full website is released, please click the 'Notify Me' button.
-                                </p>
-                            </li>
-                            <li className='vertical-center'>
-                                <button className='orange-block' onClick={this.toggleShowModal}>
-                                    Notify Me
-                                </button>
-                            </li>
-                        </ul>
-                        <div>
-                        <p>
-                                If you run into any issues or bugs, please follow
-                                <a href="http://discourse.quantecon.org"> this link </a>
-                                to post an issue. Submit the issue under the category 'bookshelf'. 
+                    <ul className='horizontal'>
+                        <li className='center'>
+                            <p className='banner-center'>
+                                The website is currently in the beta stages. If you would like to be notified
+                                when the full website is released, please click the 'Notify Me' button.
                             </p>
-                            <p>Thank you for your help.</p>
-                        </div>
-
-                       
-
+                        </li>
+                        <li className='vertical-center'>
+                            <button className='orange-block' onClick={this.toggleShowModal}>
+                                Notify Me
+                            </button>
+                        </li>
+                    </ul>
+                    <div>
+                    <p>
+                            If you run into any issues or bugs, please follow
+                            <a href="http://discourse.quantecon.org"> this link </a>
+                            to post an issue. Submit the issue under the category 'bookshelf'. 
+                        </p>
+                        <p>Thank you for your help.</p>
                     </div>
+
                 </div>
                 <hr/>
             </div>

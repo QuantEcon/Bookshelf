@@ -439,7 +439,7 @@ class EditProfile extends Component {
                 </Modal>
                 <HeadContainer/> {this.successSaving && this.hasSaved
                     ? <div className="success callout">
-                            <div className="row columns">
+                            <div className="container">
                                 <p className="callout-message">
                                     <CheckmarkIcon/>
                                     Your profile was saved
@@ -450,7 +450,7 @@ class EditProfile extends Component {
 
                 {this.errorSaving && this.hasSaved
                     ? <div className="warning callout">
-                            <div className="row columns">
+                            <div className="container">
                                 <p className="callout-message">
                                     <ErrorIcon/>
                                     An error occurred while saving your profile
@@ -460,7 +460,7 @@ class EditProfile extends Component {
                     : null}
                 <Breadcrumbs title='Edit-Profile'/>
                 <form onSubmit={this.saveProfile}>
-                    <div className='row columns'>
+                    <div className='container'>
                         <div className='edit-profile'>
                             <h1 className='page-title'>
                                 Edit Profile

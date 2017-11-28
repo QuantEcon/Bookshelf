@@ -219,8 +219,7 @@ class Submission extends Component {
                 {this.props.isLoading
                     ? null
                     : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
 
                         {/* TODO: extract to component? */}
                         <div className='details'>
@@ -477,7 +476,6 @@ class Submission extends Component {
                                         </div>}
                                 </div>}
                         </div>
-                    </div>
                 </div>
             </div>
         )

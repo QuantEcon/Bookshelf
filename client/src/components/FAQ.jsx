@@ -10,13 +10,12 @@ class FAQ extends Component {
             <div>
                 <HeadContainer/>
                 <Breadcrumbs title='FAQ'/>
-                <div className='row'>
+                <div className='container'>
                     <div className='page-title'>
                         <h2 className='title-name'>
                             Frequently Asked Questions
                         </h2>
                     </div>
-                    <div className='column'>
 
                         <div className='qa'>
                             <p className='question'>
@@ -66,7 +65,6 @@ class FAQ extends Component {
                             </p>
                         </div>
 
-                    </div>
                 </div>
             </div>
         )

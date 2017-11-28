@@ -7,7 +7,7 @@ class Head extends Component {
         return (
             <header className="header">
 
-                <div className="row columns">
+                <div className="container">
 
                     <div className="header-container">
 
