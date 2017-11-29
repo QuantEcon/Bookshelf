@@ -6,7 +6,7 @@ const sprintf = require('sprintf')
 
 
 var User = require('../../js/db/models/User');
-const Submission= require('../../js/db/models/Submission')
+const Submission = require('../../js/db/models/Submission')
 
 var app = express.Router();
 
@@ -20,6 +20,8 @@ app.use(function (req, res, next) {
     console.log('[EditProfile] - authorization: ', req.headers['authorization']);
     next();
 })
+
+// Routes =======================================================
 app.post('/', passport.authenticate('jwt', {
     session: 'false'
 }), function (req, res) {
@@ -99,43 +101,54 @@ app.post('/remove-social', passport.authenticate('jwt', {
             deleted: false
         }, function (err, user) {
             if (err) {
+                console.error("[RemoveSocial] Error finding user: ", err)
                 res.status(500);
                 res.send({
                     error: true,
                     message: err
                 });
             } else if (user) {
-                if (type === 'github') {
-                    user.github = {};
-                } else if (type === 'twitter') {
-                    user.twitter = {};
-                } else if (type === 'fb') {
-                    user.fb = {};
-                } else if (type === 'google') {
-                    user.google = {};
-                }
-                //update one social
-                var total = (user.github.id !== null) +
-                    (user.twitter.id !== null) +
-                    (user.fb.id !== null) +
-                    (user.google.id !== null);
-                if (total === 1) {
-                    console.log("Now only have one social");
-                    user.oneSocial = true;
-                }
-                user.new = false;
-                user.save(function (err) {
-                    if (err) {
-                        res.status(500);
-                        res.send({
-                            error: true,
-                            message: err
-                        })
-                    } else {
-                        console.log("Removed social");
-                        res.sendStatus(200);
+
+                //Check if user only has one social
+                //If only one social, don't remove it
+                if (oneSocial(user)) {
+                    console.warn("[RemoveSocial] - User only has one social!")
+                    res.status(400)
+                    res.send({
+                        error: true,
+                        message: "User only has one social"
+                    })
+                } else {
+                    if (type === 'github') {
+                        user.github = {};
+                    } else if (type === 'twitter') {
+                        user.twitter = {};
+                    } else if (type === 'fb') {
+                        user.fb = {};
+                    } else if (type === 'google') {
+                        user.google = {};
                     }
-                })
+                    
+                    if (oneSocial(user)) {
+                        console.log("[RemoveSocial] - Now only have one social");
+                        user.oneSocial = true;
+                    }
+                    user.new = false;
+                    user.save(function (err) {
+                        if (err) {
+                            console.error("[RemoveSocial] - error saving user: ", err)
+                            res.status(500);
+                            res.send({
+                                error: true,
+                                message: err
+                            })
+                        } else {
+                            console.log("[RemoveSocial] - Removed social");
+                            res.sendStatus(200);
+                        }
+                    })
+                }
+
             }
         });
     } else {
@@ -270,12 +283,14 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
         res.status(400);
         console.log('[MergeAccounts] no socialToMerge or socialID: ', socialToMerge, socialID)
         res.send({
-            error: 'Bad request. Must include the name of the social to merge and the social account\'s id'
+            error: true,
+            message: 'Bad request. Must include the name of the social to merge and the social account\'s id'
         })
         return;
     }
     User.findById(req.user._id, (err, user) => {
         if (err) {
+            console.error("[MergeAccounts] - error finding user: ", err);
             // res.status(500);
             res.send({
                 error: err
@@ -300,9 +315,17 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
                     break
                 case 'twitter':
                     options = {
-                        'twitter.id':socialID
+                        'twitter.id': socialID
                     }
                     break
+                default:
+                    console.warn("[MergeAccounts] - provided unsupported social: ", socialToMerge);
+                    res.status(500)
+                    res.send({
+                        error: true,
+                        message: "Unsupported social account requested"
+                    })
+                    return;
             }
 
             User.findOne(options, (err, userToMerge) => {
@@ -333,19 +356,23 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
                             // res.status(500)
                             console.log('[MergeAccounts] - Error saving user');
                             res.send({
-                                error: 'Error saving user'
+                                error: true,
+                                message: "Error saving user"
                             })
                         } else {
+                            const addedSocial = Object.assign(userToMerge)
                             userToMerge.remove((err) => {
                                 if (err) {
+                                    //TODO: Figure out what to do here
                                     // res.status(500);
                                     console.log('[MergeAccounts] - Error removing user');
                                     res.send({
-                                        error: 'Error deleting old user'
+                                        error: true,
+                                        message: "Error deleting old user"
                                     })
                                 } else {
                                     console.log('[MergeAccounts] - success')
-                                    res.send('Success')
+                                    res.send({profile: addedSocial})
                                 }
                             });
                         }
@@ -354,7 +381,8 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
                     console.log('[MergeAccounts] - Couldn\'t find user with associated social account')
                     // res.status(404);
                     res.send({
-                        error: 'Couldn\'t find user with associated social account'
+                        error: true,
+                        message: "Couldn't find user with associated social account"
                     })
                 }
 
@@ -368,4 +396,14 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
         }
     });
 })
+
+// Helper methods ==================================================
+const oneSocial = (user) => {
+    var total = (user.github.id !== null) +
+        (user.twitter.id !== null) +
+        (user.fb.id !== null) +
+        (user.google.id !== null);
+
+    return total == 1 ? true : false
+}
 module.exports = app;

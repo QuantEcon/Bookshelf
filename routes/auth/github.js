@@ -12,15 +12,13 @@ const qs = require('query-string');
 
 var app = express.Router();
 
-// github login =========================== app.use(function(req, res, next){
-// console.log('[GITHUB AUTH] req:', req);     next(); }); add github to profile
-//TODO: implement jwt in this route
+// github login =========================== 
+app.use(function (req, res, next) {
+    next();
+}); //add github to profile
 app.get('/add', jwtAuth.authenticate('jwt', {
     session: false
-}), (req, res, next) => {
-    console.log('[Github] - authenticated');
-    next();
-}, passport.authenticate('github', {
+}), passport.authenticate('github', {
     scope: 'email'
 }));
 app.get('/callback/add', passport.authenticate('addGithub'), function (req, res) {
@@ -91,8 +89,16 @@ app.get('/callback', passport.authenticate('github', {
                     console.log('[Github] - err3: ', err);
                     res.sendStatus(500);
                 } else {
-                    console.log('[Github] - redirect: ', req.headers.referer + '?' + queryString)
-                    res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
+                    console.log("[Github Auth] - req.body: ", req)
+                    console.log('[Github] - req.headers.referer: ', req.headers.referer)
+                    res.redirect(req.headers.referer + '?' + queryString)
+                    // if (appConfig.debug) {
+                    //     console.log('[Github] - redirect: ', appConfig.clientHostNameAndPort + '/signin' + '?' + queryString)
+                    //     res.redirect(appConfig.clientHostNameAndPort + '/signin?' + queryString)
+                    // } else {
+                    //     console.log('[Github] - redirect: ', appConfig.hostName + '/signin' + '?' + queryString)
+                    //     res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
+                    // }
                 }
             })
     });

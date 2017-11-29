@@ -110,9 +110,11 @@ export const reauthenticate = () => {
 
 export const mergeAccounts = ({accountToMerge, next}) => {
     return function(dispatch){
+        console.log("[MergeAccounts] - req.body: ", )
         axios.post('/api/edit-profile/merge-accounts',{
             accountToMerge,
-            socialID: store.getState().auth.user[accountToMerge].user.id
+            socialID: store.getState().auth.user[accountToMerge].id
+            //for github auth.user.github.user.id
         }, {
             headers: {
                 'Authorization' : 'JWT ' + store.getState().auth.token
@@ -151,7 +153,7 @@ export const addSocial = (provider, next) => {
                         if (resp.data.error.status === 4) {
                             dispatch(endAddSocial({
                                 provider: 'github',
-                                existingUser: resp.data.user['github'],
+                                existingUser: resp.data.user,
                                 existingProfile: true
                                 
                             }))
@@ -180,7 +182,7 @@ export const addSocial = (provider, next) => {
                             console.log('[SignInActions] - user profile already exists');
                             dispatch(endAddSocial({
                                 provider: 'twitter',
-                                existingUser: resp.data.user['twitter'],
+                                existingUser: resp.data.user,
                                 existingProfile: true
                                 
                             }))
@@ -210,7 +212,7 @@ export const addSocial = (provider, next) => {
                             //TODO: ask user if he/she wants to merge accounts
                             dispatch(endAddSocial({
                                 provider: 'fb',
-                                existingUser: resp.data.user['fb'],
+                                existingUser: resp.data.user,
                                 existingProfile: true
                             }))
                             next(false, 'fb')
@@ -237,6 +239,7 @@ export const addSocial = (provider, next) => {
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
+                            console.log("[SignInActions: google user: ", resp.data.user);
                             dispatch(endAddSocial({
                                 provider: 'google',
                                 existingUser: resp.data.user,

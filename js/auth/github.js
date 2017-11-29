@@ -43,8 +43,10 @@ passport.use('github', new GithubStrategy({
                         newUser.oneSocial = true;
 
                         //set all other info
-                        if (profile.displayName) {
-                            newUser.name = profile.displayName;
+                        if (profile._json.name){
+                            newUser.name = profile._json.name
+                        } else {
+                            newUser.name = profile.username
                         }
                         newUser.fb = {};
                         newUser.twitter = {};

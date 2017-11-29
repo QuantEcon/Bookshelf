@@ -135,9 +135,11 @@ class EditProfile extends Component {
     }
 
     onMergeAccountsEnd = (success) => {
+        console.log("[EditProfile] - onMergeAccountsEnd success=", success)
         this.hasSaved = true;
         this.errorSaving = !success;
         this.successSaving = success
+        this.saveProfile()
     }
 
     mergeAccounts = () => {
@@ -335,7 +337,9 @@ class EditProfile extends Component {
     }
 
     saveProfile = (e) => {
-        e.preventDefault();
+        if (e){
+            e.preventDefault()
+        }
         console.log('[EditProfile] - form data: ', this.formData)
         this
             .props
@@ -380,13 +384,12 @@ class EditProfile extends Component {
                                         <a>
                                             {this.props.user.name}
                                         </a>
-                                        
+
                                     </span>
                                     <p>
-                                            ({this.props.user.submissions.length}
-                                                {this.props.user.submissions.length === 1
-                                                ? ' submission)'
-                                                : ' submissions)'}
+                                        ({this.props.user.submissions.length} {this.props.user.submissions.length === 1
+                                            ? ' submission)'
+                                            : ' submissions)'}
                                     </p>
                                 </div>
 
@@ -412,7 +415,7 @@ class EditProfile extends Component {
                                             {this.props.user[this.state.accountToMerge]
                                                 ? <div>
                                                         {this.props.user[this.state.accountToMerge].username}
-                                                        
+
                                                     </div>
                                                 : null}
                                         </a>
