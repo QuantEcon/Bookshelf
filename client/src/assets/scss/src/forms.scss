@@ -292,13 +292,28 @@
     }
 }
 
+
 .callout {
-    margin: 0 !important;
+    position: relative;
+    margin: 0 0 1rem;
+    padding: 1rem;
+    border: 1px solid hsla(0,0%,4%,.25);
+    border-radius: 0;
+    background-color: #fff;
+    color: #0a0a0a;
+    p {
+        margin: 0.5rem 0;
+        text-align: center;
+        padding: 0 2rem;        
+    }
     .callout-message {
         margin:0;
-        //font-weight: bold;
         text-align: center;
         padding: 0 2rem;
+    }
+    &.alert {
+        background-color: #f7e4e1;
+        color: #0a0a0a;
     }
 }
 

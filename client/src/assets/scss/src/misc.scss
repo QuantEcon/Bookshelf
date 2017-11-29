@@ -60,30 +60,6 @@ img.text-loading {
     width: 10%;
 }
 
-div.site-title {
-    display: flex;
-    align-items: center;
-}
-
-.site-title img {
-    height: 45px;
-}
-
-button.orange-block {
-    font-family: Raleway, sans-serif;
-    font-size: 1.5rem;
-    cursor: pointer;
-    display: block;
-    padding: .5rem 1rem;
-    line-height: 1;
-    border: 1px solid #d84d0a;
-    color: #d84d0a;
-    border-radius: 5px;
-    font-weight: 700;
-    float: right;
-    white-space: nowrap;
-}
-
 li.vertical-center {
     padding-top: 1rem;
 }
@@ -110,22 +86,6 @@ img.text-loading-medium {
 img.loading-avatar {
     height: 100%;
     width: 200%;
-}
-
-img.bookshelf-logo {
-    padding-right: 1.0rem;
-    display: block;
-    float: left;
-}
-
-.home-link {
-    display: block;
-    float: left;
-}
-
-.beta-banner {
-    background: white;
-    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);    
 }
 
 .question {
@@ -173,3 +133,4 @@ img.bookshelf-logo {
     border-bottom: 1px solid #cacaca;
     color: black;
 }
+

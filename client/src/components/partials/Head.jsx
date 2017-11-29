@@ -5,6 +5,8 @@ import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
 class Head extends Component {
     render() {
         return (
+            <div className="corner-ribbon">Beta</div>
+            
             <header className="header">
 
                 <div className="container">
@@ -16,8 +18,7 @@ class Head extends Component {
                                 <span>
                                     <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
                                     <div>
-                                        <h2 className="site-name">Bookshelf (beta)</h2>
-                                        <p className="site-tag">Open notebook library for economic modeling</p>
+                                        <h2 className="site-name">Quant<span>Econ</span> <strong>Bookshelf</strong></h2>
                                     </div>
                                 </span>
 
@@ -25,17 +26,20 @@ class Head extends Component {
 
                         </div>
 
-                        <ul className='links'>
-                            <li className='link'>
-                                <Link to='/'>Home</Link>
-                            </li>
-                            <li className='link'>
-                                <Link to='/faq'>FAQ</Link>
-                            </li>
-                            <li className='link'>
-                                <Link to='/about'>About</Link>
-                            </li>
-                        </ul>
+                        <div className="site-nav">
+                            <p className="site-tag">Open notebook library for economic modeling</p>
+                            <ul>
+                                <li>
+                                    <Link to='/'>Home</Link>
+                                </li>
+                                <li'>
+                                    <Link to='/faq'>FAQ</Link>
+                                </li>
+                                <li>
+                                    <Link to='/about'>About</Link>
+                                </li>
+                            </ul>
+                        </div>
 
                         {this.props.isSignedIn
                             ? <ul className='site-menu'>

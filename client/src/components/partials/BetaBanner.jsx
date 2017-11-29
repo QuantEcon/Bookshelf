@@ -103,7 +103,7 @@ class BetaBanner extends Component {
                             <div className="container">
                                 <p className="callout-message">
                                     <CheckmarkIcon/>
-                                    Thank you! We'll email you when version 1.0 is released
+                                    Thank you! We'll keep you updated on Bookshelf releases.
                                 </p>
                             </div>
                         </div>
@@ -119,32 +119,14 @@ class BetaBanner extends Component {
                             </div>
                         </div>
                     : null}
-                <div className='container'>
 
-                    <ul className='horizontal'>
-                        <li className='center'>
-                            <p className='banner-center'>
-                                The website is currently in the beta stages. If you would like to be notified
-                                when the full website is released, please click the 'Notify Me' button.
-                            </p>
-                        </li>
-                        <li className='vertical-center'>
-                            <button className='orange-block' onClick={this.toggleShowModal}>
-                                Notify Me
-                            </button>
-                        </li>
-                    </ul>
-                    <div>
-                    <p>
-                            If you run into any issues or bugs, please follow
-                            <a href="http://discourse.quantecon.org"> this link </a>
-                            to post an issue. Submit the issue under the category 'bookshelf'. 
-                        </p>
-                        <p>Thank you for your help.</p>
+                <div className="alert callout">
+                    <div className="container">
+                        <p>Bookshelf is currently in beta. <a href="#" onClick={this.toggleShowModal}>Subscribe</a> to updates about future releases.</p>
+                        <p>Please <a href="http://discourse.quantecon.org/c/site-feedback">submit feedback</a> if you run into any issues or notice any bugs.</p>
                     </div>
-
                 </div>
-                <hr/>
+
             </div>
         )
     }
