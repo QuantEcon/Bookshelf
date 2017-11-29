@@ -7,70 +7,70 @@ class Head extends Component {
         return (
             <div>
                 <div className="corner-ribbon">Beta</div>
-            </div>
             
-            <header className="header">
+                <header className="header">
 
-                <div className="container">
+                    <div className="container">
 
-                    <div className="header-container">
+                        <div className="header-container">
 
-                        <div className="site-title">
-                            <Link to='/'>
-                                <span>
-                                    <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
-                                    <div>
-                                        <h2 className="site-name">Quant<span>Econ</span> <strong>Bookshelf</strong></h2>
-                                    </div>
-                                </span>
+                            <div className="site-title">
+                                <Link to='/'>
+                                    <span>
+                                        <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                        <div>
+                                            <h2 className="site-name">Quant<span>Econ</span> <strong>Bookshelf</strong></h2>
+                                        </div>
+                                    </span>
 
-                            </Link>
+                                </Link>
 
-                        </div>
+                            </div>
 
-                        <div className="site-nav">
-                            <p className="site-tag">Open notebook library for economic modeling</p>
-                            <ul>
-                                <li>
-                                    <Link to='/'>Home</Link>
-                                </li>
-                                <li'>
-                                    <Link to='/faq'>FAQ</Link>
-                                </li>
-                                <li>
-                                    <Link to='/about'>About</Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        {this.props.isSignedIn
-                            ? <ul className='site-menu'>
-                                    <li className='menu-user'>
-                                        <Link to="/user/my-profile">
-                                            <div className='avatar'>
-                                                <img src={this.props.user.avatar} alt="My Avatar"/>
-                                            </div>
-                                            <span>My Profile</span>
-                                        </Link>
+                            <div className="site-nav">
+                                <p className="site-tag">Open notebook library for economic modeling</p>
+                                <ul>
+                                    <li>
+                                        <Link to='/'>Home</Link>
                                     </li>
-                                    <li className='menu-submit'>
-                                        <Link to="/submit">Submit Notebook</Link>
+                                    <li'>
+                                        <Link to='/faq'>FAQ</Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/about'>About</Link>
                                     </li>
                                 </ul>
-                            : <ul className='site-menu'>
-                                <li className="menu-signin">
-                                    <Link to='/signin'>Sign In</Link>
-                                </li>
-                                <li className='menu-submit'>
-                                    <Link to="/signin">Submit Notebook</Link>
-                                </li>
-                            </ul>}
+                            </div>
+
+                            {this.props.isSignedIn
+                                ? <ul className='site-menu'>
+                                        <li className='menu-user'>
+                                            <Link to="/user/my-profile">
+                                                <div className='avatar'>
+                                                    <img src={this.props.user.avatar} alt="My Avatar"/>
+                                                </div>
+                                                <span>My Profile</span>
+                                            </Link>
+                                        </li>
+                                        <li className='menu-submit'>
+                                            <Link to="/submit">Submit Notebook</Link>
+                                        </li>
+                                    </ul>
+                                : <ul className='site-menu'>
+                                    <li className="menu-signin">
+                                        <Link to='/signin'>Sign In</Link>
+                                    </li>
+                                    <li className='menu-submit'>
+                                        <Link to="/signin">Submit Notebook</Link>
+                                    </li>
+                                </ul>}
+
+                        </div>
 
                     </div>
 
-                </div>
-
-            </header>
+                </header>
+            </div>
         );
     };
 }
