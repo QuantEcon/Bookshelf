@@ -296,24 +296,32 @@
 .callout {
     position: relative;
     margin: 0 0 1rem;
-    padding: 1rem;
-    border: 1px solid hsla(0,0%,4%,.25);
-    border-radius: 0;
-    background-color: #fff;
-    color: #0a0a0a;
+    padding: 1rem 0;
+    border: 1px solid #cacaca;
+    background-color: #ddeed8;
+    border-width:1px 0;
+    text-align: center;
+    .container {
+        padding: 0 2rem; 
+        box-sizing: border-box;
+    }
     p {
         margin: 0.5rem 0;
-        text-align: center;
-        padding: 0 2rem;        
-    }
-    .callout-message {
-        margin:0;
-        text-align: center;
-        padding: 0 2rem;
     }
     &.alert {
         background-color: #f7e4e1;
-        color: #0a0a0a;
+    }
+    &.primary {
+        background-color: #d7ecfa;
+    }
+    &.secondary {
+        background-color: #eaeaea;
+    }
+    &.success {
+        background-color: #ddeed8;
+    }
+    &.warning {
+        background-color: #fff3d9;
     }
 }
 
