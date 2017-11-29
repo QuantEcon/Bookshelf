@@ -8,7 +8,7 @@ class QENavBar extends Component {
         return (
         <div className="qe-menubar">
         
-            <p className="qe-menubar-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src="{logo}" alt="QuantEcon logo" /> Quant<span>Econ</span></a></p>
+            <p className="qe-menubar-logo"><a href="https://quantecon.org/" title="quantecon.org"><img src={logo} alt="QuantEcon logo" /> Quant<span>Econ</span></a></p>
         
             <ul className="qe-menubar-nav">
                 <li><a href="https://lectures.quantecon.org/" title="Lectures">Lectures</a></li>
