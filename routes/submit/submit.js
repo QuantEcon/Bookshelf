@@ -182,6 +182,9 @@ app.post('/confirm', passport.authenticate('jwt', {
     newSub.fileName = req.body.submission.fileName;
     newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
 
+    newSub.views = 0
+    newSub.viewers = []
+
 
     User.findById(req.user._id, (err, user) => {
         if (err) {

@@ -108,6 +108,10 @@ app.get('/all-submissions', function (req, res) {
             case 'Trending':
                 break;
             case 'Views':
+                options.sort = {
+                    'viewers.count': -1,
+                    'published': -1
+                }
                 break;
             case 'Votes':
                 options.sort = {
@@ -117,11 +121,6 @@ app.get('/all-submissions', function (req, res) {
         }
 
     }
-
-    // console.log("-----------------------------");
-    // console.log("Performing search with: options: ", options);
-    // console.log("Performing search with: params: ", searchParams);
-
 
     //todo: add select statement to only get required info
     var select = "_id author lang published summary views comments score";
@@ -172,36 +171,61 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered";
-                Submission.findOne({
-                    _id: mdb.ObjectId(notebookID),
-                    deleted: false
-                }, select, function (err, submission) {
-                    if (err) callback(err);
-                    else if (submission) {
-                        notebook = submission;
-                        notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
-                        notebook.notebookJSONString = null;
-                        // Check if has been preRendered and we want to send the pre-rendered notebook
-                        if(submission.preRendered && config.preRender){
-                            // Get html from preRendered file
-                            var fileName = config.rootDirectory + config.filesDirectory + '/' + submission._id + '.html'
-                            console.log('File path: ', fileName);
-                            try{
-                                notebook.html = fs.readFileSync(fileName).toString();
-                            }catch(ex){
-                                console.warn('Error: ', ex, "\nDoes that file exist?")
+                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered viewers views";
+                try {
+                    Submission.findOne({
+                        _id: mdb.ObjectId(notebookID),
+                        deleted: false
+                    }, select, function (err, submission) {
+                        if (err) {
+                            console.log("[Search] error searching for submission: ", err)
+                            callback(err)
+                        } else if (submission) {
+                            console.log("[Search] - found submission")
+                            notebook = submission;
+                            notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
+                            notebook.notebookJSONString = null;
+                            //TODO: This needs to be tested
+                            //Increment total number of views
+                            submission.views++;
+                            // TODO: This needs to be tested
+                            //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
+                            if (req.user && submission.viewers.indexOf(req.user._id) == -1) {
+                                submission.viewers.push(req.user._id)
                             }
-                            
-                        }
-                        console.log('[Search] - typeof notebookJSON: ', typeof(notebook.notebookJSON));
-                        callback(null, notebook);
+                            // Check if has been preRendered and we want to send the pre-rendered notebook
+                            if (submission.preRendered && config.preRender) {
+                                // Get html from preRendered file
+                                var fileName = config.rootDirectory + config.filesDirectory + '/' + submission._id + '.html'
+                                console.log('File path: ', fileName);
+                                try {
+                                    notebook.html = fs.readFileSync(fileName).toString();
+                                } catch (ex) {
+                                    console.warn('Error: ', ex, "\nDoes that file exist?")
+                                }
 
-                    } else {
-                        console.log('submission not found');
-                        callback('Not found', null);
-                    }
-                });
+                            } else {
+                                // TODO: Submission hasn't already been pre-rendered, but we want it to be
+                                // Render and save html now
+                                if (config.preRender) {
+
+                                }
+                            }
+                            submission.save((err) => {
+                                console.log('[Search] - typeof notebookJSON: ', typeof (notebook.notebookJSON));
+                                callback(null, notebook);
+                            })
+
+
+                        } else {
+                            console.log('submission not found');
+                            callback('Not found', null);
+                        }
+                    });
+                } catch (err) {
+                    console.log("[Search] submission not found")
+                    callback("Not found", null)
+                }
             },
             //get author
             auth: function (callback) {
@@ -258,7 +282,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             },
             reps: function (callback) {
                 //get replies
-                // todo: add select statement
+                //TODO: add select statement
                 Comment.find({
                     _id: {
                         $in: mergedReplyIDs
@@ -293,6 +317,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
         },
         //callback
         function (err, results) {
+            console.log("[Search] results: ", results)
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);

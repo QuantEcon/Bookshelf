@@ -4,7 +4,7 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
-import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+// import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
 
 import 'normalize-css'
@@ -307,8 +307,8 @@ class Submission extends Component {
                                                 <li className='views'>
                                                     {!this.props.isLoading
                                                         ? <div>
-                                                                <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
-                                                                Views
+                                                                <span className='count'>{this.props.submission.data.notebook.viewers.count + ' '}</span>
+                                                                Viewers
                                                             </div>
                                                         : <p>Loading...</p>}
                                                 </li>

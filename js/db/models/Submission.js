@@ -30,7 +30,9 @@ var submissionSchema = new Schema({
     flagged: Boolean,
     deleted: Boolean,
 
-    preRendered: Boolean
+    preRendered: Boolean,
+    views: Number,
+    viewers: [ObjectId]
 });
 
 submissionSchema.plugin(mongoosePaginate);
