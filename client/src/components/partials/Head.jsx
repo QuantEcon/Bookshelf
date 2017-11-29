@@ -33,7 +33,7 @@ class Head extends Component {
                                     <li>
                                         <Link to='/'>Home</Link>
                                     </li>
-                                    <li'>
+                                    <li>
                                         <Link to='/faq'>FAQ</Link>
                                     </li>
                                     <li>
