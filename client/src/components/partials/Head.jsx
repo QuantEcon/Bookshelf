@@ -5,7 +5,9 @@ import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
 class Head extends Component {
     render() {
         return (
-            <div className="corner-ribbon">Beta</div>
+            <div>
+                <div className="corner-ribbon">Beta</div>
+            </div>
             
             <header className="header">
 
