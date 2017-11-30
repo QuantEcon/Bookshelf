@@ -4,9 +4,9 @@
 #notebook {
     overflow: hidden;
     font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
-//    h1, h2, h3, h4, h5, h6 {
-//        font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
-//    }
+    h1, h2, h3, h4, h5, h6 {
+        font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif;
+    }
 }
 
 div.outputs .cell code {
@@ -656,7 +656,7 @@ div#loading {
 }
 
 .cell code {
-  font-family: 'Source Code Pro';
+  // font-family: 'Source Code Pro';
   white-space: pre-wrap;
   font-size: 14px;
 }
@@ -667,7 +667,7 @@ div#loading {
 
 .CodeMirror
 {
-    font-family: 'Source Code Pro';
+    // font-family: 'Source Code Pro';
     font-size: 14px;
     line-height: 20px;
 
@@ -714,14 +714,18 @@ div#loading {
 }
 
 .cm-s-composition.CodeMirror {
-	font-family: 'Source Code Pro', monospace;
+	// font-family: 'Source Code Pro', monospace;
 	letter-spacing: 0.3px;
 	word-spacing: 1px;
-	background: var(--cm-background);
+	// background: var(--cm-background);
 	color: var(--cm-color);
 }
 .cm-s-composition .CodeMirror-lines {
   padding: 10px;
+  background: var(--cm-background);
+  border: 1px solid #cfcfcf;
+  border-radius: 2px;
+
 }
 .cm-s-composition .CodeMirror-gutters {
 	box-shadow: 1px 0 2px 0 rgba(0, 0, 0, 0.5);
@@ -758,7 +762,7 @@ div#loading {
 
   background: var(--cm-hint-bg);
   font-size: 90%;
-  font-family: 'Source Code Pro', monospace;
+  // font-family: 'Source Code Pro', monospace;
 
   overflow-y: auto;
 }
@@ -909,7 +913,7 @@ li.CodeMirror-hint-active {
   --pager-bg: white;
   --input-color: #3241a0;
 
-  --cm-background: #f7f7f7;
+  --cm-background: #F6F6F6;
   --cm-color: black;
 
   --cm-gutter-bg: white;
@@ -1000,8 +1004,8 @@ li.CodeMirror-hint-active {
 }
 
 .cm-s-composition.CodeMirror {
-  border: 1px solid #cfcfcf;
-  border-radius: 2px;
+  // border: 1px solid #cfcfcf;
+  // border-radius: 2px;
 }
 
 .cell {
@@ -1118,6 +1122,7 @@ div::-webkit-scrollbar-corner, ul::-webkit-scrollbar-corner {
 #notebook ul {
     list-style: disc;
     margin: 0 2em;
+    padding:0;
 }
 #notebook ul ul {
     list-style: square;
@@ -1158,11 +1163,11 @@ div::-webkit-scrollbar-corner, ul::-webkit-scrollbar-corner {
     background-color: #000;
 }
 #notebook pre {
-    margin: 1em 2em;
+    // margin: 1em 2em;
 }
 #notebook pre, #notebook code {
     border: 0;
-    background-color: #fff;
+    // background-color: #fff;
     color: #000;
     font-size: 100%;
     padding: 0;
