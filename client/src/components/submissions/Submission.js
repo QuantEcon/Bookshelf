@@ -337,6 +337,7 @@ class Submission extends Component {
                                     <div className='details-primary'>
                                         {!this.props.isLoading
                                             ? <Markdown
+                                                    disallowedTypes={['headings']}
                                                     source={this.props.submission.data.notebook.summary
                                                     ? this.props.submission.data.notebook.summary
                                                     : '*No summary*'}/>

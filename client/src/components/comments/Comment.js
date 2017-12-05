@@ -237,7 +237,7 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
-                        <Markdown source={this.state.comment.content}/>
+                        <Markdown disallowedTypes={['headings']} source={this.state.comment.content}/>
                         <div>
                             {this.state.comment.edited
                                 ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>

@@ -41,6 +41,7 @@ class SubmissionPreview extends Component {
                         <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
                     </p>
                     <Markdown
+                        disallowedTypes={['headings']}
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}
