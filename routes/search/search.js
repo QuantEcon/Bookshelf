@@ -108,8 +108,9 @@ app.get('/all-submissions', function (req, res) {
             case 'Trending':
                 break;
             case 'Views':
+                console.log("Sort by views")
                 options.sort = {
-                    'viewers.count': -1,
+                    'viewers': -1,
                     'published': -1
                 }
                 break;
@@ -123,7 +124,6 @@ app.get('/all-submissions', function (req, res) {
     }
 
     //todo: add select statement to only get required info
-    var select = "_id author lang published summary views comments score";
     Submission.paginate(searchParams, options).then(function (result) {
         var submissions = result.docs;
         var err = null;
