@@ -4,7 +4,7 @@ class Breadcrumbs extends Component {
     render() {
         return (
 
-            <div className="row columns">
+            <div className="container">
 
                 <ul className="breadcrumbs">
                     <li>

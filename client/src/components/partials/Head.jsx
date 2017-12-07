@@ -5,66 +5,74 @@ import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
 class Head extends Component {
     render() {
         return (
-            <header className="header">
+            <div>
+                <div className="corner-ribbon">Beta</div>
 
-                <div className="row columns">
+                <a className="submit-feedback" target="_blank" href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
+            
+                <header className="header">
 
-                    <div className="header-container">
+                    <div className="container">
 
-                        <div className="site-title">
-                            <Link to='/'>
-                                <span>
-                                    <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
-                                    <div>
-                                        <h2 className="site-name">Bookshelf (beta)</h2>
-                                        <p className="site-tag">Open notebook library for economic modeling</p>
-                                    </div>
-                                </span>
+                        <div className="header-container">
 
-                            </Link>
+                            <div className="site-title">
+                                <Link to='/'>
+                                    <span>
+                                        <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                        <div>
+                                            <h2 className="site-name">Quant<span>Econ</span> <strong>Bookshelf</strong></h2>
+                                        </div>
+                                    </span>
+
+                                </Link>
+
+                            </div>
+
+                            <div className="site-nav">
+                                <p className="site-tag">Open notebook library for economic modeling</p>
+                                <ul>
+                                    <li>
+                                        <Link to='/'>Home</Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/faq'>FAQ</Link>
+                                    </li>
+                                    <li>
+                                        <Link to='/about'>About</Link>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            {this.props.isSignedIn
+                                ? <ul className='site-menu'>
+                                        <li className='menu-user'>
+                                            <Link to="/user/my-profile">
+                                                <div className='avatar'>
+                                                    <img src={this.props.user.avatar} alt="My Avatar"/>
+                                                </div>
+                                                <span>My Profile</span>
+                                            </Link>
+                                        </li>
+                                        <li className='menu-submit'>
+                                            <Link to="/submit">Submit Notebook</Link>
+                                        </li>
+                                    </ul>
+                                : <ul className='site-menu'>
+                                    <li className="menu-signin">
+                                        <Link to='/signin'>Sign In</Link>
+                                    </li>
+                                    <li className='menu-submit'>
+                                        <Link to="/signin">Submit Notebook</Link>
+                                    </li>
+                                </ul>}
 
                         </div>
 
-                        <ul className='links'>
-                            <li className='link'>
-                                <Link to='/'>Home</Link>
-                            </li>
-                            <li className='link'>
-                                <Link to='/faq'>FAQ</Link>
-                            </li>
-                            <li className='link'>
-                                <Link to='/about'>About</Link>
-                            </li>
-                        </ul>
-
-                        {this.props.isSignedIn
-                            ? <ul className='site-menu'>
-                                    <li className='menu-user'>
-                                        <Link to="/user/my-profile">
-                                            <div className='avatar'>
-                                                <img src={this.props.user.avatar} alt="My Avatar"/>
-                                            </div>
-                                            <span>My Profile</span>
-                                        </Link>
-                                    </li>
-                                    <li className='menu-submit'>
-                                        <Link to="/submit">Submit Notebook</Link>
-                                    </li>
-                                </ul>
-                            : <ul className='site-menu'>
-                                <li className="menu-signin">
-                                    <Link to='/signin'>Sign In</Link>
-                                </li>
-                                <li className='menu-submit'>
-                                    <Link to="/signin">Submit Notebook</Link>
-                                </li>
-                            </ul>}
-
                     </div>
 
-                </div>
-
-            </header>
+                </header>
+            </div>
         );
     };
 }

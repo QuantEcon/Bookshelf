@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import HeadContainer from '../containers/HeadContainer'
 import Breadcrumbs from './partials/Breadcrumbs';
 
-import '../assets/css/faq.css'
+//import '../assets/css/faq.css'
 
 class FAQ extends Component {
     render() {
@@ -10,13 +10,12 @@ class FAQ extends Component {
             <div>
                 <HeadContainer/>
                 <Breadcrumbs title='FAQ'/>
-                <div className='row'>
+                <div className='container'>
                     <div className='page-title'>
                         <h2 className='title-name'>
                             Frequently Asked Questions
                         </h2>
                     </div>
-                    <div className='column'>
 
                         <div className='qa'>
                             <p className='question'>
@@ -60,13 +59,12 @@ class FAQ extends Component {
                             </p>
                             <p className='answer'>
                                 Follow
-                                <a href="http://discourse.quantecon.org"> this link </a>
+                                <a href="http://discourse.quantecon.org/c/bookshelf-feedback"> this link </a>
                                 and post an issue. Please provide a detailed description of the issue and what
                                 you were doing at the time. Submit the issue under the category "bookshelf".
                             </p>
                         </div>
 
-                    </div>
                 </div>
             </div>
         )

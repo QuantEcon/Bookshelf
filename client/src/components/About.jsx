@@ -28,23 +28,21 @@ class About extends Component {
             <div>
                 <HeadContainer/>
                 <Breadcrumbs title='About'/>
-                <div className='row'>
+                <div className='container'>
                     <div className='page-title'>
                         <h2 className='title-name'>
                             About
                         </h2>
                     </div>
-                    <div className='column'>
                         <div>
                             <p>
                                 If you run into any issues or bugs, please follow
-                                <a href="http://discourse.quantecon.org"> this link </a>
+                                <a href="http://discourse.quantecon.org/c/bookshelf-feedback"> this link </a>
                                 to post an issue. Submit the issue under the category 'bookshelf'. 
                             </p>
                             <p>Thank you for your help.</p>
                         </div>
                         <Markdown source={this.state.content}/>
-                    </div>
                 </div>
             </div>
         )

@@ -50,7 +50,7 @@ class User extends Component {
                 <HeadContainer/> {this.props.isLoading
                     ? null
                     : <Breadcrumbs title={this.props.data.name}/>}
-                <div className='row columns'>
+                <div className='container'>
                     <div className='details'>
                         <div className='details-side'>
                             <p className='avatar'>
@@ -167,12 +167,10 @@ class User extends Component {
                         </div>
                     </div>
                 </div>
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
                         {!this.props.isLoading
                             ? <SubmissionListContainer userID={this.props.data._id}/>
                             : null}
-                    </div>
                 </div>
             </div>
 

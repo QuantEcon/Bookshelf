@@ -72,7 +72,7 @@ class SignIn extends Component {
             <div>
                 <HeadContainer/> {this.state.showErrorMessage
                     ? <div className="warning callout">
-                            <div className="row columns">
+                            <div className="container">
                                 <p className="callout-message">
                                     <ErrorIcon/>
                                     An error occurred while trying to login

@@ -1,0 +1,144 @@
+//  comments.scss
+//  Submission commenting styles
+
+.comments {
+    padding:0 2rem;
+    .comments-post {
+        margin:2rem 0;
+        label {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin:0 0 1rem 0;
+            line-height: 1;
+        }
+        textarea {
+            height:100px;
+            border-radius: 5px;
+        }
+        .submit-comment {
+            text-align: right;
+            a {
+                @include medium-button;
+                display: inline-block;
+                margin:1rem 0 0 0;
+            }
+        }
+    }
+    .comments-signin {
+        
+    }
+    .comments-thread {
+        .comment {
+            //* {border:1px solid red;padding:2px;}
+            border-top:1px solid $color-medium;
+            padding:2rem 0;
+            display: flex;
+            &:first-child {
+                border:0;
+            }
+            .comment-side {  
+                width:50px;
+                margin:0 25px 0 0;
+                .comment-avatar {
+                    height:50px;
+                    overflow: hidden;
+                    border-radius: 5px;
+                    border:1px solid $color-medium; 
+                    img {
+                        width:50px;
+                    }
+                }
+                .comment-score {
+                    text-align: center;
+                    margin:0.5rem 0 0 0;
+                    font-size: 1.3rem;
+                }
+                .comment-vote {
+                    list-style: none;
+                    margin:0;
+                    padding:0;
+                    display: flex;
+                    justify-content: space-around;
+                    li {
+                        margin:0;                   
+                        a {
+                            font-size: 1.8rem;
+                            line-height: 1;
+                            color: $color-medium;
+                            &:hover, &.active {
+                                color: $color-primary;
+                            }
+                        }
+                    }
+                }
+            }
+            .comment-main {
+                flex:1;
+                .comment-header {
+                    color: $color-light;
+                    margin:0 0 1rem 0;
+                    a {
+                        font-weight: bold;
+                        margin:0 1rem 0 0;
+                    }
+                    .time {
+                        margin:0 1rem 0 0;
+                    }
+                    .flag, .delete {
+                        color: $color-medium;
+                        &:hover {
+                            color: $color-primary;
+                        }
+                    }
+                }
+                .comment-body {
+                    
+                }
+                .comment-footer {
+                    margin:1rem 0 0 0;
+                    display: flex;
+                    .options {
+                        list-style: none;
+                        margin:0;
+                        padding:0;
+                        display: flex;
+                        li {
+                            margin:0;
+                            padding:0;
+                            a {
+                                @include small-button;
+                            }
+                        }
+                    }
+                }
+                .comment-reply {
+                    textarea {
+                        margin:1rem 0 0 0; 
+                        height: 100px;
+                        border-radius: 5px;
+                    }
+                    .post-reply {
+                        text-align: right;
+                        a {
+                            @include small-button;
+                            display: inline-block;
+                            margin:1rem 0 0 0;
+                        }
+                    }
+                }
+                .comment-nested {   
+                    .comment {
+                        border-top:1px solid $color-medium;
+                        &:first-child {
+                            margin:2rem 0 0 0;
+                        }
+                        &:last-child {
+                            padding-bottom:0;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -3,9 +3,9 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
-import '@nteract/notebook-preview/styles/main.css';
-import '@nteract/notebook-preview/styles/theme-light.css';
-import 'codemirror/lib/codemirror.css';
+//import '@nteract/notebook-preview/styles/main.css';
+//import '@nteract/notebook-preview/styles/theme-light.css';
+//import 'codemirror/lib/codemirror.css';
 
 import {transforms, displayOrder} from '@nteract/transforms-full';
 
@@ -54,8 +54,7 @@ class Preview extends Component {
         return (
             <div>
                 <HeadContainer/>
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
                         {/* TODO: extract to component? */}
                         <div className='details'>
                             <div className="details-side">
@@ -243,7 +242,6 @@ class Preview extends Component {
                             </li>
                         </ul>
 
-                    </div>
                 </div>
             </div>
         )

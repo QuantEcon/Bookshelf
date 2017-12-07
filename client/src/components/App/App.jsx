@@ -21,10 +21,11 @@ import FAQ from '../FAQ';
 import About from '../About';
 import AdminPage from '../admin/Admin'
 
-import '../../assets/css/app.css'
-import '../../assets/css/general.css'
-import '../../assets/css/formStyle.css'
-import '../../assets/css/modal.css'
+import '../../assets/scss/dist/main.css'
+//import '../../assets/css/app.css'
+//import '../../assets/css/general.css'
+//import '../../assets/css/formStyle.css'
+//import '../../assets/css/modal.css'
 
 class App extends Component {
 

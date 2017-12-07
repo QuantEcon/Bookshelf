@@ -7,13 +7,13 @@ import Modal from 'react-modal'
 // import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
 
 
-import 'normalize-css'
-import 'typeface-source-code-pro'
-import 'typeface-source-sans-pro'
-import 'codemirror/lib/codemirror.css';
-import '@nteract/notebook-preview/styles/main.css';
-import '@nteract/notebook-preview/styles/theme-light.css'
-import '../../assets/css/notebookPreview.css'
+//import 'normalize-css'
+//import 'typeface-source-code-pro'
+//import 'typeface-source-sans-pro'
+//import 'codemirror/lib/codemirror.css';
+//import '@nteract/notebook-preview/styles/main.css';
+//import '@nteract/notebook-preview/styles/theme-light.css'
+//import '../../assets/css/notebookPreview.css'
 
 import NotebookPreview from '@nteract/notebook-preview';
 
@@ -219,8 +219,7 @@ class Submission extends Component {
                 {this.props.isLoading
                     ? null
                     : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
-                <div className='row'>
-                    <div className='column'>
+                <div className='container'>
 
                         {/* TODO: extract to component? */}
                         <div className='details'>
@@ -478,7 +477,6 @@ class Submission extends Component {
                                         </div>}
                                 </div>}
                         </div>
-                    </div>
                 </div>
             </div>
         )
