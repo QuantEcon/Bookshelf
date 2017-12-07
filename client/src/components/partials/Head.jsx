@@ -7,6 +7,8 @@ class Head extends Component {
         return (
             <div>
                 <div className="corner-ribbon">Beta</div>
+
+                <a className="submit-feedback" target="_blank" href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
             
                 <header className="header">
 

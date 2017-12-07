@@ -37,7 +37,7 @@ class About extends Component {
                         <div>
                             <p>
                                 If you run into any issues or bugs, please follow
-                                <a href="http://discourse.quantecon.org"> this link </a>
+                                <a href="http://discourse.quantecon.org/c/bookshelf-feedback"> this link </a>
                                 to post an issue. Submit the issue under the category 'bookshelf'. 
                             </p>
                             <p>Thank you for your help.</p>
