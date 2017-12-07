@@ -192,6 +192,10 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             submission.views++;
                             // TODO: This needs to be tested
                             //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
+                            if(!submission.viewers){
+                                console.log("No viewers")
+                                submission.viewers = []
+                            }
                             if (req.user && submission.viewers.indexOf(req.user._id) == -1) {
                                 submission.viewers.push(req.user._id)
                             }
