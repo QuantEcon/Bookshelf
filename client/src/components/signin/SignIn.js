@@ -27,7 +27,7 @@ class SignIn extends Component {
     }
 
     componentDidMount() {
-        document.title = 'Sign In'
+        document.title = 'Sign In - QuantEcon Bookshelf'
     }
 
     showErrorMessage = false;

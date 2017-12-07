@@ -24,7 +24,7 @@ class User extends Component {
 
     compoentDidMount() {
         if (this.props.isMyProfile) {
-            document.title = 'My Profile'
+            document.title = 'My Profile - QuantEcon Bookshelf'
         }
     }
 
