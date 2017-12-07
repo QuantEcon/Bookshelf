@@ -75,9 +75,9 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission'
+            document.title = 'Edit Submission - QuantEcon Bookshelf'
         } else {
-            document.title = 'Submit'
+            document.title = 'Submit - QuantEcon Bookshelf'
         }
     }
 

@@ -31,9 +31,9 @@ class User extends Component {
     componentWillReceiveProps(props) {
         if (props.data) {
             if (props.isMyProfile) {
-                document.title = 'My Profile'
+                document.title = 'My Profile - QuantEcon Bookshelf'
             } else {
-                document.title = props.data.name
+                document.title = props.data.name + " - QuantEcon Bookshelf"
             }
         }
     }
