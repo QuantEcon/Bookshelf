@@ -6,4 +6,4 @@ Run 'npm install --global gulp-cli' to install gulp cli.
 
 Run 'npm install' in this directory to install the required components.
 
-Run 'gulp' to process the SCSS into a CSS file. The output will be 'main.css' and 'main.css.min' in a 'dist' directory.
+Run 'gulp' to process the SCSS into a CSS file. The output will be 'main.css' and 'main.css.min' in the `client/src/assets/css` directory.

@@ -21,7 +21,7 @@ import FAQ from '../FAQ';
 import About from '../About';
 import AdminPage from '../admin/Admin'
 
-import '../../assets/scss/dist/main.css'
+import '../../assets/css/main.css'
 //import '../../assets/css/app.css'
 //import '../../assets/css/general.css'
 //import '../../assets/css/formStyle.css'
