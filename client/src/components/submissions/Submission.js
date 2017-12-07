@@ -89,6 +89,7 @@ class Submission extends Component {
     }
 
     componentWillReceiveProps(props) {
+        console.log("[Submission] - will receive props: ", props)
         if (props.submission.data) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
@@ -306,7 +307,7 @@ class Submission extends Component {
                                                 <li className='views'>
                                                     {!this.props.isLoading
                                                         ? <div>
-                                                                <span className='count'>{this.props.submission.data.notebook.viewers.count + ' '}</span>
+                                                                <span className='count'>{this.props.submission.data.notebook.viewers.length + ' '}</span>
                                                                 Viewers
                                                             </div>
                                                         : <p>Loading...</p>}

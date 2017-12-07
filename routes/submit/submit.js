@@ -155,6 +155,7 @@ app.post('/confirm', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
     var newSub = new Submission();
+    console.log("[Submit] - confirm. req.body: ", req.body)
 
     newSub.title = req.body.submission.title;
 

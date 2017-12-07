@@ -45,7 +45,7 @@ app.get('/all-submissions', function (req, res) {
         }
     }
     var page = req.query.page;
-    var select = "_id title author views comments score summary published lang totalComments";
+    var select = "_id title author views comments score summary published lang totalComments viewers";
 
     var options = {
         limit: 10,
@@ -182,9 +182,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             callback(err)
                         } else if (submission) {
                             console.log("[Search] - found submission")
-                            notebook = submission;
+                            console.log("[Seach] - submission author: ", submission.author)
+                            notebook = submission
+                            console.log("[Search] - copied submission. author: ", notebook.author)
+                            // console.log("[Search] - copied submission:" , notebook)
                             notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
-                            notebook.notebookJSONString = null;
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
@@ -215,8 +217,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 console.log('[Search] - typeof notebookJSON: ', typeof (notebook.notebookJSON));
                                 callback(null, notebook);
                             })
-
-
+                            // notebook.notebookJSONString = null;                            
                         } else {
                             console.log('submission not found');
                             callback('Not found', null);
@@ -236,6 +237,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 }, select, function (err, author) {
                     if (err) callback(err);
                     else {
+                        console.log("[Search] - found author: ", author)
                         callback(null, author);
                     }
                 })
@@ -317,7 +319,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
         },
         //callback
         function (err, results) {
-            console.log("[Search] results: ", results)
+            // console.log("[Search] results: ", results)
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);
@@ -333,8 +335,10 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
             // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
             //TODO: refactor to store JSON on submission then send that
 
+            var nb = JSON.parse(JSON.stringify(results.nb))
+            nb.notebookJSONString = null
             var data = {
-                notebook: results.nb,
+                notebook: nb,
                 html: results.nb.html,
                 notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,

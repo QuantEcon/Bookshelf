@@ -8,7 +8,7 @@ import Markdown from 'react-markdown';
 class SubmissionPreview extends Component {
     constructor(props) {
         super(props);
-
+        console.log("[SubmissionPreview] - props:", props)
         this.state = {
             submission: props.submission,
             author: props.author
@@ -16,6 +16,7 @@ class SubmissionPreview extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log("[SubmissionPreview] - next props: ", nextProps)
         this.setState({submission: nextProps.submission, author: nextProps.author});
     }
 
@@ -36,7 +37,7 @@ class SubmissionPreview extends Component {
                         <Link to={'/user/' + this.state.author._id}>
                             {' '}{this.state.author.name}{' '}
                         </Link>
-                        
+
                         in
                         <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
                     </p>
@@ -56,8 +57,10 @@ class SubmissionPreview extends Component {
                 <div className="stats">
                     <ul>
                         <li className="views">
-                            <span className="count">{this.state.submission.views}</span>
-                            Views</li>
+                            <span className="count">{this.state.submission.viewers
+                                    ? this.state.submission.viewers.length
+                                    : 0}</span>
+                            Viewers</li>
                         <li className="comments">
                             <span className="count">{this.state.submission.totalComments}</span>
                             Comments
