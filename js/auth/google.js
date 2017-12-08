@@ -56,6 +56,11 @@ passport.use('google', new GoogleStrategy({
                         newUser.deleted = false;
 
                         newUser.isNew = true;
+                        newUser.emailSettings = {
+                            newComment: false,
+                            newReply: false,
+                            submission: false
+                        }
 
                         newUser.save(function (err) {
                             if (err) {

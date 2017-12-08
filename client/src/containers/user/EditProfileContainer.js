@@ -6,11 +6,11 @@ import {mergeAccounts} from '../../actions/auth/signIn'
 import EditProfile from '../../components/user/EditProfile'
 
 class EditProfileContainer extends Component {
-    saveProfile = ({name, website, summary, email}) => {
+    saveProfile = ({name, website, summary, email, emailSettings}) => {
         this
             .props
             .actions
-            .editProfile({name, website, summary, email});
+            .editProfile({name, website, summary, email, emailSettings});
     }
 
     cancel = () => {

@@ -51,7 +51,6 @@ export const logRequestSubmissionEnd = ({
     }
 }
 
-
 export const LOG_RENDER_START = 'LOG_RENDER_START'
 export const logRenderStartAction = ({request}) => {
     return {

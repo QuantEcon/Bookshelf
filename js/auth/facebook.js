@@ -63,6 +63,11 @@ passport.use('facebook', new FacebookStrategy({
                             newUser.email = profile.emails[0].value;
                         }
 
+                        newUser.emailSettings = {
+                            newComment: false,
+                            newReply: false,
+                            submission: false
+                        }
                         newUser.summary = '';
 
                         newUser.flagged = false;

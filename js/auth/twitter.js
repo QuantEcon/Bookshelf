@@ -54,6 +54,11 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.submissions = [];
                         newUser.upvotes = [];
                         newUser.downvotes = [];
+                        newUser.emailSettings = {
+                            newComment: false,
+                            newReply: false,
+                            submission: false
+                        }
 
                         if (profile._json.profile_image_url) {
                             newUser.avatar = profile._json.profile_image_url.replace('_normal','');

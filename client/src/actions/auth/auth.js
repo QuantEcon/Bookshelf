@@ -231,14 +231,16 @@ export const editProfile = ({
     email,
     name,
     summary,
-    website
+    website,
+    emailSettings
 }) => {
     return function (dispatch) {
         console.log('[AuthActions] edit profile data ', {
             email,
             name,
             summary,
-            website
+            website,
+            emailSettings
         })
         const state = store.getState();
         if (state.auth.isSignedIn) {
@@ -247,6 +249,7 @@ export const editProfile = ({
                 name,
                 summary,
                 website,
+                emailSettings
             }));
             axios.post('/api/edit-profile/', {
                 email,
@@ -257,7 +260,7 @@ export const editProfile = ({
                 google: state.auth.user.google,
                 github: state.auth.user.github,
                 twitter: state.auth.user.twitter,
-
+                emailSettings
             }, {
                 headers: {
                     'Authorization': 'JWT ' + store.getState().auth.token
@@ -274,7 +277,8 @@ export const editProfile = ({
                         name: response.data.user.name,
                         summary: response.data.user.summary,
                         website: response.data.user.website,
-                        oneSocial: response.data.user.oneSocial
+                        oneSocial: response.data.user.oneSocial,
+                        emailSettings
                     }))
                 }
             }).catch(error => {

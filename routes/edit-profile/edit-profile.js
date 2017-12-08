@@ -40,6 +40,9 @@ app.post('/', passport.authenticate('jwt', {
             user.email = req.body.email;
             user.website = req.body.website;
             user.summary = req.body.summary;
+            console.log("settings email settings")
+            user.emailSettings = req.body.emailSettings
+            console.log("user: ", user)
             if (req.body.google) {
                 user.google = Object.assign({}, user.google, req.body.google);
             } else {

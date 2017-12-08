@@ -82,6 +82,15 @@ class EditProfile extends Component {
         this.cancelMerge = this
             .cancelMerge
             .bind(this);
+        this.commentSettingChanged = this
+            .commentSettingChanged
+            .bind(this)
+        this.replySettingChanged = this
+            .replySettingChanged
+            .bind(this)
+        this.submissionSettingChanged = this
+            .submissionSettingChanged
+            .bind(this)
 
     }
 
@@ -103,14 +112,20 @@ class EditProfile extends Component {
         name: this.props.user.name,
         summary: this.props.user.summary,
         email: this.props.user.email,
-        website: this.props.user.website
+        website: this.props.user.website,
+        emailSettings: Object.assign({
+            newComment: false,
+            newReply: false,
+            submission: false
+        }, this.props.user.emailSettings)
     }
 
     dirtyFields = {
         name: false,
         summary: false,
         email: false,
-        website: false
+        website: false,
+        emailSettings: false
     }
 
     errors = {
@@ -205,6 +220,23 @@ class EditProfile extends Component {
         this.validate();
     }
 
+    replySettingChanged = (e) => {
+        this.formData.emailSettings.newReply = e.target.checked
+        this.dirtyFields.emailSettings = true
+        this.validate()
+    }
+
+    commentSettingChanged = (e) => {
+        this.formData.emailSettings.newComment = e.target.checked
+        this.dirtyFields.emailSettings = true
+        this.validate()
+    }
+
+    submissionSettingChanged = (e) => {
+        this.formData.emailSettings.submission = e.target.checked
+        this.dirtyFields.emailSettings = true
+        this.validate()
+    }
     // printFormData = () => {     console.log('[EditProfile] - form data: ',
     // this.formData); } printErrors = () => {     console.log('[EditProfile] -
     // errors: ', this.errors, this.hasError); }
@@ -337,7 +369,7 @@ class EditProfile extends Component {
     }
 
     saveProfile = (e) => {
-        if (e){
+        if (e) {
             e.preventDefault()
         }
         console.log('[EditProfile] - form data: ', this.formData)
@@ -559,6 +591,41 @@ class EditProfile extends Component {
                                                 Please enter a valid email
                                             </p>
                                         : null}
+                                    <div>
+                                        <label className='section-title'>
+                                            Notify my when:
+                                        </label>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                disabled={this.errors.email}
+                                                defaultChecked={this.props.user.emailSettings
+                                                ? this.props.user.emailSettings.newComment
+                                                : false}
+                                                onChange={this.commentSettingChanged}/>
+                                            {' '}A user comments on my submission
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                disabled={this.errors.email}
+                                                defaultChecked={this.props.user.emailSettings
+                                                ? this.props.user.emailSettings.newReply
+                                                : false}
+                                                onChange={this.replySettingChanged}/>
+                                            {' '}A user replies to my comment
+                                        </div>
+                                        <div>
+                                            <input
+                                                type="checkbox"
+                                                disabled={this.errors.email}
+                                                defaultChecked={this.props.user.emailSettings
+                                                ? this.props.user.email.submission
+                                                : false}
+                                                onChange={this.submissionSettingChanged}/>
+                                            {' '}Notebook submission is successful
+                                        </div>
+                                    </div>
 
                                 </div>
                                 {/*edit-profile-primary-group1*/}

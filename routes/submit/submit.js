@@ -8,25 +8,24 @@ var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
+const notificationTypes = require("../../js/notifications").notificationTypes
+const sendNotification = require('../../js/notifications').sendNotification
+
 var sprintf = require('sprintf');
 var exec = require('child_process').exec;
-
 var fs = require('fs');
 var path = require('path');
 
 var config = require('../../_config')
-
 var renderer = require('../../js/render');
 
 var multipartyMiddleware = multiparty();
-
 const storage = multer.diskStorage({
     destination: './files',
     filename(req, file, cb) {
         cb(null, `${Date.now()}-${file.originalname}`)
     }
 });
-
 const upload = multer({
     storage
 });
@@ -218,6 +217,14 @@ app.post('/confirm', passport.authenticate('jwt', {
                             console.error('[Submit] - error saving user: ', err);
                         } else {
                             console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
+                            if (savedUser.email && savedUser.emailSettings && savedUser.emailSettings.submission) {
+                                //TODO: notify user
+                                sendNotification({
+                                    type: notificationTypes.SUBMISSION,
+                                    recipient: savedUser,
+                                    submissionID: submission._id
+                                })
+                            }
                         }
                     });
                     res.send({
@@ -348,7 +355,7 @@ app.post('/comment', passport.authenticate('jwt', {
     newComment.editedDate = null;
     newComment.submission = req.body.submissionID;
 
-    newComment.save(function (err, c) {
+    newComment.save(function (err, comment) {
         if (err) {
             res.status(500);
             res.send({
@@ -367,8 +374,9 @@ app.post('/comment', passport.authenticate('jwt', {
                     } else if (submission) {
                         submission
                             .comments
-                            .push(c._id);
+                            .push(comment._id);
                         submission.totalComments += 1;
+
                         submission.save(function (err) {
                             if (err) {
                                 res.status(500);
@@ -377,7 +385,24 @@ app.post('/comment', passport.authenticate('jwt', {
                                 })
                             } else {
                                 console.log("Successfully submitted comment");
-                                //TODO: Get Submission Author's email and send notification to author
+
+                                User.findById(submission.author, (err, author) => {
+                                    if (err) {
+                                        console.error("[Submit] - Error finding author of submission for notification")
+                                    } else if (author) {
+                                        if (author._id != comment.author && author.email && author.emailSettings && author.emailSettings.newComment) {
+                                            const notification = {
+                                                type: notificationTypes.NEW_COMMENT,
+                                                recipient: author,
+                                                comment,
+                                                submissionID: submission._id
+                                            }
+
+                                            sendNotification(notification)
+                                        }
+                                    }
+                                })
+
                                 res.send({
                                     comment: newComment,
                                     submissionID: submission._id,
@@ -441,6 +466,7 @@ app.post('/reply', passport.authenticate('jwt', {
                     comment
                         .replies
                         .push(reply._id);
+                   
                     comment.save(function (err) {
                         if (err) {
                             // TODO: delete reply
@@ -470,7 +496,25 @@ app.post('/reply', passport.authenticate('jwt', {
                                                 });
                                             } else {
                                                 console.log("Successfully submitted reply");
-                                                //TODO: Get Comment author's email and send notification to author
+                                                // Notify author of comment
+                                                User.findById(comment.author, (err, author) => {
+                                                    if (err) {
+                                                        console.error("[Submit] - error finding author for notification: ", err)
+                                                    } else if (author){
+                                                        if (author._id != reply.author && author.email && author.emailSettings && author.emailSettings.newComment) {
+                                                            const notification = {
+                                                                type: notificationTypes.NEW_REPLY,
+                                                                recipient: author,
+                                                                submissionID: submission._id,
+                                                                commentID: comment._id
+                                                            }
+                                                            sendNotification(notification)
+                                                        }
+                                                    } else {
+                                                        console.warn("[Submit] - couldn't find author of comment for notifications")
+                                                    }
+                                                    
+                                                })
                                                 res.send({
                                                     commentID: comment._id,
                                                     reply: reply,

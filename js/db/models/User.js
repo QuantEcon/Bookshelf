@@ -25,6 +25,11 @@ var userSchema = new Schema({
     email: String,
     summary: String,
     activeAvatar: String,
+    emailSettings: {
+        newComment: Boolean,
+        newReply: Boolean,
+        submission: Boolean
+    },
     github: {
         id: String,
         access_token: String,
