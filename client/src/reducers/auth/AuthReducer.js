@@ -143,7 +143,8 @@ const UserReducer = (user = {}, action) => {
                     email: action.email,
                     website: action.website,
                     summary: action.summary,
-                    oneSocial: action.oneSocial
+                    oneSocial: action.oneSocial,
+                    emailSettings: action.emailSettings
                 })
             }
         case END_ADD_SOCIAL:

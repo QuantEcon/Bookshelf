@@ -620,7 +620,7 @@ class EditProfile extends Component {
                                                 type="checkbox"
                                                 disabled={this.errors.email}
                                                 defaultChecked={this.props.user.emailSettings
-                                                ? this.props.user.email.submission
+                                                ? this.props.user.emailSettings.submission
                                                 : false}
                                                 onChange={this.submissionSettingChanged}/>
                                             {' '}Notebook submission is successful

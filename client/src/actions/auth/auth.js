@@ -24,6 +24,7 @@ export const beginEditProfile = ({
     name,
     summary,
     website,
+    emailSettings,
     error
 }) => {
     if (error) {
@@ -37,7 +38,8 @@ export const beginEditProfile = ({
             email,
             name,
             summary,
-            website
+            website,
+            emailSettings
         }
     }
 }
@@ -48,6 +50,7 @@ export const endEditProfile = ({
     name,
     summary,
     website,
+    emailSettings,
     error,
     oneSocial
 }) => {
@@ -63,7 +66,8 @@ export const endEditProfile = ({
             name,
             summary,
             website,
-            oneSocial
+            oneSocial,
+            emailSettings
         }
     }
 }
