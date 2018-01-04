@@ -53,7 +53,7 @@ class Preview extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <div className='container'>
                         {/* TODO: extract to component? */}
                         <div className='details'>

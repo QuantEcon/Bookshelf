@@ -30,7 +30,7 @@ class SubmitContainer extends Component {
                                 from: this.props.location
                             }
                         }}/>
-                    : <Submit user={this.props.user} submit={this.onSubmit}></Submit>}
+                    : <Submit user={this.props.user} submit={this.onSubmit} history={this.props.history}></Submit>}
             </div>
         )
     }

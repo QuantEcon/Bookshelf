@@ -8,7 +8,7 @@ class FAQ extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='FAQ'/>
                 <div className='container'>
                     <div className='page-title'>

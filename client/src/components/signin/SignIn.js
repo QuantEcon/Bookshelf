@@ -70,7 +70,7 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/> {this.state.showErrorMessage
+                <HeadContainer history={this.props.history}/> {this.state.showErrorMessage
                     ? <div className="warning callout">
                             <div className="container">
                                 <p className="callout-message">

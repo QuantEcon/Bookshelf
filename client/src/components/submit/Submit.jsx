@@ -289,7 +289,7 @@ class Submit extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>

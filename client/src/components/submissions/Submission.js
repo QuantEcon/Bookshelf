@@ -211,7 +211,7 @@ class Submission extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'

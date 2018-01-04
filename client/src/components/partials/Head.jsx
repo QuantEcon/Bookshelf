@@ -3,13 +3,31 @@ import {Link} from 'react-router-dom';
 import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
 
 class Head extends Component {
+    constructor(props) {
+        super(props)
+
+        this.redirectToHome = this
+            .redirectToHome
+            .bind(this)
+    }
+
+    redirectToHome = () => {
+        console.log("redirect to home")
+        //reset search params
+        this.props.resetSearchParams()
+        this.props.history.replace("/")
+    }
+    
     render() {
         return (
             <div>
                 <div className="corner-ribbon">Beta</div>
 
-                <a className="submit-feedback" target="_blank" href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
-            
+                <a
+                    className="submit-feedback"
+                    target="_blank"
+                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
+
                 <header className="header">
 
                     <div className="container">
@@ -17,15 +35,17 @@ class Head extends Component {
                         <div className="header-container">
 
                             <div className="site-title">
-                                <Link to='/'>
+                                <a onClick={this.redirectToHome}>
                                     <span>
                                         <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
                                         <div>
-                                            <h2 className="site-name">Quant<span>Econ</span> <strong>Bookshelf</strong></h2>
+                                            <h2 className="site-name">Quant<span>Econ</span>
+                                                <strong>Bookshelf</strong>
+                                            </h2>
                                         </div>
                                     </span>
 
-                                </Link>
+                                </a>
 
                             </div>
 

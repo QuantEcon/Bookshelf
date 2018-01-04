@@ -6,7 +6,7 @@ class AdminPage extends Component {
     render(){
         return(
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <div className='row'>
                     <div className='page-title'>
                         <h2 className='title-name'>

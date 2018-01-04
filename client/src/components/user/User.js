@@ -47,7 +47,7 @@ class User extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/> {this.props.isLoading
+                <HeadContainer history={this.props.history}/> {this.props.isLoading
                     ? null
                     : <Breadcrumbs title={this.props.data.name}/>}
                 <div className='container'>

@@ -27,7 +27,8 @@ class EditSubmissionContainer extends Component {
                 <EditSubmission
                     submission={this.props.submission}
                     currentUser={this.props.currentUser}
-                    save={this.save}/>
+                    save={this.save}
+                    history={this.props.history}/>
             </div>
         )
     }

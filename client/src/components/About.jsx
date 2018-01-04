@@ -26,7 +26,7 @@ class About extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='About'/>
                 <div className='container'>
                     <div className='page-title'>

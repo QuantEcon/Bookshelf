@@ -48,15 +48,28 @@ class SubmissionListContainer extends Component {
 }
 
 function mapStateToProps(state, props) {
-    var searchParams = Object.assign({}, {
-        lang: 'All',
-        time: 'All time',
-        topic: 'All',
-        author: '',
-        keywords: '',
-        page: 1,
-        sortBy: 'Trending'
-    }, state.submissionList.searchParams);
+    var searchParams = {};
+    if(props.resetSearch){
+        searchParams = {
+            lang: 'All',
+            time: 'All time',
+            topic: 'All',
+            author: '',
+            keywords: '',
+            page: 1,
+            sortBy: 'Trending'
+        }
+    } else {
+        searchParams = Object.assign({}, {
+            lang: 'All',
+            time: 'All time',
+            topic: 'All',
+            author: '',
+            keywords: '',
+            page: 1,
+            sortBy: 'Trending'
+        }, state.submissionList.searchParams);
+    } 
     if (props.userID) {
         searchParams = Object.assign(searchParams, {author: props.userID});
     } else {

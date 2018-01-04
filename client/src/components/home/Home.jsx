@@ -9,15 +9,20 @@ class Home extends Component {
     constructor(props){
         super(props);
 
+        var resetSearch = false
         var searchParams = this.getUrlVars(window.location.href);
+        console.log("[Home] - search params: ", searchParams)
+        if(searchParams.reset) {
+            resetSearch = true
+        }
         if(searchParams.topic){
             searchParams.topic = decodeURIComponent(searchParams.topic);
-            
         }
         console.log('[Home] - url search params: ', searchParams);
         
         this.state = {
-            searchParams: searchParams
+            searchParams: searchParams,
+            reset: resetSearch
         }
 
     }
@@ -36,9 +41,9 @@ class Home extends Component {
     render() {
         return (
             <div>
-                <HeadContainer/>
+                <HeadContainer history={this.props.history}/>
                 <BetaBanner/>
-                <SubmissionListContainer searchP={this.state.searchParams}/>
+                <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
             </div>
 
         );

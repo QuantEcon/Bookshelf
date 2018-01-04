@@ -9,7 +9,8 @@ class EditSubmission extends Component {
                     isEdit={true}
                     submission={this.props.submission}
                     user={this.props.currentUser}
-                    save={this.props.save}/>
+                    save={this.props.save}
+                    history={this.props.history}/>
             </div>
         )
     }

@@ -62,7 +62,8 @@ class EditProfileContainer extends Component {
                     removeSocial={this.removeSocial}
                     editProfileError={this.props.editProfileError}
                     editProfileSuccess={this.props.editProfileSuccess}
-                    mergeAccounts={this.mergeAccounts}/>
+                    mergeAccounts={this.mergeAccounts}
+                    history={this.props.history}/>
             </div>
         )
     }

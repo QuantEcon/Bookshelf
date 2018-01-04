@@ -472,7 +472,7 @@ class EditProfile extends Component {
                     </div>
 
                 </Modal>
-                <HeadContainer/> {this.successSaving && this.hasSaved
+                <HeadContainer history={this.props.history}/> {this.successSaving && this.hasSaved
                     ? <div className="success callout">
                             <div className="container">
                                 <p className="callout-message">
