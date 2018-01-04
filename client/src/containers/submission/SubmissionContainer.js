@@ -39,7 +39,8 @@ class SubmissionContainer extends Component {
                         submissionID={this.props.match.params.id}
                         isLoading={this.props.isLoading}
                         currentUser={this.props.currentUser}
-                        actions={this.props.actions}/>
+                        actions={this.props.actions}
+                        history={this.props.history}/>
                 </div>
             )
         }

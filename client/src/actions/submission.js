@@ -200,7 +200,8 @@ export const editSubmission = ({
     }
 }
 
-export const deleteSubmission = (submissionID) => {
+export const deleteSubmission = (submissionID, callback) => {
+    console.log("Delete submission action")
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             //check if the submission is the user's
@@ -214,18 +215,26 @@ export const deleteSubmission = (submissionID) => {
                 }).then(resp => {
                     if (resp.error) {
                         console.error('[SubmissionActions] - Server returned an error when deleting a submission:', resp.error);
+                        callback(false)
                     } else {
+                        console.log("[SubmissionActions (DeleteSubmission)] - dispatch action")
                         dispatch(deleteSubmissionAction({
                             submissionID
                         }));
+                        callback(true)
                     }
                 }).catch(err => {
                     console.error('[SubmissionActions] - An error occurred while deleting a submission: ', err);
+                    callback(false)
                 })
             } else {
                 console.log('[SubmissionActions] - Submission doesn\'t belong to the user. Can\'t delete');
+                callback(false)
             }
+        } else {
+            console.warn("[SubmissionActions (DeleteSubmission)] - user not signed in")
         }
+        
     }
 }
 
@@ -287,11 +296,11 @@ export const fetchNBInfo = ({
 
 const needToFetch = (state, submissionID) => {
     return true;
-    if (!state.submissionByID[submissionID]) {
-        return true;
-    } else if (state.submissionByID[submissionID].didInvalidate) {
-        return true;
-    } else {
-        return false;
-    }
+    // if (!state.submissionByID[submissionID]) {
+    //     return true;
+    // } else if (state.submissionByID[submissionID].didInvalidate) {
+    //     return true;
+    // } else {
+    //     return false;
+    // }
 }
