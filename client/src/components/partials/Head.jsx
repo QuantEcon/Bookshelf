@@ -26,6 +26,7 @@ class Head extends Component {
                 <a
                     className="submit-feedback"
                     target="_blank"
+                    rel="noopener noreferrer"
                     href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
 
                 <header className="header">

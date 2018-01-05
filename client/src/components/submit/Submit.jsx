@@ -4,7 +4,7 @@ import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
-import {transforms, displayOrder} from '@nteract/transforms-full';
+// import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
@@ -293,10 +293,7 @@ class Submit extends Component {
                 <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
-                    <NotebookPreview
-                        notebook={this.state.notebookJSON}
-                        transforms={transforms}
-                        displayOrder={displayOrder}/>
+                    <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
                 <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>

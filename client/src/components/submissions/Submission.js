@@ -16,7 +16,7 @@ import NotebookPreview from '@nteract/notebook-preview';
 
 import FileSaver from 'file-saver'
 
-import {transforms, displayOrder} from '@nteract/transforms-full';
+// import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
@@ -466,10 +466,7 @@ class Submission extends Component {
                                             {this.props.submission.data.html
                                                 ? <NotebookFromHTML html={this.props.submission.data.html}/>
                                                 : <div id='notebook'>
-                                                    <NotebookPreview
-                                                        notebook={this.props.submission.data.notebookJSON}
-                                                        transforms={transforms}
-                                                        displayOrder={displayOrder}/>
+                                                    <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
                                                 </div>}
 
                                         </div>
