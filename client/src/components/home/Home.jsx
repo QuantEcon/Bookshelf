@@ -49,7 +49,7 @@ class Home extends Component {
         );
     }
     componentDidMount(){
-        document.title = 'QuantEcon'
+        document.title = 'Bookshelf'
     }
 }
 
