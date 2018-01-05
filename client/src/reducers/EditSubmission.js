@@ -15,6 +15,7 @@ const SubmissionReducer = (submission = {}, action) => {
         // case PREVIEW:
         //     return Object.assign({}, submission, {isLoading: true})
         case SAVE_SUBMISSION:
+            console.log("[SubmissionReducer] (SAVE_SUBMISSION) - action: ", action)
             return null
         default:
             // console.warn('[SubmissionReducer] - returning default in reducer');

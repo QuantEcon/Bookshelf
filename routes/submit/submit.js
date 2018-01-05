@@ -269,6 +269,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
             submission.lang = req.body.submissionData.lang
             submission.lastUpdated = Date.now();
             submission.topics = req.body.submissionData.topics
+            submission.fileName = req.body.submissionData.fileName
 
             submission.save((err) => {
                 if (err) {

@@ -141,13 +141,15 @@ export const editSubmission = ({
     file,
     notebookJSON,
     submissionID
-}) => {
+}, callback) => {
     return (dispatch) => {
+        console.log("[EditSubmssion Action] - file: ", file)
         var submission = {
             ...formData,
             lastUpdated: Date.now(),
             _id: submissionID,
-            author: store.getState().auth.user
+            author: store.getState().auth.user,
+            fileName: file.name
         };
         if (file) {
             //read and parse file
@@ -166,10 +168,13 @@ export const editSubmission = ({
                         dispatch(editSubmissionAction({
                             error: response.data.error
                         }))
+                        callback(false)
                     } else {
+                        console.log("[EditSubmission] - received edited submission: ", submission)
                         dispatch(editSubmissionAction({
                             submission
                         }));
+                        callback(true)
                     }
                 })
             }

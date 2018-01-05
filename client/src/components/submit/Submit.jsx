@@ -175,7 +175,7 @@ class Submit extends Component {
     submit = (e) => {
         e.preventDefault();
         if (this.props.isEdit) {
-            console.log('[EditSubmission] - preview clicked')
+            console.log('[EditSubmission] - submit edit')
             var file = this.state.accepted[0]
                 ? this.state.accepted[0]
                 : null

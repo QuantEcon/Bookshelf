@@ -11,14 +11,23 @@ class EditSubmissionContainer extends Component {
         this.save = this
             .save
             .bind(this);
+        this.saveCallback = this.saveCallback.bind(this)
     }
 
     save = ({formData, file, notebookJSON}) => {
+        
         this
             .props
             .actions
-            .editSubmission({formData, file, notebookJSON, submissionID: this.props.match.params.id});
-        this.props.history.push('/submission/' + this.props.match.params.id);
+            .editSubmission({formData, file, notebookJSON, submissionID: this.props.match.params.id}, this.saveCallback);
+    }
+
+    saveCallback = (success) => {
+        if(success){
+            this.props.history.push('/submission/' + this.props.match.params.id)
+        } else {
+            console.warn("Error editing submission")
+        }
     }
 
     render() {
