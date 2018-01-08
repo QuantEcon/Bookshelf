@@ -4,6 +4,7 @@ import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
+import {typesetMath} from 'mathjax-electron'
 // import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
@@ -217,6 +218,13 @@ class Submit extends Component {
         this.setState({
             showSummaryPreview: !this.state.showSummaryPreview
         });
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 20);
+    }
+
+    renderMath = () => {
+        typesetMath(this.rendered)
     }
 
     summaryChanged = (event) => {
@@ -492,10 +500,11 @@ class Submit extends Component {
                                                     source={this.formData.summary
                                                     ? this.formData.summary
                                                     : '*No summary*'}/>
-                                                <p
-                                                    className="input-hint-after input-hint orange bold"
-                                                    onClick={this.toggleSummaryPreview}>
-                                                    Close Preview
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
+                                                </p>
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.renderMath}>Render Math</a>
                                                 </p>
                                             </div>
                                         : <p className="input-hint input-hint-after">

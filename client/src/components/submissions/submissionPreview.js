@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import {typesetMath} from "mathjax-electron"
 
 import Time from 'react-time';
 
@@ -13,6 +14,14 @@ class SubmissionPreview extends Component {
             submission: props.submission,
             author: props.author
         }
+    }
+
+    componentDidMount() {
+        typesetMath(this.rendered)
+    }
+
+    componentDidUpdate() {
+        typesetMath(this.rendered)
     }
 
     componentWillReceiveProps(nextProps) {
@@ -46,7 +55,7 @@ class SubmissionPreview extends Component {
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}
-                        className='short'/>
+                        className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
                 <p className="avatar">

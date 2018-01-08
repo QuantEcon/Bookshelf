@@ -149,9 +149,9 @@ export const editSubmission = ({
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
-            fileName: file.name
         };
         if (file) {
+            submission.fileName = file.name
             //read and parse file
             var reader = new FileReader();
             reader.readAsText(file);

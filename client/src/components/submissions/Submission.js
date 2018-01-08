@@ -4,6 +4,7 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
+import {typesetMath} from "mathjax-electron"
 // import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 }
 // from 'react-html-parser'; import 'normalize-css' import
 // 'typeface-source-code-pro' import 'typeface-source-sans-pro' import
@@ -86,6 +87,7 @@ class Submission extends Component {
 
     componentDidMount() {
         this.forceUpdate();
+        typesetMath(this.rendered)
     }
 
     componentWillReceiveProps(props) {
