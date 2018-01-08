@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import Markdown from 'react-markdown'
 
 // import Paginate from 'react-paginate';
 //TODO: Implement pagination
@@ -23,7 +24,6 @@ class SubmissionList extends Component {
     }
     
     onSearch = (searchParams) => {
-        console.log('[SubmissionList] - search params:', searchParams);        
         this.setState({
             searchParams
         }, () => {
@@ -42,6 +42,9 @@ class SubmissionList extends Component {
         return (
             <div className="container">
                 <div className="tile">
+                <div>
+                    <Markdown source="markdown \\,"/>
+                </div>
                     <Searchbar
                         searchParams={this.props.searchParams}
                         totalSubmissions={this.props.totalSubmissions}

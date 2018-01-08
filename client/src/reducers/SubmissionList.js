@@ -42,7 +42,6 @@ const SubmissionList = (state = {
             }) 
         case RECEIVE_SUBMISSION_PREVIEWS:
             // console.log('[Middleware] - State: ', state);
-            console.log('[Middleware] - Action: ', action);
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,

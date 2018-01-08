@@ -9,7 +9,6 @@ import Markdown from 'react-markdown';
 class SubmissionPreview extends Component {
     constructor(props) {
         super(props);
-        console.log("[SubmissionPreview] - props:", props)
         this.state = {
             submission: props.submission,
             author: props.author
@@ -25,7 +24,6 @@ class SubmissionPreview extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("[SubmissionPreview] - next props: ", nextProps)
         this.setState({submission: nextProps.submission, author: nextProps.author});
     }
 
@@ -51,7 +49,7 @@ class SubmissionPreview extends Component {
                         <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
                     </p>
                     <Markdown
-                        disallowedTypes={['headings']}
+                        disallowedTypes={['heading']}
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}

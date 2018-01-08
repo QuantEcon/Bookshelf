@@ -168,12 +168,14 @@ export const editSubmission = ({
                         dispatch(editSubmissionAction({
                             error: response.data.error
                         }))
+                        console.log("false callback")
                         callback(false)
                     } else {
                         console.log("[EditSubmission] - received edited submission: ", submission)
                         dispatch(editSubmissionAction({
                             submission
                         }));
+                        console.log("true callback")
                         callback(true)
                     }
                 })
@@ -191,10 +193,12 @@ export const editSubmission = ({
                     dispatch(editSubmissionAction({
                         error: response.data.error
                     }))
+                    callback(false)
                 } else {
                     dispatch(editSubmissionAction({
                         submission
                     }));
+                    callback(true)
                 }
             })
         } else {

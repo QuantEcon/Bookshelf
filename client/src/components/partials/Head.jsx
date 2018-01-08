@@ -45,7 +45,6 @@ class Head extends Component {
                                             </h2>
                                         </div>
                                     </span>
-
                                 </a>
 
                             </div>

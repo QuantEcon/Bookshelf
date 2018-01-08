@@ -6,18 +6,13 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
     MathJax.Hub.Config({
       tex2jax: {
-        inlineMath: [['$','$'], ["$$", "$$"], ["\\(","\\)"]],
+        inlineMath: [['$','$'], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
         processEscapes: true,
+        processEnvironments: true,
       },
     })
   </script>
-  <!-- <script>
-    if(window.MathJax){
-      MathJax.Hub.Queue(
-        ["Typeset", MathJax.Hub]
-      )
-    }
-  </script> -->
   <title>Bookshelf</title>
 </head>
 

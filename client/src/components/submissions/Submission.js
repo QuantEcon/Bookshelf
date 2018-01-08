@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import Markdown from 'react-markdown';
+import {MarkdownRender} from '../MarkdownMathJax';
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
@@ -83,15 +83,28 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
+        this.renderMathJax = this.renderMathJax.bind(this)
     }
 
     componentDidMount() {
         this.forceUpdate();
-        typesetMath(this.rendered)
+        console.log("did mount, render mathjax")
+        this.renderMathJax()
     }
 
+    renderMathJax() {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+            console.log("Mathjax config: ", window.MathJax)
+        } else {
+            console.log("No mathjax")
+            this.renderMathJax()
+        }
+    }
+
+
     componentWillReceiveProps(props) {
-        console.log("[Submission] - will receive props: ", props)
         if (props.submission.data) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
@@ -363,8 +376,8 @@ class Submission extends Component {
                             <div className='details-body'>
                                 <div className='details-primary'>
                                     {!this.props.isLoading
-                                        ? <Markdown
-                                                disallowedTypes={['headings']}
+                                        ? <MarkdownRender
+                                                disallowedTypes={['heading']}
                                                 source={this.props.submission.data.notebook.summary
                                                 ? this.props.submission.data.notebook.summary
                                                 : '*No summary*'}/>
