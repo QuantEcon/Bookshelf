@@ -88,8 +88,11 @@ class Submission extends Component {
 
     componentDidMount() {
         this.forceUpdate();
-        console.log("did mount, render mathjax")
-        this.renderMathJax()
+        // Wait half a second for things to load, then render mathjax
+        setTimeout(() => {
+            this.renderMathJax()    
+        }, 500);
+        
     }
 
     renderMathJax() {
