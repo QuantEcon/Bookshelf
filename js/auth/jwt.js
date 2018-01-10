@@ -8,8 +8,10 @@ var opts = {
     jwtFromRequest: ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeaderWithScheme('jwt'), ExtractJwt.fromUrlQueryParameter('jwt')]),
     secretOrKey: "banana horse laser muffin"
 }
+
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
 ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial emailSettings'
+
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
     User.findOne({
         _id: jwt_payload.user._id

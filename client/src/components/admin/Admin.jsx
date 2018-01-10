@@ -15,7 +15,9 @@ class AdminPage extends Component {
                     </div>
                     <div className='column'>
                         <div>
-
+                            {/* Flagged Users */}
+                            {/* Flagged Submissions */}
+                            {/* Flagged Comments */}
                         </div>
                     </div>
                 </div>
