@@ -4,7 +4,6 @@ import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
-import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
@@ -294,9 +293,7 @@ class Submit extends Component {
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview
-                        notebook={this.state.notebookJSON}
-                        transforms={transforms}
-                        displayOrder={displayOrder}/>
+                        notebook={this.state.notebookJSON}/>
                 </Modal>
                 <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>
@@ -481,7 +478,7 @@ class Submit extends Component {
 
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">You can use{' '}
-                                        <a href="http://commonmark.org/help/">markdown</a>{' '}
+                                        <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer">markdown</a>{' '}
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"

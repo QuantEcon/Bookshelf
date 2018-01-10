@@ -122,7 +122,7 @@ class BetaBanner extends Component {
 
                 <div className="alert callout">
                     <div className="container">
-                        <p>Bookshelf is currently in beta. <a href="#" onClick={this.toggleShowModal}>Subscribe</a> to updates about future releases.</p>
+                        <p>Bookshelf is currently in beta. <a onClick={this.toggleShowModal}>Subscribe</a> to updates about future releases.</p>
                         <p>Please <a href="http://discourse.quantecon.org/c/bookshelf-feedback">submit feedback</a> if you run into any issues or notice any bugs.</p>
                     </div>
                 </div>

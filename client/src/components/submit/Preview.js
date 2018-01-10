@@ -7,8 +7,6 @@ import NotebookPreview from '@nteract/notebook-preview';
 //import '@nteract/notebook-preview/styles/theme-light.css';
 //import 'codemirror/lib/codemirror.css';
 
-import {transforms, displayOrder} from '@nteract/transforms-full';
-
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
@@ -223,9 +221,7 @@ class Preview extends Component {
                                 : <div>
                                     <div>
                                         <NotebookPreview
-                                            notebook={this.props.submission.notebookJSON}
-                                            transforms={transforms}
-                                            displayOrder={displayOrder}/>
+                                            notebook={this.props.submission.notebookJSON}/>
                                     </div>
                                 </div>}
                         </div>
