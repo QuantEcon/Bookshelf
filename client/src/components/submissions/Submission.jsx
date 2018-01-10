@@ -13,7 +13,9 @@ import {typesetMath} from "mathjax-electron"
 // '@nteract/notebook-preview/styles/theme-light.css' import
 // '../../assets/css/notebookPreview.css'
 
-import NotebookPreview from '@nteract/notebook-preview';
+// import NotebookPreview from '@nteract/notebook-preview';
+
+import NotebookPreview from 'nteract-monorepo/packages/notebook-preview/lib/index'
 
 import FileSaver from 'file-saver'
 
