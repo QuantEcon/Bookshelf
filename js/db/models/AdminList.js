@@ -2,7 +2,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
-var adminList = new Schema({
+var AdminList = new Schema({
     adminEmails: [String],
     adminIDs: [ObjectId]
 })
+
+module.exports = mongoose.model('AdminList', AdminList)

@@ -21,7 +21,6 @@ passport.use('adminjwt', new JwtStrategy(opts, function (jwt_payload, done) {
                 return done({message: "Error getting admin list from database", code: "5-10"}, null)
             } else if(adminList){
                 if(adminList.adminIds.indexOf(jwt_payload.user._id) != -1){
-                    // 
                     User.findById(jwt_payload.user._id, (err, user) => {
                         if (err){
                             return done({message: "Error finding user in database", code:"5-11"})

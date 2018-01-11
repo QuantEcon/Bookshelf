@@ -47,6 +47,7 @@ const User = require('./js/db/models/User');
 const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
+const AdminList = require("./js/db/models/AdminList")
 
 // config
 // ==============================================================================
