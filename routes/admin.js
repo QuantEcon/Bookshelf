@@ -325,3 +325,5 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
         res.sendStatus(400)
     }
 })
+
+module.exports = app
