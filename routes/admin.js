@@ -24,25 +24,50 @@ app.use(bodyParser.urlencoded({
 app.post("/delete-submission", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
-    // TODO: Delete submission
-    if(req.body.submissionID){
+    // Flag as deletedDelete submission
+    if (req.body.submissionID) {
         Submission.findById(req.body.submissionID, (err, submission) => {
-            if(err){
+            if (err) {
                 res.status(500)
-                res.send({error: true, message: "Error finding submission", err})
-            } else if(submission){
+                res.send({
+                    error: true,
+                    message: "Error finding submission",
+                    err
+                })
+            } else if (submission) {
                 submission.deleted = true
-                submission.save((err) => {
+                // Remove from user.submissions and add to user.deletedSubmissions
+                User.findById(submission.author, (err, user) => {
                     if(err){
+                        console.log("Error finding author of submission:" ,err)
+                    } else if (user){
+                        user.submissions = user.submissions.filter((id) => {
+                            return id != submission._id
+                        })
+                        user.deletedSubmissions.push(submission._id)
+                        user.save()
+                    } else {
+                        console.log("Error finding author of submission: author doesn't exist!")
+                    }
+                })
+                submission.save((err) => {
+                    if (err) {
                         res.status(500)
-                        res.send({error: true, message: "Error saving after deleting", err})
+                        res.send({
+                            error: true,
+                            message: "Error saving after deleting",
+                            err
+                        })
                     } else {
                         res.send("Delete successful!")
                     }
                 })
             } else {
                 res.status(400)
-                res.send({error: true, message: "Couldn't find submission with ID " + req.body.submissionID})
+                res.send({
+                    error: true,
+                    message: "Couldn't find submission with ID " + req.body.submissionID
+                })
             }
         })
     } else {
@@ -57,8 +82,86 @@ app.post("/delete-submission", passport.authenticate('adminjwt', {
 app.post("/remove-submission", passport.authenticate("adminjwt", {
     session: 'false'
 }), (req, res) => {
-    if(req.body.submissionID){
+    if (req.body.submissionID) {
         // TODO: remove submission, comments, and replies from database
+        Submission.findById(req.body.submissionID, (err, submission) => {
+            if (err) {
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: "Error finding submission in database",
+                    err
+                })
+            } else if (submission) {
+                // Remove submission from author
+                User.findById(submission.author, (err, author) => {
+                    if (err) {
+                        console.log("Error finding author of submission")
+                    } else if (user) {
+                        // Remove from submissions
+                        if (user.submissions.indexOf(req.body.submissionID) != -1) {
+                            user.submissions = user.submissions.filter((id) => {
+                                return id != req.body.submissionID
+                            })
+                            user.save()
+                        }
+                        // Remove from deletedSubmissions
+                        if (user.deletedSubmissions.indexOf(req.body.submissionID) != -1) {
+                            user.deletedSubmissions = user.deletedSubmissions.filter((id) => {
+                                return id != req.body.submissionID
+                            })
+                            user.save()
+                        }
+                    } else {
+                        console.log("Error finding author of submission: User doesn't exist!")
+                    }
+                })
+                submission.comments.forEach(comment => {
+                    // Remove replies from each comment
+                    Comment.remove({
+                        "_id": {
+                            "$in": comment.replies
+                        }
+                    }, (err) => {
+                        if (err) {
+                            console.log("ERROR REMOVING REPLIES FROM COMMENT")
+                        }
+                    })
+                });
+                // Remove comments from submission
+                Comment.remove({
+                    "_id": {
+                        "$in": submission.comments
+                    }
+                }, (err) => {
+                    if (err) {
+                        console.log("ERROR REMOVING COMMENTS FROM SUBMISSION")
+                    }
+                })
+            } else {
+                res.status(400)
+                res.send({
+                    error: true,
+                    message: "Couldn't find submission with id " + req.body.submissionID
+                })
+            }
+        })
+        // Remove submission from database
+        Submission.remove({
+            "_id": req.body.submissionID
+        }, (err) => {
+            if (err) {
+                console.log("ERROR REMOVING SUBMISSION")
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: "Error removing submission from database",
+                    err
+                })
+            } else {
+                res.sendStatus(200)
+            }
+        })
     } else {
         res.sendStatus(400)
     }
@@ -67,28 +170,44 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
 app.post("/make-admin", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
-    if(req.body.userID){
-        AdminList.findOne({}, (err, adminlist) => {
-            if(err){
+    if (req.body.userID) {
+        AdminList.findOne({}, (err, adminList) => {
+            if (err) {
                 res.status(500)
-                res.send({error:true, message: "Error finding admin list", err})
-            } else if(adminlist){
-                if(adminlist.length > 5){
-                    adminlist.adminIDs.append(req.body.userID)
-                    adminlist.save((err) => {
-                        if(err){
+                res.send({
+                    error: true,
+                    message: "Error finding admin list",
+                    err
+                })
+            } else if (adminList) {
+                if (adminList.adminIDs.length > 5) {
+                    // Add userID and user's email to adminList
+                    adminList.adminIDs.push(req.body.userID)
+                    adminList.save((err) => {
+                        if (err) {
                             res.status(500)
-                            res.send({error: true, message: "Error saving admin list", err})
+                            res.send({
+                                error: true,
+                                message: "Error saving admin list",
+                                err
+                            })
                         } else {
                             res.sendStatus(200)
                         }
                     })
                 } else {
-                    res.send({error: true, message: "Reached maxmium amount of admins"})
+                    res.send({
+                        error: true,
+                        message: "Reached maxmium amount of admins"
+                    })
                 }
             } else {
                 res.status(500)
-                res.send({error:true, message: "Error finding admin list", err})            
+                res.send({
+                    error: true,
+                    message: "Error finding admin list",
+                    err
+                })
             }
         })
     } else {
@@ -98,19 +217,30 @@ app.post("/make-admin", passport.authenticate('adminjwt', {
 
 app.post("/remove-admin", passport.authenticate("adminjwt", {
     session: 'false'
-}), (req,res) => {
-    if(req.body.userID){
+}), (req, res) => {
+    if (req.body.userID) {
         AdminList.findOne({}, (err, adminList) => {
-            if(err){
+            if (err) {
                 res.status(500)
-                res.send({error: true, message: "Error finding admin list", err})
-            } else if (adminList){
-                if(adminList.adminIDs.indexOf(req.body.userID) != -1){
-                    adminList.adminIDs.splice(adminList.adminIDs.indexOf(req.body.userID), 1)
+                res.send({
+                    error: true,
+                    message: "Error finding admin list",
+                    err
+                })
+            } else if (adminList) {
+                // Remove ID from adminList.adminIDs
+                if (adminList.adminIDs.indexOf(req.body.userID) != -1) {
+                    adminList.adminIDs = adminList.adminIDs.filter((id) => {
+                        return id != req.body.userID
+                    })
                     adminList.save((err) => {
-                        if(err){
+                        if (err) {
                             res.status(500)
-                            res.send({error: true, message: "Error saving admin list", err})
+                            res.send({
+                                error: true,
+                                message: "Error saving admin list",
+                                err
+                            })
                         } else {
                             res.sendStatus(200)
                         }
@@ -118,7 +248,11 @@ app.post("/remove-admin", passport.authenticate("adminjwt", {
                 }
             } else {
                 res.status(500)
-                res.send({error: true, message: "Error finding admin list", err})
+                res.send({
+                    error: true,
+                    message: "Error finding admin list",
+                    err
+                })
             }
         })
     } else {
@@ -129,9 +263,20 @@ app.post("/remove-admin", passport.authenticate("adminjwt", {
 app.post("/delete-comment", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
-    // TODO: Delete comment
-    if(req.body.commentID && req.body.submissionID){
+    if (req.body.commentID && req.body.submissionID) {
+        // TODO: Flag as deleted
+    } else {
+        res.sendStatus(400)
+    }
+})
 
+app.post("/remove-comment", passport.authenticate("adminjwt", {
+    session: "false"
+}), (req, res) => {
+    if (req.body.commentID && req.body.submissionID) {
+        // TODO: Remove comment id from submission.comments
+        // TODO: Remove replies from database
+        // TODO: Remove comment from database
     } else {
         res.sendStatus(400)
     }
@@ -140,20 +285,42 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
 app.post("/delete-reply", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
-    // TODO: Delete reply
-    if(req.body.commentID && res.body.submissionID && res.body.replyID) {
-
+    if (req.body.commentID && req.body.submissionID && req.body.replyID) {
+        // TODO: Flag reply as deleted
     } else {
         res.sendStatus(400)
+    }
+})
+
+app.post("/remove-reply", passport.authenticate('adminjwt', {
+    session: "false"
+}), (req, res) => {
+    if (req.body.commentID && req.body.submissionID && req.body.replyID) {
+        // TODO: Remove from comment.replies
+        // TODO: Remove reply from database
     }
 })
 
 app.post("/delete-user", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
-    // TODO: Delete user
-    if(req.body.userID){
+    if (req.body.userID) {
+        // TODO: flag user as deleted
+        // TODO: remove from admin list, if applicable
+    } else {
+        res.sendStatus(400)
+    }
+})
 
+app.post("/remove-user", passport.authenticate('adminjwt', {
+    session: "false"
+}), (req, res) => {
+    if (req.body.userID) {
+        // TODO: remove submissions
+        // TODO: remove comments
+        // TODO: remove replies
+        // TODO: remove from admin list, if applicable
+        // TODO: remove user from database
     } else {
         res.sendStatus(400)
     }

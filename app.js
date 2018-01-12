@@ -30,6 +30,7 @@ const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
+const adminRoutes = require("./routes/admin")
 // =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
@@ -135,6 +136,7 @@ passportInit();
 
 // ROUTES
 // ==============================================================================
+app.use('/api/admin', adminRoutes);
 app.use("/api/search", searchRoutes);
 
 app.use('/api/delete', deleteRoutes);
