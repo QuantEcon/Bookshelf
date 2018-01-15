@@ -42,9 +42,6 @@ class SubmissionList extends Component {
         return (
             <div className="container">
                 <div className="tile">
-                <div>
-                    <Markdown source="markdown \\,"/>
-                </div>
                     <Searchbar
                         searchParams={this.props.searchParams}
                         totalSubmissions={this.props.totalSubmissions}
