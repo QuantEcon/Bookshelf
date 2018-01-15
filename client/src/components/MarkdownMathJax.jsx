@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactMarkdown from "react-markdown";
-import MathJax from "@matejmazur/react-mathjax";
-import RemarkMathPlugin from "remark-math"
+import MathJax from "react-mathjax";
+import RemarkMathPlugin from "../remark-math/index"
 
 export const MarkdownRender = (props: ReactMarkdown.ReactMarkdownProps) => {
   const newProps = {

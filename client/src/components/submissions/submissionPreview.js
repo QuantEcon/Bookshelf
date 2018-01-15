@@ -13,14 +13,31 @@ class SubmissionPreview extends Component {
             submission: props.submission,
             author: props.author
         }
+
+        this.renderMathJax = this.renderMathJax.bind(this)
+    }
+
+    renderMathJax() {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+            console.log("Mathjax config: ", window.MathJax)
+        } else {
+            console.log("No mathjax")
+            this.renderMathJax()
+        }
     }
 
     componentDidMount() {
-        typesetMath(this.rendered)
+        setTimeout(() => {
+            this.renderMathJax()
+        }, 500)
     }
 
     componentDidUpdate() {
-        typesetMath(this.rendered)
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 500)
     }
 
     componentWillReceiveProps(nextProps) {
