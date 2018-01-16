@@ -1,9 +1,4 @@
 import React, {Component} from 'react';
-import Markdown from 'react-markdown'
-
-// import Paginate from 'react-paginate';
-//TODO: Implement pagination
-
 import Searchbar from '../searchbar/Searchbar';
 import SubmissionPreview from './submissionPreview';
 import Paginate from 'react-paginate'

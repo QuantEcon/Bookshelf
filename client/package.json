@@ -6,6 +6,7 @@
     "@matejmazur/react-mathjax": "^0.1.7",
     "@nteract/notebook-preview": "^5.0.7",
     "axios": "^0.16.2",
+    "commonmark-react-renderer": "^4.3.4",
     "file-saver": "^1.3.3",
     "history": "^4.6.3",
     "mathjax": "^2.7.1",

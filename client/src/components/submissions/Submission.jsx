@@ -5,21 +5,11 @@ import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
 import {typesetMath} from "mathjax-electron"
-// import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 }
-// from 'react-html-parser'; import 'normalize-css' import
-// 'typeface-source-code-pro' import 'typeface-source-sans-pro' import
-// 'codemirror/lib/codemirror.css'; import
-// '@nteract/notebook-preview/styles/main.css'; import
-// '@nteract/notebook-preview/styles/theme-light.css' import
-// '../../assets/css/notebookPreview.css'
-
-// import NotebookPreview from '@nteract/notebook-preview';
 
 import NotebookPreview from 'nteract-monorepo/packages/notebook-preview/lib/index'
+// import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
-
-// import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
@@ -484,7 +474,10 @@ class Submission extends Component {
                                             </div>
 
                                             {this.props.submission.data.html
-                                                ? <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                ? <div>
+                                                    <p>(pre-rendered notebook)</p>
+                                                    <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                </div>
                                                 : <div id='notebook'>
                                                     <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
                                                 </div>}
