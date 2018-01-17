@@ -7,7 +7,10 @@ var store = createStore({
     submissionList: {
         isFetching: true
     },
-    editSubmissionByID: {}
+    editSubmissionByID: {},
+    adminData: {
+        fetching: true
+    }
 })
 
 export default store;

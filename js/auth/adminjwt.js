@@ -16,11 +16,13 @@ const select = 'name views numComments joinDate voteScore position submissions u
 passport.use('adminjwt', new JwtStrategy(opts, function (jwt_payload, done) {
     if(jwt_payload.isAdmin){
         // Check userid is listed as an admin
-        AdminList.find({}, (err, adminList) => {
+        AdminList.findOne({}, (err, adminList) => {
             if(err){
                 return done({message: "Error getting admin list from database", code: "5-10"}, null)
             } else if(adminList){
-                if(adminList.adminIds.indexOf(jwt_payload.user._id) != -1){
+                console.log("[AdminJWT] - adminList: ", adminList)
+
+                if(adminList.adminIDs && adminList.adminIDs.indexOf(jwt_payload.user._id) != -1){
                     User.findById(jwt_payload.user._id, (err, user) => {
                         if (err){
                             return done({message: "Error finding user in database", code:"5-11"})

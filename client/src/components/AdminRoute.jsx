@@ -14,7 +14,7 @@ export default function AdminRoute({
         <Route
             {...rest}
             // TODO: Check with server instead of local check
-            render={(props) => state.auth.isSignedIn === true && state.auth.userIsAdmin === true
+            render={(props) => state.auth.isSignedIn === true && state.auth.isAdmin === true
             ? <div>            
                 {fromAPI 
                 ? <TempComponent/>

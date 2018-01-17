@@ -32,9 +32,16 @@ class CommentContainer extends Component {
                     authors={this.state.authors}
                     currentUser={this.state.currentUser}
                     actions={this.props.actions}
+                    showAdmin={this.props.isAdmin}
                 />
             </div>
         )
+    }
+}
+
+mapStateToProps = (state, props) => {
+    return {
+        isAdmin: state.auth.isAdmin
     }
 }
 
@@ -44,4 +51,4 @@ mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(null, mapDispatchToProps)(CommentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentContainer);

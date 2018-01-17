@@ -14,7 +14,7 @@ class UserContainer extends Component {
     render(){
         return(
             <div>
-                <User data={this.props.user ? this.props.user.data : {}} isLoading={this.props.isLoading} history={this.props.history}/>
+                <User data={this.props.user ? this.props.user.data : {}} isLoading={this.props.isLoading} history={this.props.history} showAdmin={this.props.isAdmin}/>
             </div>
         )
     }
@@ -28,7 +28,8 @@ const mapStateToProps = (state, props) => {
     }
     return {
         user: state.userByID[props.match.params.userID],
-        isLoading: il
+        isLoading: il,
+        isAdmin: state.auth.isAdmin
     }
 }
 

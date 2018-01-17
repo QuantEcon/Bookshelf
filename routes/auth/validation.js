@@ -24,6 +24,7 @@ app.get('/', passport.authenticate('jwt', {
     console.log('[ValidateToken] - idAdd: ', isAdd);
     console.log('[ValidateToken] - profile: ', profile);
 
+    console.log("Req: ", req)
     if (isAdd) {
         //check to see if it already exists
         console.log('[ValidateToken] - is add')
@@ -53,7 +54,8 @@ app.get('/', passport.authenticate('jwt', {
             user: req.user,
             provider: req.user.currentProvider,
             uid: req.user._id,
-            token: req.headers['access-token']
+            token: req.headers['access-token'],
+            isAdmin: req.authInfo.isAdmin
         })
     }
 

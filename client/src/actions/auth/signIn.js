@@ -19,13 +19,14 @@ export const beginUserAuthentication = (provider) => {
 }
 
 export const END_USER_AUTHENTICATION = 'END_USER_AUTHENTICATION'
-export const endUserAuthentication = (provider, user = {}, token, error) => {
+export const endUserAuthentication = (provider, user = {}, token, error, isAdmin) => {
     return {
         type: END_USER_AUTHENTICATION,
         provider,
         user,
         token,
-        error
+        error,
+        isAdmin
     }
 }
 export const BEGIN_ADD_SOCIAL = 'BEGIN_ADD_SOCIAL'
@@ -66,13 +67,15 @@ export const END_REAUTHENTICATION = 'END_REAUTHENTICATION'
 const endReauthentication = ({
     error,
     user,
-    token
+    token,
+    isAdmin
 }) => {
     return {
         type: END_REAUTHENTICATION,
         error,
         user,
-        token
+        token,
+        isAdmin
     }
 }
 
@@ -91,7 +94,8 @@ export const reauthenticate = () => {
                 if (response.data.user) {
                     dispatch(endReauthentication({
                         user: response.data.user,
-                        token: localState.token
+                        token: localState.token,
+                        isAdmin: response.data.isAdmin
                     }))
                 }
             }).catch(err => {
@@ -275,7 +279,7 @@ export const signIn = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticate('github').then(resp => {
-                    dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -293,7 +297,7 @@ export const signIn = (provider, next) => {
             case 'Twitter':
                 authenticate('twitter').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -311,7 +315,7 @@ export const signIn = (provider, next) => {
             case 'Google':
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -329,7 +333,7 @@ export const signIn = (provider, next) => {
             case 'Facebook':
                 authenticate('fb').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });

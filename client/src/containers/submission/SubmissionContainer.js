@@ -40,7 +40,8 @@ class SubmissionContainer extends Component {
                         isLoading={this.props.isLoading}
                         currentUser={this.props.currentUser}
                         actions={this.props.actions}
-                        history={this.props.history}/>
+                        history={this.props.history}
+                        showAdmin={this.props.isAdmin}/>
                 </div>
             )
         }
@@ -60,7 +61,8 @@ function mapStateToProps(state, props) {
         currentUser: state.auth.isSignedIn
             ? state.auth.user
             : null,
-        isLoading: il
+        isLoading: il,
+        isAdmin: state.auth.isAdmin
     }
 }
 

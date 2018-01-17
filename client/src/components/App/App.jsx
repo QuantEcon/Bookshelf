@@ -13,6 +13,7 @@ import PreviewContainer from '../../containers/PreviewContainer'
 import EditProfileContainer from '../../containers/user/EditProfileContainer'
 import EditSubmissionContainer from '../../containers/submission/EditSubmissionContainer';
 import EditSubmissionPreviewContainer from '../../containers/submission/EditSubmissionPreviewContainer';
+import AdminContainer from '../../containers/admin/AdminContainer'
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
@@ -20,7 +21,6 @@ import AdminRoute from '../AdminRoute';
 import SignIn from '../signin/SignIn';
 import FAQ from '../FAQ';
 import About from '../About';
-import AdminPage from '../admin/Admin'
 
 import '../../assets/css/main.css'
 //import '../../assets/css/app.css'
@@ -53,7 +53,7 @@ class App extends Component {
               <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
-              <AdminRoute exact path="/admin" component={AdminPage}/>
+              <AdminRoute exact path="/admin" component={AdminContainer}/>
               <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>
             </Switch>
           </div>

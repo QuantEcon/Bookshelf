@@ -7,6 +7,8 @@ var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
 const AdminList = require('../js/db/models/AdminList')
 
+var series = require('async/series');
+
 var app = express.Router();
 
 app.use(bodyParser.json({
@@ -17,6 +19,109 @@ app.use(bodyParser.urlencoded({
     limit: '50mb',
     parameterLimit: 50000
 }));
+
+app.get("/flagged-content", passport.authenticate('adminjwt', {
+    session:'false'
+}), (req, res) => {
+    var userSelect = "_id name avatar submissions"
+    var submissionSelect = "_id title author summary published lang totalComments viewers views"
+    series({
+        // Get flagged users
+        users: function(callback) {
+            User.find({flagged: true}, userSelect, (err, users) => {
+                if(err){
+                    callback(err)
+                } else {
+                    callback(null, users)
+                }
+            })
+        },
+        // Get flagged submissions
+        submissions: function(callback) {
+            Submission.find({flagged: true}, submissionSelect, (err, submissions) => {
+                if(err){
+                    callback(err)
+                } else {
+                    console.log("\n[FetchFlaggedContent] - Submissions: ", submissions)
+                    var submissionAuthorIDs = []
+                    submissions.forEach((submission) => {
+                        console.log("[FetchFlaggedContent] - pushing author: ", submission.author)
+                        submissionAuthorIDs.push(submission.author)
+                    })
+
+                    User.find({_id: {$in: submissionAuthorIDs}}, userSelect, (err, authors) => {
+                        if(err){
+                            console.log("\nERROR GETTING AUTHORS: ", err)
+                            callback(err)
+                        } else {
+                            console.log("\n[FetchFlaggedContent] - submission authors: ", authors)
+                            var submissionsData = []
+                            submissions.forEach((submission) => {
+                                var data = {
+                                    data: submission,
+                                    author: authors.filter((author) => {
+                                        return String(author._id) == String(submission.author)
+                                    })[0]
+                                }
+                                submissionsData.push(data)
+                            })
+                            console.log("\n[FetchFlaggedContent] - submissionsData: ",submissionsData)
+                            callback(null, submissionsData)
+                        }
+                    })
+                }
+            })
+        },
+        // Get flagged comments
+        comments: function(callback) {
+            Comment.find({flagged: true}, (err, comments) => {
+                if(err){
+                    callback(err)
+                } else {
+                    var commentAuthorIDs = []
+                    comments.forEach((comment) => {
+                        commentAuthorIDs.push(comment.author)
+                    })
+
+                    User.find({_id: {$in: commentAuthorIDs}}, userSelect, (err, authors) => {
+                        if(err){
+                            callback(err)
+                        } else {
+                            var commentsData = []
+                            comments.forEach((comment) => {
+                                var data = {
+                                    data: comment,
+                                    author: authors.filter((author) => {
+                                        return String(author._id) == String(comment.author)
+                                    })[0]
+                                }
+                                commentsData.push(data)
+                            })
+                            callback(null, commentsData)
+                        }
+                    })
+                }
+            })
+        }
+    },
+    // callback
+    function(err, results) {
+        if(err){
+
+        } else {
+            console.log("[Admin] - flagged content: ", results)
+            var data = {
+                users: results.users,
+                submissions: results.submissions,
+                comments: results.comments
+            }
+
+            res.send(data)
+        }
+    })
+
+
+})
 
 /**
  * Flags the submission given by submissionID as deleted
