@@ -7,9 +7,25 @@ import AdminPage from '../../components/admin/Admin'
 
 // Actions
 // TODO: import admin actions here
-import {fetchFlaggedContent} from '../../actions/admin'
+import {
+    fetchFlaggedContent,
+    removeComment,
+    removeSubmission,
+    removeUser,
+    deleteComment,
+    deleteSubmission,
+    deleteUser
+} from '../../actions/admin'
 
-const actions = {fetchFlaggedContent}
+const actions = { 
+    fetchFlaggedContent,
+    removeComment,
+    removeSubmission,
+    removeUser,
+    deleteComment,
+    deleteSubmission,
+    deleteUser
+}
 
 class AdminContainer extends Component {
     constructor(props){
@@ -29,6 +45,8 @@ class AdminContainer extends Component {
                     flaggedSubmissions={this.props.flaggedSubmissions}
                     flaggedUsers={this.props.flaggedUsers}
                     isLoading={this.props.isLoading}
+                    history={this.props.history}
+                    actions={this.props.actions}
                 />
             </div>
         )

@@ -213,7 +213,7 @@ export const addSocial = (provider, next) => {
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
-                            //TODO: ask user if he/she wants to merge accounts
+                            //ask user if he/she wants to merge accounts
                             dispatch(endAddSocial({
                                 provider: 'fb',
                                 existingUser: resp.data.user,
