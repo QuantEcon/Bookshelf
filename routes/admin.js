@@ -23,8 +23,8 @@ app.use(bodyParser.urlencoded({
 app.get("/flagged-content", passport.authenticate('adminjwt', {
     session:'false'
 }), (req, res) => {
-    var userSelect = "_id name avatar submissions"
-    var submissionSelect = "_id title author summary published lang totalComments viewers views score deletedDate"
+    var userSelect = "_id name avatar submissions flagged deleted"
+    var submissionSelect = "_id title author summary published lang totalComments viewers views score deletedDate flagged deleted"
     series({
         // Get flagged users
         users: function(callback) {
