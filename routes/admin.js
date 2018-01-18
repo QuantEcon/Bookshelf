@@ -24,7 +24,7 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
     session:'false'
 }), (req, res) => {
     var userSelect = "_id name avatar submissions"
-    var submissionSelect = "_id title author summary published lang totalComments viewers views"
+    var submissionSelect = "_id title author summary published lang totalComments viewers views score deletedDate"
     series({
         // Get flagged users
         users: function(callback) {
@@ -38,7 +38,7 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
         },
         // Get flagged submissions
         submissions: function(callback) {
-            Submission.find({flagged: true}, submissionSelect, (err, submissions) => {
+            Submission.find({$or: [{flagged: true}, {deleted:true}]}, submissionSelect, (err, submissions) => {
                 if(err){
                     callback(err)
                 } else {
@@ -74,7 +74,7 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
         },
         // Get flagged comments
         comments: function(callback) {
-            Comment.find({flagged: true}, (err, comments) => {
+            Comment.find({$or: [{flagged: true}, {deleted:true}]}, (err, comments) => {
                 if(err){
                     callback(err)
                 } else {

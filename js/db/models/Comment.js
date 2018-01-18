@@ -19,6 +19,7 @@ var commentSchema = new Schema({
 
     edited: Boolean,
     editedDate: Date,
+    deletedDate: Date,
 
     replies: [ObjectId],
 

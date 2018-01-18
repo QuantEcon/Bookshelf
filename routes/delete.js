@@ -28,6 +28,7 @@ app.post('/submission', passport.authenticate('jwt', {
             });
         } else {
             submission.deleted = true;
+            submission.deletedDate = Date.now()
             // go through and delete comments???
             submission.save();
             User.findOne({

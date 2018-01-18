@@ -30,6 +30,8 @@ var submissionSchema = new Schema({
     flagged: Boolean,
     deleted: Boolean,
 
+    deletedDate: Date,
+
     preRendered: Boolean,
     views: Number,
     viewers: [ObjectId]
