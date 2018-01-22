@@ -109,4 +109,9 @@ app.get('/callback', passport.authenticate('github', {
     });
 });
 
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
+
 module.exports = app;

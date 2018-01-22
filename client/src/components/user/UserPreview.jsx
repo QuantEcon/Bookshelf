@@ -15,28 +15,28 @@ class UserPreview extends Component {
             <div className="notebook-summary">
                 <div className="specs">
                     <h3 className="title">
-                        <Link to={"/user/" + this.state.user._id}>
-                            {this.state.user.name}
+                        <Link to={"/user/" + this.props.user._id}>
+                            {this.props.user.name}
                         </Link>
                     </h3>
                     <Markdown
                         disallowedTypes={['heading']}
-                        source={this.state.user.summary
-                        ? this.state.user.summary
+                        source={this.props.user.summary
+                        ? this.props.user.summary
                         : "*No summary*"}
                         className='short'/>
                 </div>
                 <p className="avatar">
-                    <Link to={"/user/" + this.state.user._id}>
-                        <img src={this.state.user.avatar} alt="User's avatar"/>
+                    <Link to={"/user/" + this.props.user._id}>
+                        <img src={this.props.user.avatar} alt="User's avatar"/>
                     </Link>
                 </p>
                 <div className="stats">
                     <ul>
                         <li className="views">
                             <span className="count">
-                                {this.state.user.submissions
-                                ? this.state.user.submissions.length
+                                {this.props.user.submissions
+                                ? this.props.user.submissions.length
                                 : 0}
                             </span>
                             Submissions

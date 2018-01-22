@@ -13,15 +13,36 @@ const requestFlaggedContentAction = () => {
 export const RECEIVE_FLAGGED_CONTENT = 'RECEIVE_FLAGGED_CONTENT'
 const receiveFlaggedContentAction = ({
     users,
-    submissions,
+    flaggedSubmissions,
+    deletedSubmissions,
     comments,
     error
 }) => {
     return {
         type: RECEIVE_FLAGGED_CONTENT,
         users,
-        submissions,
+        flaggedSubmissions,
+        deletedSubmissions,
         comments,
+        error
+    }
+}
+
+export const REQUEST_ADMIN_USERS = "REQUEST_ADMIN_USERS"
+const requestAdminUsersAction = () => {
+    return {
+        type: REQUEST_ADMIN_USERS
+    }
+}
+
+export const RECEIVE_ADMIN_USERS = "RECEIVE_ADMIN_USERS"
+const receiveAdminUsersAction = ({
+    users,
+    error
+}) => {
+    return {
+        type: RECEIVE_ADMIN_USERS,
+        users,
         error
     }
 }
@@ -98,6 +119,44 @@ const deleteUserAction = ({
      }
  }
  
+export const SEARCH_USERS = "SEARCH_USERS"
+const searchUsersAction = ({
+    keywords,
+    users,
+    error
+}) => {
+    return {
+        type: SEARCH_USERS,
+        keywords,
+        users,
+        error
+    }
+}
+
+export const ADD_ADMIN = "ADD_ADMIN"
+const addAdminAction = ({
+    user,
+    error
+}) => {
+    return {
+        type: ADD_ADMIN,
+        user,
+        error
+    }
+}
+
+export const REMOVE_ADMIN = "REMOVE_ADMIN"
+const removeAdminAction = ({
+    userID,
+    error
+}) => {
+    return {
+        type: REMOVE_ADMIN,
+        userID,
+        error
+    }
+}
+
 // Actions ================================================
 
 export const fetchFlaggedContent = () => {
@@ -117,9 +176,17 @@ export const fetchFlaggedContent = () => {
                     }))
                 } else {
                     console.log("[AdminActions] - request returned: ", resp)
+
+                    const deletedSubmissions = resp.data.submissions.filter(submission => submission.data.deleted)
+                    const flaggedSubmissions = resp.data.submissions.filter(submission => submission.data.flagged)
+
+                    console.log("[AdminActions] - flaggedSubmissions: ", flaggedSubmissions)
+                    console.log("[AdminActions] - deletedSubmissions: ", deletedSubmissions)
+
                     dispatch(receiveFlaggedContentAction({
                         users: resp.data.users,
-                        submissions: resp.data.submissions,
+                        deletedSubmissions: deletedSubmissions,
+                        flaggedSubmissions: flaggedSubmissions,
                         comments: resp.data.comments
                     }))
                 }
@@ -129,6 +196,31 @@ export const fetchFlaggedContent = () => {
                 dispatch(receiveFlaggedContentAction({
                     error: err
                 }))
+            }
+        )
+    }
+}
+
+export const fetchAdminUsers = () => {
+    return (dispatch) => {
+        dispatch(requestAdminUsersAction())
+
+        axios.get('/api/admin/admin-users', {
+            headers: {
+                'Authorization' : "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                console.log("[AdminActions] (fetchAdminUsers) - resp: ", resp)
+                if(resp.data.error){
+                    dispatch(receiveAdminUsersAction({error: resp.data.message}))
+                } else {
+                    dispatch(receiveAdminUsersAction({users: resp.data}))
+                }
+            },
+            err => {
+                console.log("[AdminActions (fetchAdminUsers)] - error occured fetching admin users: ", err)
+                dispatch(receiveAdminUsersAction({error: err}))
             }
         )
     }
@@ -281,5 +373,71 @@ export const deleteUser = ({userID}) => {
         } else {
             dispatch(deleteUserAction({error: "No userID was provided"}))
         }
+    }
+}
+
+export const searchUsers = ({keywords}) => {
+    return (dispatch) => {
+        console.log("[AdminActions] - searching users: ", keywords)
+        axios.post("/api/admin/search-users", {
+            keywords
+        }, {
+            headers: {
+                "Authorization" : "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                console.log("[AdminActions] - search returned: ", resp)
+                dispatch(searchUsersAction({users: resp.data, keywords}))
+            },
+            err => {
+                console.log("[AdminActions] - search returned error: ", err)
+            }
+        )
+    }
+}
+
+export const addAdmin = ({userID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/make-admin", {
+            userID
+        }, {
+            headers: {
+                "Authorization" : "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                console.log("[AdminActions] - make admin returned: ", resp)
+                dispatch(addAdminAction({
+                    user: resp.data
+                }))
+            },
+            err => {
+                console.log("[AdminActions] - make admin returned err: ", err)
+                dispatch(addAdminAction({
+                    error: err
+                }))
+            }
+        )
+    }
+}
+
+export const removeAdmin = ({userID}) => {
+    return (dispatch) => {
+        console.log("[AdminActions] - remove admin: ", userID)
+        axios.post("/api/admin/remove-admin", {
+            userID
+        }, {
+            headers: {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(removeAdminAction({userID}))
+            }, 
+            err => {
+                dispatch(removeAdminAction({error: err}))
+            }
+        )
     }
 }

@@ -123,6 +123,41 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
 
 })
 
+app.get("/admin-users", passport.authenticate('adminjwt', {
+    session:'false'
+}), (req, res) => {
+    var userSelect = "_id name avatar summary"
+
+    AdminList.findOne({}, (err, adminList) => {
+        if(err){
+            res.status(500)
+            res.send({
+                error: true,
+                message: err
+            })
+        } else {
+            User.find({_id: {$in: adminList.adminIDs}}, (err, users) => {
+                if(err){
+                    res.status(500)
+                    console.log("[Admin] - error: ", err)
+                    res.send({
+                        error: true,
+                        message: err
+                    })
+                } else if(users){
+                    res.send(users)
+                } else {
+                    res.status(401)
+                    res.send({
+                        error: true,
+                        message: "There are no admins in the database"
+                    })
+                }
+            })
+        }
+    })
+})
+
 /**
  * Flags the submission given by submissionID as deleted
  */
@@ -272,49 +307,103 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
     }
 })
 
+app.post("/restore-submission", passport.authenticate('adminjwt', {
+    session:false
+}), (req, res) => {
+    if(req.body.submissionID){
+        Submission.findOne(req.body.submissionID, (err, submission) => {
+            if(err){
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: err
+                })
+            } else if(submission){
+                submission.deleted = false
+                submission.save((err) => {
+                    if(err){
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: "Error saving submission"
+                        })
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            } else {
+                res.status(400)
+                res.send({
+                    error: true,
+                    message: "No submission was found with given ID"
+                })
+            }
+        })
+    } else {
+        res.status(400)
+        res.send({
+            error: true,
+            message: "No submission ID was supplied in the request"
+        })
+    }
+})
+
 app.post("/make-admin", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
     if (req.body.userID) {
-        AdminList.findOne({}, (err, adminList) => {
-            if (err) {
+        User.findById(req.body.userID, (err, user) => {
+            if(err) {
+                console.log("[MakeAdmin] - error: ". err)
                 res.status(500)
-                res.send({
-                    error: true,
-                    message: "Error finding admin list",
-                    err
-                })
-            } else if (adminList) {
-                if (adminList.adminIDs.length > 5) {
-                    // Add userID and user's email to adminList
-                    adminList.adminIDs.push(req.body.userID)
-                    adminList.save((err) => {
-                        if (err) {
-                            res.status(500)
-                            res.send({
-                                error: true,
-                                message: "Error saving admin list",
-                                err
+            } else if (user){
+                AdminList.findOne({}, (err, adminList) => {
+                    if (err) {
+                        console.log("[MakeAdmin] - error: ". err)
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: "Error finding admin list",
+                            err
+                        })
+                    } else if (adminList) {
+                        if (adminList.adminIDs.length < 5) {
+                            // Add userID and user's email to adminList
+                            adminList.adminIDs.push(req.body.userID)
+                            adminList.save((err) => {
+                                if (err) {
+                                    console.log("[MakeAdmin] - error: ". err)
+                                    res.status(500)
+                                    res.send({
+                                        error: true,
+                                        message: "Error saving admin list",
+                                        err
+                                    })
+                                } else {
+                                    res.send(user)
+                                }
                             })
                         } else {
-                            res.sendStatus(200)
+                            res.status(400)
+                            res.send({
+                                error: true,
+                                message: "Reached maxmium amount of admins"
+                            })
                         }
-                    })
-                } else {
-                    res.send({
-                        error: true,
-                        message: "Reached maxmium amount of admins"
-                    })
-                }
-            } else {
-                res.status(500)
-                res.send({
-                    error: true,
-                    message: "Error finding admin list",
-                    err
+                    } else {
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: "Error finding admin list",
+                            err
+                        })
+                    }
                 })
-            }
+            } else {
+                res.status(404)
+            }    
         })
+        
     } else {
         res.sendStatus(400)
     }
@@ -370,6 +459,37 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
 }), (req, res) => {
     if (req.body.commentID && req.body.submissionID) {
         // TODO: Flag as deleted
+        Comment.findById(req.body.commentID, (err, comment) => {
+            if(err){
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: err,
+                    status: 500
+                })
+            } else if(comment){
+                comment.deleted = true
+                comment.save((err) => {
+                    if(err){
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: err,
+                            status: 500
+                        })
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            } else {
+                res.status(400)
+                res.send({
+                    status: 400,
+                    error: true,
+                    message: "No coment was found with given ID"
+                })
+            }
+        })
     } else {
         res.sendStatus(400)
     }
@@ -387,11 +507,66 @@ app.post("/remove-comment", passport.authenticate("adminjwt", {
     }
 })
 
+app.post("/restore-comment", passport.authenticate('adminjwt', {
+    session: false
+}), (req, res) => {
+    if(req.body.commentID){
+        Comment.findById(req.body.commentID, (err, comment) => {
+            if(err){
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: err
+                })
+            } else if(comment){
+                comment.deleted = false
+                comment.save((err) => {
+                    if(err){
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: "Error saving comment"
+                        })
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            } else {
+                res.sendStatus(400)
+            }
+        })
+    } else {
+        res.status(400)
+    }
+})
+
 app.post("/delete-reply", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
     if (req.body.commentID && req.body.submissionID && req.body.replyID) {
-        // TODO: Flag reply as deleted
+        Comment.findById(req.body.replyID, (err, reply) => {
+            if(err){
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: err,
+                    status: 500
+                })
+            } else if(reply) {
+                reply.deleted = true
+                reply.save((err) =>{
+                    if(err){
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: err
+                        })
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            }
+        })
     } else {
         res.sendStatus(400)
     }
@@ -403,6 +578,39 @@ app.post("/remove-reply", passport.authenticate('adminjwt', {
     if (req.body.commentID && req.body.submissionID && req.body.replyID) {
         // TODO: Remove from comment.replies
         // TODO: Remove reply from database
+    }
+})
+
+app.post("/restore-reply", passport.authenticate('adminjwt', {
+    session: "false"
+}), (req, res) => {
+    if(req.body.replyID){
+        Comment.findById(req.body.replyID, (err, reply) => {
+            if(err){
+                res.status(500)
+                res.send({
+                    error: true,
+                    message: err,
+                    status: 500
+                })
+            } else if (reply) {
+                reply.deleted = false
+                reply.save((err) => {
+                    if(err){
+                        res.status(500)
+                        res.send({
+                            error: true,
+                            message: "Error saving reply",
+                            status: 500
+                        })
+                    } else{
+                        res.sendStatus(200)
+                    }
+                }) 
+            } 
+        })
+    } else {
+        res.sendStatus(400)
     }
 })
 
@@ -426,6 +634,42 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
         // TODO: remove replies
         // TODO: remove from admin list, if applicable
         // TODO: remove user from database
+    } else {
+        res.sendStatus(400)
+    }
+})
+
+app.post("/search-users", passport.authenticate('adminjwt', {
+    session: "false"
+}), (req, res) => {
+    if(req.body.keywords){
+        AdminList.findOne({}, (err, adminList) => {
+            if(err){
+                res.sendStatus(500)
+            } else if(adminList){
+                User.find({$or: [
+                    {name: {$regex: req.body.keywords, $options: 'i'}},
+                    {"github.username": {$regex: req.body.keywords, $options: 'i'}},
+                    {"fb.displayName": {$regex: req.body.keywords, $options: 'i'}},
+                    {"google.displayName": {$regex: req.body.keywords, $options: 'i'}},
+                    {"twitter.username": {$regex: req.body.keywords, $options: 'i'}},
+                    {email: {$regex: req.body.keywords, $options: 'i'}}
+                ], _id: {"$nin": adminList.adminIDs}}, (err, users) => {
+                    if(err){
+                        console.log("[Admin] - search users returned error: " ,err)
+                        res.status(500)
+                    } else if(users){
+                        res.send(users)
+                    } else {
+                        res.status(404)
+                    }
+                })
+            } else {
+                res.sendStatus(500)
+            }
+            
+        })
+        
     } else {
         res.sendStatus(400)
     }

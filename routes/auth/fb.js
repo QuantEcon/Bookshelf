@@ -116,4 +116,9 @@ app.get('/callback', passport.authenticate('facebook', {
     });
 });
 
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
+
 module.exports = app;
