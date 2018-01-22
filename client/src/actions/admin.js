@@ -12,18 +12,22 @@ const requestFlaggedContentAction = () => {
 
 export const RECEIVE_FLAGGED_CONTENT = 'RECEIVE_FLAGGED_CONTENT'
 const receiveFlaggedContentAction = ({
-    users,
+    flaggedUsers,
+    deletedUsers,
     flaggedSubmissions,
     deletedSubmissions,
-    comments,
+    flaggedComments,
+    deletedComments,
     error
 }) => {
     return {
         type: RECEIVE_FLAGGED_CONTENT,
-        users,
+        flaggedUsers,
+        deletedUsers,
         flaggedSubmissions,
         deletedSubmissions,
-        comments,
+        flaggedComments,
+        deletedComments,
         error
     }
 }
@@ -180,14 +184,22 @@ export const fetchFlaggedContent = () => {
                     const deletedSubmissions = resp.data.submissions.filter(submission => submission.data.deleted)
                     const flaggedSubmissions = resp.data.submissions.filter(submission => submission.data.flagged)
 
+                    const deletedComments = resp.data.comments.filter(comment => comment.deleted)
+                    const flaggedComments = resp.data.comments.filter(comment => comment.flagged)
+
+                    const deletedUsers = resp.data.users.filter(user => user.deleted)
+                    const flaggedUsers = resp.data.users.filter(user => user.flagged)
+
                     console.log("[AdminActions] - flaggedSubmissions: ", flaggedSubmissions)
                     console.log("[AdminActions] - deletedSubmissions: ", deletedSubmissions)
 
                     dispatch(receiveFlaggedContentAction({
-                        users: resp.data.users,
-                        deletedSubmissions: deletedSubmissions,
-                        flaggedSubmissions: flaggedSubmissions,
-                        comments: resp.data.comments
+                        deletedUsers,
+                        flaggedUsers,
+                        deletedComments,
+                        flaggedComments,
+                        deletedSubmissions,
+                        flaggedSubmissions
                     }))
                 }
             },

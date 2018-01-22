@@ -23,10 +23,12 @@ const AdminReducer = (state = {}, action) => {
                 })
             } else {
                 return Object.assign({}, state, {
-                    flaggedUsers: action.users,
+                    flaggedUsers: action.flaggedUsers,
+                    deletedUsers: action.deletedUsers,
                     flaggedSubmissions: action.flaggedSubmissions,
                     deletedSubmissions: action.deletedSubmissions,
-                    flaggedComments: action.comments,
+                    flaggedComments: action.flaggedComments,
+                    deletedComments: action.deletedComments,
                     fetching: false
                 })
             }

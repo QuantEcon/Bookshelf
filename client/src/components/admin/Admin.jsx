@@ -14,20 +14,24 @@ class AdminPage extends Component {
             showFlaggedComments: true,
             showDeletedSubmissions: true,
             showFlaggedContent: false,
+            showDeletedContent: false,
             addAdminModalOpen: false
         }
 
         this.foldFlaggedUsers = this.foldFlaggedUsers.bind(this)
+        this.foldDeletedUsers = this.foldDeletedUsers.bind(this)
+
         this.foldFlaggedSubmissions = this.foldFlaggedSubmissions.bind(this)
-        this.foldFlaggedComments = this.foldFlaggedComments.bind(this)
         this.foldDeletedSubmissions = this.foldDeletedSubmissions.bind(this)
+        
+        this.foldFlaggedComments = this.foldFlaggedComments.bind(this)
+        this.foldDeletedComments = this.foldDeletedComments.bind(this)
+
         this.foldFlaggedContent = this.foldFlaggedContent.bind(this)
-    }
+        this.foldDeletedContent = this.foldDeletedContent.bind(this)
 
-    componentWillReceiveProps(props){
-        console.log("[AdminPage] - will receive props: ", props)
     }
-
+    
     removeSubmission = (submissionID) => {
         console.log("Remove submission clicked: ", submissionID)
     }
@@ -62,6 +66,12 @@ class AdminPage extends Component {
         })
     }
 
+    foldDeletedUsers = () => {
+        this.setState({
+            showDeletedUsers: !this.state.showDeletedUsers
+        })
+    }
+
     foldFlaggedSubmissions = () => {
         this.setState({
             showFlaggedSubmissions: !this.state.showFlaggedSubmissions
@@ -79,10 +89,22 @@ class AdminPage extends Component {
             showFlaggedComments: !this.state.showFlaggedComments
         })
     }
+
+    foldDeletedComments = () => {
+        this.setState({
+            showDeletedComments: !this.state.showDeletedComments
+        })
+    }
     
     foldFlaggedContent = () => {
         this.setState({
             showFlaggedContent: !this.state.showFlaggedContent
+        })
+    }
+
+    foldDeletedContent = () => {
+        this.setState({
+            showDeletedContent: !this.state.showDeletedContent
         })
     }
 
@@ -138,55 +160,44 @@ class AdminPage extends Component {
                                         {this.state.showFlaggedContent
                                         ? <div>
                                             <div className="tile">
-                                            <span className="section-header">
-                                                <h2>
-                                                    Users ({this.props.flaggedUsers.length})
-                                                </h2>
+                                                <span className="section-header">
+                                                    <h2>
+                                                        Users ({this.props.flaggedUsers.length})
+                                                    </h2>
+                                                    {this.state.showFlaggedUsers
+                                                    ?<button onClick={this.foldFlaggedUsers} className="section-header-button">
+                                                        Hide
+                                                    </button>
+                                                    :<button onClick={this.foldFlaggedUsers} className="section-header-button">
+                                                        Show
+                                                    </button>
+                                                    }
+                                                    
+                                                </span>
                                                 {this.state.showFlaggedUsers
-                                                ?<button onClick={this.foldFlaggedUsers} className="section-header-button">
-                                                    Hide
-                                                </button>
-                                                :<button onClick={this.foldFlaggedUsers} className="section-header-button">
-                                                    Show
-                                                </button>
-                                                }
-                                                
-                                            </span>
-                                            {this.state.showFlaggedUsers
-                                            ?
-                                                <div className="summaries">
-                                                    {this.props.flaggedUsers.map((user, index) => {
-                                                        return <div key={index}>
-                                                            <UserPreview  user={user}/>
-                                                            {/* TODO: add delete/remove buttons */}
-                                                            <ul className="admin-button-row">
-                                                                <li>
-                                                                    <button onClick={() => this.removeUser(user._id)}>
-                                                                        Remove
-                                                                    </button>
-                                                                </li>
+                                                ?
+                                                    <div className="summaries">
+                                                        {this.props.flaggedUsers.map((user, index) => {
+                                                            return <div key={index}>
+                                                                <UserPreview  user={user}/>
 
-                                                                {user.deleted 
-                                                                ?   <li>
-                                                                    <button onClick={() => this.restoreUser(user._id)}>
-                                                                        Restore
-                                                                    </button>
-                                                                </li>
-                                                                : null}
-
-                                                                {user.flagged
-                                                                ?<li>
-                                                                    <button onClick={() => this.unflagUser(user._id)}>
-                                                                        Unflag
-                                                                    </button>
-                                                                </li>
-                                                                : null}
-                                                            </ul>
-                                                        </div>
-                                                    })}
-                                                </div>
-                                            : null}
-                                        </div>
+                                                                <ul className="admin-button-row">
+                                                                    <li>
+                                                                        <button onClick={() => this.removeUser(user._id)}>
+                                                                            Remove
+                                                                        </button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button onClick={() => this.unflagUser(user._id)}>
+                                                                            Unflag
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        })}
+                                                    </div>
+                                                : null}
+                                            </div>
                                         {/* Flagged Submissions */}
                                         <div className="tile">
                                             <span className="section-header">
@@ -209,16 +220,7 @@ class AdminPage extends Component {
                                                                         Remove
                                                                     </button>
                                                                 </li>
-
-                                                                {submission.data.deleted 
-                                                                ?   <li>
-                                                                    <button onClick={() => this.restoreSubmission(submission.data._id)}>
-                                                                        Restore
-                                                                    </button>
-                                                                </li>
-                                                                : null}
-
-                                                            <li>
+                                                                <li>
                                                                     <button onClick={() => this.unflagSubmission(submission.data._id)}>
                                                                         Unflag
                                                                     </button>
@@ -254,21 +256,11 @@ class AdminPage extends Component {
                                                                     Remove
                                                                 </button>
                                                             </li>
-                                                            {comment.data.deleted 
-                                                                ?   <li>
-                                                                    <button onClick={() => this.restoreComment(comment.data._id)}>
-                                                                        Restore
-                                                                    </button>
-                                                                </li>
-                                                                : null}
-
-                                                            {comment.data.flagged
-                                                                ?<li>
-                                                                    <button onClick={() => this.unflagComment(comment.data._id)}>
-                                                                        Unflag
-                                                                    </button>
-                                                                </li>
-                                                                : null}
+                                                            <li>
+                                                                <button onClick={() => this.unflagComment(comment.data._id)}>
+                                                                    Unflag
+                                                                </button>
+                                                            </li>
                                                         </ul>
                                                     </div>
                                                 })}
@@ -279,42 +271,130 @@ class AdminPage extends Component {
                                         : null}
                                         
                                     </div>
-                                    
 
-                                    {/* Deleted submissions */}
                                     <div className="tile">
                                         <span className="section-header">
-                                            <h2>Deleted Submissions ({this.props.deletedSubmissions.length})</h2>
-                                            {this.state.showDeletedSubmissions
-                                            ? <button onClick={this.foldDeletedSubmissions}>Hide</button>
-                                            : <button onClick={this.foldDeletedSubmissions}>Show</button>}
+                                            <h2>Deleted Content ({this.props.deletedUsers.length + this.props.deletedSubmissions.length + this.props.deletedComments.length})</h2>
+                                            {this.state.showDeletedContent
+                                            ? <button onClick={this.foldDeletedContent}>Hide</button>
+                                            : <button onClick={this.foldDeletedContent}>Show</button>}
                                         </span>
-                                        {this.state.showDeletedSubmissions
-                                        ? <div className="summaries">
-                                            {this.props.deletedSubmissions.map((submission, index) => {
-                                                    return <div key={index}>
-                                                        <SubmissionPreview submission={submission.data} author={submission.author}/>
-                                                        {/* TODO: add delete/remove/edit buttons */}
-                                                        <ul className="admin-button-row">
-                                                            <li>
-                                                                <button onClick={() => this.removeSubmission(submission.data._id)}>
-                                                                    Remove
-                                                                </button>
-                                                            </li>
+                                        {this.state.showDeletedContent
+                                        ? <div>
+                                            {/* Deleted Users */}
+                                            <div className="tile">
+                                                <span className="section-header">
+                                                    <h2>
+                                                        Users ({this.props.deletedUsers.length})
+                                                    </h2>
+                                                    {this.state.showFlaggedUsers
+                                                    ?<button onClick={this.foldDeletedUsers} className="section-header-button">
+                                                        Hide
+                                                    </button>
+                                                    :<button onClick={this.foldDeletedUsers} className="section-header-button">
+                                                        Show
+                                                    </button>
+                                                    }
+                                                    
+                                                </span>
+                                                {this.state.showDeletedUsers
+                                                ?
+                                                    <div className="summaries">
+                                                        {this.props.deletedUsers.map((user, index) => {
+                                                            return <div key={index}>
+                                                                <UserPreview  user={user}/>
 
-                                                            <li>
-                                                                <button onClick={() => this.restoreSubmission(submission.data._id)}>
-                                                                    Restore
-                                                                </button>
-                                                            </li>
-                                                                                                                   
-                                                        </ul>
+                                                                <ul className="admin-button-row">
+                                                                    <li>
+                                                                        <button onClick={() => this.removeUser(user._id)}>
+                                                                            Remove
+                                                                        </button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button onClick={() => this.restoreUSer(user._id)}>
+                                                                            Restore
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        })}
                                                     </div>
-                                                })
-                                            }
+                                                : null}
+                                            </div>
+
+                                            {/* Deleted submissions */}
+                                            <div className="tile">
+                                                <span className="section-header">
+                                                    <h2>Deleted Submissions ({this.props.deletedSubmissions.length})</h2>
+                                                    {this.state.showDeletedSubmissions
+                                                    ? <button onClick={this.foldDeletedSubmissions}>Hide</button>
+                                                    : <button onClick={this.foldDeletedSubmissions}>Show</button>}
+                                                </span>
+                                                {this.state.showDeletedSubmissions
+                                                ? <div className="summaries">
+                                                    {this.props.deletedSubmissions.map((submission, index) => {
+                                                            return <div key={index}>
+                                                                <SubmissionPreview submission={submission.data} author={submission.author}/>
+                                                                {/* TODO: add delete/remove/edit buttons */}
+                                                                <ul className="admin-button-row">
+                                                                    <li>
+                                                                        <button onClick={() => this.removeSubmission(submission.data._id)}>
+                                                                            Remove
+                                                                        </button>
+                                                                    </li>
+
+                                                                    <li>
+                                                                        <button onClick={() => this.restoreSubmission(submission.data._id)}>
+                                                                            Restore
+                                                                        </button>
+                                                                    </li>
+                                                                                                                        
+                                                                </ul>
+                                                            </div>
+                                                        })
+                                                    }
+                                                </div>
+                                                : null}
+                                            </div>
+                                            
+                                            {/* Deleted Comments */}
+                                            <div className="tile">
+                                                <span className="section-header">
+                                                    <h2>Deleted Comments ({this.props.deletedComments.length}</h2>
+                                                    {this.state.showDeletedComments
+                                                    ? <button onClick={this.foldDeletedComments}>Hide</button>
+                                                    :<button onClick={this.foldDeletedComments}>Show</button>}
+                                                </span>
+                                                {this.state.showDeletedComments
+                                                ? <div>
+                                                        {this.props.deletedComments.map((comment, index) => {
+                                                            return <div key={index}>
+                                                                <Comment 
+                                                                    comment={comment.data} 
+                                                                    replies={[]} 
+                                                                    author={comment.author}/>
+                                                                {/* TODO: add delete/remove/edit buttons */}
+                                                                <ul className="admin-button-row">
+                                                                    <li>
+                                                                        <button onClick={() => this.removeComment(comment.data._id)}>
+                                                                            Remove
+                                                                        </button>
+                                                                    </li>
+                                                                    <li>
+                                                                        <button onClick={() => this.restoreComment(comment.data._id)}>
+                                                                            Restore
+                                                                        </button>
+                                                                    </li>
+                                                                </ul>
+                                                            </div>
+                                                        })}
+                                                    </div>
+                                                : null}
+                                            </div>
                                         </div>
                                         : null}
                                     </div>
+                                                
                                     
                                 </div>
                             }

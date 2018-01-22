@@ -50,10 +50,6 @@ class AdminContainer extends Component {
         this.makeAdmin = this.makeAdmin.bind(this)
     }
 
-    componentWillReceiveProps(props){
-        console.log("[AdminContainer] - new props: ", props)
-    }
-
     toggleAddAdminModal = () => {
         this.setState({
             addAdminModalOpen: !this.state.addAdminModalOpen
@@ -81,8 +77,10 @@ class AdminContainer extends Component {
                     makeAdmin={this.makeAdmin}/>
                 <AdminPage
                     flaggedComments={this.props.flaggedComments}
+                    deletedComments={this.props.deletedComments}
                     flaggedSubmissions={this.props.flaggedSubmissions}
                     flaggedUsers={this.props.flaggedUsers}
+                    deletedUsers={this.props.deletedUsers}
                     deletedSubmissions={this.props.deletedSubmissions}
                     adminUsers={this.props.adminUsers}
                     showAdminModal={this.toggleAddAdminModal}
@@ -99,9 +97,11 @@ class AdminContainer extends Component {
 const mapStateToProps = (state, props) => {
     return {
         flaggedComments: state.adminData.flaggedComments,
+        deletedComments: state.adminData.deletedComments,
         flaggedSubmissions: state.adminData.flaggedSubmissions,
         deletedSubmissions: state.adminData.deletedSubmissions,
         flaggedUsers: state.adminData.flaggedUsers,
+        deletedUsers: state.adminData.deletedUsers,
         adminUsers: state.adminData.adminUsers,
         currentUser: state.auth.user,
         searchResults: state.adminData.searchResults,
