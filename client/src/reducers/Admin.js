@@ -99,16 +99,19 @@ const AdminReducer = (state = {}, action) => {
             return Object.assign({}, state, {
                 flaggedUsers: newFlaggedUsers
             })
+
         case UNFLAG_SUBMISSION:
             const newFlaggedSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
             return Object.assign({}, state, {
                 flaggedSubmissions: newFlaggedSubmissions
             })
+
         case UNFLAG_COMMENT:
             const newFlaggedComments = state.flaggedComments.filter((comment) => comment._id !== action.commentID)
             return Object.assign({}, state, {
                 flaggedComments: newFlaggedComments
             })
+            
         default:
             return state
     }

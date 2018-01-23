@@ -24,7 +24,6 @@ app.get('/', passport.authenticate('jwt', {
     console.log('[ValidateToken] - idAdd: ', isAdd);
     console.log('[ValidateToken] - profile: ', profile);
 
-    console.log("Req: ", req)
     if (isAdd) {
         //check to see if it already exists
         console.log('[ValidateToken] - is add')

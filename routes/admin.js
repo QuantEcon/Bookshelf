@@ -226,6 +226,7 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
         // TODO: remove submission, comments, and replies from database
         Submission.findById(req.body.submissionID, (err, submission) => {
             if (err) {
+                console.log("Error finding submission: ", err)
                 res.status(500)
                 res.send({
                     error: true,
@@ -237,20 +238,20 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                 User.findById(submission.author, (err, author) => {
                     if (err) {
                         console.log("Error finding author of submission")
-                    } else if (user) {
+                    } else if (author) {
                         // Remove from submissions
-                        if (user.submissions.indexOf(req.body.submissionID) != -1) {
-                            user.submissions = user.submissions.filter((id) => {
+                        if (author.submissions.indexOf(req.body.submissionID) != -1) {
+                            author.submissions = author.submissions.filter((id) => {
                                 return id != req.body.submissionID
                             })
-                            user.save()
+                            author.save()
                         }
                         // Remove from deletedSubmissions
-                        if (user.deletedSubmissions.indexOf(req.body.submissionID) != -1) {
-                            user.deletedSubmissions = user.deletedSubmissions.filter((id) => {
+                        if (author.deletedSubmissions.indexOf(req.body.submissionID) != -1) {
+                            author.deletedSubmissions = author.deletedSubmissions.filter((id) => {
                                 return id != req.body.submissionID
                             })
-                            user.save()
+                            author.save()
                         }
                     } else {
                         console.log("Error finding author of submission: User doesn't exist!")
@@ -279,11 +280,13 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                     }
                 })
             } else {
+                console.log("Error couldn't find submission")
                 res.status(400)
                 res.send({
                     error: true,
                     message: "Couldn't find submission with id " + req.body.submissionID
                 })
+                return
             }
         })
         // Remove submission from database
@@ -299,6 +302,7 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                     err
                 })
             } else {
+                console.log("Remvoing successfull")
                 res.sendStatus(200)
             }
         })

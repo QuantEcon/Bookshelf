@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import AddAdminModal from "../../components/admin/AddAdminModal"
-
+import RemoveSubmissionModal from "../../components/admin/RemoveSubmissionModal"
 
 // Child component
 import AdminPage from '../../components/admin/Admin'
@@ -51,16 +51,53 @@ class AdminContainer extends Component {
         this.props.actions.fetchFlaggedContent()
         this.props.actions.fetchAdminUsers()
         this.state = {
-            addAdminModalOpen: false
+            addAdminModalOpen: false,
+            removeSubmissionModalOpen: false
         }
 
         this.toggleAddAdminModal = this.toggleAddAdminModal.bind(this)
+        this.toggleRemoveSubmissionModal = this.toggleRemoveSubmissionModal.bind(this)
+        this.onRemove = this.onRemove.bind(this)
         this.makeAdmin = this.makeAdmin.bind(this)
     }
 
     toggleAddAdminModal = () => {
         this.setState({
             addAdminModalOpen: !this.state.addAdminModalOpen
+        })
+    }
+
+    toggleRemoveSubmissionModal = (submissionID) => {
+        var submissionToRemove = this.props.flaggedSubmissions.filter((submission) => submission.data._id === submissionID)
+        if(submissionToRemove[0]){
+            this.setState({
+                removeSubmissionID: submissionID,
+                removeSubmissionModalOpen: true,
+                submissionToRemove: submissionToRemove[0]
+            })
+        } else {
+            this.setState({
+                removeSubmissionID: submissionID,
+                removeSubmissionModalOpen: true,
+                submissionToRemove: this.props.deletedSubmissions.filter((submission) => submission.data._id === submissionID)[0]
+            })
+        }
+    }
+
+    onRemove = (submissionID) => {
+        this.props.actions.removeSubmission({submissionID: this.state.submissionToRemove.data._id})
+        this.setState({
+            removeSubmissionID: null,
+            removeSubmissionModalOpen: false,
+            submissionToRemove: null
+        })
+    }
+
+    onRemoveCancel = () => {
+        this.setState({
+            removeSubmissionID: null,
+            removeSubmissionModalOpen: false,
+            submissionToRemove: null
         })
     }
 
@@ -83,6 +120,14 @@ class AdminContainer extends Component {
                     onSearch={this.searchUsers}
                     searchResults={this.props.searchResults}
                     makeAdmin={this.makeAdmin}/>
+                {this.state.removeSubmissionModalOpen
+                ?<RemoveSubmissionModal isOpen={this.state.removeSubmissionModalOpen}
+                    onCancel={this.onRemoveCancel}
+                    onRemove={this.onRemove}
+                    submission={this.state.submissionToRemove}/>
+                : null}
+                
+
                 <AdminPage
                     flaggedComments={this.props.flaggedComments}
                     deletedComments={this.props.deletedComments}
@@ -92,6 +137,7 @@ class AdminContainer extends Component {
                     deletedSubmissions={this.props.deletedSubmissions}
                     adminUsers={this.props.adminUsers}
                     showAdminModal={this.toggleAddAdminModal}
+                    showRemoveModal={this.toggleRemoveSubmissionModal}
                     currentUser={this.props.currentUser}
                     isLoading={this.props.isLoading}
                     history={this.props.history}

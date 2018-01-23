@@ -47,7 +47,7 @@ class SubmissionPreview extends Component {
                         : null}
                     </p>
                     <Markdown
-                        disallowedTypes={['headings']}
+                        disallowedTypes={['heading']}
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}

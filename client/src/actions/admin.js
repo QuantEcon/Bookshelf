@@ -311,11 +311,12 @@ export const fetchAdminUsers = () => {
 }
 
 export const removeSubmission = ({submissionID}) => {
+    console.log("[AdminActions] - remove submission: ", submissionID)
     return (dispatch) => {
         if(submissionID){
-            axios.post("/api/admin/remove-submission", {
+            axios.post("/api/admin/remove-submission", {submissionID}, {
                 headers: {
-                    "Authorization": "JWT " + store.getState().token
+                    "Authorization": "JWT " + store.getState().auth.token
                 }
             }).then(
                 resp => {

@@ -15,7 +15,7 @@ class AdminPage extends Component {
             showDeletedSubmissions: true,
             showFlaggedContent: false,
             showDeletedContent: false,
-            addAdminModalOpen: false
+            addAdminModalOpen: false,
         }
 
         this.foldFlaggedUsers = this.foldFlaggedUsers.bind(this)
@@ -44,7 +44,7 @@ class AdminPage extends Component {
     
     removeSubmission = (submissionID) => {
         console.log("Remove submission clicked: ", submissionID)
-        this.props.actions.removeSubmission({submissionID})
+        this.props.showRemoveModal(submissionID)
     }
 
     removeUser = (userID) => {
