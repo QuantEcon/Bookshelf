@@ -311,7 +311,7 @@ app.post("/restore-submission", passport.authenticate('adminjwt', {
     session:false
 }), (req, res) => {
     if(req.body.submissionID){
-        Submission.findOne(req.body.submissionID, (err, submission) => {
+        Submission.findById(req.body.submissionID, (err, submission) => {
             if(err){
                 res.status(500)
                 res.send({
@@ -674,5 +674,83 @@ app.post("/search-users", passport.authenticate('adminjwt', {
         res.sendStatus(400)
     }
 })
+
+app.post("/unflag-user", passport.authenticate("adminjwt", {
+    session: false
+}), (req, res) => {
+    if(req.body.userID){
+        User.findById(req.body.userID, (err, user) => {
+            if(err){
+                console.log("[Admin] (unflagUser) - err: ", err)
+                res.sendStatus(500)
+            } else if(user){
+                user.flagged = "false"
+                user.save((err) => {
+                    if(err){
+                        res.sendStatus(500)
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            } else {
+                console.log("[Admin] (unflagUser) - no user found with ID")
+                req.sendStatus(404)
+            }
+        })
+    } else {
+        req.sendStatus(400)
+    }
+})
+
+app.post("/unflag-submission", passport.authenticate("adminjwt", {
+    session: false
+}), (req, res) => {
+    if(req.body.submissionID){
+        Submission.findById(req.body.submissionID, (err, submission) => {
+            if(err){
+                res.sendStatus(500)
+            } else if(submission){
+                submission.flagged = false
+                submission.save((err) => {
+                    if(err){
+                        res.sendStatus(500)
+                    } else{
+                        res.sendStatus(200)
+                    }
+                })
+            } else{
+                res.sendStatus(404)
+            }
+        })
+    } else {
+        res.sendStatus(400)
+    }
+})
+
+app.post("/unflag-comment", passport.authenticate("adminjwt", {
+    session: false
+}), (req, res) => {
+    if(req.body.commentID){
+        Comment.findById(req.body.commentID, (err, comment) => {
+            if(err){
+                res.sendStatus(500)
+            } else if(comment){
+                comment.flagged = false
+                comment.save((err) => {
+                    if(err){
+                        res.sendStatus(500)
+                    } else{
+                        res.sendStatus(200)
+                    }
+                })
+            } else{
+                res.sendStatus(404)
+            }
+        })
+    } else {
+        res.sendStatus(400)
+    }
+})
+
 
 module.exports = app

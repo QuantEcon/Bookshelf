@@ -30,34 +30,61 @@ class AdminPage extends Component {
         this.foldFlaggedContent = this.foldFlaggedContent.bind(this)
         this.foldDeletedContent = this.foldDeletedContent.bind(this)
 
+        this.removeSubmission = this.removeSubmission.bind(this)
+        this.removeUser = this.removeUser.bind(this)
+        this.removeComment = this.removeComment.bind(this)
+        this.unflagUser = this.unflagUser.bind(this)
+        this.unflagSubmission = this.unflagSubmission.bind(this)
+        this.unflagComment = this.unflagComment.bind(this)
+        this.restoreUser = this.restoreUser.bind(this)
+        this.restoreSubmission = this.restoreSubmission.bind(this)
+        this.restoreComment = this.restoreComment.bind(this)
+
     }
     
     removeSubmission = (submissionID) => {
         console.log("Remove submission clicked: ", submissionID)
+        this.props.actions.removeSubmission({submissionID})
     }
 
     removeUser = (userID) => {
         console.log("Remove user clicked: ", userID)
+        this.props.actions.removeUser({userID})
     }
 
     removeComment = (commentID) => {
-
+        console.log("Remove comment clicked: ", commentID)
+        this.props.actions.removeComment({commentID})
     }
 
     unflagUser = (userID) => {
         console.log("Unflag user clicked: ", userID)
+        this.props.actions.unflagUser({userID})
     }
 
     unflagComment = (commentID) => {
-
+        console.log("Unflag comment clicked: ", commentID)
+        this.props.actions.unflagComment({commentID})
     }
 
     unflagSubmission = (submissionID) => {
         console.log("Unflag submission clicked: ", submissionID)
+        this.props.actions.unflagSubmission({submissionID})
     }
 
     restoreSubmission = (submissionID) => {
         console.log("Restore submission clicked: ", submissionID)
+        this.props.actions.restoreSubmission({submissionID})
+    }
+
+    restoreComment = (commentID) => {
+        console.log("Restore comment clicked: ", commentID)
+        this.props.actions.restoreComment({commentID})
+    }
+
+    restoreUser = (userID) => {
+        console.log("Restore user clicked: ", userID)
+        this.props.actions.restoreUser({userID})
     }
 
     foldFlaggedUsers = () => {
@@ -311,7 +338,7 @@ class AdminPage extends Component {
                                                                         </button>
                                                                     </li>
                                                                     <li>
-                                                                        <button onClick={() => this.restoreUSer(user._id)}>
+                                                                        <button onClick={() => this.restoreUser(user._id)}>
                                                                             Restore
                                                                         </button>
                                                                     </li>
@@ -325,7 +352,7 @@ class AdminPage extends Component {
                                             {/* Deleted submissions */}
                                             <div className="tile">
                                                 <span className="section-header">
-                                                    <h2>Deleted Submissions ({this.props.deletedSubmissions.length})</h2>
+                                                    <h2>Submissions ({this.props.deletedSubmissions.length})</h2>
                                                     {this.state.showDeletedSubmissions
                                                     ? <button onClick={this.foldDeletedSubmissions}>Hide</button>
                                                     : <button onClick={this.foldDeletedSubmissions}>Show</button>}
@@ -360,7 +387,7 @@ class AdminPage extends Component {
                                             {/* Deleted Comments */}
                                             <div className="tile">
                                                 <span className="section-header">
-                                                    <h2>Deleted Comments ({this.props.deletedComments.length}</h2>
+                                                    <h2>Comments ({this.props.deletedComments.length}</h2>
                                                     {this.state.showDeletedComments
                                                     ? <button onClick={this.foldDeletedComments}>Hide</button>
                                                     :<button onClick={this.foldDeletedComments}>Show</button>}

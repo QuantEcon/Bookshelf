@@ -134,7 +134,22 @@ const editSubmissionAction = ({
         submission,
         error
     }
+
 }
+
+export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
+const flagSubmissionAction = ({
+    submissionID,
+    error
+}) => {
+    return {
+        type: FLAG_SUBMISSION,
+        submissionID,
+        error
+    }
+}
+
+// ============================================================
 
 export const editSubmission = ({
     formData,
@@ -296,6 +311,24 @@ export const fetchNBInfo = ({
         } else {
             console.log('[FetchSub] - don\'t need to fetch');
         }
+    }
+}
+
+export const flagSubmission = ({submissionID}) => {
+    console.log("[SubmissionActions] - flag submission: ", submissionID)
+    return (dispatch) => {
+        axios.post("/api/flag/submission", {submissionID}, {
+            headers: {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(flagSubmissionAction({submissionID}))
+            },
+            err => {
+                dispatch(flagSubmissionAction({error: err}))
+            }
+        )
     }
 }
 

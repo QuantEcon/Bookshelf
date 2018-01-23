@@ -23,6 +23,7 @@ import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
 import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
+import FlagIcon from 'react-icons/lib/md/flag'
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
@@ -130,6 +131,11 @@ class Submission extends Component {
             .props
             .actions
             .upvoteComment({commentID, submissionID: this.props.submissionID});
+    }
+
+    flagSubmission = () => {
+        console.log("[Submission] - flag submission clicked")
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
     }
 
     downvoteComment(commentID) {
@@ -306,6 +312,13 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
+                                    <ul className='details-options'>
+                                        <li>
+                                            {!this.props.isLoading && this.props.submission.data.flagged
+                                            ?  <a onClick={this.flagSubmission} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagSubmission}><FlagIcon/></a>}
+                                        </li>
+                                    </ul>
                                     {!this.props.isLoading
                                         ? <ul className='topics'>
                                                 {this

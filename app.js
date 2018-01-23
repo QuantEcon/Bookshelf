@@ -31,6 +31,7 @@ const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
 const adminRoutes = require("./routes/admin")
+const flagRoutes = require("./routes/flag/flag")
 // =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
@@ -156,6 +157,7 @@ app.use('/api/submit', submitRoutes);
 //vote
 app.use('/api/upvote', upvoteRoutes);
 app.use('/api/downvote', downvoteRoutes);
+app.use('/api/flag', flagRoutes)
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {

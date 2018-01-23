@@ -5,7 +5,11 @@ import {
     REQUEST_ADMIN_USERS,
     SEARCH_USERS,
     ADD_ADMIN,
-    REMOVE_ADMIN
+    REMOVE_ADMIN,
+    RESTORE_SUBMISSION,
+    UNFLAG_SUBMISSION,
+    UNFLAG_USER,
+    UNFLAG_COMMENT,
 } from '../actions/admin'
 
 const AdminReducer = (state = {}, action) => {
@@ -77,13 +81,34 @@ const AdminReducer = (state = {}, action) => {
             })
         
         case REMOVE_ADMIN:
-            const newUsers = state.adminUsers.users.filter((user) => user._id != action.userID)
+            const newUsers = state.adminUsers.users.filter((user) => user._id !== action.userID)
             return Object.assign({}, state, {
                 adminUsers: {
                     users: newUsers
                 }
             })
+        
+        case RESTORE_SUBMISSION:
+            const newSubmissions = state.deletedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
+            return Object.assign({}, state, {
+                deletedSubmissions: newSubmissions
+            })
 
+        case UNFLAG_USER:
+            const newFlaggedUsers = state.flaggedUsers.filter((user) => user._id !== action.userID)
+            return Object.assign({}, state, {
+                flaggedUsers: newFlaggedUsers
+            })
+        case UNFLAG_SUBMISSION:
+            const newFlaggedSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
+            return Object.assign({}, state, {
+                flaggedSubmissions: newFlaggedSubmissions
+            })
+        case UNFLAG_COMMENT:
+            const newFlaggedComments = state.flaggedComments.filter((comment) => comment._id !== action.commentID)
+            return Object.assign({}, state, {
+                flaggedComments: newFlaggedComments
+            })
         default:
             return state
     }

@@ -161,6 +161,78 @@ const removeAdminAction = ({
     }
 }
 
+export const RESTORE_SUBMISSION = "RESTORE_SUBMISSION"
+const restoreSubmissionAction = ({
+    submissionID,
+    error
+}) => {
+    return {
+        type: RESTORE_SUBMISSION,
+        submissionID,
+        error
+    }
+}
+
+export const RESTORE_COMMENT = "RESTORE_COMMENT"
+const restoreCommentAction = ({
+    commentID,
+    error
+}) => {
+    return {
+        type: RESTORE_COMMENT,
+        commentID,
+        error
+    }
+}
+
+export const RESTORE_USER = "RESTORE_USER"
+const restoreUserAction = ({
+    userID,
+    error
+}) => {
+    return {
+        type: RESTORE_USER,
+        userID,
+        error
+    }
+}
+
+export const UNFLAG_USER = "UNFLAG_USER"
+const unflagUserAction = ({
+    userID,
+    error
+}) => {
+    return {
+        type: UNFLAG_USER,
+        userID,
+        error
+    }
+}
+
+export const UNFLAG_SUBMISSION = "UNFLAG_SUBMISSION"
+const unflagSubmissionAction = ({
+    submissionID,
+    error
+}) => {
+    return {
+        type: UNFLAG_SUBMISSION,
+        submissionID,
+        error
+    }
+}
+
+export const UNFLAG_COMMENT = "UNFLAG_COMNENT"
+const unflagCommentAction = ({
+    commentID,
+    error
+}) => {
+    return {
+        type: UNFLAG_COMMENT,
+        commentID,
+        error
+    }
+}
+
 // Actions ================================================
 
 export const fetchFlaggedContent = () => {
@@ -318,7 +390,7 @@ export const deleteSubmission = ({submissionID}) => {
         if(submissionID){
             axios.post("/api/admin/delete-submission", {
                 headers: {
-                    "Authorization": "JWT " + store.getState().token
+                    "Authorization": "JWT " + store.getState().auth.token
                 }
             }).then(
                 resp => {
@@ -385,6 +457,110 @@ export const deleteUser = ({userID}) => {
         } else {
             dispatch(deleteUserAction({error: "No userID was provided"}))
         }
+    }
+}
+
+export const restoreSubmission = ({submissionID}) => {
+    return (dispatch) => {
+        if(submissionID) {
+            axios.post("/api/admin/restore-submission", {
+                submissionID
+            }, {
+                headers: {
+                    "Authorization": "JWT " + store.getState().auth.token
+                }
+            }).then(
+                resp => {
+                    console.log("[AdminActions] - restore submission successful")
+                    dispatch(restoreSubmissionAction({submissionID}))
+                }, err => {
+                    console.error("[AdminActions] - restore submission returned error: ", err)
+                    dispatch(restoreSubmissionAction({error: err}))
+                }
+            )
+        }
+    }
+}
+
+export const restoreUser = ({userID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/restore-user")
+    }
+}
+
+export const restoreComment = ({commentID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/restore-comment", {
+            commentID
+        }, {
+            headers: {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(restoreCommentAction({commentID}))
+            },
+            err => {
+                dispatch(restoreCommentAction({error: err}))
+            }
+        )
+    }
+}
+
+export const unflagUser = ({userID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/unflag-user", {
+            userID
+        }, {
+            headers: {
+                "Authorization" : "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(unflagUserAction({userID}))
+            },
+            err => {
+                dispatch(unflagUserAction({error: err}))
+            }
+        )
+    }
+}
+
+export const unflagSubmission = ({submissionID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/unflag-submission",{
+            submissionID
+        }, {
+            headers : {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(unflagSubmissionAction({submissionID}))
+            },
+            err => {
+                dispatch(unflagSubmissionAction({error: err}))
+            }
+        )
+    }
+}
+
+export const unflagComment = ({commentID}) => {
+    return (dispatch) => {
+        axios.post("/api/admin/unflag-comment", {
+            commentID
+        }, {
+            headers: {
+                "Authorization" : "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(unflagCommentAction({commentID}))
+            },
+            err => {
+                dispatch(unflagCommentAction({error: err}))
+            }
+        )
     }
 }
 
