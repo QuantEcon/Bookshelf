@@ -10,6 +10,7 @@ import {
     UNFLAG_SUBMISSION,
     UNFLAG_USER,
     UNFLAG_COMMENT,
+    REMOVE_SUBMISSION
 } from '../actions/admin'
 
 const AdminReducer = (state = {}, action) => {
@@ -110,6 +111,15 @@ const AdminReducer = (state = {}, action) => {
             const newFlaggedComments = state.flaggedComments.filter((comment) => comment._id !== action.commentID)
             return Object.assign({}, state, {
                 flaggedComments: newFlaggedComments
+            })
+
+        case REMOVE_SUBMISSION:
+            const newFSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
+            const newDSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
+
+            return Object.assign({}, state, {
+                flaggedSubmissions: newFSubmissions,
+                deletedSubmissions: newDSubmissions
             })
             
         default:

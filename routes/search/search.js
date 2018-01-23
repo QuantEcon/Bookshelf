@@ -45,7 +45,7 @@ app.get('/all-submissions', function (req, res) {
         }
     }
     var page = req.query.page;
-    var select = "_id title author views comments score summary published lang totalComments viewers";
+    var select = "_id title author views comments score summary published lang totalComments viewers flagged";
 
     var options = {
         limit: 10,

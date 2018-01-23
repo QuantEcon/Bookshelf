@@ -257,28 +257,32 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                         console.log("Error finding author of submission: User doesn't exist!")
                     }
                 })
-                submission.comments.forEach(comment => {
+                submission.comments.forEach(commentID => {
                     // Remove replies from each comment
-                    Comment.remove({
-                        "_id": {
-                            "$in": comment.replies
+                    console.log("Removing replies for comment ", commentID)
+                    Comment.findById(commentID, (err, comment) => {
+                        if(err){
+                            console.log("error finding comment: ", err)
+                        } else if (comment){
+                            console.log("Removing replies to comment: ", comment.replies)
+                            Comment.remove({
+                                "_id": {
+                                    "$in": comment.replies
+                                }
+                            }, (err) => {
+                                if (err) {
+                                    console.log("ERROR REMOVING REPLIES FROM COMMENT")
+                                }
+                            })
+                            comment.remove()
+                        } else {
+                            console.log("comment not found")
                         }
-                    }, (err) => {
-                        if (err) {
-                            console.log("ERROR REMOVING REPLIES FROM COMMENT")
-                        }
+                        
                     })
+                    
                 });
-                // Remove comments from submission
-                Comment.remove({
-                    "_id": {
-                        "$in": submission.comments
-                    }
-                }, (err) => {
-                    if (err) {
-                        console.log("ERROR REMOVING COMMENTS FROM SUBMISSION")
-                    }
-                })
+                
             } else {
                 console.log("Error couldn't find submission")
                 res.status(400)
