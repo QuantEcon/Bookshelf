@@ -762,6 +762,21 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
                                         console.warn("No parent comment found")
                                     }
                                 })
+                            } else {
+                                Submission.findById(comment.submission, (err, submission) => {
+                                    if(err){
+                                        console.error("Error finding submission for comment: " ,err)
+                                    } else if(submission){
+                                        submission.comments = submission.comments.filter((commentID) => String(commentID) !== String(comment._id))
+                                        submission.save((err) => {
+                                            if(err){
+                                                console.error("Error saving submission: ", err)
+                                            }
+                                        })
+                                    } else{
+                                        console.warn("No submission was found with id ", comment.submission)
+                                    }
+                                })
                             }
                             Comment.remove({"_id": {"$in": comment.replies}}, (err) => {
                                 if(err){
