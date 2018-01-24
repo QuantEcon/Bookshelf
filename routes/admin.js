@@ -176,6 +176,7 @@ app.post("/delete-submission", passport.authenticate('adminjwt', {
                 })
             } else if (submission) {
                 submission.deleted = true
+                submission.flagged = false
                 // Remove from user.submissions and add to user.deletedSubmissions
                 User.findById(submission.author, (err, user) => {
                     if(err){
@@ -477,6 +478,7 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
                 })
             } else if(comment){
                 comment.deleted = true
+                comment.flagged = false
                 comment.save((err) => {
                     if(err){
                         res.status(500)
@@ -504,12 +506,31 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
 })
 
 app.post("/remove-comment", passport.authenticate("adminjwt", {
-    session: "false"
+    session: false
 }), (req, res) => {
     if (req.body.commentID && req.body.submissionID) {
-        // TODO: Remove comment id from submission.comments
-        // TODO: Remove replies from database
-        // TODO: Remove comment from database
+        Submission.findById(req.body.submissionID, (err, submission) => {
+            submission.comments = submission.comments.filter((commentID) => commentID !== req.body.commentID)
+            submission.save()
+        })
+        Comment.findById(req.body.commentID, (err, comment) => {
+            Comment.remove({
+                "_id": {
+                    "$in": comment.replies
+                }
+            }, (err) => {
+                if (err) {
+                    console.log("ERROR REMOVING REPLIES FROM COMMENT")
+                }
+            })
+            comment.remove((err) => {
+                if(err){
+                    res.sendStatus(500)
+                } else {
+                    res.sendStatus(200)
+                }
+            })
+        })
     } else {
         res.sendStatus(400)
     }
@@ -562,6 +583,7 @@ app.post("/delete-reply", passport.authenticate('adminjwt', {
                 })
             } else if(reply) {
                 reply.deleted = true
+                reply.flagged = false
                 reply.save((err) =>{
                     if(err){
                         res.status(500)
@@ -583,9 +605,20 @@ app.post("/delete-reply", passport.authenticate('adminjwt', {
 app.post("/remove-reply", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
-    if (req.body.commentID && req.body.submissionID && req.body.replyID) {
-        // TODO: Remove from comment.replies
-        // TODO: Remove reply from database
+    if (req.body.commentID && req.body.replyID) {
+
+        Comment.findById(req.body.commentID, (err, comment) => {
+            comment.replies = comment.replies.filter((replyID) => replyID !== req.body.replyID)
+            comment.save()
+        })
+
+        Comment.remove({"_id": req.body.replyID}, (err) => {
+            if(err){
+                res.sendStatus(500)
+            } else {
+                res.sendStatus(200)
+            }
+        })
     }
 })
 
@@ -626,8 +659,25 @@ app.post("/delete-user", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
     if (req.body.userID) {
-        // TODO: flag user as deleted
-        // TODO: remove from admin list, if applicable
+        User.findById(req.body.userID, (err, user) => {
+            user.deleted = true
+            user.save((err) => {
+                if(err){
+                    console.error("Error saving user: ", err)
+                }
+            })
+        })
+
+        AdminList.findOne({}, (err, adminList) => {
+            adminList.adminIDs = adminList.adminIDs.filter((id) => id !== req.body.userID)
+            adminList.save((err) => {
+                if(err){
+                   console.error("Error saving admin list: ", err)                    
+                } else {
+                    res.sendStatus(200)
+                }
+            })
+        })
     } else {
         res.sendStatus(400)
     }
@@ -637,11 +687,52 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
     if (req.body.userID) {
-        // TODO: remove submissions
-        // TODO: remove comments
-        // TODO: remove replies
-        // TODO: remove from admin list, if applicable
-        // TODO: remove user from database
+        User.findById(req.body.userID, (err, user) => {
+            if(err){
+                console.error("Error finding user: ", err)
+            } else if (user){
+                console.log("User found: ", user.submissions)
+                user.submissions.forEach((submissionID) => {
+                    Submission.findById(submissionID, (err, submission) => {
+                        submission.comments.forEach((commentID) => {
+                            Comment.findById(commentID, (err, comment) => {
+                                Comment.remove({
+                                    "_id": {
+                                        "$in": comment.replies
+                                    }
+                                }, (err) => {
+                                    if(err){
+                                        console.error("Error removing reply: ", err)
+                                    }
+                                })
+                                comment.remove((err) => {
+                                    if(err){
+                                        console.error("Error removing comment: ", err)
+                                    }
+                                })
+                            })
+                        })
+                        submission.remove((err) => {
+                            if(err){
+                                console.error("Error removing submission: ", err)
+                            }
+                        })
+                    })
+                })
+                user.remove((err) => {
+                    if(err){
+                        console.error("Error removing user: ", err)
+                        res.sendStatus(500)
+                    } else{
+                        res.sendStatus(200)
+                    }
+                })
+            } else {
+                console.log("Couldn't find user with id ", req.body.userID)
+                res.sendStatus(400)
+            }
+           
+        })
     } else {
         res.sendStatus(400)
     }

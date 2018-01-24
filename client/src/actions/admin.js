@@ -364,7 +364,7 @@ export const removeComment = ({commentID}) => {
 export const removeUser = ({userID}) => {
     return (dispatch) => {
         if(userID){
-            axios.post("/api/admin/remove-user", {
+            axios.post("/api/admin/remove-user", {userID}, {
                 headers: {
                     "Authorization" : "JWT " + store.getState().auth.token
                 }

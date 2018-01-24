@@ -14,7 +14,11 @@ class UserContainer extends Component {
     render(){
         return(
             <div>
-                <User data={this.props.user ? this.props.user.data : {}} isLoading={this.props.isLoading} history={this.props.history} showAdmin={this.props.isAdmin}/>
+                <User data={this.props.user ? this.props.user.data : {}} 
+                isLoading={this.props.isLoading}
+                history={this.props.history} 
+                showAdmin={this.props.isAdmin}
+                flagUser={this.props.actions.flagUser}/>
             </div>
         )
     }
