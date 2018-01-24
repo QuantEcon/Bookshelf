@@ -53,18 +53,6 @@ class Submission extends Component {
         this.onSubmitComment = this
             .onSubmitComment
             .bind(this);
-        this.upvoteComment = this
-            .upvoteComment
-            .bind(this);
-        this.downvoteComment = this
-            .downvoteComment
-            .bind(this);
-        this.upvoteReply = this
-            .upvoteReply
-            .bind(this);
-        this.downvoteReply = this
-            .downvoteReply
-            .bind(this);
         this.download = this
             .download
             .bind(this);
@@ -126,36 +114,9 @@ class Submission extends Component {
         //TODO: unfocus button after click
     }
 
-    upvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .upvoteComment({commentID, submissionID: this.props.submissionID});
-    }
-
     flagSubmission = () => {
         console.log("[Submission] - flag submission clicked")
         this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
-    }
-
-    downvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .downvoteComment({commentID, submissionID: this.props.submissionID});
-    }
-    upvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .upvoteReply({commentID, replyID, submissionID: this.props.submissionID});
-    }
-
-    downvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .downvoteReply({commentID, replyID, submissionID: this.props.submissionID});
     }
 
     encounteredURI(uri) {
@@ -503,10 +464,6 @@ class Submission extends Component {
                                             comments={this.props.submission.data.comments}
                                             replies={this.props.submission.data.replies}
                                             commentAuthors={this.props.submission.data.commentAuthors}
-                                            downvote={this.downvoteComment}
-                                            upvote={this.upvoteComment}
-                                            upvoteReply={this.upvoteReply}
-                                            downvoteReply={this.downvoteReply}
                                             postComment={this.onSubmitComment}
                                             postReply={this.submitReply}
                                             currentUser={this.props.currentUser}

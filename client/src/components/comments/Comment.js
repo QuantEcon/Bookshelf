@@ -32,13 +32,6 @@ class Comment extends Component {
         this.toggleInsertReply = this
             .toggleInsertReply
             .bind(this)
-
-        this.upvote = this
-            .upvote
-            .bind(this)
-        this.downvote = this
-            .downvote
-            .bind(this);
         this.submitRepsonse = this
             .submitRepsonse
             .bind(this);
@@ -60,6 +53,7 @@ class Comment extends Component {
         this.deleteComment = this
             .deleteComment
             .bind(this);
+        this.flagComment = this.flagComment.bind(this)
     }
 
     componentWillReceiveProps(props) {
@@ -71,7 +65,7 @@ class Comment extends Component {
             showInsertReply: false,
             authors: props.authors,
             currentUser: props.currentUser,
-            isReply: props.isReply
+            isReply: props.isReply,
         })
     }
 
@@ -91,6 +85,7 @@ class Comment extends Component {
             .value = '';
         console.log('[Comment] - edit comment. new text: ', newText);
         this.toggleShowEditComment();
+        console.log("actions: " ,this.props)
         this
             .props
             .actions
@@ -98,25 +93,7 @@ class Comment extends Component {
     }
 
     flagComment() {
-        alert('Work in Progess\nThis will flag the comment');
-    }
-
-    replyText = '';
-
-    upvote() {
-        console.log('[Comment] - Upvote comment: ', this.props.comment._id);
-        this
-            .props
-            .upvote(this.props.comment._id);
-        this.forceUpdate();
-    }
-
-    downvote() {
-        console.log('[Comment] - Downvote comment: ', this.props.comment._id);
-        this
-            .props
-            .downvote(this.props.comment._id);
-        this.forceUpdate();
+        this.props.actions.flagComment({commentID: this.props.comment._id})
     }
 
     submitRepsonse(e) {

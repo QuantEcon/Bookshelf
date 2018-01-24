@@ -149,6 +149,18 @@ const flagSubmissionAction = ({
     }
 }
 
+export const FLAG_COMMENT = "FLAG_COMMENT"
+const flagCommentAction = ({
+    commentID,
+    error
+}) => {
+    return {
+        type: FLAG_COMMENT,
+        commentID,
+        error
+    }
+}
+
 // ============================================================
 
 export const editSubmission = ({
@@ -327,6 +339,19 @@ export const flagSubmission = ({submissionID}) => {
             },
             err => {
                 dispatch(flagSubmissionAction({error: err}))
+            }
+        )
+    }
+}
+
+export const flagComment = ({commentID}) => {
+    return (dispatch) => {
+        axios.post("/api/flag/comment", {commentID}).then(
+            resp => {
+                dispatch(flagCommentAction({commentID}))
+            },
+            err => {
+                dispatch(flagCommentAction({error: err}))
             }
         )
     }

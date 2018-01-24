@@ -271,10 +271,10 @@ class AdminPage extends Component {
                                             {this.state.showFlaggedComments
                                             ?<div>
                                                 {this.props.flaggedComments.map((comment, index) => {
+                                                    console.log("comment: " ,comment)
                                                     return <div key={index}>
                                                         <Comment 
-                                                            comment={comment.data} 
-                                                            replies={[]} 
+                                                            reply={comment.data} 
                                                             author={comment.author}/>
                                                         {/* TODO: add delete/remove/edit buttons */}
                                                         <ul className="admin-button-row">

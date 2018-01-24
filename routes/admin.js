@@ -82,16 +82,22 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
                     comments.forEach((comment) => {
                         commentAuthorIDs.push(comment.author)
                     })
-
+                    console.log("commentAuthorIDs: ", commentAuthorIDs)
                     User.find({_id: {$in: commentAuthorIDs}}, userSelect, (err, authors) => {
                         if(err){
+                            console.log("Error finding user: ", err)
                             callback(err)
                         } else {
+                            console.log("authors: ", authors)
+                            console.log("Got here. Comments: ", comments)
                             var commentsData = []
                             comments.forEach((comment) => {
+                                console.log("checking comment: ", comment)
+                                
                                 var data = {
                                     data: comment,
                                     author: authors.filter((author) => {
+                                        console.log("comparing: ", author._id, comment.author)
                                         return String(author._id) == String(comment.author)
                                     })[0]
                                 }
@@ -508,28 +514,47 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
 app.post("/remove-comment", passport.authenticate("adminjwt", {
     session: false
 }), (req, res) => {
-    if (req.body.commentID && req.body.submissionID) {
-        Submission.findById(req.body.submissionID, (err, submission) => {
-            submission.comments = submission.comments.filter((commentID) => commentID !== req.body.commentID)
-            submission.save()
-        })
+    if (req.body.commentID) {
         Comment.findById(req.body.commentID, (err, comment) => {
-            Comment.remove({
-                "_id": {
-                    "$in": comment.replies
-                }
-            }, (err) => {
-                if (err) {
-                    console.log("ERROR REMOVING REPLIES FROM COMMENT")
-                }
-            })
-            comment.remove((err) => {
-                if(err){
-                    res.sendStatus(500)
-                } else {
-                    res.sendStatus(200)
-                }
-            })
+            if(err) {
+                console.error("Error finding comment: " ,err)
+                res.sendStatus(500)
+            } else  if(comment){
+                Submission.findById(comment.submission, (err, submission) => {
+                    if(err){
+                        console.error("error finding submission: " ,err)
+                    } else if(submission) {
+                        submission.comments = submission.comments.filter((commentID) => {
+                            return String(commentID) !== String(req.body.commentID)
+                        })
+                        submission.totalComments -= 1
+                        submission.save((err) => {
+                            if(err){
+                                console.error("error saving submission: ", err)
+                            }
+                        })
+                    } else {
+                        console.warn("Couldn't find submission with id ", comment.submission)
+                    }
+                })
+                Comment.remove({
+                    "_id": {
+                        "$in": comment.replies
+                    }
+                }, (err) => {
+                    if (err) {
+                        console.log("ERROR REMOVING REPLIES FROM COMMENT")
+                    }
+                })
+                comment.remove((err) => {
+                    if(err){
+                        res.sendStatus(500)
+                    } else {
+                        res.sendStatus(200)
+                    }
+                })
+            }
+            
         })
     } else {
         res.sendStatus(400)

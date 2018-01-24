@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-import Comment from './Comment';
+import CommentContainer from "../../containers/comment/CommentContainer";
 
 class Reply extends Component {
     constructor(props) {
@@ -15,13 +15,11 @@ class Reply extends Component {
     render() {
         return (
             <div className='comment-nested'>
-                <Comment
+                <CommentContainer
                     comment={this.state.reply}
                     author={this.state.author}
                     isReply={true}
-                    currentUser={this.props.currentUser}
-                    upvote={this.props.upvote}
-                    downvote={this.props.downvote}/>
+                    currentUser={this.props.currentUser}/>
             </div>
         )
     }

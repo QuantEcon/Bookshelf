@@ -72,6 +72,7 @@ app.post("/comment", (req, res) => {
                     if(err){
                         res.sendStatus(500)
                     } else {
+                        console.log("Flagged comment!")
                         res.sendStatus(200)
                     }
                 })

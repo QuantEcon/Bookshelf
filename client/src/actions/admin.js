@@ -256,8 +256,8 @@ export const fetchFlaggedContent = () => {
                     const deletedSubmissions = resp.data.submissions.filter(submission => submission.data.deleted)
                     const flaggedSubmissions = resp.data.submissions.filter(submission => submission.data.flagged)
 
-                    const deletedComments = resp.data.comments.filter(comment => comment.deleted)
-                    const flaggedComments = resp.data.comments.filter(comment => comment.flagged)
+                    const deletedComments = resp.data.comments.filter(comment => comment.data.deleted)
+                    const flaggedComments = resp.data.comments.filter(comment => comment.data.flagged)
 
                     const deletedUsers = resp.data.users.filter(user => user.deleted)
                     const flaggedUsers = resp.data.users.filter(user => user.flagged)
@@ -339,7 +339,7 @@ export const removeSubmission = ({submissionID}) => {
 export const removeComment = ({commentID}) => {
     return (dispatch) => {
         if(commentID){
-            axios.post("/api/admin/remove-comment", {
+            axios.post("/api/admin/remove-comment", {commentID}, {
                 headers: {
                     "Authorization" : "JWT " + store.getState().auth.token
                 }

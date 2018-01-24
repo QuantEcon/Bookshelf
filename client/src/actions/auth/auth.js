@@ -357,39 +357,3 @@ export const editComment =({
     }
 }
 
-export const submitReply = ({
-    submissionID,
-    commentID,
-    reply
-}) => {
-    return function (dispatch) {
-
-        axios.post('/api/submit/reply/', {
-            submissionID,
-            commentID,
-            reply
-        }, {
-            headers: {
-                'Authorization': 'JWT ' + store.getState().auth.token
-            }
-        }).then(resp => {
-            console.log('[AuthActions] - submit reply response: ', resp);
-            if (resp.data.error) {
-                console.log('[AuthActions] - submit reply error in response: ', resp.data.error);
-                dispatch(authPostReply({
-                    error: resp.data.error
-                }))
-            } else {
-                dispatch(authPostReply({
-                    submissionID: resp.data.submissionID,
-                    commentID: resp.data.commentID,
-                    reply: resp.data.reply
-                }))
-            }
-        }).catch(error => {
-            dispatch(authPostReply({
-                error
-            }))
-        })
-    }
-}
