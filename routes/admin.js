@@ -734,7 +734,7 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
             if(err){
                 console.error("Error finding user: ", err)
             } else if (user){
-                console.log("User found: ", user.submissions)
+                console.log("User found: ", user)
                 Submission.remove({"_id": {"$in": user.submissions}}, (err) => {
                     if(err){
                         console.error("Error removing submissions: ", err)
@@ -745,13 +745,18 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
                     if(err){
                         console.error("Error finding comments: " ,err)
                     } else if(comments){
+                        console.log("Comments: " ,comments)
                         comments.forEach((comment) => {
                             if(comment.isReply){
-                                Comment.findById(comment._id, (err, parentComment) => {
+                                Comment.findById(comment.parentID, (err, parentComment) => {
                                     if(err){
                                         console.error("Error finding parent comment: " ,err)
                                     } else if(parentComment){
-                                        parentComment.replies = parentComment.replies.filter((replyID) => String(replyID) !== String(comment._id))
+
+                                        parentComment.replies = parentComment.replies.filter((replyID) => {
+                                            console.log("comparing: ", String(replyID), String(comment._id), String(replyID) !== String(comment._id))
+                                            return String(replyID) !== String(comment._id)
+                                        })
                                         parentComment.save()
                                     } else {
                                         console.warn("No parent comment found")
