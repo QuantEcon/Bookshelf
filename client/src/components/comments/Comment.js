@@ -104,7 +104,8 @@ class Comment extends Component {
         }
         this
             .props
-            .postReply({reply: this.state.replyText, commentID: this.props.comment._id});
+            .actions
+            .submitReply({reply: this.state.replyText, commentID: this.props.comment._id, submissionID: this.props.comment.submission});
     }
 
     replyTextChanged(e) {
@@ -246,9 +247,9 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        <a onClick={this.toggleDeleteModal}>
+                                        {/* <a onClick={this.toggleDeleteModal}>
                                             <DeleteIcon/>
-                                        </a>
+                                        </a> */}
                                     </div>
                                 : null}
                         </ul>

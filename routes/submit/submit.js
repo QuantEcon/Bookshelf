@@ -446,6 +446,8 @@ app.post('/reply', passport.authenticate('jwt', {
     newReply.deleted = false;
     newReply.edited = false;
     newReply.editedDate = null;
+    newReply.isReply = true;
+    newReply.parentID = req.body.commentID
 
     newReply.save(function (err, reply) {
         if (err) {

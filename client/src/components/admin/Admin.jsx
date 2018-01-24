@@ -269,28 +269,30 @@ class AdminPage extends Component {
                                                 :<button onClick={this.foldFlaggedComments}>Show</button>}
                                             </span>
                                             {this.state.showFlaggedComments
-                                            ?<div>
-                                                {this.props.flaggedComments.map((comment, index) => {
-                                                    console.log("comment: " ,comment)
-                                                    return <div key={index}>
-                                                        <Comment 
-                                                            reply={comment.data} 
-                                                            author={comment.author}/>
-                                                        {/* TODO: add delete/remove/edit buttons */}
-                                                        <ul className="admin-button-row">
-                                                            <li>
-                                                                <button onClick={() => this.removeComment(comment.data._id)}>
-                                                                    Remove
-                                                                </button>
-                                                            </li>
-                                                            <li>
-                                                                <button onClick={() => this.unflagComment(comment.data._id)}>
-                                                                    Unflag
-                                                                </button>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                })}
+                                            ?<div className="comments">
+                                                <div className="comments-thread">
+                                                    {this.props.flaggedComments.map((comment, index) => {
+                                                        console.log("comment: " ,comment)
+                                                        return <div key={index}>
+                                                            <Comment 
+                                                                reply={comment.data} 
+                                                                author={comment.author}/>
+                                                            {/* TODO: add delete/remove/edit buttons */}
+                                                            <ul className="admin-button-row">
+                                                                <li>
+                                                                    <button onClick={() => this.removeComment(comment.data._id)}>
+                                                                        Remove
+                                                                    </button>
+                                                                </li>
+                                                                <li>
+                                                                    <button onClick={() => this.unflagComment(comment.data._id)}>
+                                                                        Unflag
+                                                                    </button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    })}
+                                                </div>
                                             </div>
                                             : null}
                                         </div>
@@ -393,7 +395,8 @@ class AdminPage extends Component {
                                                     :<button onClick={this.foldDeletedComments}>Show</button>}
                                                 </span>
                                                 {this.state.showDeletedComments
-                                                ? <div>
+                                                ? <div className="comments">
+                                                    <div className="comments-thread">
                                                         {this.props.deletedComments.map((comment, index) => {
                                                             return <div key={index}>
                                                                 <Comment 
@@ -415,7 +418,8 @@ class AdminPage extends Component {
                                                                 </ul>
                                                             </div>
                                                         })}
-                                                    </div>
+                                                    </div>        
+                                                </div>
                                                 : null}
                                             </div>
                                         </div>

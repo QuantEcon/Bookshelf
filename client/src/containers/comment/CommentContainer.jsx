@@ -35,6 +35,7 @@ class CommentContainer extends Component {
                     currentUser={this.state.currentUser}
                     actions={this.props.actions}
                     showAdmin={this.props.isAdmin}
+                    isReply={this.props.isReply}
                 />
             </div>
         )

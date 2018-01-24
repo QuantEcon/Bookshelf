@@ -24,7 +24,10 @@ var commentSchema = new Schema({
     replies: [ObjectId],
 
     flagged: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+
+    isReply: Boolean,
+    parentID: ObjectId
 
 });
 

@@ -520,32 +520,47 @@ app.post("/remove-comment", passport.authenticate("adminjwt", {
                 console.error("Error finding comment: " ,err)
                 res.sendStatus(500)
             } else  if(comment){
-                Submission.findById(comment.submission, (err, submission) => {
-                    if(err){
-                        console.error("error finding submission: " ,err)
-                    } else if(submission) {
-                        submission.comments = submission.comments.filter((commentID) => {
-                            return String(commentID) !== String(req.body.commentID)
-                        })
-                        submission.totalComments -= 1
-                        submission.save((err) => {
-                            if(err){
-                                console.error("error saving submission: ", err)
-                            }
-                        })
-                    } else {
-                        console.warn("Couldn't find submission with id ", comment.submission)
-                    }
-                })
-                Comment.remove({
-                    "_id": {
-                        "$in": comment.replies
-                    }
-                }, (err) => {
-                    if (err) {
-                        console.log("ERROR REMOVING REPLIES FROM COMMENT")
-                    }
-                })
+                if(comment.isReply){
+                    Comment.findById(comment.parentID, (err, parentComment) => {
+                        if(err){
+                            console.error("Error finding parent comment: ", err)
+                        } else if(parentComment){
+                            parentComment.replies = parentComment.replies.filter((replyID) => String(replyID) !== String(comment._id))
+                            parentComment.save((err) => {
+                                console.error("Error saving parent comment: ", err)
+                            })
+                        } else {
+                            console.warn("Parent comment not found with id: ", comment.parentID)
+                        }
+                    })
+                } else {
+                    Submission.findById(comment.submission, (err, submission) => {
+                        if(err){
+                            console.error("error finding submission: " ,err)
+                        } else if(submission) {
+                            submission.comments = submission.comments.filter((commentID) => {
+                                return String(commentID) !== String(req.body.commentID)
+                            })
+                            
+                            submission.save((err) => {
+                                if(err){
+                                    console.error("error saving submission: ", err)
+                                }
+                            })
+                        } else {
+                            console.warn("Couldn't find submission with id ", comment.submission)
+                        }
+                    })
+                    Comment.remove({
+                        "_id": {
+                            "$in": comment.replies
+                        }
+                    }, (err) => {
+                        if (err) {
+                            console.log("ERROR REMOVING REPLIES FROM COMMENT")
+                        }
+                    })
+                }
                 comment.remove((err) => {
                     if(err){
                         res.sendStatus(500)
@@ -633,7 +648,10 @@ app.post("/remove-reply", passport.authenticate('adminjwt', {
     if (req.body.commentID && req.body.replyID) {
 
         Comment.findById(req.body.commentID, (err, comment) => {
-            comment.replies = comment.replies.filter((replyID) => replyID !== req.body.replyID)
+            comment.replies = comment.replies.filter((replyID) => {
+                console.log("Comparing ", String(replyID), String(req.body.replyID), String(replyID) !== String(req.body.replyID))
+                return String(replyID) !== String(req.body.replyID)
+            })
             comment.save()
         })
 
@@ -717,33 +735,41 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
                 console.error("Error finding user: ", err)
             } else if (user){
                 console.log("User found: ", user.submissions)
-                user.submissions.forEach((submissionID) => {
-                    Submission.findById(submissionID, (err, submission) => {
-                        submission.comments.forEach((commentID) => {
-                            Comment.findById(commentID, (err, comment) => {
-                                Comment.remove({
-                                    "_id": {
-                                        "$in": comment.replies
-                                    }
-                                }, (err) => {
-                                    if(err){
-                                        console.error("Error removing reply: ", err)
-                                    }
-                                })
-                                comment.remove((err) => {
-                                    if(err){
-                                        console.error("Error removing comment: ", err)
-                                    }
-                                })
-                            })
-                        })
-                        submission.remove((err) => {
-                            if(err){
-                                console.error("Error removing submission: ", err)
-                            }
-                        })
-                    })
+                Submission.remove({"_id": {"$in": user.submissions}}, (err) => {
+                    if(err){
+                        console.error("Error removing submissions: ", err)
+                    }
                 })
+
+                Comment.find({"author": user._id}, (err, comments) => {
+                    if(err){
+                        console.error("Error finding comments: " ,err)
+                    } else if(comments){
+                        comments.forEach((comment) => {
+                            if(comment.isReply){
+                                Comment.findById(comment._id, (err, parentComment) => {
+                                    if(err){
+                                        console.error("Error finding parent comment: " ,err)
+                                    } else if(parentComment){
+                                        parentComment.replies = parentComment.replies.filter((replyID) => String(replyID) !== String(comment._id))
+                                        parentComment.save()
+                                    } else {
+                                        console.warn("No parent comment found")
+                                    }
+                                })
+                            }
+                            Comment.remove({"_id": {"$in": comment.replies}}, (err) => {
+                                if(err){
+                                    console.error("Error removing replies: ", err)
+                                }
+                            })
+                            comment.remove()
+                        })
+                    } else{
+                        console.log("No comments")
+                    }
+                })
+
                 user.remove((err) => {
                     if(err){
                         console.error("Error removing user: ", err)
