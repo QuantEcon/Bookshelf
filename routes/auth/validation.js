@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const User = require('../../js/db/models/User')
 const url = require('url')
 var app = express.Router();
+const AdminList = require('../../js/db/models/AdminList')
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -18,11 +19,8 @@ app.options('/', function (req, res) {
 app.get('/', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
-    console.log('[ValidateToken] - req.url:', req.url);
     const isAdd = getParameterByName('isAdd', req.url);
     const profile = getParameterByName('profile', req.url);
-    console.log('[ValidateToken] - idAdd: ', isAdd);
-    console.log('[ValidateToken] - profile: ', profile);
 
     if (isAdd) {
         //check to see if it already exists
@@ -49,13 +47,35 @@ app.get('/', passport.authenticate('jwt', {
 
     } else {
         console.log('[ValidateToken] - normal login');
-        res.send({
-            user: req.user,
-            provider: req.user.currentProvider,
-            uid: req.user._id,
-            token: req.headers['access-token'],
-            isAdmin: req.authInfo.isAdmin
-        })
+        if(req.authInfo.isAdmin){
+            AdminList.findOne({}, (err, adminList) => {
+                if(err){
+                    console.log("[ValidateToken] - error getting admin list: ", err)
+                } else if (adminList){
+                    if(adminList.adminIDs.indexOf(req.user._id) != -1){
+                        res.send({
+                            user: req.user,
+                            provider: req.user.currentProvider,
+                            uid: req.user._id,
+                            token: req.headers['access-token'],
+                            isAdmin: req.authInfo.isAdmin
+                        })
+                    } else {
+                        console.log("[ValidateToken] - user is no longer admin")
+                        res.sendStatus(401)
+                    }
+                }
+            })
+        } else {
+            res.send({
+                user: req.user,
+                provider: req.user.currentProvider,
+                uid: req.user._id,
+                token: req.headers['access-token'],
+                isAdmin: req.authInfo.isAdmin
+            })
+        }
+        
     }
 
 })
