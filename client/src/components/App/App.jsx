@@ -21,6 +21,7 @@ import AdminRoute from '../AdminRoute';
 import SignIn from '../signin/SignIn';
 import FAQ from '../FAQ';
 import About from '../About';
+import TempComponent from '../TempComponent'
 
 import '../../assets/css/main.css'
 //import '../../assets/css/app.css'
@@ -52,8 +53,9 @@ class App extends Component {
               <Route path='/signin' exact component={SignIn}/>
               <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
-              <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
+              <Route path='/user/:userID' component={UserContainer}/>
               <AdminRoute exact path="/admin" component={AdminContainer}/>
+              <Route exact path='/temp' component={TempComponent}/>
               <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>
             </Switch>
           </div>

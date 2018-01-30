@@ -81,6 +81,7 @@ const listenForCredentials = ({
         let credentials;
         try {
             credentials = getAllParams(popup.location) //get the credentials from the window location parameters
+            console.log("Credentials: ", credentials)
         } catch (err) {
             console.error('[ListenForCredentials] - err: ', err);
             // reject({

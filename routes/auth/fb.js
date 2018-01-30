@@ -22,35 +22,6 @@ app.get('/add', jwtAuth.authenticate('jwt', {
 }), passport.authenticate('facebook', {
     scope: 'email'
 }));
-// app.get('/callback/add', passport.authenticate('addFB'), function (req, res) {
-//     User.findById(req.user._id, function (err, user) {
-//         if (err) {
-//             res.status(500);
-//             res.send({
-//                 error: true,
-//                 message: err
-//             })
-//         } else if (user) {
-//             var token = jwt.sign({
-//                 user: {
-//                     _id: user._id
-//                 }
-//             }, 'banana horse laser muffin');
-//             var queryString = qs.stringify({
-//                 token,
-//                 uid: req.user._id
-//             });
-//             res.redirect(req.headers.referer + '?' + queryString);
-//         } else {
-//             res.status(400);
-//             res.send({
-//                 error: true,
-//                 message: 'No user found'
-//             });
-//         }
-//     })
-// });
-// register new user with fb
 
 app.options('/', function (req, rex) {
     console.log('in options for fb auth');
@@ -100,7 +71,7 @@ app.get('/callback', passport.authenticate('facebook', {
                         if (err) {
                             res.sendStatus(500);
                         } else {
-                            const redirect = req.headers.referer + "?" + queryString
+                            const redirect = appConfig.redirectURL + "?" + queryString
                             console.log("[Google Auth] - redirect: ", redirect)
                             res.redirect(redirect);
                         }

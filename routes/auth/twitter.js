@@ -27,7 +27,7 @@ app.get('/callback/add', passport.authenticate('addTwitter'), function (req, res
                 message: err
             })
         } else if (user) {
-            res.redirect(req.headers.referer + '?' + 'success=true');
+            res.redirect(appConfig.redirectURL + '?' + 'success=true');
         } else {
             res.status(400);
             res.send({
@@ -86,7 +86,7 @@ app.get('/callback',
                             if (err) {
                                 res.sendStatus(500);
                             } else {
-                                const redirect = req.headers.referer + "?" + queryString
+                                const redirect = appConfig.redirectURL + "?" + queryString
                                 console.log("[Google Auth] - redirect: ", redirect)
                                 res.redirect(redirect);
                             }

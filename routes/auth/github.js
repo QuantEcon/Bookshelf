@@ -40,7 +40,7 @@ app.get('/callback/add', passport.authenticate('addGithub'), function (req, res)
                 token,
                 uid: req.user._id
             });
-            res.redirect(req.headers.referer + '?' + queryString);
+            res.redirect(appConfig.redirectURL + '?' + queryString);
         } else {
             res.status(400);
             res.send({
@@ -96,7 +96,7 @@ app.get('/callback', passport.authenticate('github', {
                         if (err) {
                             res.sendStatus(500);
                         } else {
-                            const redirect = req.headers.referer + "?" + queryString
+                            const redirect = appConfig.redirectURL + "?" + queryString
                             console.log("[Google Auth] - redirect: ", redirect)
                             res.redirect(redirect);
                         }

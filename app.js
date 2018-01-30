@@ -173,6 +173,10 @@ app.get('/api/auth/popup/:provider', (req, res) => {
     });
 });
 
+app.get("/temp", (req, res) => {
+    res.send("Loading...")
+})
+
 app.get('*', (req, res) => {
     console.log('Sending react app')
     try {
