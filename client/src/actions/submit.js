@@ -76,7 +76,7 @@ export const submit = (formData, file) => {
 
 export const confirm = ({submission}) => {
     return function (dispatch) {
-        console.log('[SubmitActions] - confirm submit')
+        console.log('[SubmitActions] - confirm submit: ', submission)
         //send confirm request to server
         axios.post('/api/submit/confirm', {
             submission: submission

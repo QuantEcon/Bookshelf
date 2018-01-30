@@ -171,7 +171,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered viewers views";
+                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered viewers views coAuthors";
                 try {
                     Submission.findOne({
                         _id: mdb.ObjectId(notebookID),
@@ -190,6 +190,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
+                            notebook.coAuthors = submission.coAuthors
                             // TODO: This needs to be tested
                             //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
                             if(!submission.viewers){
@@ -243,20 +244,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     else {
                         console.log("[Search] - found author: ", author)
                         callback(null, author);
-                    }
-                })
-            },
-            //get co-authors
-            coAuth: function (callback) {
-                var select = "_id avatar name";
-                User.find({
-                    _id: {
-                        $in: notebook.coAuthors
-                    }
-                }, function (err, coAuthors) {
-                    if (err) callback(err);
-                    else {
-                        callback(null, coAuthors);
                     }
                 })
             },
@@ -347,7 +334,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
-                coAuthors: results.coAuth,
+                coAuthors: results.nb.coAuthors,
                 comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth

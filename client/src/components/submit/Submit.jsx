@@ -70,6 +70,7 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
+        this.coAuthorChanged = this.coAuthorChanged.bind(this)
     }
 
     componentDidMount() {
@@ -102,7 +103,7 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : []
+            : {}
     }
 
     errors = {
@@ -156,6 +157,14 @@ class Submit extends Component {
         var index = array.indexOf(topic);
         if (index > -1) {
             array.splice(index, 1);
+        }
+    }
+
+    coAuthorChanged = (event, num) => {
+        if(event) {
+            this.formData.coAuthors[num] = event.target.value        
+        } else {
+            console.warn("No event!")
         }
     }
 
@@ -413,10 +422,10 @@ class Submit extends Component {
                                     <p>An email will be sent to each co-author requesting their permission to be
                                         acknowledged.</p>
                                     <div className='coauthor-emails'>
-                                        <input type="email" placeholder='Email address'/>
-                                        <input type="email" placeholder='Email address'/>
-                                        <input type="email" placeholder='Email address'/>
-                                        <input type="email" placeholder='Email address'/>
+                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 1)}/>
+                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 2)}/>
+                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 3)}/>
+                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 4)}/>
                                     </div>
                                 </div>
 

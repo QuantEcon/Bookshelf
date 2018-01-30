@@ -149,7 +149,6 @@ export const editSubmission = ({
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
-            fileName: file.name
         };
         if (file) {
             //read and parse file
@@ -157,6 +156,7 @@ export const editSubmission = ({
             reader.readAsText(file);
             reader.onload = (event) => {
                 submission.notebookJSON = JSON.parse(event.target.result);
+                submission.fileName = file.name
                 axios.post('/api/submit/edit-submission', {
                     submissionData: submission
                 }, {
