@@ -32,7 +32,7 @@ class Submission extends Component {
             flipper: true,
             deleteModalOpen: false
         }
-
+        
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -87,14 +87,17 @@ class Submission extends Component {
         
     }
 
-    renderMathJax() {
+    renderMathJax(numTimes) {
         if(window.MathJax){
             console.log("Rendering math...")
             typesetMath(this.rendered)
-            console.log("Mathjax config: ", window.MathJax)
-        } else {
+        } else if(numTimes < 3){
             console.log("No mathjax")
-            this.renderMathJax()
+            setTimeout(() => {
+                this.renderMathJax(numTimes ? numTimes++ : 1)
+            }, 500)
+        } else {
+            console.warn("Mathjax couldn't be loaded");
         }
     }
 

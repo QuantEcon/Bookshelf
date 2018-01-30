@@ -1,5 +1,5 @@
 import * as React from "react";
-import * as ReactMarkdown from "react-markdown";
+import ReactMarkdown from "react-markdown";
 import MathJax from "react-mathjax";
 import RemarkMathPlugin from "../remark-math/index"
 
