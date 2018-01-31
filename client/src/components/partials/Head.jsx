@@ -15,7 +15,11 @@ class Head extends Component {
         console.log("redirect to home")
         //reset search params
         this.props.resetSearchParams()
-        this.props.history.replace("/")
+        if(this.props.history){
+            this.props.history.replace("/")
+        } else {
+            window.location.href = '/'
+        }
     }
     
     render() {

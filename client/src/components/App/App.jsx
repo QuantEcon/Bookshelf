@@ -13,6 +13,7 @@ import PreviewContainer from '../../containers/PreviewContainer'
 import EditProfileContainer from '../../containers/user/EditProfileContainer'
 import EditSubmissionContainer from '../../containers/submission/EditSubmissionContainer';
 import EditSubmissionPreviewContainer from '../../containers/submission/EditSubmissionPreviewContainer';
+
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
@@ -20,6 +21,7 @@ import SignIn from '../signin/SignIn';
 import FAQ from '../FAQ';
 import About from '../About';
 import AdminPage from '../admin/Admin'
+import NotFound from '../NotFound'
 
 import '../../assets/css/main.css'
 //import '../../assets/css/app.css'
@@ -53,7 +55,7 @@ class App extends Component {
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route path='/admin' exact component={AdminPage}/>
               <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
-              <Route path='*' render={() =>< h3 > 404 : Not found </h3>}/>
+              <Route path='*' component={NotFound}/>
             </Switch>
           </div>
         </BrowserRouter>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import Head from './partials/Head';
+import HeadContainer from "../containers/HeadContainer";
 
 class NotFound extends Component {
     render(){
         return(
             <div>
-                <Head/>
+                <HeadContainer/>
                 <h3> 404: Not Found</h3>
             </div>
         )
