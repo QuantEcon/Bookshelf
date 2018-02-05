@@ -7,11 +7,12 @@ Please work in branches and make PR's
 ### Setup
 
 #### Installation Commands 
-Ensure you have `npm v5+` and `node v6+` installed. I am currently using `npm 5.5.1` and `node v6.11.4`
+Ensure you have `npm v5+` and `node v6+` installed. I am currently using `npm 5.6.0` and `node v6.11.4`
 1. Pull from repository using `git pull`
 2. Update npm using the command `node install -g npm`
 3. Run `npm install -g create-react-app`
 4. Run `npm run install-all` to install all dependencies.
+
 #### Running Commands
 If you are in developement mode, you will need to have _both_ the webpack developement server for the React client _and_ the node express server running. To do this, run these commands:
 
@@ -31,16 +32,29 @@ If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshe
 
 
 #### Needed files
-There are some config files that are not on the repo because they contain sensitive information. These include:
+There are some config files that are not on the repo because they contain sensitive information. You can create these manually or run the `scripts/dev-config.sh` to setup these config files:
 * `./_config.js`
     * contains the `url` and `port` the server is running on:
         ```
         var port = YOUR-PORT-HERE;
-            module.exports = {
+        const clientPort = CLIENT-PORT-HERE // 3000 for default React
+        module.exports = {
+            debug: true,
             port: port,
-            urlAndPort: 'YOUR-URL-HERE' + port,
-            secret: 'YOUR-SECRET-HERE',
-            hostName: 'YOUR-URL-HERE'
+            urlAndPort: API-URL-HREE + port,
+            secret: SESSION-SECRET-HERE, // random string
+            hostName: API-URL-HERE,
+            clientHostName: YOUR-HOST-NAME-HERE, // "localhost" if debugging
+            clientPort: clientPort,
+            clientHostNameAndPort: clientHostName + clientPort,
+            redirectURL: clientHostNameAndPort + "/temp",
+            preRender: false,
+            filesDirectory: '/files',
+            rootDirectory: __dirname,
+            mailgun: {
+                apiKey: YOUR-API-KEY=HERE,
+                domain: YOUR-DOMAIN-HERE
+            }
         };
 
 * `./js/db/_config.js`
@@ -84,6 +98,17 @@ There are some config files that are not on the repo because they contain sensit
         };
 
         module.exports = ids;
+* `./client/src/_config.js`
+    * contains url and port for the React as well as the API
+        ```
+        module.exports = {
+            port: YOUR-CLIENT-PORT-HERE // 3000 if using default React setup,
+            url: YOUR-URL-HERE // localhost if debugging,
+            serverPort: YOUR-API-PORT-HERE,
+            urlPlusPort = url + ":" + serverPort,
+            debug: true,
+            maxNumAdmins: MAXMIM-NUMBER-OF-ADMIN-USERS-HERE
+        }
 
 In addition to these files, you will need to spin up your own instance of a Mongo database.
 
