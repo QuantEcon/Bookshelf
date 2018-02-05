@@ -134,3 +134,70 @@ img.loading-avatar {
     color: black;
 }
 
+ /* This is the classes that Trevor Lyon (tlyon3) has added */
+  /* Admin page css styles*/
+  .section-header button {
+    color: #d84d0a;
+    font-weight: bold;
+  }
+
+  ul.admin-button-row{
+    list-style: none
+  }
+
+  ul.admin-button-row li{
+    display: inline;
+    padding: 1rem;
+  }
+
+  ul.admin-button-row li button {
+    color: #d84d0a;
+    border: 1px solid #d84d0a;
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+    font-weight: bold; 
+  }
+  ul.admin-button-row li button:hover {
+    background: #d84d0a;
+    color: #fff;
+  }
+
+.loader {
+    align-content: center;
+    align-self: center;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid #d84d0a;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+}
+
+.loader .large {
+    width: 120px;
+    height: 120px;
+    border: 16px solid #f3f3f3;
+    border-top: 16px solid #d84d0a;
+}
+
+@keyframes spin {
+    0% {transform: rotate(0deg)}
+    100% {transform: rotate(360deg)}
+}
+
+// Supplementary files
+ul.supplementary {
+    list-style: none
+}
+
+ul.supplementary span {
+    display: inline-block;
+}
+
+ul.supplementary span p {
+    float: left;
+}
+
+ul.supplementary span a {
+    padding-left: 1rem
+}

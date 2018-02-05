@@ -48,7 +48,7 @@ export const confirmSubmit = ({
     }
 }
 
-export const submit = (formData, file) => {
+export const submit = (formData, file, supplementaryFiles) => {
     return function (dispatch) {
         console.log('[SubmitActions] - submit: ', formData, file);
         dispatch(beginSubmit());
@@ -64,7 +64,7 @@ export const submit = (formData, file) => {
             submission.fileName = file.name;
             reader.onload = (event) => {
                 submission.notebookJSON = JSON.parse(event.target.result);
-                confirm({submission})(dispatch)
+                confirm({submission, supplementaryFiles})(dispatch)
             }
         } else {
             dispatch(endSubmit({
@@ -74,12 +74,13 @@ export const submit = (formData, file) => {
     }
 }
 
-export const confirm = ({submission}) => {
+export const confirm = ({submission, supplementaryFiles}) => {
     return function (dispatch) {
         console.log('[SubmitActions] - confirm submit')
         //send confirm request to server
         axios.post('/api/submit/confirm', {
-            submission: submission
+            submission: submission,
+            supplementaryFiles
         }, {
             headers: {
                 'Authorization': 'JWT ' + store.getState().auth.token

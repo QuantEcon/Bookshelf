@@ -49,9 +49,9 @@ class SubmissionList extends Component {
                         onSearch={this.onSearch}/>
                     <div className="summaries">
                         {/*Repeat for each notebook*/}
-
+                        <div className="loader"/>
                         {this.props.isLoading
-                            ? <h3>loading...</h3>
+                            ? <div className="loader"/>
                             : <div>
                                 {this
                                     .state

@@ -52,7 +52,8 @@ class Submit extends Component {
             showSummaryPreview: false,
             modalOpen: false,
             notebookDataReady: false,
-            notebookJSON: {}
+            notebookJSON: {},
+            supplementaryAccepted: []
         }
 
         this.onDrop = this
@@ -70,6 +71,9 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
+        this.supplementaryDrop = this
+            .supplementaryDrop
+            .bind(this)
     }
 
     componentDidMount() {
@@ -192,7 +196,7 @@ class Submit extends Component {
 
             this
                 .props
-                .submit(this.formData, this.state.accepted[0]);
+                .submit(this.formData, this.state.accepted[0], this.state.supplementaryAccepted);
         }
     }
 
@@ -246,6 +250,26 @@ class Submit extends Component {
         }
     }
 
+    supplementaryDrop = (accepted, rejected) => {
+        if (accepted.length) {
+            console.log("accepted: ", accepted)
+            this.setState({
+                supplementaryAccepted: this
+                    .state
+                    .supplementaryAccepted
+                    .concat(accepted)
+            })
+        }
+    }
+
+    removeSupplementary = (index) => {
+        var newArray = [...this.state.supplementaryAccepted]
+        newArray.splice(index, 1)
+        this.setState({
+            supplementaryAccepted: newArray
+        })
+    }
+
     toggleOpenModal = (e) => {
         console.log("Clicked preview: ", e)
         e.preventDefault()
@@ -292,8 +316,7 @@ class Submit extends Component {
                 <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
-                    <NotebookPreview
-                        notebook={this.state.notebookJSON}/>
+                    <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
                 <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>
@@ -329,6 +352,7 @@ class Submit extends Component {
                     </div>
                 </Modal>
 
+                <button onClick={() => console.log(this.state)}>Print state</button>
                 <div className='container'>
                     <div className='submit-form'>
                         <form onSubmit={this.submit}>
@@ -385,6 +409,43 @@ class Submit extends Component {
                                     </li>
                                 </ul>
 
+                            </div>
+
+                            <div className="submit-upload">
+                                <label className="section-title">Supplementary Files</label>
+
+                                <Dropzone
+                                    className="dropzone"
+                                    multiple={true}
+                                    maxSize={10000000}
+                                    onDrop={this.supplementaryDrop}
+                                    activeClassName='dragover'
+                                    rejectClassName='dragover'
+                                    disablePreview={true}>
+                                    <div className="dz-default dz-message">
+                                        <div>
+                                            <p className="hint">
+                                                Drop supplementary files here or
+                                                <strong>{' click '}</strong>
+                                                to browse
+                                            </p>
+                                            <p>
+                                                You can upload files up to 10mb
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </Dropzone>
+                                <ul className="supplementary">
+                                    {this.state.supplementaryAccepted.map((element, index) => {
+                                        return <li key={index}>
+                                            <span>
+                                                <p>{element.name}</p>
+                                                <a onClick={() => this.removeSupplementary(index)}>{' Remove ' }</a>
+                                            </span>
+                                        </li>
+                                    })}
+                                </ul>
                             </div>
 
                             <div className='submit-header'>
@@ -520,8 +581,7 @@ class Submit extends Component {
                                     of publishing content:
                                     <br/>
                                     <br/>
-                                    By submitting to
-                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
+                                    By submitting to {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>

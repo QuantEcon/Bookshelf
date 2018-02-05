@@ -152,9 +152,10 @@ app.get('/cancel', passport.authenticate('jwt', {
 
 app.post('/confirm', passport.authenticate('jwt', {
     session: false
-}), function (req, res) {
+}), upload.array("*"), function (req, res) {
     var newSub = new Submission();
     console.log("[Submit] - confirm. req.body: ", req.body)
+    console.log("[Submit] - supplementary files: ", req.files)
 
     newSub.title = req.body.submission.title;
 
