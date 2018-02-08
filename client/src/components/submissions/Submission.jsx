@@ -6,8 +6,7 @@ import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
 import {typesetMath} from "mathjax-electron"
 
-import NotebookPreview from 'nteract-monorepo/packages/notebook-preview/lib/index'
-// import NotebookPreview from '@nteract/notebook-preview'
+import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
 
