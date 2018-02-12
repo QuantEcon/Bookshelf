@@ -60,6 +60,10 @@
   "apidoc": {
     "title": "Bookshelf-Documentation",
     "description": "API documentation for Bookshelf site",
-    "url": "http://bookshelf.quantecon.org"
+    "url": "http://bookshelf.quantecon.org",
+    "order": [
+      "Search",
+      "Authentication"
+    ]
   }
 }

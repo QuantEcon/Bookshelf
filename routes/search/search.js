@@ -15,9 +15,9 @@ var app = express.Router();
 var config = require('../../_config');
 
 /**
- * @api {get} /api/search/all-submissions
+ * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
- * @apiName GetSubmissions
+ * @apiname GetSubmissions
  * 
  * @apiVersion 1.0.0
  * 
@@ -167,7 +167,7 @@ app.get('/all-submissions', function (req, res) {
 });
 
 /**
- * @api {get} /api/search/notebook/:nbid
+ * @api {get} /api/search/notebook/:nbid Get Submission
  * @apiGroup Search
  * @apiName GetSubmission
  * 
@@ -412,7 +412,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
 
 
 /**
- * @api {get} /api/search/users
+ * @api {get} /api/search/users Get Users
  * @apiGroup Search
  * @apiName GetUsers
  * 
