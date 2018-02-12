@@ -1,7 +1,7 @@
 {
-  "name": "quanteconlib",
-  "version": "0.3.0",
-  "description": "Code for the site QuantEconLib",
+  "name": "bookshelf",
+  "version": "1.0.0",
+  "description": "Code for QuantEcon's Bookshelf site",
   "private": true,
   "main": "./app.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "start": "node app.js",
     "install-all": "npm install && npm run install-client",
     "install-client": "cd client && npm install",
-    "build-client": "cd client && npm build"
+    "build-client": "cd client && npm build",
+    "docs": "apidoc -f \".*\\.js$\" -i ./routes -o ./docs"
   },
   "repository": {
     "type": "git",
@@ -55,5 +56,10 @@
     "react-jupyter": "^0.1.0",
     "sprintf": "^0.1.5",
     "tmp": "0.0.33"
+  },
+  "apidoc": {
+    "title": "Bookshelf-Documentation",
+    "description": "API documentation for Bookshelf site",
+    "url": "http://bookshelf.quantecon.org"
   }
 }

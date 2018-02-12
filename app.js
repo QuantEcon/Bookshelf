@@ -24,7 +24,6 @@ const editProfileRoutes = require('./routes/edit-profile/edit-profile');
 const searchRoutes = require('./routes/search/search');
 const submitRoutes = require('./routes/submit/submit');
 const userRoutes = require('./routes/user/user');
-const notebookRoutes = require('./routes/notebook/notebook');
 const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
