@@ -63,7 +63,8 @@
     "url": "http://bookshelf.quantecon.org",
     "order": [
       "Search",
-      "Authentication"
+      "Submit",
+      "Edit"
     ]
   }
 }
