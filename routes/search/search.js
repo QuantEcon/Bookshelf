@@ -26,6 +26,27 @@ var config = require('../../_config');
         sortBy: 'sorting by characteristic'
     }
 */
+
+/**
+ * Endpoint: /api/search/all-submissions
+ * 
+ * Queries the database for all submissions matching the parameters:
+ *  lang: language of the notebook (Python, Julia, Other)
+ *  topic: topic of the notebook. Given by the list of topics in the submission page
+ *  author: database id of the author
+ *  time: time of the submit date (Today, This month, This year, All time)
+ *  keywords: string of keywords to check against the submission summary
+ *  page: used for pagination. Searches for the current page number
+ *  sortBy: attribute to sort by (Votes, Comments, Views, Trending, Date)
+ * 
+ * If any submissions match the criteria, then an object will be sent back following
+ * this pattern: 
+ * {
+ *      submissions: array of submission database objects,
+ *      totalSubmissions: the number of submissions found,
+ *      authors: the author database objects for each submission
+ * }
+ */
 app.get('/all-submissions', function (req, res) {
     var searchParams = {
         deleted: false
@@ -157,6 +178,37 @@ app.get('/all-submissions', function (req, res) {
     });
 });
 
+/**
+ * Endpoint: /api/search/notebook/:nbid
+ * 
+ * The 'nbid' in the url is the database id of the notebook being searched for
+ * 
+ * If the nbid matches one of the objects in the database, and object will be sent
+ * back following this pattern:
+ * data = {
+ *    notebook: the notebook object from the database,
+ *    html: the pre-rendered notebook html (if pre-rendering was enabled),
+ *    notebookJSON: the raw JSON of the ipynb file,
+ *    fileName: the original filename of the notebook,
+ *    author: the author's user database object,
+ *    coAuthors: an array of email adresses and/or user object id's,
+ *    comments: an array of comment database objects for the sumbission,
+ *    replies: an array of comment dtabase ojects for the submission,
+ *    commentAuthors: an array of user database objects for each author of a comment/reply
+ * };
+ * 
+ * Note: the authors' objects will only contain the necessary data to display a summary - 
+ * avatar, name and author id
+ * 
+ * If the req has a current user then data.user will be appeneded:
+ * data.user = {
+ *      _id: id of the current user
+ *      upvotes: array of id's of objects the current user has upvoted (submissions, comments/replies)
+ *      downvotes: array of id's of objects the current user has downvoted (submissions, comments/replies)
+ * }
+ * 
+ * If no notebook was found with a matching id, then a 404 will be returned
+ */
 app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     // get nb info
     var notebook;
@@ -365,6 +417,26 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     );
 });
 
+
+/**
+ * Endpoint: /api/search/users/?_id=
+ * 
+ * Queries the database for a user with the matching _id from req.query.
+ * 
+ * If no user is found with a matching id or if no id was supplied in the request,
+ * a 404 will be returned.
+ * 
+ * If a user is found with a matching id, an object will be returned: 
+ * data = {
+ *      _id: database id of the user,
+ *      name: name of the user,
+ *      avatar: url to user's avatar,
+ *      email: user's email address,
+ *      joinDate: date the user joined Bookshelf
+ *      oneSocial: boolean flag if the user as only authenticated one social account,
+ *      submissions: array of submission id's
+ * }
+ */
 app.get('/users', function (req, res) {
     console.log("Received user search request: ", req.query);
     var params = {};
