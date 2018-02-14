@@ -18,39 +18,26 @@ app.get('/add', jwtAuth.authenticate('jwt', {
 }), passport.authenticate('google', {
     scope: 'email'
 }));
-app.get('/callback/add', passport.authenticate('addGoogle'), function (req, res) {
-    User.findById(req.user._id, function (err, user) {
-        if (err) {
-            res.status(500);
-            res.send({
-                error: true,
-                message: err
-            })
-        } else if (user) {
-            var token = jwt.sign({
-                user: {
-                    _id: user._id
-                }
-            }, "banana horse laser muffin");
-            var queryString = qs.stringify({
-                token,
-                uid: req.user._id
-            });
-            res.redirect(req.headers.referer + '?' + queryString);
-        } else {
-            res.status(400);
-            res.send({
-                error: true,
-                message: 'No user found'
-            });
-        }
-    })
-});
 
 //register/login with google
+
+/**
+ * @api {get} /api/auth/fb Google
+ * @apiGroup Authentication
+ * @apiName AuthenticateGoogle
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription API endpoint for Google OAuth. The user is redirected to Google's OAuth
+ * screen.
+ * 
+ * On a successful authentication, the window will be redirected with a JSON Web Token in the url
+ * parameters which the client uses for future authentication
+ */
 app.get('/', passport.authenticate('google', {
     scope: 'email'
 }));
+
 app.get('/callback', passport.authenticate('google', {
     failureRedirect: '/auth/failure'
 }), function (req, res) {
