@@ -21,6 +21,45 @@ app.use(function(req, res, next){
     next();
 })
 
+/**
+ * @apiDefine AuthorizationHeader
+ * @apiHeader (Headers) {String} authorization Authorization JSON Web Token
+ * @apiHeaderExample {json} Header Example:
+ *  {
+ *      "Authorization": "JWT <web token>"
+ *  }
+ */
+
+/**
+ * @api {post} /api/upvote/submission Upvote Submission
+ * @apiGroup Vote
+ * @apiName UpvoteSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription If the user hasn't voted on this submission before, the submission's scrore
+ * will be increaesd by 1 and the submission ID will be added to the user's upvotes.
+ * 
+ * If the user has already upvoted the submission, the submission's score will be decreased
+ * by 1 and the submission ID will be removed from the user's upvotes.
+ * 
+ * If the user has already downvoted the submission, the submission's score will be increased
+ * by 2 and the submission ID will be removed from the user's downvotes and added to the 
+ * user's upvotes.
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID ID of the submission being upvoted
+ * 
+ * @apiSuccess (200) data
+ * @apiSuccess (200) data.submissionID ID of the submission being upvoted
+ * 
+ * @apiError (500) InternalServerError An error ocurred searching, updating, or saving
+ * the submission document.
+ * 
+ * @apiError (400) BadRequest A submission ID was not supplied in the request
+ */
 app.post('/submission', passport.authenticate('jwt', {session:false}), function (req, res) {
     if (!req.user) {
         console.log("User not logged in");
@@ -110,6 +149,37 @@ app.post('/submission', passport.authenticate('jwt', {session:false}), function 
     })
 });
 
+
+/**
+ * @api {post} /api/upvote/comment Upvote Comment
+ * @apiGroup Vote
+ * @apiName UpvoteComment
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription If the user hasn't voted on this comment before, the comment's scrore
+ * will be increaesd by 1 and the comment ID will be added to the user's upvotes.
+ * 
+ * If the user has already upvoted the comment, the comment's score will be decreased
+ * by 1 and the comment ID will be removed from the user's upvotes.
+ * 
+ * If the user has already downvoted the comment, the comment's score will be increased
+ * by 2 and the comment ID will be removed from the user's downvotes and added to the 
+ * user's upvotes.
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment being upvoted
+ * 
+ * @apiSuccess (200) data
+ * @apiSuccess (200) data.commentID ID of the comment being upvoted
+ * 
+ * @apiError (500) InternalServerError An error ocurred searching, updating, or saving
+ * the comment document.
+ * 
+ * @apiError (400) BadRequest A comment ID was not supplied in the request
+ */
 app.post('/comment', passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received upvote comment: ", req.body);
     if (!req.user) {
