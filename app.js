@@ -23,7 +23,6 @@ const googleAuthRoutes = require('./routes/auth/google');
 const editProfileRoutes = require('./routes/edit-profile/edit-profile');
 const searchRoutes = require('./routes/search/search');
 const submitRoutes = require('./routes/submit/submit');
-const userRoutes = require('./routes/user/user');
 const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
@@ -61,6 +60,18 @@ app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
+/**
+ * @api {get} /api/about Get About Page
+ * @apiGroup Information
+ * @apiName GetAboutPage
+ * 
+ * @apiDescription Returns the text to display on the About page
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {String} data.content Contents of the About page
+ * 
+ * @apiError (500) InternalServerError An occurred reading the About page file
+ */
 app.get('/api/about', (req, res) => {
     //read file and send
 

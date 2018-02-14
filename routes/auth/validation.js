@@ -15,6 +15,31 @@ app.options('/', function (req, res) {
     res.sendStatus(200);
 });
 
+/**
+ * @api {get} /api/auth/validate-token Validate Token
+ * @apiGroup Authentication
+ * @apiName ValidateToken
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Validates a JWT token and returns the user database object associated
+ * with the token.
+ * 
+ * If the user is adding another social account to an existing account, only the social
+ * profile will be returned
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {Object} data.user     Database user object associated with the token
+ * @apiSuccess (200) {String} data.provider Social account used to sign in with (google, github, fb, twitter)
+ * @apiSuccess (200) {String} data.uid      Database user ID
+ * @apiSuccess (200) {String} data.token    JSON Web Token
+ * @apiSuccess (200) {Object} data.profile   (ONLY RETURNED IF ADDING SOCIAL) Social profile added to the user's account
+ * 
+ * @apiUse AuthorizationError
+ * 
+ */
 app.get('/', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
