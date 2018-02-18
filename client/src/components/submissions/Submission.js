@@ -30,6 +30,10 @@ import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
 
+/** 
+ * Submission Component
+ * @component
+ */
 class Submission extends Component {
 
     constructor(props) {
