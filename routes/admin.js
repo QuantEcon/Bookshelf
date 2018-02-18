@@ -286,10 +286,17 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                         } else {
                             console.log("comment not found")
                         }
-                        
-                        submission.remove()
                     })
                 });
+
+                submission.remove(err => {
+                    if(err){
+                        console.error("ERROR REMOVING SUBMISSION: ", err)
+                    } else {
+                        console.log("Success removing submission")
+                        res.sendStatus(200)
+                    }
+                })
                 
             } else {
                 console.log("Error couldn't find submission")
