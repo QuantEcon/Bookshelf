@@ -11,5 +11,4 @@ client/src/assets/MathJax
 _config.js
 
 .DS_store
-
-/docs/build
+docs

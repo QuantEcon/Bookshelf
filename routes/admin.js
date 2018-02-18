@@ -264,6 +264,7 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                         console.log("Error finding author of submission: User doesn't exist!")
                     }
                 })
+
                 submission.comments.forEach(commentID => {
                     // Remove replies from each comment
                     console.log("Removing replies for comment ", commentID)
@@ -286,8 +287,8 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
                             console.log("comment not found")
                         }
                         
+                        submission.remove()
                     })
-                    
                 });
                 
             } else {
@@ -301,22 +302,22 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
             }
         })
         // Remove submission from database
-        Submission.remove({
-            "_id": req.body.submissionID
-        }, (err) => {
-            if (err) {
-                console.log("ERROR REMOVING SUBMISSION")
-                res.status(500)
-                res.send({
-                    error: true,
-                    message: "Error removing submission from database",
-                    err
-                })
-            } else {
-                console.log("Remvoing successfull")
-                res.sendStatus(200)
-            }
-        })
+        // Submission.remove({
+        //     "_id": req.body.submissionID
+        // }, (err) => {
+        //     if (err) {
+        //         console.log("ERROR REMOVING SUBMISSION")
+        //         res.status(500)
+        //         res.send({
+        //             error: true,
+        //             message: "Error removing submission from database",
+        //             err
+        //         })
+        //     } else {
+        //         console.log("Remvoing successfull")
+        //         res.sendStatus(200)
+        //     }
+        // })
     } else {
         res.sendStatus(400)
     }
