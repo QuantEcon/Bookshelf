@@ -389,7 +389,7 @@ class AdminPage extends Component {
                                             {/* Deleted Comments */}
                                             <div className="tile">
                                                 <span className="section-header">
-                                                    <h2>Comments ({this.props.deletedComments.length}</h2>
+                                                    <h2>Comments ({this.props.deletedComments.length})</h2>
                                                     {this.state.showDeletedComments
                                                     ? <button onClick={this.foldDeletedComments}>Hide</button>
                                                     :<button onClick={this.foldDeletedComments}>Show</button>}
