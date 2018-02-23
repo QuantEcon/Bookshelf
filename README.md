@@ -81,7 +81,7 @@ There are some config files that are not on the repo because they contain sensit
             }
 * `./js/auth/_config.js`
     * contains the OAuth `client ID's`, `client secrets`, and `callback url`'s for each of OAuth sites used (google, github, facebook, twitter)
-    * You will need to create your own and export an object of the ids as such:
+    * You will need to create your own OAuth applications for each of the sites and export an object of the ids as such:
         ```
         var appConfig = require('../../_config');
 
