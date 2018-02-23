@@ -15,10 +15,13 @@ echo ${ROOT_DIR}
 
 # Default values
 hostname=localhost
-port=2701
+port=8080
+clientPort=3000
 debug=n
-db_host=mongo://
+db_host=mongodb://
+db_port=27017
 db_name=bookshelf
+max_num_admins=5
 
 # Run each config file creator
 function start {
@@ -58,6 +61,9 @@ function web_config {
     port=$(input String Port: ${port})
     secret=$(input String "Session Secret:" secret)
     debug=$(input --bool Debug: ${debug})
+    clientPort=$(input String "Client Port:" ${clientPort})
+    mailgun_key=$(input String "Mailgun API Key:" ${mailgunKey})
+    mailgun_domain=$(input String "Mailgun Domain:" ${mailgun_domain})
 
 	cat > "${ROOT_DIR}/_config.js" <<- EOM
 		const hostname = '${hostname}';
@@ -65,14 +71,29 @@ function web_config {
 
 		const secret   = '${secret}';
 		const debug    = ${debug};
+        const clientPort = ${clientPort};
+
+        const mailgun_apiKey = '${mailgun_key}';
+        const mailgun_domain = '${mailgun_domain}';
 
 		module.exports = {
 		    debug: debug,
 		    port: port,
-		    hostname: hostname,
+		    urlAndPort: 'http://' + hostname + ':' + port,            
+		    hostName: hostname,
+            clientHostName: hostname,
+            clientPort: clientPort,
+            clientHostNameAndPort: hostname + clientPort,
+            redirectURL: 'http://' + hostname + ':' + clientPort + "/temp",
+            preRender: false,            
 		    url: 'http://' + hostname,
-		    urlPlusPort: 'http://' + hostname + ':' + port,
-		    secret: secret
+		    secret: secret,
+            filesDirectory: '/files',
+            rootDirectory: __dirname,
+            mailgun: {
+                apiKey: mailgun_apiKey,
+                domain: mailgun_domain
+            }
 		};
 	EOM
 
@@ -88,7 +109,7 @@ function db_config {
 
     db_host=$(input String "Database host:" "${db_host}${hostname}")
     db_name=$(input String "Database name:" ${db_name})
-    url="${db_host}/${db_name}"
+    url="${db_host}:${db_port}/${db_name}"
 
 	cat > "${ROOT_DIR}/js/db/_config.js" <<- EOM
 		module.exports = {
@@ -153,27 +174,27 @@ function oauth_config {
 		    github: {
 		        clientID: '${github_id}',
 		        clientSecret: '${github_secret}',
-		        callbackURL: appConfig.urlAndPort + '/auth/github/callback',
-		        addCallbackURL: appConfig.urlAndPort + '/auth/github/callback/add'
+		        callbackURL: appConfig.urlAndPort + '/api/auth/github/callback',
+		        addCallbackURL: appConfig.urlAndPort + '/api/auth/github/callback/add'
 		    },
 		    twitter: {
 		        consumerKey: '${twitter_key}',
 		        consumerSecret: '${twitter_secret}',
-		        callbackURL: appConfig.urlAndPort + '/auth/twitter/callback',
-		        addCallbackURL: appConfig.urlAndPort + '/auth/twitter/callback/add'
+		        callbackURL: appConfig.urlAndPort + '/api/auth/twitter/callback',
+		        addCallbackURL: appConfig.urlAndPort + '/api/auth/twitter/callback/add'
 
 		    },
 		    google: {
 		        clientID: '${google_id}',
 		        clientSecret: '${google_secret}',
-		        callbackURL: appConfig.urlAndPort + '/auth/google/callback',
-		        addCallbackURL: appConfig.urlAndPort + '/auth/google/callback/add'
+		        callbackURL: appConfig.urlAndPort + '/api/auth/google/callback',
+		        addCallbackURL: appConfig.urlAndPort + '/api/auth/google/callback/add'
 		    },
 		    facebook: {
 		        clientID: '${fb_id}',
 		        clientSecret: '${fb_secret}',
-		        callbackURL: appConfig.urlAndPort + '/auth/fb/callback',
-		        addCallbackURL: appConfig.urlAndPort + '/auth/fb/callback/add'
+		        callbackURL: appConfig.urlAndPort + '/api/auth/fb/callback',
+		        addCallbackURL: appConfig.urlAndPort + '/api/auth/fb/callback/add'
 		    }
 		};
 
@@ -183,6 +204,7 @@ function oauth_config {
 	echo -e "Finished creating OAuth config.\n"
 }
 
+
 # ./client/src/_config.js
 function client_config {
     echo "--------------------------------------"
@@ -190,18 +212,22 @@ function client_config {
     echo "--------------------------------------"
 
     hostname=$(input String Hostname: "${hostname}")
-    port=$(input String Port: "${port}")
     debug=$(input --bool Debug: n)
+    max_num_admins=$(input String "Max Number of Admins:" ${max_num_admins})
 
 	cat > "${ROOT_DIR}/client/src/_config.js" <<- EOM
 		const hostname = '${hostname}';
-		const port     = '${port}';
+		const port     = '${clientPort}';
 		const debug    = ${debug};
-
+        const serverPort = '${port}';
+        const max_num_admins = ${max_num_admins};
 		module.exports = {
 		    debug: debug,
 		    url: 'http://' + hostname,
-		    urlPlusPort: 'http://' + hostname + ':' + port,
+		    urlPlusPort: 'http://' + hostname + ':' + serverPort,
+            serverPort,
+            max_num_admins,
+            port
 		};
 
 	EOM
