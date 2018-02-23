@@ -11,11 +11,12 @@ Please work in branches and make PR's
 ### Setup
 
 #### Installation Commands 
-Ensure you have `npm v5+` and `node v6+` installed. I am currently using `npm 5.6.0` and `node v6.11.4`
+Ensure you have `npm v5+` and `node v8+` installed. I am currently using `npm 5.6.0` and `node v9.5.0`
 1. Pull from repository using `git pull`
 2. Update npm using the command `node install -g npm`
 3. Run `npm install -g create-react-app`
 4. Run `npm run install-all` to install all dependencies.
+5. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
 
 #### Running Commands
 If you are in developement mode, you will need to have _both_ the webpack developement server for the React client _and_ the node express server running. To do this, run these commands:
@@ -24,6 +25,8 @@ If you are in developement mode, you will need to have _both_ the webpack develo
 2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
 
 You then will be able to connect to the website through the React client's port (default is 3000)
+
+If you get a `Could not proxy request` error, then you are either not running the API backend, or the ports are not matching. Ensure the port that the API is running on matches the one declared in the config files.
 
 If you would like to test a production build, run `npm run build` from inside the `/client/` directory.
 
@@ -40,26 +43,35 @@ There are some config files that are not on the repo because they contain sensit
 * `./_config.js`
     * contains the `url` and `port` the server is running on:
         ```
-        var port = YOUR-PORT-HERE;
-        const clientPort = CLIENT-PORT-HERE // 3000 for default React
-        module.exports = {
-            debug: true,
-            port: port,
-            urlAndPort: API-URL-HREE + port,
-            secret: SESSION-SECRET-HERE, // random string
-            hostName: API-URL-HERE,
-            clientHostName: YOUR-HOST-NAME-HERE, // "localhost" if debugging
-            clientPort: clientPort,
-            clientHostNameAndPort: clientHostName + clientPort,
-            redirectURL: clientHostNameAndPort + "/temp",
-            preRender: false,
-            filesDirectory: '/files',
-            rootDirectory: __dirname,
-            mailgun: {
-                apiKey: YOUR-API-KEY=HERE,
-                domain: YOUR-DOMAIN-HERE
-            }
-        };
+        const hostname = 'localhost';
+        const port = '8080';
+
+         const secret = 'YOUR_SECRET_HERE';
+         const debug = true;
+         const clientPort = 3000;
+
+         const mailgun_apiKey = 'YOUR-MAILGUN-API-KEY-HERE';
+         const mailgun_domain = 'YOUR-MAILGUN-DOMAIN-HERE';
+
+         module.exports = {
+          debug: debug,
+          port: port,
+          urlAndPort: 'http://' + hostname + ':' + port,
+          hostName: hostname,
+          clientHostName: hostname,
+          clientPort: clientPort,
+          clientHostNameAndPort: hostname + clientPort,
+          redirectURL: 'http://' + hostname + ':' + clientPort + "/temp",
+          preRender: false,
+          url: 'http://' + hostname,
+          secret: secret,
+          filesDirectory: '/files',
+          rootDirectory: __dirname,
+          mailgun: {
+              apiKey: mailgun_apiKey,
+              domain: mailgun_domain
+          }
+      };
 
 * `./js/db/_config.js`
     * contains the `url` to the mongo database:
@@ -77,27 +89,27 @@ There are some config files that are not on the repo because they contain sensit
             github: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.urlAndPort + '/auth/github/callback',
-                addCallbackURL: appConfig.urlAndPort + '/auth/github/callback/add'
+                callbackURL: appConfig.urlAndPort + '/api/auth/github/callback',
+                addCallbackURL: appConfig.urlAndPort + '/api/auth/github/callback/add'
             },
             twitter: {
                 consumerKey: 'YOUR-KEY-HERE',
                 consumerSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.urlAndPort + '/auth/twitter/callback',
-                addCallbackURL: appConfig.urlAndPort + '/auth/twitter/callback/add'
+                callbackURL: appConfig.urlAndPort + '/api/auth/twitter/callback',
+                addCallbackURL: appConfig.urlAndPort + '/api/auth/twitter/callback/add'
 
             },
             google: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.urlAndPort + '/auth/google/callback',
-                addCallbackURL: appConfig.urlAndPort + '/auth/google/callback/add'
+                callbackURL: appConfig.urlAndPort + '/api/auth/google/callback',
+                addCallbackURL: appConfig.urlAndPort + '/api/auth/google/callback/add'
             },
             facebook: {
                 clientID: 'YOUR-ID-HERE',
                 clientSecret: 'YOUR-SECRET-HERE',
-                callbackURL: appConfig.urlAndPort + '/auth/fb/callback',
-                addCallbackURL: appConfig.urlAndPort + '/auth/fb/callback/add'
+                callbackURL: appConfig.urlAndPort + '/api/auth/fb/callback',
+                addCallbackURL: appConfig.urlAndPort + '/api/auth/fb/callback/add'
             }
         };
 
@@ -105,14 +117,19 @@ There are some config files that are not on the repo because they contain sensit
 * `./client/src/_config.js`
     * contains url and port for the React as well as the API
         ```
-        module.exports = {
-            port: YOUR-CLIENT-PORT-HERE // 3000 if using default React setup,
-            url: YOUR-URL-HERE // localhost if debugging,
-            serverPort: YOUR-API-PORT-HERE,
-            urlPlusPort = url + ":" + serverPort,
-            debug: true,
-            maxNumAdmins: MAXMIM-NUMBER-OF-ADMIN-USERS-HERE
-        }
+       const hostname = 'localhost';
+         const port = '3000';
+         const debug = true;
+         const serverPort = '8080';
+         const max_num_admins = 5;
+         module.exports = {
+           debug: debug,
+             url: 'http://' + hostname,
+             urlPlusPort: 'http://' + hostname + ':' + serverPort,
+             serverPort,
+             max_num_admins,
+             port
+         };
 
 In addition to these files, you will need to spin up your own instance of a Mongo database.
 
