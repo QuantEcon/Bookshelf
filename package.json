@@ -14,7 +14,8 @@
     "install-client": "cd client && npm install",
     "build-client": "cd client && npm build",
     "api-docs": "apidoc -f \".*\\.js$\" -i ./routes -o ./docs",
-    "client-docs": "jsdoc -r -d ./client/docs -c ./jsdoc-config.json"
+    "client-docs": "jsdoc -r -d ./client/docs -c ./jsdoc-config.json",
+    "setup-css": "cd client/src/assets && npm install --global gulp-cli && npm install && gulp"
   },
   "repository": {
     "type": "git",
