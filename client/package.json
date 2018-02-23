@@ -43,6 +43,7 @@
   },
   "proxy": "http://localhost:8080",
   "devDependencies": {
+    "docdash": "^0.4.0",
     "jsdoc-jsx": "^0.1.0",
     "minami": "^1.2.3"
   }

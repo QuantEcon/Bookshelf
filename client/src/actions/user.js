@@ -1,3 +1,10 @@
+/**
+ * @file User actions
+ * @author Trevor Lyon
+ * 
+ * @module userActions
+ */
+
 import store from '../store/store';
 
 export const REQUEST_USER_INFO = 'REQUEST_USER_INFO'
@@ -34,6 +41,12 @@ export const invalidateUserInfo = (userID) => {
     }
 }
 
+
+/**
+ * @function fetchUserInfo
+ * @description Makes an API request to fetch all the data for the user with the matching ID
+ * @param {String} userID ID of the user being searched for
+ */
 export const fetchUserInfo = (userID) => {
     return function(dispatch) {
         dispatch(requestUserInfo(userID));

@@ -5,12 +5,18 @@ import {bindActionCreators} from 'redux'
 import Submit from '../components/submit/Submit'
 import * as SubmitActions from '../actions/submit'
 
+/**
+ * Parent container for {@link Submit}. Retrives the current user from the redux store, 
+ * retrieves the Submit Actions and passes them to the child component
+ */
 class SubmitContainer extends Component {
-    // constructor(props) {
-    //     super(props);
-    // }
-
-    onSubmit = (formData, file) => {
+    /**
+     * Dispatches a submit action. Called by the {@link Submit} component when the user clicks
+     * the submit button
+     * @param {Object} formData All data the user entered in the submission form
+     * @param {File} file File the user uploaded for the submission
+     */
+    onSubmit (formData, file){
         console.log('[SubmitContainer] - onsubmit: ', formData, file)
         this
             .props

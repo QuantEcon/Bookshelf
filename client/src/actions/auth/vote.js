@@ -1,3 +1,9 @@
+/**
+ * @file Voting actions
+ * @author Trevor Lyon
+ * 
+ * @module voteActions
+ */
 import store from '../../store/store'
 import axios from 'axios'
 import * as SubmissionActions from '../submission'
@@ -35,29 +41,28 @@ const removeUpvote = (id) => {
     }
 }
 // SUBMISSIONS ==========================================================
-
-/*
- * PARAMETERS: 
- *   submissionID: the id of the submission being downvoted
- * METHOD:
- *  This method first checks if the user has already downvoted or upvoted
+ /**
+  * @function downvoteSubmission
+  * @description This method first checks if the user has already downvoted or upvoted
  * this submission and acts accordingly
  * 
  *  If the user has already upvoted:
  *      The upvote will be removed and downvoted added
  *      The submission's score will also be reduced by 2
- *  If the user has alredy downvoted:
+ *  
+ * If the user has alredy downvoted:
  *      The downvote will be removed
  *      The submission's score will be incremented by 1
- *  If the user has neither upvoted nor downvoted:
+ *  
+ * If the user has neither upvoted nor downvoted:
  *      The downvote will be added
  *      The submission's score will be decremented by 1
  * 
  *  The method then makes an http request to the API. If the API returns an error
  * the changes to the submission are reversed
- * RETURN:
- *  None
- */
+  * @param {Object} param0 
+  * @param {String} param0.submissionID ID of the submission being downvoted
+  */
 export const downvoteSubmission = ({
     submissionID
 }) => {
@@ -147,30 +152,30 @@ export const downvoteSubmission = ({
     }
 }
 
-/*
- * PARAMETERS: 
- *   submissionID: the id of the submission being upvoted
- * 
- * METHOD:
- *  This method first checks if the user has already downvoted or upvoted
- * this submission and acts accordingly:
- * 
- *  If the user has already upvoted:
- *      The upvote will be removed
- *      The submission's score will be decremented by 1
- *  If the user has alredy downvoted:
- *      The downvote will be removed and the upvote added
- *      The submission's score will be incremented by 2
- *  If the user has neither upvoted nor downvoted:
- *      The upvote will be added
- *      The submission's score will be incremented by 1
- * 
- *  The method then makes an http request to the API. If the API returns an error
- * the changes to the submission are reversed
- * 
- * RETURN:
- *  None
- */
+ /**
+  * @function upvoteSubmission
+  * @description
+  * This method first checks if the user has already downvoted or upvoted
+  * this submission and acts accordingly:
+  * 
+  *  If the user has already upvoted:
+  *      The upvote will be removed
+  *      The submission's score will be decremented by 1
+  * 
+  *  If the user has alredy downvoted:
+  *      The downvote will be removed and the upvote added
+  *      The submission's score will be incremented by 2
+  * 
+  *  If the user has neither upvoted nor downvoted:
+  *      The upvote will be added
+  *      The submission's score will be incremented by 1
+  * 
+  * The method then makes an http request to the API. If the API returns an error
+  * the changes to the submission are reversed
+  * 
+  * @param {Object} param0 
+  * @param {String} param0.submissionID ID of the submission being upvoted
+  */
 export const upvoteSubmission = ({
     submissionID
 }) => {
@@ -253,33 +258,31 @@ export const upvoteSubmission = ({
 
 
 }
-// COMMENTS =============================================================
-
-/*
- * PARAMETERS: 
- *   submissionID: the id of the submission the comment belongs to
- *   commentID: the id of the comment being downvoted
- * 
- * METHOD:
- *  This method first checks if the user has already downvoted or upvoted
- * this comment and acts accordingly
- * 
- *  If the user has already upvoted:
- *      The upvote will be removed and downvoted added
- *      The comment's score will also be reduced by 2
- *  If the user has alredy downvoted:
- *      The downvote will be removed
- *      The comment's score will be incremented by 1
- *  If the user has neither upvoted nor downvoted:
- *      The downvote will be added
- *      The comment's score will be decremented by 1
- * 
- *  The method then makes an http request to the API. If the API returns an error
- * the changes to the comment are reversed
- * 
- * RETURN:
- *  None
- */
+// // COMMENTS =============================================================
+//  /**
+//   * @function downvoteComment
+//   * @description (NOT USED) This method first checks if the user has already downvoted or upvoted
+//  * this comment and acts accordingly
+//  * 
+//  *  If the user has already upvoted:
+//  *      The upvote will be removed and downvoted added
+//  *      The comment's score will also be reduced by 2
+//  *  
+//  * If the user has alredy downvoted:
+//  *      The downvote will be removed
+//  *      The comment's score will be incremented by 1
+//  * 
+//  *  If the user has neither upvoted nor downvoted:
+//  *      The downvote will be added
+//  *      The comment's score will be decremented by 1
+//  * 
+//  *  The method then makes an http request to the API. If the API returns an error
+//  * the changes to the comment are reversed
+//  * 
+//   * @param {Object} param0 
+//   * @param {String} param0.submissionID ID of the submission the comment belongs to
+//   * @param {String} param0.commentID ID of the comment being downvoted
+//   */
 export const downvoteComment = ({
     submissionID,
     commentID
@@ -380,6 +383,8 @@ export const downvoteComment = ({
  * RETURN:
  *  None
  */
+
+
 export const downvoteReply = ({
     commentID,
     replyID,

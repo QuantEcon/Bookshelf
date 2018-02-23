@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
 import Markdown from 'react-markdown';
@@ -8,7 +9,26 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 
+/**
+ * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
+ * passes the `submit` function as a prop.
+ */
 class Submit extends Component {
+    
+    /**
+     * @prop {Object} user Contains all the current user's data.
+     * @prop {func} submit Method to call after successful form validation and when the user
+     * clicks on submit
+     * @prop {Object} history Required for navigation.
+     * @prop {func} save Method to call after successful form validation and when the user
+     * clicks on save. This is used if this is an EditSubmission page
+     */
+    static propTypes = {
+        user: PropTypes.object.isRequired,
+        submit: PropTypes.func,
+        history: PropTypes.object.isRequired,
+        save: PropTypes.func
+    }
 
     topics = [
         'All',
@@ -80,7 +100,10 @@ class Submit extends Component {
         }
     }
 
-    toggleTermsAndConditionsModal = () => {
+    /**
+     * Toggles the visibliity of the Terms and Conditions Modal
+     */
+    toggleTermsAndConditionsModal(){
         this.setState({
             termsAndConditionsModalOpen: !this.termsAndConditionsModalOpen
         })
@@ -115,7 +138,13 @@ class Submit extends Component {
         agreement: false
     }
 
-    validate = () => {
+    /**
+     * Validates the form to ensure all required fields are filled out correctly. 
+     * 
+     * If there is an error in a field, an error message will be displayed underneath the 
+     * input.
+     */
+    validate () {
         var valid = true;
 
         if (!this.formData.title) {
@@ -152,13 +181,23 @@ class Submit extends Component {
         }, () => this.forceUpdate());
     }
 
-    removeTopic = (topic, array) => {
+    /**
+     * Removes the topic from the selected topics array
+     * @param {String} topic Topic to remove from form data
+     * @param {Array} array Array of topics
+     */
+    removeTopic (topic, array) {
         var index = array.indexOf(topic);
         if (index > -1) {
             array.splice(index, 1);
         }
     }
 
+    /**
+     * Listener method for `onChange` on the topics' checkboxes. Adds/removes the topic
+     * from the form data topic list
+     * @param {Object} event Event passed from the `onChange` listener
+     */
     topicChanged(event) {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
@@ -171,7 +210,12 @@ class Submit extends Component {
         }
     }
 
-    submit = (e) => {
+    /**
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * the submission is being edited
+     * @param {Object} e Event passed from the `submit` listener
+     */
+    submit(e) {
         e.preventDefault();
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
@@ -223,6 +267,11 @@ class Submit extends Component {
         this.forceUpdate();
     }
 
+    /**
+     * Listener for when a user drops files into the drop zone
+     * @param {Array} accepted Array of accepeted files
+     * @param {Array} rejected Array of rejected files
+     */
     onDrop(accepted, rejected) {
         if (accepted.length) {
             var reader = new FileReader();
@@ -246,7 +295,11 @@ class Submit extends Component {
         }
     }
 
-    toggleOpenModal = (e) => {
+    /**
+     * Opens the submission preview modal
+     * @param {Object} e Event passed from the `onClick` listener
+     */
+    toggleOpenModal(e) {
         console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
@@ -254,7 +307,8 @@ class Submit extends Component {
         })
     }
 
-    readNotebookFile = () => {
+    /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
+    readNotebookFile(){
         if (!this.state.notebookDataReady) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});

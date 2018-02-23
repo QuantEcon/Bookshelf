@@ -1,7 +1,7 @@
 {
     "plugins": ["plugins/markdown"],
     "opts": {
-        "template": "./client/node_modules/minami"
+        "template": "./client/node_modules/docdash"
     },
     "source": {
         "include": ["./client/src/components", "./client/src/actions", "./client/src/containers", "./client/src/utils", "./client/src/store"],

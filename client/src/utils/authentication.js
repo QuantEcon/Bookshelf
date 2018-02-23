@@ -1,3 +1,9 @@
+/**
+ * @file Authentication utils
+ * @author Trevor Lyon
+ * 
+ * @module authenticationUtils
+ */
 import openPopup from './popup';
 import {
     parseResponse
@@ -11,6 +17,12 @@ import * as config from '../_config.js'
 
 import store from '../store/store'
 
+/**
+ * @function authenticate
+ * @description Opens a popup to `provider`'s OAuth authentication screen, and listens for the credentials in the url.
+ *  
+ * @param {String} provider Social provider (Github, Facebook, Twitter, Google)
+ */
 export const authenticate = (provider) => {
     //TODO: extract url to central config file
     console.log('[Authentication] - open popup')
@@ -28,6 +40,12 @@ export const authenticate = (provider) => {
     })
 }
 
+/**
+ * @function authenticateNewSocial
+ * @description Opens a popup to the `provider`'s OAuth authentication screen, and listens for the credentials in the url.
+ * 
+ * @param {String} provider Social provider to add (Github, Facebook, Twitter, Google)
+ */
 export const authenticateNewSocial = (provider) => {
     console.log('[Authentication] - add new social: ', provider);
     var popup
@@ -46,6 +64,7 @@ export const authenticateNewSocial = (provider) => {
     });
 }
 
+
 const getAllParams = (url) => {
     const token = getParamByName('token', url);
     const uid = getParamByName('uid', url);
@@ -56,6 +75,14 @@ const getAllParams = (url) => {
     }
 }
 
+/**
+ * @function listenForCredentials
+ * @description Listens for credentials in the url. The only parameters that are passed to this method outside of it, are 
+ * `popup` and `provider`. The other parameters are created in the method.
+ * @param {Object} param0 
+ * @param {Object} param0.popup Reference to the popup window
+ * @param {String} param0.provider Social provider being used for OAuth
+ */
 const listenForCredentials = ({
     popup,
     provider,
