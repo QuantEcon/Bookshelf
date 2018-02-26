@@ -225,10 +225,10 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.upvote} className='active'>
+                                    ? <a title="This notebook is helful and shows the effort" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
                                         </a>
-                                    : <a onClick={this.upvote}>
+                                    : <a title="This notebook is helful and shows the effort" onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>}
 
@@ -241,10 +241,10 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.downvote} className='active'>
+                                    ? <a title="This notebook does not show any effort or research" onClick={this.downvote} className='active'>
                                             <ThumbsDown/>
                                         </a>
-                                    : <a onClick={this.downvote}>
+                                    : <a title="This notebook does not show any effort or reasearch" onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>}
                             </div>
