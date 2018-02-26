@@ -118,6 +118,15 @@ class Submission extends Component {
         console.log("[Submission] - flag submission clicked")
         this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
     }
+    
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report the content.',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagSubmission(),    
+         })
+    }
 
     encounteredURI(uri) {
         console.log('encountered uri in markdown: ', uri);
@@ -276,8 +285,8 @@ class Submission extends Component {
                                     <ul className='details-options'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a onClick={this.flagSubmission} className="active"><FlagIcon/></a>
-                                            :  <a onClick={this.flagSubmission}><FlagIcon/></a>}
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
