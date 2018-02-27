@@ -103,7 +103,7 @@ class Submission extends Component {
             .props
             .actions
             .upvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 237 solves this problem
     }
 
     downvote() {
@@ -111,7 +111,7 @@ class Submission extends Component {
             .props
             .actions
             .downvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : chnages on line 253 solves the problem
     }
 
     flagSubmission = () => {
@@ -234,7 +234,7 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This notebook is helful and shows the effort" onClick={this.upvote} className='active'>
+                                    ? <a title="This notebook is helful and shows the effort" onClick={this.upvote} /*className='active'*/>
                                             <ThumbsUp/>
                                         </a>
                                     : <a title="This notebook is helful and shows the effort" onClick={this.upvote}>
@@ -250,7 +250,7 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This notebook does not show any effort or research" onClick={this.downvote} className='active'>
+                                    ? <a title="This notebook does not show any effort or research" onClick={this.downvote} /*className='active'*/>
                                             <ThumbsDown/>
                                         </a>
                                     : <a title="This notebook does not show any effort or reasearch" onClick={this.downvote}>
