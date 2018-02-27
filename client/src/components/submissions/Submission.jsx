@@ -111,7 +111,7 @@ class Submission extends Component {
             .props
             .actions
             .downvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click : chnages on line 253 solves the problem
+        //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
     flagSubmission = () => {
