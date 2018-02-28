@@ -30,6 +30,8 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 class Submission extends Component {
 
@@ -121,7 +123,7 @@ class Submission extends Component {
     
     flagClick = () => {
         confirmAlert({
-            title: 'Are you sure you want to report the content.',                       
+            title: 'Are you sure you want to report this content?',                       
             confirmLabel: 'Yes',                          
             cancelLabel: 'Cancel',                             
             onConfirm: () => this.flagSubmission(),    
@@ -234,10 +236,10 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This notebook is helful and shows the effort" onClick={this.upvote} /*className='active'*/>
+                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
                                         </a>
-                                    : <a title="This notebook is helful and shows the effort" onClick={this.upvote}>
+                                    : <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>}
 
@@ -250,10 +252,10 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This notebook does not show any effort or research" onClick={this.downvote} /*className='active'*/>
+                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
                                             <ThumbsDown/>
                                         </a>
-                                    : <a title="This notebook does not show any effort or reasearch" onClick={this.downvote}>
+                                    : <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>}
                             </div>
