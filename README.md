@@ -132,6 +132,7 @@ There are some config files that are not on the repo because they contain sensit
          };
 
 In addition to these files, you will need to spin up your own instance of a Mongo database.
+To install and start Mongo database on your respective Operating System go to https://docs.mongodb.com/manual/administration/install-community/
 
 Once you have done this, you can use the commands to get the server up and running.
 
