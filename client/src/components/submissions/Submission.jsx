@@ -16,6 +16,9 @@ import NotebookPreview from '@nteract/notebook-preview';
 
 import FileSaver from 'file-saver'
 
+import { confirmAlert } from 'react-confirm-alert'; 
+import 'react-confirm-alert/src/react-confirm-alert.css' 
+
 // import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
