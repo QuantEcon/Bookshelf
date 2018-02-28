@@ -103,7 +103,7 @@ class Submission extends Component {
             .props
             .actions
             .upvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 237 solves this problem
     }
 
     downvote() {
@@ -111,12 +111,21 @@ class Submission extends Component {
             .props
             .actions
             .downvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
     flagSubmission = () => {
         console.log("[Submission] - flag submission clicked")
         this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
+    }
+    
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report the content.',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagSubmission(),    
+         })
     }
 
     encounteredURI(uri) {
@@ -225,10 +234,10 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.upvote} className='active'>
+                                    ? <a title="This notebook is helful and shows the effort" onClick={this.upvote} /*className='active'*/>
                                             <ThumbsUp/>
                                         </a>
-                                    : <a onClick={this.upvote}>
+                                    : <a title="This notebook is helful and shows the effort" onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>}
 
@@ -241,10 +250,10 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.downvote} className='active'>
+                                    ? <a title="This notebook does not show any effort or research" onClick={this.downvote} /*className='active'*/>
                                             <ThumbsDown/>
                                         </a>
-                                    : <a onClick={this.downvote}>
+                                    : <a title="This notebook does not show any effort or reasearch" onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>}
                             </div>
@@ -276,8 +285,8 @@ class Submission extends Component {
                                     <ul className='details-options'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a onClick={this.flagSubmission} className="active"><FlagIcon/></a>
-                                            :  <a onClick={this.flagSubmission}><FlagIcon/></a>}
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
