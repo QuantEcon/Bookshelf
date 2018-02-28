@@ -12,7 +12,8 @@
     "start": "node app.js",
     "install-all": "npm install && npm run install-client",
     "install-client": "cd client && npm install",
-    "build-client": "cd client && npm build"
+    "build-client": "cd client && npm build",
+    "setup-css": "cd client/src/assets && npm install --global gulp-cli && npm install && gulp"
   },
   "repository": {
     "type": "git",
