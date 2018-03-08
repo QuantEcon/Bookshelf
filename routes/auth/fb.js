@@ -8,56 +8,38 @@ const jwtAuth = require('../../js/auth/jwt');
 
 const appConfig = require('../../_config')
 
-
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
 ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
 
 var app = express.Router();
-// fb login ================================ add fb to existing user
-//TODO: implement jwt in this route
 
 app.get('/add', jwtAuth.authenticate('jwt', {
     session: false
 }),passport.authenticate('facebook', {
     scope: 'email'
 }));
-// app.get('/callback/add', passport.authenticate('addFB'), function (req, res) {
-//     User.findById(req.user._id, function (err, user) {
-//         if (err) {
-//             res.status(500);
-//             res.send({
-//                 error: true,
-//                 message: err
-//             })
-//         } else if (user) {
-//             var token = jwt.sign({
-//                 user: {
-//                     _id: user._id
-//                 }
-//             }, 'banana horse laser muffin');
-//             var queryString = qs.stringify({
-//                 token,
-//                 uid: req.user._id
-//             });
-//             res.redirect(req.headers.referer + '?' + queryString);
-//         } else {
-//             res.status(400);
-//             res.send({
-//                 error: true,
-//                 message: 'No user found'
-//             });
-//         }
-//     })
-// });
-// register new user with fb
 
 app.options('/', function (req, rex) {
     console.log('in options for fb auth');
 })
 
+/**
+ * @api {get} /api/auth/fb Facebook
+ * @apiGroup Authentication
+ * @apiName AuthenticateFacebook
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription API endpoint for Facebook OAuth. The user is redirected to Facebook's OAuth
+ * screen.
+ * 
+ * On a successful authentication, the window will be redirected with a JSON Web Token in the url
+ * parameters which the client uses for future authentication
+ */
 app.get('/', passport.authenticate('facebook', {
     scope: 'email'
 }));
+
 app.get('/callback', passport.authenticate('facebook', {
     failureRedirect: '/auth/failure'
 }), function (req, res) {

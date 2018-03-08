@@ -9,6 +9,7 @@ class HeadContainer extends Component {
     constructor(props){
         super(props)
         this.resetParams = this.resetParams.bind(this)
+        console.log("[HeadContainer] - props: ", props)
     }
 
     resetParams = () => {

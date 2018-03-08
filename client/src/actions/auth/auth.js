@@ -1,3 +1,10 @@
+/**
+ * @file Actions that require authorization
+ * @author Trevor Lyon
+ * 
+ * @module authActions
+ */
+
 import store from '../../store/store';
 import * as SubmissionActions from '../submission';
 import axios from 'axios'
@@ -102,11 +109,11 @@ const removeSocial = ({
     }
 }
 
-// ==============================================================================================
-
 /**
- * REDUX ACTION: Makes an API request call to remove the given social account from the user's account.
- * Then dispatches an action to modify the local chagnes in redux
+ * @function removeSocialAccount
+ * 
+ * @description REDUX ACTION: Makes an API request call to remove the given social account from the user's account.
+ * Then dispatches an action to modify the local changes in the redux store
  * 
  * @param {Object} data
  * @param {String} data.social - The name of the social account to remove. This can be "fb", "google", "github", or "twitter"
@@ -142,7 +149,9 @@ export const removeSocialAccount = ({
 }
 
 /**
- * REDUX ACTION: Makes an API call to set the user's avatar picture to the provided social account's profile picture. A `SET_AVATAR_PICTURE` 
+ * @function setActiveAvatar
+ * 
+ * @description REDUX ACTION: Makes an API call to set the user's avatar picture to the provided social account's profile picture. A `SET_AVATAR_PICTURE` 
  * action is then dispatched to update the redux data
  * 
  * @param {Object} data
@@ -180,7 +189,9 @@ export const setActiveAvatar = ({
 }
 
 /**
- * REDUX ACTION: Toggles the visibility to others of a user's social account. Makes an API call to toggle the visibility.
+ * @function toggleSocial
+ * 
+ * @description REDUX ACTION: Toggles the visibility to others of a user's social account. Makes an API call to toggle the visibility.
  * Then dispatches a `TOGGLE_SOCIAL` action to update the local redux data.
  * 
  * @param {Object} data
@@ -219,7 +230,9 @@ export const toggleSocial = ({
 }
 
 /**
- * REDUX ACTION: Dispatches a `BEGIN_EDIT_PROFILE` action to let redux know to wait for a response from the API. Then makes an API 
+ * @function editProfile
+ * 
+ * @description REDUX ACTION: Dispatches a `BEGIN_EDIT_PROFILE` action to let redux know to wait for a response from the API. Then makes an API 
  * call to update the user's database document with the provided `data`. The API will return the updated information for the user
  * and an `END_EDIT_PROFILE` action is dispatched to update the local redux data.
  * 
@@ -294,7 +307,9 @@ export const editProfile = ({
 }
 
 /**
- * This method takes in a SubmissionID and a Comment object and makes a POST request to the API. 
+ * @function submitComment
+ * 
+ * @description This method takes in a SubmissionID and a Comment object and makes a POST request to the API. 
  * 
  * The request must have an Authorization header with the user's JWT in order for the request to be valid.
  * 
@@ -307,7 +322,6 @@ export const editProfile = ({
  * @param {Sting} submissionID - The ID of the submission being commented on
  * @param {Object} comment 
  */
-
 export const submitComment = (submissionID, comment) => {
     return function (dispatch) {
         axios.post('/api/submit/comment/', {
@@ -335,7 +349,16 @@ export const submitComment = (submissionID, comment) => {
         })
     }
 }
-
+/**
+ * @function editComment
+ * 
+ * @description  Makes an API call to edit the commit in the database with the matching ID,
+ *  then dispatches an action to redux
+ * 
+ * @param {Object} data 
+ * @param {String} data.commentID ID of the comment being edited
+ * @param {String} data.newCommentText New content of the comment
+ */
 export const editComment =({
     commentID,
     newCommentText
@@ -357,6 +380,15 @@ export const editComment =({
     }
 }
 
+/**
+ * @function submitReply
+ * @description Makes an API requeset to create a new reply to a comment. Then dispatches an action
+ * to update the local data with the new reply
+ * @param {Object} data
+ * @param {string} data.submissionID ID of the submission the reply belongs to
+ * @param {string} data.commentID ID of the comment the reply belongs to
+ * @param {string} data.reply Content of the reply  
+ */
 export const submitReply = ({
     submissionID,
     commentID,

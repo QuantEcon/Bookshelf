@@ -64,9 +64,9 @@ passport.use('facebook', new FacebookStrategy({
                         }
 
                         newUser.emailSettings = {
-                            newComment: false,
-                            newReply: false,
-                            submission: false
+                            newComment: true,
+                            newReply: true,
+                            submission: true
                         }
                         newUser.summary = '';
 

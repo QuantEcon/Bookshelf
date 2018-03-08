@@ -20,6 +20,45 @@ app.use(function(req, res, next){
     next();
 })
 
+/**
+ * @apiDefine AuthorizationHeader
+ * @apiHeader (Headers) {String} authorization Authorization JSON Web Token
+ * @apiHeaderExample {json} Header Example:
+ *  {
+ *      "Authorization": "JWT <web token>"
+ *  }
+ */
+
+/**
+ * @api {post} /api/downvote/submission Downvote Submission
+ * @apiGroup Vote
+ * @apiName DownvoteSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription If the user hasn't voted on this submission before, the submission's scrore
+ * will be decreased by 1 and the submission ID will be added to the user's downvote.
+ * 
+ * If the user has already downvoted the submission, the submission's score will be increased
+ * by 1 and the submission ID will be removed from the user's upvotes.
+ * 
+ * If the user has already upvoted the submission, the submission's score will be decreased
+ * by 2 and the submission ID will be removed from the user's upvotes and added to the 
+ * user's downvotes.
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID ID of the submission being downvoted
+ * 
+ * @apiSuccess (200) data
+ * @apiSuccess (200) data.submissionID ID of the submission being downvoted
+ * 
+ * @apiError (500) InternalServerError An error ocurred searching, updating, or saving
+ * the submission document.
+ * 
+ * @apiError (400) BadRequest A submission ID was not supplied in the request
+ */
 app.post('/submission',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received downvote submission: ", req.body);
     if (!req.user) {
@@ -111,6 +150,38 @@ app.post('/submission',  passport.authenticate('jwt', {session:false}), function
 
 });
 
+/**
+ * @api {post} /api/downvote/comment Downvote Comment
+ * @apiGroup Vote
+ * @apiName DownvoteComment
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription If the user hasn't voted on this comment before, the comment's scrore
+ * will be decreased by 1 and the comment ID will be added to the user's downvote.
+ * 
+ * If the user has already downvoted the comment, the comment's score will be increased
+ * by 1 and the comment ID will be removed from the user's upvotes.
+ * 
+ * If the user has already upvoted the comment, the comment's score will be decreased
+ * by 2 and the comment ID will be removed from the user's upvotes and added to the 
+ * user's downvotes.
+ * 
+ * Note: this is the API endpoint for downvoting both comments and replies.
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment being downvoted
+ * 
+ * @apiSuccess (200) data
+ * @apiSuccess (200) data.commentID ID of the comment being downvoted
+ * 
+ * @apiError (500) InternalServerError An error ocurred searching, updating, or saving
+ * the comment document.
+ * 
+ * @apiError (400) BadRequest A comment ID was not supplied in the request
+ */
 app.post('/comment',  passport.authenticate('jwt', {session:false}), function (req, res) {
     console.log("Received downvote comment: ", req.body);
     if (!req.user) {

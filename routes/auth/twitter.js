@@ -17,30 +17,26 @@ app.get('/add', jwtAuth.authenticate('jwt', {
 }), passport.authenticate('twitter', {
     scope: 'email'
 }));
-app.get('/callback/add', passport.authenticate('addTwitter'), function (req, res) {
-    User.findById(req.user._id, function (err, user) {
-        if (err) {
-            res.status(500);
-            res.send({
-                error: true,
-                message: err
-            })
-        } else if (user) {
-            res.redirect(req.headers.referer + '?' + 'success=true');
-        } else {
-            res.status(400);
-            res.send({
-                error: true,
-                message: 'No user found'
-            });
-        }
-    })
-});
+
 
 // register/login with twitter
+/**
+ * @api {get} /api/auth/fb Twitter
+ * @apiGroup Authentication
+ * @apiName AuthenticateTwitter
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription API endpoint for Twitter OAuth. The user is redirected to Twitter's OAuth
+ * screen.
+ * 
+ * On a successful authentication, the window will be redirected with a JSON Web Token in the url
+ * parameters which the client uses for future authentication
+ */
 app.get('/', passport.authenticate('twitter', {
     scope: 'email'
 }));
+
 app.get('/callback',
     passport.authenticate('twitter', {
         failureRedirect: '/auth/failure'

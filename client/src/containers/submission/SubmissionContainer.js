@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
@@ -15,7 +16,20 @@ const actions = {
     deleteSubmission
 }
 
+/**
+ * Submission Container
+ * 
+ * Parent container for {@link Submission}. Retrieves all data from the Redux store
+ * and passes it to the child Submission component. 
+ */
 class SubmissionContainer extends Component {
+    /**
+     * @prop {Object} actions Contains the actions required for the submission page.
+     */
+    static propTypes = {
+        actions: PropTypes.object.isRequired
+    }
+
     constructor(props) {
         super(props);
         this

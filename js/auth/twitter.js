@@ -55,9 +55,9 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.upvotes = [];
                         newUser.downvotes = [];
                         newUser.emailSettings = {
-                            newComment: false,
-                            newReply: false,
-                            submission: false
+                            newComment: true,
+                            newReply: true,
+                            submission: true
                         }
 
                         if (profile._json.profile_image_url) {

@@ -150,6 +150,40 @@ app.get('/cancel', passport.authenticate('jwt', {
         })
 });
 
+/**
+ * @apiDefine AuthorizationHeader
+ * @apiHeader (Headers) {String} authorization Authorization JSON Web Token
+ * @apiHeaderExample {json} Header Example:
+ *  {
+ *      "Authorization": "JWT <web token>"
+ *  }
+ */
+
+/**
+ * @api {post} /api/submit/confirm Notebook
+ * @apiGroup Submit
+ * @apiName SubmitNotebook
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Creates a new document in the database for the submission
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object}       submission              Object containing the data the user entered in the form
+ * @apiParam {String[]}     submission.coAuthors    Array of emails
+ * @apiParam {String}       submission.fileName      Name of the ipynb file being submitted
+ * @apiParam {String}       submission.lang         Language of the notebook (Python, Julia, Other)
+ * @apiParam {String}       submission.summary      Summary of the submission
+ * @apiParam {Object}       submission.notebookJSON Raw JSON of the ipynb file
+ * @apiParam {String}       submission.title        Title of the submission
+ * @apiParam {String[]}     submission.topics       Array of topics from the list of topics on the submit page
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {String} data.submissionID Database ID of the new submission
+ * 
+ * @apiError (500) InternalServerError Error occured creating the submission document 
+ */
 app.post('/confirm', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
@@ -242,6 +276,31 @@ app.post('/confirm', passport.authenticate('jwt', {
     })
 });
 
+
+/**
+ * @api {post} /api/submit/edit-submission Notebook
+ * @apiGroup Edit
+ * @apiName EditNotebook
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Edits a submission and replaces the data in the database with information provided
+ * by the user
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object}       submissionData              Object containing the data the user entered in the form
+ * @apiParam {ID}           submissionData._id          ID of the submission being edited
+ * @apiParam {String[]}     submissionData.coAuthors    Array of emails
+ * @apiParam {String}       submissionData.fileName      Name of the ipynb file being submitted
+ * @apiParam {String}       submissionData.lang         Language of the notebook (Python, Julia, Other)
+ * @apiParam {String}       submissionData.summary      Summary of the submission
+ * @apiParam {Object}       submissionData.notebookJSON Raw JSON of the ipynb file
+ * @apiParam {String}       submissionData.title        Title of the submission
+ * @apiParam {String[]}     submissionData.topics       Array of topics from the list of topics on the submit page
+ * 
+ * @apiError (500) InternalServerError Error occured editing the submission document 
+ */
 app.post('/edit-submission', passport.authenticate('jwt', {
     session: false
 }), (req, res) => {
@@ -294,6 +353,30 @@ app.post('/edit-submission', passport.authenticate('jwt', {
     })
 });
 
+/**
+ * @api {post} /api/submit/comment/edit Comment
+ * @apiGroup Edit
+ * @apiName EditComment
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Edits a comment and replaces the data in the database with the information provided 
+ * by the user. A valid JSON Web Token must be supplied in the "Authorization" header. The user ID of the
+ * token must match the comment.author.
+ * 
+ * Note: This endpoint is also used to edit replies, as there is virtualy no difference between a reply
+ * and a comment
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {ID}       commentID       ID of the comment being edited
+ * @apiParam {String}   newCommentText  Edited text of the comment
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {Object} data.comment The saved comment database object
+ * 
+ * @apiError (500) InternalServerError Error occurred finding, editing, or saving the comment
+ */
 app.post('/comment/edit', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
@@ -330,7 +413,26 @@ app.post('/comment/edit', passport.authenticate('jwt', {
         })
 });
 
-
+/**
+ * @api {post} /api/submit/comment Comment
+ * @apiGroup Submit
+ * @apiName SubmitComment
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Creates a new comment object in the database for the reply
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {String}   content         Content of the new comment
+ * @apiParam {ID}       submissionID    ID of the submission being commented on
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {Object} data.comment      The new comment database object
+ * @apiSuccess (200) {ID}     data.submissionID The ID of the submission being commented on
+ * 
+ * @apiError (500) InternalServerError Error occurred finding, editing, or saving the comment
+ */
 app.post('/comment', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
@@ -423,6 +525,27 @@ app.post('/comment', passport.authenticate('jwt', {
     })
 });
 
+/**
+ * @api {post} /api/submit/reply Reply
+ * @apiGroup Submit
+ * @apiName SubmitReply
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Creates a new comment object in the database
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {String}   reply       Content of the reply
+ * @apiParam {ID}       commentID   ID of the comment being replied to
+ * 
+ * @apiSuccess (200) {Object}   data
+ * @apiSuccess (200) {ID}       data.commentID      ID of the comment being replied to
+ * @apiSuccess (200) {Object}   data.reply          New comment database object for the reply
+ * @apiSuccess (200) {ID}       data.submissionID   ID of the submission
+ * 
+ * @apiError (500) InternalServerError An error occurred finding, creating, saving the reply object
+ */
 app.post('/reply', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {

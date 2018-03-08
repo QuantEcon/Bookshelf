@@ -17,6 +17,24 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 50000
 }));
 
+/**
+ * @api {post} /api/delete/submission Delete Submission
+ * @apiGroup Delete
+ * @apiName DeleteSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Marks the submission as deleted in the database, removes submission ID
+ * from the user's submissions and adds it to the user's deleted submisssions
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID ID of the submission being deleted
+ * 
+ * @apiError (500) InternalServerError An error occurred finding, updating, or saving the submission document
+ * @apiUse AuthorizationError
+ */
 app.post('/submission', passport.authenticate('jwt', {
     session: 'false'
 }), (req, res) => {
@@ -61,3 +79,19 @@ app.post('/submission', passport.authenticate('jwt', {
 })
 
 module.exports = app;
+
+// This route is in ../app.js
+// Added it here because of complications with apiDoc
+
+/**
+ * @api {get} /api/about Get About Page
+ * @apiGroup Information
+ * @apiName GetAboutPage
+ * 
+ * @apiDescription Returns the text to display on the About page
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {String} data.content Contents of the About page
+ * 
+ * @apiError (500) InternalServerError An occurred reading the About page file
+ */

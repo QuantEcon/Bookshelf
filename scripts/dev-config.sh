@@ -58,21 +58,44 @@ function web_config {
     port=$(input String Port: ${port})
     secret=$(input String "Session Secret:" secret)
     debug=$(input --bool Debug: ${debug})
+    mailgunAPIKey=$(input String "Mailgun API Key: " ${apiKey})
+    mailgunDomain=$(input String "Mailgun domain: " ${domain})
 
 	cat > "${ROOT_DIR}/_config.js" <<- EOM
 		const hostname = '${hostname}';
 		const port     = '${port}';
+        const clientPort = 3000
 
 		const secret   = '${secret}';
 		const debug    = ${debug};
 
+        const mailgun  = {
+            apiKey: ${mailgunAPIKey},
+            domain: ${maingunDomain}
+        }
+
+        if(debug){
+            const clientHostName = "http://localhost"
+            const clientHostNameAndPort = clientHostName + clientPort
+        } else {
+            const clientHostName = hostname,
+            const clientHostNameAndPort = clientHostName + clientPort
+        }
+
 		module.exports = {
 		    debug: debug,
 		    port: port,
-		    hostname: hostname,
+		    hostName: hostname,
 		    url: 'http://' + hostname,
-		    urlPlusPort: 'http://' + hostname + ':' + port,
-		    secret: secret
+		    urlAndPort: 'http://' + hostname + ':' + port,
+            clientPort: clientPort,
+            clientHostNameAndPort: clientHostNameAndPort,
+            redirectURL: 'http://' + hostname + "/temp",
+            preRender: false,
+            filesDirectory: "/files",
+            rootDirectory: __dirname,
+		    secret: secret,
+            mailgun: mailgun
 		};
 	EOM
 
@@ -192,16 +215,20 @@ function client_config {
     hostname=$(input String Hostname: "${hostname}")
     port=$(input String Port: "${port}")
     debug=$(input --bool Debug: n)
+    numAdmins=$(input String "Maximum number of admins: " ${numAdmins})
 
 	cat > "${ROOT_DIR}/client/src/_config.js" <<- EOM
 		const hostname = '${hostname}';
 		const port     = '${port}';
 		const debug    = ${debug};
+        const numAdmins = ${numAdmins}
+        const serverPort = ${serverPort}
 
 		module.exports = {
 		    debug: debug,
 		    url: 'http://' + hostname,
 		    urlPlusPort: 'http://' + hostname + ':' + port,
+            maxNumAdmins = numAdmins
 		};
 
 	EOM

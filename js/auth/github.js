@@ -61,9 +61,9 @@ passport.use('github', new GithubStrategy({
                         newUser.upvotes = [];
                         newUser.downvotes = [];
                         newUser.emailSettings = {
-                            newComment: false,
-                            newReply: false,
-                            submission: false
+                            newComment: true,
+                            newReply: true,
+                            submission: true
                         }
                         if (profile._json.avatar_url) {
                             newUser.avatar = profile._json.avatar_url;
