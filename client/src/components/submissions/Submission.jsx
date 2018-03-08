@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 
-import {MarkdownRender} from '../MarkdownMathJax';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'

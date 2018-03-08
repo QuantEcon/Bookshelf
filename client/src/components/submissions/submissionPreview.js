@@ -4,7 +4,8 @@ import {typesetMath} from "mathjax-electron"
 
 import Time from 'react-time';
 
-import {MarkdownRender} from '../MarkdownMathJax';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 
 class SubmissionPreview extends Component {
     constructor(props) {

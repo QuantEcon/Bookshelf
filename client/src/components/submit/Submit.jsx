@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
-import {MarkdownRender} from '../MarkdownMathJax';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
 import {typesetMath} from 'mathjax-electron'
