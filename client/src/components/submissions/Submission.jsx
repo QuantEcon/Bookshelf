@@ -1,12 +1,14 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
+import {typesetMath} from "mathjax-electron"
 
-import NotebookPreview from '@nteract/notebook-preview';
+import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
 
@@ -51,7 +53,7 @@ class Submission extends Component {
             flipper: true,
             deleteModalOpen: false
         }
-
+        
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -94,14 +96,34 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
+        this.renderMathJax = this.renderMathJax.bind(this)
     }
 
     componentDidMount() {
         this.forceUpdate();
+        // Wait half a second for things to load, then render mathjax
+        setTimeout(() => {
+            this.renderMathJax()    
+        }, 500);
+        
     }
 
+    renderMathJax(numTimes) {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+        } else if(numTimes < 3){
+            console.log("No mathjax")
+            setTimeout(() => {
+                this.renderMathJax(numTimes ? numTimes++ : 1)
+            }, 500)
+        } else {
+            console.warn("Mathjax couldn't be loaded");
+        }
+    }
+
+
     componentWillReceiveProps(props) {
-        console.log("[Submission] - will receive props: ", props)
         if (props.submission.data) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
@@ -403,8 +425,8 @@ class Submission extends Component {
                             <div className='details-body'>
                                 <div className='details-primary'>
                                     {!this.props.isLoading
-                                        ? <Markdown
-                                                disallowedTypes={['headings']}
+                                        ? <MarkdownRender
+                                                disallowedTypes={['heading']}
                                                 source={this.props.submission.data.notebook.summary
                                                 ? this.props.submission.data.notebook.summary
                                                 : '*No summary*'}/>
@@ -506,10 +528,12 @@ class Submission extends Component {
                                             </div>
 
                                             {this.props.submission.data.html
-                                                ? <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                ? <div>
+                                                    <p>(pre-rendered notebook)</p>
+                                                    <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                </div>
                                                 : <div id='notebook'>
-                                                    <NotebookPreview
-                                                        notebook={this.props.submission.data.notebookJSON}/>
+                                                    <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
                                                 </div>}
 
                                         </div>

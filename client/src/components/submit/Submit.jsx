@@ -2,9 +2,12 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
+import {typesetMath} from 'mathjax-electron'
+// import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
@@ -71,6 +74,7 @@ class Submit extends Component {
             uploadError: false,
             showSummaryPreview: false,
             modalOpen: false,
+            markdownRefereceModal: false,
             notebookDataReady: false,
             notebookJSON: {}
         }
@@ -90,6 +94,7 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
+        this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
     }
 
     componentDidMount() {
@@ -260,6 +265,13 @@ class Submit extends Component {
         this.setState({
             showSummaryPreview: !this.state.showSummaryPreview
         });
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 20);
+    }
+
+    renderMath = () => {
+        typesetMath(this.rendered)
     }
 
     summaryChanged = (event) => {
@@ -337,6 +349,13 @@ class Submit extends Component {
             .indexOf(topic) > -1;
     }
 
+    toggleMarkdownReferenceModal(e) {
+        e.preventDefault()
+        this.setState({
+            markdownRefereceModal: !this.state.markdownRefereceModal
+        })
+    }
+
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
@@ -346,6 +365,28 @@ class Submit extends Component {
                 <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
+                    <NotebookPreview notebook={this.state.notebookJSON}/>
+                </Modal>
+                <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
+                    <div className='my-modal'>
+                    <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>Markdown Reference</h1>
+                        </div>
+                        <div className='modal-body'>
+                            <ul>
+                                <li>
+                                    <MarkdownRender source="Use ticks (``) for code: \`code\` -> code`"/>
+                                </li>
+                                <li>
+                                    <MarkdownRender source="Use * for italics: \*italics\* -> *italics*"/>
+                                </li>
+                                <li>    
+                                    <MarkdownRender source="Use ** for bold: \*\*bold\*\* -> **bold**"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <NotebookPreview
                         notebook={this.state.notebookJSON}/>
                 </Modal>
@@ -532,7 +573,7 @@ class Submit extends Component {
 
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">You can use{' '}
-                                        <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer">markdown</a>{' '}
+                                        <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
@@ -542,14 +583,16 @@ class Submit extends Component {
 
                                     {this.state.showSummaryPreview
                                         ? <div>
-                                                <Markdown
+                                                <MarkdownRender
+                                                    disallowedTypes={['heading']}
                                                     source={this.formData.summary
                                                     ? this.formData.summary
                                                     : '*No summary*'}/>
-                                                <p
-                                                    className="input-hint-after input-hint orange bold"
-                                                    onClick={this.toggleSummaryPreview}>
-                                                    Close Preview
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
+                                                </p>
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.renderMath}>Render Math</a>
                                                 </p>
                                             </div>
                                         : <p className="input-hint input-hint-after">

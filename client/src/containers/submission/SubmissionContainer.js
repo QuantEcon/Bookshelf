@@ -68,7 +68,6 @@ function mapStateToProps(state, props) {
     if (state.submissionByID[props.match.params.id]) {
         il = state.submissionByID[props.match.params.id].isFetching
     }
-    console.log("[SubmissionComponent] - map state to props: ", state)
     return {
         submission: state.submissionByID[props.match.params.id],
         currentUser: state.auth.isSignedIn

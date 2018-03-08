@@ -167,9 +167,9 @@ export const editSubmission = ({
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
-            fileName: file.name
         };
         if (file) {
+            submission.fileName = file.name
             //read and parse file
             var reader = new FileReader();
             reader.readAsText(file);
@@ -186,12 +186,14 @@ export const editSubmission = ({
                         dispatch(editSubmissionAction({
                             error: response.data.error
                         }))
+                        console.log("false callback")
                         callback(false)
                     } else {
                         console.log("[EditSubmission] - received edited submission: ", submission)
                         dispatch(editSubmissionAction({
                             submission
                         }));
+                        console.log("true callback")
                         callback(true)
                     }
                 })
@@ -209,10 +211,12 @@ export const editSubmission = ({
                     dispatch(editSubmissionAction({
                         error: response.data.error
                     }))
+                    callback(false)
                 } else {
                     dispatch(editSubmissionAction({
                         submission
                     }));
+                    callback(true)
                 }
             })
         } else {
