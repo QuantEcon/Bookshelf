@@ -95,6 +95,7 @@ class Submit extends Component {
             .toggleTermsAndConditionsModal
             .bind(this);
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
+        this.submit = this.submit.bind(this);
     }
 
     componentDidMount() {

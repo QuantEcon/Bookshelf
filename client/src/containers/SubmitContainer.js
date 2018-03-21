@@ -10,6 +10,12 @@ import * as SubmitActions from '../actions/submit'
  * retrieves the Submit Actions and passes them to the child component
  */
 class SubmitContainer extends Component {
+    constructor(props){
+        super(props)
+
+        this.onSubmit = this.onSubmit.bind(this)
+    }
+
     /**
      * Dispatches a submit action. Called by the {@link Submit} component when the user clicks
      * the submit button
@@ -47,6 +53,7 @@ function mapStateToProps(state, props) {
 }
 
 function mapDispatchToProps(dispatch) {
+    console.log("map dispatch to props: ", SubmitActions);
     return {
         actions: bindActionCreators(SubmitActions, dispatch)
     }
