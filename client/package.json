@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@nteract/markdown": "^1.0.0",
-    "@nteract/notebook-preview": "^7.0.0",
+    "@nteract/notebook-preview": "^7.0.5",
     "axios": "^0.16.2",
     "file-saver": "^1.3.3",
     "history": "^4.6.3",
