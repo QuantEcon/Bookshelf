@@ -21,6 +21,15 @@ app.use(bodyParser.urlencoded({
 }));
 
 /**
+ * @apiDefine AuthorizationHeader
+ * @apiHeader (Headers) {String} authorization Authorization JSON Web Token
+ * @apiHeaderExample {json} Header Example:
+ *  {
+ *      "Authorization": "JWT <web token>"
+ *  }
+ */
+
+/**
  * @api {get} /api/admin/flagged-content
  * @apiGroup AdminTools
  * @apiName GetFlaggedContent
