@@ -29,7 +29,11 @@ app.use(bodyParser.urlencoded({
  * 
  * @apiDescription API endpoint to retrieve all flagged and/or deleted content on the website
  * 
- * @apiSuccess (200) {Object}
+ * @apiSuccess  (200) {Object}      data                Data for all flagged/deleted content
+ * @apiSuccess  (200) {Array}       data.users          All flagged users
+ * @apiSuccess  (200) {Array}       data.submissions    All flaggged submissions
+ * @apiSuccess  (200) {Array}       data.comments       All flagged comments
+ * 
  */
 app.get("/flagged-content", passport.authenticate('adminjwt', {
     session:'false'
@@ -140,6 +144,21 @@ app.get("/flagged-content", passport.authenticate('adminjwt', {
 
 })
 
+/**
+ * @api {get} /api/admin/admin-users
+ * @apiGroup AdminTools
+ * @apiName GetAdminUsers
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Retrieves all information for each of the admin users
+ * 
+ * @apiSuccess  (200)   {Object}    data        Data for the admin users
+ * @apiSuccess  (200)   {Array}     data.users  Array of objects for each admin user
+ * 
+ * @apiError    (401)   NoAdmins    There are no admins in the database
+ * @apiError    (500)   InternalServerError An error occurred finding the admin users in the database     
+ */
 app.get("/admin-users", passport.authenticate('adminjwt', {
     session:'false'
 }), (req, res) => {
@@ -176,7 +195,25 @@ app.get("/admin-users", passport.authenticate('adminjwt', {
 })
 
 /**
- * Flags the submission given by submissionID as deleted
+ * @api {post} /api/admin/delete-submission
+ * @apiGroup AdminTools
+ * @apiName AdminDeleteSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiDescription Flags the submission given by submissionID as deleted
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID     ID of the submission being deleted
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission
+ * @apiError (401) Unathourized
+ * @apiError (400) NoSubmission Couldn't find submission with provided ID
+ * 
  */
 app.post("/delete-submission", passport.authenticate('adminjwt', {
     session: 'false'
@@ -234,8 +271,25 @@ app.post("/delete-submission", passport.authenticate('adminjwt', {
 })
 
 /**
- * Removes the submission given by submissionID from the database along
+ * @api {post} /api/admin/remove-submission
+ * @apiGroup AdminTools
+ * @apiName AdminRemoveSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription Removes the submission given by submissionID from the database along
  * with it's comments and replies
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID     ID of the submission being deleted
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred removing the submission/comments from the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoSubmission Coudln't find a submission with the provided submissionID in the database
  */
 app.post("/remove-submission", passport.authenticate("adminjwt", {
     session: 'false'
@@ -341,6 +395,24 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
     }
 })
 
+/**
+ * @api {post} /api/admin/restore-submission
+ * @apiGroup AdminTools
+ * @apiName AdminRestoreSubmission
+ * 
+ * @apiDescription Removes the deleted flag from a submission in the database
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.submissionID     ID of the submission being deleted
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoSubmission Couldn't find a submission with the provided submissionID
+ */
 app.post("/restore-submission", passport.authenticate('adminjwt', {
     session:false
 }), (req, res) => {
@@ -382,6 +454,24 @@ app.post("/restore-submission", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/make-admin
+ * @apiGroup AdminTools
+ * @apiName AdminMakeAdmin
+ * 
+ * @apiDescription Makes the user with the matching userID an admin
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.userID    ID of the user to make an admin
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the user
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No user was found with the provided userID
+ */
 app.post("/make-admin", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
@@ -443,6 +533,24 @@ app.post("/make-admin", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/remove-admin
+ * @apiGroup AdminTools
+ * @apiName AdminRemoveAdmin
+ * 
+ * @apiDescription Removes the admin status of the user with the matching userID
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.userID    ID of the user from which to remove the admin status
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the user
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No user was found with the provided userID
+ */
 app.post("/remove-admin", passport.authenticate("adminjwt", {
     session: 'false'
 }), (req, res) => {
@@ -488,6 +596,25 @@ app.post("/remove-admin", passport.authenticate("adminjwt", {
     }
 })
 
+/**
+ * @api {post} /api/admin/delete-comment
+ * @apiGroup AdminTools
+ * @apiName AdminDeleteComment
+ * 
+ * @apiDescription Sets the deleted flag on the comment with the matching commentID. NOTE: This _does not_ remove
+ * the comment from the database. Only makes it so it isn't visible
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment to set the deleted flag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No comment was found with the provided commentID
+ */
 app.post("/delete-comment", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
@@ -530,6 +657,25 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/remove-comment
+ * @apiGroup AdminTools
+ * @apiName AdminRemoveComment
+ * 
+ * @apiDescription Removes the comment from the database. NOTE: this is irreversible. Once the comment is removed, it can't
+ * be restored
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment to remove
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No comment was found with the provided commentID
+ */
 app.post("/remove-comment", passport.authenticate("adminjwt", {
     session: false
 }), (req, res) => {
@@ -595,6 +741,24 @@ app.post("/remove-comment", passport.authenticate("adminjwt", {
     }
 })
 
+/**
+ * @api {post} /api/admin/restore-comment
+ * @apiGroup AdminTools
+ * @apiName AdminRestoreComment
+ * 
+ * @apiDescription Removes the 'deleted' flag from the comment making it visible again
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment to remove the deleted flag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No comment was found with the provided commentID
+ */
 app.post("/restore-comment", passport.authenticate('adminjwt', {
     session: false
 }), (req, res) => {
@@ -628,6 +792,25 @@ app.post("/restore-comment", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/delete-comment
+ * @apiGroup AdminTools
+ * @apiName AdminDeleteComment
+ * 
+ * @apiDescription Sets the deleted flag on the comment with the matching commentID. NOTE: This _does not_ remove
+ * the comment from the database. Only makes it so it isn't visible
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID ID of the comment to set the deleted flag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser No comment was found with the provided commentID
+ */
 app.post("/delete-reply", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
@@ -661,6 +844,26 @@ app.post("/delete-reply", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/remove-reply
+ * @apiGroup AdminTools
+ * @apiName AdminRemoveReply
+ * 
+ * @apiDescription Removes the reply from the database. NOTE: this is irreversible. Once the reply is removed, it can't
+ * be restored
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.commentID    ID of the parent comment to the reply
+ * @apiParam {String} body.replyID      ID of the reply to remove
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError  An error occurred removing the reply from the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoReply              No reply was found with the provided replyID
+ */
 app.post("/remove-reply", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
@@ -684,6 +887,24 @@ app.post("/remove-reply", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/restore-reply
+ * @apiGroup AdminTools
+ * @apiName AdminRestoreReply
+ * 
+ * @apiDescription Removes the deleted flag from a reply in the database
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.replyID      ID of the reply to restore
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError  An error occurred finding/editing/saving the reply in the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoReply              No reply was found with the provided replyID
+ */
 app.post("/restore-reply", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
@@ -717,6 +938,24 @@ app.post("/restore-reply", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/delete-user
+ * @apiGroup AdminTools
+ * @apiName AdminDeleteUser
+ * 
+ * @apiDescription Flags the user as 'deleted'
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.userID      ID of the user to flag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError  An error occurred removing the reply from the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoReply              No reply was found with the provided replyID
+ */
 app.post("/delete-user", passport.authenticate('adminjwt', {
     session: 'false'
 }), (req, res) => {
@@ -745,6 +984,26 @@ app.post("/delete-user", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/remove-user
+ * @apiGroup AdminTools
+ * @apiName AdminRemoveUser
+ * 
+ * @apiDescription Removes the user along with all his/her submission and comments from the database.
+ * NOTE: this is irreversible. Once the user is removed, his/her profile, submissions and comments 
+ * cannot be restored
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} body.userID      ID of the user to flag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError  An error occurred removing the reply from the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser               No user was found with the provided userID
+ */
 app.post("/remove-user", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
@@ -828,6 +1087,28 @@ app.post("/remove-user", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/search-users
+ * @apiGroup AdminTools
+ * @apiName AdminSearchUsers
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiDescription Searches the database for users matching the search parameters. The keywords
+ * provided will be compared against a user's email, github username, facebook display name, google
+ * username, and twitter handle.
+ * 
+ * @apiParam {Object} body
+ * @apiParam {String} keywords String of words to search the database
+ * 
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {Array}    data.users Array of user objects that matched the search terms
+ * 
+ * @apiError (500) InternalServerError An error occurred searching the datbase for the users
+ * @apiError (401) Unauthorized
+ */
 app.post("/search-users", passport.authenticate('adminjwt', {
     session: "false"
 }), (req, res) => {
@@ -864,6 +1145,26 @@ app.post("/search-users", passport.authenticate('adminjwt', {
     }
 })
 
+/**
+ * @api {post} /api/admin/unflag-user
+ * @apiGroup AdminTools
+ * @apiName AdminUnflagUser
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiDescription Unflags the user in the database
+ * 
+ * @apiParam {Object} body
+ * @apiparam {String} body.userID ID of the user to unflag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the user document in the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoUser   No user was found with the provided userID
+ */
 app.post("/unflag-user", passport.authenticate("adminjwt", {
     session: false
 }), (req, res) => {
@@ -891,6 +1192,26 @@ app.post("/unflag-user", passport.authenticate("adminjwt", {
     }
 })
 
+/**
+ * @api {post} /api/admin/unflag-submission
+ * @apiGroup AdminTools
+ * @apiName AdminUnflagSubmission
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiDescription Unflags the submission in the database
+ * 
+ * @apiParam {Object} body
+ * @apiparam {String} body.submissionID ID of the submission to unflag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission document in the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoSubmission   No submission was found with the provided submissionID
+ */
 app.post("/unflag-submission", passport.authenticate("adminjwt", {
     session: false
 }), (req, res) => {
@@ -916,6 +1237,26 @@ app.post("/unflag-submission", passport.authenticate("adminjwt", {
     }
 })
 
+/**
+ * @api {post} /api/admin/unflag-comment
+ * @apiGroup AdminTools
+ * @apiName AdminUnflagComment
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiUse AuthorizationHeader
+ * 
+ * @apiDescription Unflags the comment in the database
+ * 
+ * @apiParam {Object} body
+ * @apiparam {String} body.commentID ID of the comment to unflag
+ * 
+ * @apiSuccess (200)
+ * 
+ * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment document in the database
+ * @apiError (401) Unauthorized
+ * @apiError (400) NoComment   No comment was found with the provided commentID
+ */
 app.post("/unflag-comment", passport.authenticate("adminjwt", {
     session: false
 }), (req, res) => {
