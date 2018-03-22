@@ -20,6 +20,17 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 50000
 }));
 
+/**
+ * @api {get} /api/admin/flagged-content
+ * @apiGroup AdminTools
+ * @apiName GetFlaggedContent
+ * 
+ * @apiVersion 1.0.0
+ * 
+ * @apiDescription API endpoint to retrieve all flagged and/or deleted content on the website
+ * 
+ * @apiSuccess (200) {Object}
+ */
 app.get("/flagged-content", passport.authenticate('adminjwt', {
     session:'false'
 }), (req, res) => {
