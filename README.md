@@ -39,7 +39,7 @@ If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshe
 
 
 #### Needed files
-There are some config files that are not on the repo because they contain sensitive information. You can create these manually or run the `scripts/dev-config.sh` to setup these config files:
+There are some config files that are not on the repo because they contain sensitive information. You can create these manually or run `npm run config` to setup these config files:
 * `./server/_config.js`
     * contains the `url` and `port` the server is running on:
         ```
