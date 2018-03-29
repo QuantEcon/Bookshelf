@@ -40,7 +40,7 @@ If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshe
 
 #### Needed files
 There are some config files that are not on the repo because they contain sensitive information. You can create these manually or run the `scripts/dev-config.sh` to setup these config files:
-* `./_config.js`
+* `./server/_config.js`
     * contains the `url` and `port` the server is running on:
         ```
         const hostname = 'localhost';
@@ -73,13 +73,13 @@ There are some config files that are not on the repo because they contain sensit
           }
       };
 
-* `./js/db/_config.js`
+* `./server/js/db/_config.js`
     * contains the `url` to the mongo database:
         ```
             module.exports = {
                 url: 'mongodb://localhost/DB-NAME-HERE'
             }
-* `./js/auth/_config.js`
+* `./server/js/auth/_config.js`
     * contains the OAuth `client ID's`, `client secrets`, and `callback url`'s for each of OAuth sites used (google, github, facebook, twitter)
     * You will need to create your own OAuth applications for each of the sites and export an object of the ids as such:
         ```

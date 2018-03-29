@@ -32,9 +32,9 @@ function start {
 # Print a caution before running the overwriting methods
 function caution_start {
     echo -e "\033[1mCaution! This will overwrite the following files:\n\033[0m"
-    echo -e "\t ./_config.js"
-    echo -e "\t ./js/db/_config.js"
-    echo -e "\t ./js/auth/_config.js"
+    echo -e "\t ./server/_config.js"
+    echo -e "\t ./server/js/db/_config.js"
+    echo -e "\t ./server/js/auth/_config.js"
     echo -e "\t ./client/src/_config.js\n"
     read -p "(Y/n) Would you like to continue? [n] " answer
     case ${answer} in
@@ -51,7 +51,7 @@ function caution_start {
 # Create the web address config file (host, url, port, session secret etc.)
 function web_config {
     echo "--------------------------------------"
-    echo -e "Creating web address config at ./_config.js"
+    echo -e "Creating web address config at ./server/_config.js"
     echo "--------------------------------------"
 
     hostname=$(input String Hostname: "${hostname}")
@@ -61,7 +61,7 @@ function web_config {
     mailgunAPIKey=$(input String "Mailgun API Key: " ${apiKey})
     mailgunDomain=$(input String "Mailgun domain: " ${domain})
 
-	cat > "${ROOT_DIR}/_config.js" <<- EOM
+	cat > "${ROOT_DIR}/server/_config.js" <<- EOM
 		const hostname = '${hostname}';
 		const port     = '${port}';
         const clientPort = 3000
@@ -106,14 +106,14 @@ function web_config {
 # Create the database config file (database url)
 function db_config {
     echo "--------------------------------------"
-    echo -e "Creating database config at ./js/db/_config.js"
+    echo -e "Creating database config at ./server/js/db/_config.js"
     echo "--------------------------------------"
 
     db_host=$(input String "Database host:" "${db_host}${hostname}")
     db_name=$(input String "Database name:" ${db_name})
     url="${db_host}/${db_name}"
 
-	cat > "${ROOT_DIR}/js/db/_config.js" <<- EOM
+	cat > "${ROOT_DIR}/server/js/db/_config.js" <<- EOM
 		module.exports = {
 		    url: '${url}'
 		};
@@ -126,7 +126,7 @@ function db_config {
 # Create the OAuth config file (e.g. client ID & secret for Google OAuth)
 function oauth_config {
     echo "--------------------------------------"
-    echo -e "Creating OAuth config at ./js/auth/_config.js"
+    echo -e "Creating OAuth config at ./server/js/auth/_config.js"
     echo "--------------------------------------"
     echo -e "\nAnswer Y/N to the sites you have OAuth keys for."
 
@@ -169,7 +169,7 @@ function oauth_config {
         fb_secret=$(input String "Facebook Client Secret" "")
     fi
 
-    cat > "${ROOT_DIR}/js/auth/_config.js" <<- EOM
+    cat > "${ROOT_DIR}/server/js/auth/_config.js" <<- EOM
 		var appConfig = require('../../_config');
 
 		var ids = {

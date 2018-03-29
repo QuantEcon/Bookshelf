@@ -57,7 +57,7 @@ app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
 
 // set location of assets
-app.use(express.static(path.join(__dirname, 'client/build')));
+app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
 /**
@@ -181,7 +181,7 @@ app.get('/api/auth/popup/:provider', (req, res) => {
 app.get('*', (req, res) => {
     console.log('Sending react app')
     try {
-        res.sendFile(path.join(__dirname, '/client/build/index.html'))
+        res.sendFile(path.join(__dirname, '/../client/build/index.html'))
     } catch (ex) {
         //TODO send back html page with this info
         res.send("Server is down for maintenance")
