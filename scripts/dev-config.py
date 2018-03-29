@@ -13,7 +13,7 @@ default_server_port = 8080
 default_client_port = 3000
 default_secret = "secret"
 
-default_db_url = 'mongodb://localhost/Bookshelf'
+default_db_url = 'mongodb://127.0.0.1/Bookshelf'
 
 default_admins = '5'
 
@@ -149,6 +149,11 @@ if cont == 'y' or cont == 'Y':
     overwrite_db = input("(Y/n) Overwrite ./server/js/db/_config.js? [n]: ")
     if overwrite_db == 'Y' or overwrite_db == 'y':
         url = input("Enter MongoDB url [mongodb://localhost/Bookshelf]: ")
+
+        if url == 'localhost':
+            url = "127.0.0.1"
+        else if not url:
+            url = default_db_url
 
         db_file = open("../server/js/db/_config.js", 'w')
 

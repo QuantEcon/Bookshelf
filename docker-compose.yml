@@ -1,0 +1,16 @@
+version: "2.1"
+services:
+    server:
+      container_name: bookshelf
+      restart: always
+      image: "bookshelf-server:0.1"
+      ports:
+        - "8080:8080"
+      links:
+        - mongodb
+    mongodb:
+      restart: always
+      container_name: mongo
+      image: mongo
+      ports:
+        - "27017:27017"

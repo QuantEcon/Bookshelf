@@ -17,7 +17,11 @@
     "clean": "concurrently \"npm run cliean-client\" \"npm run clean-server\"",
     "clean-client": "cd ./client && rm -rf node_modules && rm -rf build",
     "clean-server": "cd ./server && rm -rf node_modules",
-    "config": "cd scripts && python dev-config.py"
+    "config": "cd scripts && python dev-config.py",
+    "build-docker-server": "docker build -t bookshelf-server:0.1 -f ./Dockerfile-server .",
+    "docker": "docker-compose up",
+    "stop-docker": "docker-compose stop",
+    "docker-daemon": "docker-compose up -d"
   },
   "repository": {
     "type": "git",

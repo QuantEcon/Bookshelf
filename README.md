@@ -30,13 +30,16 @@ If you get a `Could not proxy request` error, then you are either not running th
 
 If you would like to test a production build, run `npm run build` from inside the `/client/` directory.
 
-**Warning**: This takes a _long_ time (15+ min) and shouldn't be used until you actually need it.
-
 1. Run `npm run build-client` **_OR_** `cd client && npm run build` from the `/` directory
 2. Run `npm start` to start the server
 
 If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
 
+**UPDATE AS OF 29 MAR 2018:**
+
+The server and mongo requirements now exist inside a Docker container. To run the server and mongo through docker,
+ensure you have Docker [installed on your machine](https://docs.docker.com/install/), then run `npm run build-docker-server`.
+Once that process finishes, run `npm run docker` to start both mongo and the server.
 
 #### Needed files
 There are some config files that are not on the repo because they contain sensitive information. You can create these manually or run `npm run config` to setup these config files:

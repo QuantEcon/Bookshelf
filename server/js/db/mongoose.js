@@ -4,13 +4,34 @@
 // modules ======================================================
 var mongoose = require('mongoose');
 var config = require('./_config');
+const maxNumTries = 5
 
 // config =======================================================
-mongoose.connect(config.url);
+const options = {
+    useMongoClient: true,
+    autoReconnect: true,
+    reconnectTries: 5,
+    reconnectInterval: 2000
+}
 
-var db = mongoose.connection;
+connect = (numTry) => {
+    if (numTry >= maxNumTries) {
+        console.error("\nERROR: Couldn't connect to mongo\n");
+    } else {
+        console.log("Connecting...(" + numTry + ")")
+        mongoose.connect(config.url, options).then(
+            () => {
+                console.log("\nConnected to database!\n")
+            },
+            err => {
+                console.log("\nError connecting to mongo: ", err.message)
+                console.log("Trying again in 2 seconds...\n")
+                setTimeout(() => {
+                    connect(numTry+1)
+                }, 2000);
+            }
+        )
+    }
+}
 
-db.on('error', console.error.bind(console, 'connection error: '));
-db.once('open', function () {
-    console.log("Connected to Database!");
-});
+connect(0);
