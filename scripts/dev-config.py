@@ -152,7 +152,7 @@ if cont == 'y' or cont == 'Y':
 
         if url == 'localhost':
             url = "127.0.0.1"
-        else if not url:
+        elif not url:
             url = default_db_url
 
         db_file = open("../server/js/db/_config.js", 'w')
