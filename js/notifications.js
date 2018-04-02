@@ -1,7 +1,8 @@
 const notificationTypes = {
     NEW_COMMENT: 'NEW_COMMENT',
     NEW_REPLY: 'NEW_REPLY',
-    SUBMISSION: 'SUBMISSION'
+    SUBMISSION: 'SUBMISSION',
+    INVITE_SENT : 'INVITE_SENT'
     // TODO other notification types here...
 }
 const config = require("../_config")
@@ -100,6 +101,25 @@ function sendNotification(notification) {
                 }
             })
             break
+            
+        case notificationTypes.INVITE_SENT:
+                  data = {
+                  from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                  to: notification.recipient.email,
+                  subject: notification.sender + " Invited you to Join Bookshelf",
+                  // TODO: Include and HTML rendering of the comment here
+                  text: notification.sender + " sent you an invite to join Bookshelf, \n\n" +
+                      "To join Bookshelf click [here](" + config.hostName + "/signin/" +
+                      ")\n\nThank you!"
+              }
+              mailgun.messages().send(data, (error, body) => {
+                  if (error) {
+                      console.error("[Mailgun] Error occured sending notification: ", error)
+                  } else {
+                      console.log("[Mailgun] Success sending notification: ", body)
+                  }
+             })
+             break
     }
 }
 
