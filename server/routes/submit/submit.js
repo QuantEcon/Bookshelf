@@ -461,6 +461,8 @@ app.post('/comment', passport.authenticate('jwt', {
 
     newComment.save(function (err, comment) {
         if (err) {
+            console.error("[SubmitComment] - error saving comment: ", err)
+            console.log("[SubmitComment] - req.body: ", req.body)
             res.status(500);
             res.send({
                 error: 'Error saving comment'
@@ -471,6 +473,8 @@ app.post('/comment', passport.authenticate('jwt', {
                     _id: req.body.submissionID
                 }, function (err, submission) {
                     if (err) {
+                        console.error("[SubmitComment] - error submitting comment: couldn't find submission")
+                        console.log("[SubmitComment] - req.body: ", req.body)
                         res.status(500);
                         res.send({
                             error: 'Error finding submission'
@@ -483,6 +487,8 @@ app.post('/comment', passport.authenticate('jwt', {
 
                         submission.save(function (err) {
                             if (err) {
+                                console.error("[SubmitComment] - error submitting comment: ", err)
+                                console.log("[SubmitComment] - req.body: ", req.body)
                                 res.status(500);
                                 res.send({
                                     error: err
@@ -514,6 +520,8 @@ app.post('/comment', passport.authenticate('jwt', {
                             }
                         })
                     } else {
+                        console.error("[SubmitComment] - error submitting comment: no submission found")
+                        console.log("[SubmitComment] - req.body: ", req.body)
                         res.status(400);
                         res.send({
                             error: 'No submission found'

@@ -8,6 +8,8 @@ services:
         - "8080:8080"
       links:
         - mongodb
+      volumes:
+        - ./client/build:/client/build
     mongodb:
       restart: always
       container_name: mongodb

@@ -8,7 +8,6 @@ const maxNumTries = 5
 
 // config =======================================================
 const options = {
-    useMongoClient: true,
     autoReconnect: true,
     reconnectTries: 5,
     reconnectInterval: 2000

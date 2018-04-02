@@ -50,17 +50,20 @@ if cont == 'y' or cont == 'Y':
         const secret = '%s'
         const debug = %s;
 
+        var clientHostNameAndPort
+        var clientHostName
+
         const mailgun = {
             apiKey: '%s',
             domain: '%s'
         }
 
         if(debug){
-            const clientHostName = "http://localhost"
-            const clientHostNameAndPort = clientHostName + clientPort
+            clientHostName = "http://localhost"
+            clientHostNameAndPort = clientHostName + clientPort
         } else {
-            const clientHostName = hostname
-            const clientHostNameAndPort = clientHostName + clientPort
+            clientHostName = hostname
+            clientHostNameAndPort = clientHostName + clientPort
         }
 
 		module.exports = {
