@@ -1,4 +1,4 @@
-version: "2.1"
+version: "3"
 services:
     server:
       container_name: bookshelf
@@ -10,7 +10,9 @@ services:
         - mongodb
     mongodb:
       restart: always
-      container_name: mongo
-      image: mongo
+      container_name: mongodb
+      image: mongo:latest
       ports:
         - "27017:27017"
+      volumes:
+        - /data/db:/data/db
