@@ -30,6 +30,7 @@ const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
+const inviteRoutes = require('./routes/invite');
 // =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
@@ -137,6 +138,8 @@ passportInit();
 app.use("/api/search", searchRoutes);
 
 app.use('/api/delete', deleteRoutes);
+
+app.use('/api/invite', inviteRoutes);
 
 // login
 app.use('/api/auth/fb', fbAuthRoutes);
