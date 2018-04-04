@@ -83,7 +83,7 @@ app.get('/callback', passport.authenticate('github', {
                             res.sendStatus(500);
                         } else {
                             const redirect = appConfig.redirectURL + "?" + queryString
-                            console.log("[Google Auth] - redirect: ", redirect)
+                            console.log("[Github Auth] - redirect: ", redirect)
                             res.redirect(redirect);
                         }
                     })
