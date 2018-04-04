@@ -30,8 +30,28 @@ mailgun.messages().send(data, (error, body) =>{
 })
 */
 
-function sendEmail(to, message) {
+function sendEmail(to, from, message) {
 
+}
+
+function sendInvite(to, from) {
+    console.log("[Notifications] - sending invite to ", to)
+    data = {
+        from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+        to: to,
+        subject: from + " Invited you to Join Bookshelf",
+        // TODO: Include and HTML rendering of the comment here
+        text: from + " sent you an invite to join Bookshelf, \n\n" +
+            "To join Bookshelf click [here](" + config.hostName + "/signin/" +
+            ")\n\nThank you!"
+    }
+    mailgun.messages().send(data, (error, body) => {
+        if (error) {
+            console.error("[Mailgun] Error occured sending notification: ", error)
+        } else {
+            console.log("[Mailgun] Success sending invite: ", body)
+        }
+   })
 }
 
 // Queues up notifications to send in a batch email
@@ -125,6 +145,7 @@ function sendNotification(notification) {
 
 module.exports = {
     sendEmail,
+    sendInvite,
     addNotifcation,
     notificationTypes,
     sendNotification

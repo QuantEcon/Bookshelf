@@ -24,13 +24,13 @@ class Head extends Component {
             this.redirectToHome = this
                 .redirectToHome
                 .bind(this)
-          
+
             this.state = {
                 modalIsOpen: false
             };
 
             this.state = {value: ''};
-        
+
             this.inviteClick = this
                 .inviteClick
                 .bind(this)
@@ -63,7 +63,7 @@ class Head extends Component {
         this.props.resetSearchParams()
         this.props.history.replace("/")
     }
-    
+
     inviteClick = () => {
       console.log('in inviteClick method');
       this.openModal();
@@ -90,30 +90,32 @@ class Head extends Component {
     }
 
     handleSubmit = (event) => {
-      event.preventDefault();
-      this.setState({modalIsOpen: false});
-      var  inviteEmail = this.state.value;
-      console.log('Invite a friend initiated')
-      console.log(this.state.value)
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+        var  inviteEmail = this.state.value;
+        console.log('Invite a friend initiated')
+        console.log(this.state.value)
 
-      this.setState({value:''}); //Reset state of modal
+        this.setState({value:''}); //Reset state of modal
 
       //Send request to api endpoint /invite to send notification
-      axios.get('/api/invite/?inviteEmail='+ inviteEmail , {
-           headers: {
+        axios.post('/api/invite',{
+            inviteEmail
+        }, {
+            headers: {
                'Authorization': 'JWT ' + store.getState().auth.token
-           }}).then(response => {
-          console.log(response);
-          console.log('[InviteActions] - invite success: ');
-          return true;
+            }
+        }).then(response => {
+            console.log(response);
+            console.log('[InviteActions] - invite success: ');
+            return true;
 
-      }).catch(error => {
-          console.log('[SubmitActions] - error in invite submit: ', error);
-          return false;
-      })
-
+        }).catch(error => {
+            console.log('[SubmitActions] - error in invite submit: ', error);
+            return false;
+        })
     }
-    
+
     render() {
         return (
             <div>
@@ -175,7 +177,7 @@ class Head extends Component {
                                             <Link to="/submit">Submit Notebook</Link>
                                         </li>
                                         <li className='menu-submit invite-button'>
-                                            <a onClick={() => {this.inviteClick()}}> + Invite People</a>
+                                            <a onClick={() => {this.inviteClick()}}> + Invite</a>
                                             <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onAfterOpen={this.afterOpenModal}
@@ -184,7 +186,7 @@ class Head extends Component {
                                               contentLabel="Example Modal"
                                             >
 
-                                              <h2 ref={subtitle => this.subtitle = subtitle}>Who would you like to invite?</h2>
+                                              <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
 
 
                                               <form onSubmit={this.handleSubmit}>
@@ -192,8 +194,14 @@ class Head extends Component {
 
                                                   <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                 </label>
-                                                <button className='invite-modal-button' type="submit" >Invite</button>
-                                                <button className='invite-modal-button' onClick={this.closeModal}>Cancel</button>
+                                                <ul className="button-row">
+                                                  <li>
+                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                  </li>
+                                                  <li>
+                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
+                                                  </li>
+                                                </ul>
                                               </form>
                                             </Modal>
 
@@ -207,8 +215,7 @@ class Head extends Component {
                                         <Link to="/signin">Submit Notebook</Link>
                                     </li>
                                     <li className='menu-submit invite-button'>
-                                        <Link to="/signin">+ Invite People
-                                        </Link>
+                                        <Link to="/signin">+ Invite</Link>
                                     </li>
                                 </ul>}
 

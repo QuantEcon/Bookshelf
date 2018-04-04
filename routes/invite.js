@@ -1,22 +1,17 @@
-var express=require('express');
+var express = require('express');
 var passport = require('../js/auth/jwt');
 var app = express.Router();
 const notificationTypes = require("../js/notifications").notificationTypes
-const sendNotification = require('../js/notifications').sendNotification
+const sendInvite = require('../js/notifications').sendInvite
 
 
-
-app.get('/invite', passport.authenticate('jwt', {
-    session: 'false'
-}),(req,res)=>{
-  console.log(req.query.inviteEmail);
+app.post('/', passport.authenticate('jwt', {
+  session: 'false'
+}), (req, res) => {
+  console.log(req.body.inviteEmail);
   console.log(req.user.name);
 
-  sendNotification({
-      type: notificationTypes.INVITE_SENT,
-      recipient: req.query.inviteEmail,
-      sender: req.user.name
-  })
+  sendInvite(req.body.inviteEmail, req.user.name)
 
 })
 
