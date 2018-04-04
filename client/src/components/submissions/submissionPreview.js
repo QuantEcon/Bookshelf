@@ -22,7 +22,6 @@ class SubmissionPreview extends Component {
         if(window.MathJax){
             console.log("Rendering math...")
             typesetMath(this.rendered)
-            console.log("Mathjax config: ", window.MathJax)
         } else {
             console.log("No mathjax")
             this.renderMathJax()

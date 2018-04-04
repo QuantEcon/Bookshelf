@@ -17,12 +17,10 @@ import AdminContainer from '../../containers/admin/AdminContainer'
 //Components
 import Home from '../home/Home';
 import ProtectedRoute from '../ProtectedRoute';
-import AdminRoute from '../AdminRoute';
 import SignIn from '../signin/SignIn';
 import FAQ from '../FAQ';
 import About from '../About';
 import TempComponent from '../TempComponent'
-import AdminPage from '../admin/Admin'
 import NotFound from '../NotFound'
 
 import '../../assets/css/main.css'
@@ -56,7 +54,7 @@ class App extends Component {
               <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
               <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
               <Route exact path='/temp' component={TempComponent}/>
-              <Route path='/admin' exact component={AdminPage}/>
+              <Route path='/admin' exact component={AdminContainer}/>
               <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
               <Route path='*' component={NotFound}/>
             </Switch>

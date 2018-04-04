@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
-import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
 

@@ -236,6 +236,7 @@ const unflagCommentAction = ({
 // Actions ================================================
 
 export const fetchFlaggedContent = () => {
+    console.log("Fetch flagged content...")
     return (dispatch) => {
         dispatch(requestFlaggedContentAction())
 
@@ -286,6 +287,7 @@ export const fetchFlaggedContent = () => {
 }
 
 export const fetchAdminUsers = () => {
+    console.log("Fetch admin users...")
     return (dispatch) => {
         dispatch(requestAdminUsersAction())
 
@@ -485,7 +487,20 @@ export const restoreSubmission = ({submissionID}) => {
 
 export const restoreUser = ({userID}) => {
     return (dispatch) => {
-        axios.post("/api/admin/restore-user")
+        axios.post("/api/admin/restore-user", {
+            userID
+        }, {
+            headers: {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(restoreUserAction({userID}))
+            },
+            err => {
+                dispatch(restoreUserAction({error: err}))
+            }
+        )
     }
 }
 
