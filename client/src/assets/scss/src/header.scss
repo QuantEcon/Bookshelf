@@ -200,3 +200,21 @@
         }
     }   
 }
+
+.invite-button {
+  width: 120px;
+  position: fixed;
+  height: 30px;
+  bottom: 20px;
+  right: 8px;
+  
+}
+
+.invite-modal-button {
+ border: 1px solid;
+ margin-left: 3px;
+ margin-right: 3px;
+ border-radius: 3px;
+ padding: 0.3rem 0.5rem;
+ color: #d84d0a;
+}
