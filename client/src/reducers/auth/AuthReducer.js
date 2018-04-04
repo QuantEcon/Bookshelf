@@ -217,7 +217,8 @@ const AuthReducer = (state = {}, action) => {
                 valid: action.error ?
                     false : true,
                 isSignedIn: action.error ?
-                    false : true
+                    false : true,
+                isAdmin: action.isAdmin
             })
         case BEGIN_REAUTHENTICATION:
             return Object.assign({}, state, {
@@ -230,7 +231,8 @@ const AuthReducer = (state = {}, action) => {
                 token: action.token,
                 error: action.error,
                 valid: action.error ? false : true,
-                isSignedIn: action.error ? false : true
+                isSignedIn: action.error ? false : true,
+                isAdmin: action.isAdmin
             })
 
         case BEGIN_ADD_SOCIAL:

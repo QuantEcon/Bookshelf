@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 
-import Comment from './Comment';
+
+import CommentContainer from "../../containers/comment/CommentContainer"
 
 /**
  * Contains and renders all comments for the submission
@@ -112,16 +113,12 @@ class CommentsThread extends Component {
                                             return reply._id === replyID
                                         })[0]);
                                     }, this);
-                                return <Comment
+                                return <CommentContainer
                                     comment={comment}
                                     replies={replies}
                                     author={author}
                                     key={index}
                                     authors={this.state.commentAuthors}
-                                    upvote={this.props.upvote}
-                                    downvote={this.props.downvote}
-                                    upvoteReply={this.props.upvoteReply}
-                                    downvoteReply={this.props.downvoteReply}
                                     postReply={this.postReply}
                                     currentUser={this.props.currentUser}
                                     editComment={this.props.editComment}/>

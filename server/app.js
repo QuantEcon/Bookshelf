@@ -28,6 +28,8 @@ const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
+const adminRoutes = require("./routes/admin")
+const flagRoutes = require("./routes/flag/flag")
 // =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
@@ -45,6 +47,7 @@ const User = require('./js/db/models/User');
 const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
+const AdminList = require("./js/db/models/AdminList")
 
 // config
 // ==============================================================================
@@ -144,6 +147,7 @@ passportInit();
 
 // ROUTES
 // ==============================================================================
+app.use('/api/admin', adminRoutes);
 app.use("/api/search", searchRoutes);
 
 app.use('/api/delete', deleteRoutes);
@@ -163,6 +167,7 @@ app.use('/api/submit', submitRoutes);
 //vote
 app.use('/api/upvote', upvoteRoutes);
 app.use('/api/downvote', downvoteRoutes);
+app.use('/api/flag', flagRoutes)
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
@@ -177,6 +182,10 @@ app.get('/api/auth/popup/:provider', (req, res) => {
         }
     });
 });
+
+app.get("/temp", (req, res) => {
+    res.send("Loading...")
+})
 
 app.get('*', (req, res) => {
     console.log('Sending react app')

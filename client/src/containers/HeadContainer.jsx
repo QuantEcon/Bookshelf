@@ -25,14 +25,15 @@ class HeadContainer extends Component {
                     isSignedIn={this.props.isSignedIn}
                     user={this.props.user}
                     history={this.props.history}
-                    resetSearchParams={this.resetParams}/>
+                    resetSearchParams={this.resetParams}
+                    showAdmin={this.props.isAdmin}/>
             </div>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    return {isSignedIn: state.auth.isSignedIn, user: state.auth.user}
+    return {isSignedIn: state.auth.isSignedIn, user: state.auth.user, isAdmin: state.auth.isAdmin}
 }
 
 function mapDispatchToProps(dispatch) {

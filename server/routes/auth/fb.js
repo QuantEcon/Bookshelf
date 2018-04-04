@@ -5,17 +5,18 @@ const qs = require('query-string');
 const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const jwtAuth = require('../../js/auth/jwt');
+const AdminList = require('../../js/db/models/AdminList')
 
 const appConfig = require('../../_config')
 
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
-' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
+    ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
 
 var app = express.Router();
 
 app.get('/add', jwtAuth.authenticate('jwt', {
     session: false
-}),passport.authenticate('facebook', {
+}), passport.authenticate('facebook', {
     scope: 'email'
 }));
 
@@ -48,41 +49,58 @@ app.get('/callback', passport.authenticate('facebook', {
     }, select, function (err, user) {
         if (err) {
             res.status(500);
-            res.send({error: err});
-        } else if (user) {
-            var token = jwt.sign({
-                user: {
-                    _id: user._id
-                }
-            }, 'banana horse laser muffin');
-            var queryString = qs.stringify({
-                token,
-                uid: req.user._id,
-                fromAPI: true
+            res.send({
+                error: err
             });
-            user.currentProvider = 'Facebook'
-            user
-                .save(function (err) {
-                    if (err) {
-                        res.status(500);
-                        res.send({error: err});
-                    } else {
-                        console.log('[FBAuth] - headers: ', req.headers)
-                        if(req.headers.referer){
-                            console.log('[FBAuth] - redirect: ', req.headers.referer + '?' + queryString);
-                            res.redirect(req.headers.referer + '?' + queryString);
-                        } else {
-                            console.log('[FBAuth] - no referer header. Redirect: ', appConfig.urlAndPort + '/signin' + '?' + queryString)
-                            res.redirect(appConfig.urlAndPort + '/signin' + '?' + queryString);
-                        }
+        } else if (user) {
+            AdminList.findOne({}, (err, adminList) => {
+                var token = jwt.sign({
+                    user: {
+                        _id: user._id
                     }
-                })
+                }, "banana horse laser muffin");
+
+                if (!err && adminList && adminList.adminIDs.indexOf(user._id) != -1) {
+                    console.log("User is admin")
+                    token = adminToken({
+                        user: {
+                            _id: user._id
+                        },
+                        isAdmin: true
+                    })
+                }
+
+                user.currentProvider = 'Facebook';
+                var queryString = qs.stringify({
+                    token,
+                    uid: req.user._id,
+                    fromAPI: true
+                });
+
+                user
+                    .save(function (err) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            const redirect = appConfig.redirectURL + "?" + queryString
+                            console.log("[Google Auth] - redirect: ", redirect)
+                            res.redirect(redirect);
+                        }
+                    })
+            })
         } else {
             res.status(500);
-            res.send({error: 'No user found'});
+            res.send({
+                error: 'No user found'
+            });
         }
 
     });
 });
+
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
 
 module.exports = app;

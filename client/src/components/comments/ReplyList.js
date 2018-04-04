@@ -41,9 +41,7 @@ class ReplyList extends Component {
                             reply={reply}
                             author={author[0]}
                             key={index}
-                            currentUser={this.props.currentUser}
-                            upvote={this.props.upvote}
-                            downvote={this.props.downvote}/>
+                            currentUser={this.props.currentUser}/>
                     })}
             </div>
         )

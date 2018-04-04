@@ -6,6 +6,7 @@
  */
 
 import store from '../store/store';
+import axios from 'axios'
 
 export const REQUEST_USER_INFO = 'REQUEST_USER_INFO'
 export const requestUserInfo = (userID = null) => {
@@ -38,6 +39,30 @@ export const invalidateUserInfo = (userID) => {
     return {
         type: INVALIDATE_USER_INFO,
         userID
+    }
+}
+
+export const FLAG_USER = "FLAG_USER"
+const flagUserAction = ({userID, error}) => {
+    return {
+        type: FLAG_USER,
+        error,
+        userID
+    }
+}
+
+// ==================================================
+
+export const flagUser = ({userID}) => {
+    return (dispatch) => {
+        axios.post("/api/flag/user", {userID}).then(
+            resp => {
+                dispatch(flagUserAction({userID}))
+            },
+            err => {
+                dispatch(flagUserAction({error: err}))
+            }
+        )
     }
 }
 

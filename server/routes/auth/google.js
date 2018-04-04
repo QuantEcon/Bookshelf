@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const qs = require('query-string');
 const jwtAuth = require('../../js/auth/jwt');
 const appConfig = require('../../_config')
-
+const AdminList = require('../../js/db/models/AdminList')
 
 var app = express.Router();
 
@@ -50,32 +50,51 @@ app.get('/callback', passport.authenticate('google', {
             res.sendStatus(500);
         } else if (user) {
             //sign new jwt
-            var token = jwt.sign({
-                user: {
-                    _id: user._id
+            //TODO: check if user is admin, issue admin token
+            AdminList.findOne({}, (err, adminList) => {
+                var token = jwt.sign({
+                    user: {
+                        _id: user._id
+                    }
+                }, "banana horse laser muffin");
+
+                if (!err && adminList && adminList.adminIDs.indexOf(user._id) != -1) {
+                    console.log("User is admin")
+                    token = adminToken({
+                        user: {
+                            _id: user._id
+                        },
+                        isAdmin: true
+                    })
                 }
-            }, "banana horse laser muffin");
-            var queryString = qs.stringify({
-                token,
-                uid: req.user._id,
-                fromAPI: true
-            });
-            user.currentProvider = 'Google';
+
+                user.currentProvider = 'Google';
+                var queryString = qs.stringify({
+                    token,
+                    uid: req.user._id,
+                    fromAPI: true
+                });
+
+                user
+                    .save(function (err) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            const redirect = appConfig.redirectURL + "?" + queryString
+                            console.log("[Google Auth] - redirect: ", redirect)
+                            res.redirect(redirect);
+                        }
+                    })
+            })
         } else {
             res.sendStatus(500);
         }
-        user
-            .save(function (err) {
-                if (err) {
-                    res.sendStatus(500);
-                } else {
-                    const redirect = req.headers.referer + "?" + queryString
-                    console.log("[Google Auth] - redirect: ",redirect)
-                    res.redirect(redirect);
-                }
-            })
     });
-
 });
+
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
 
 module.exports = app;

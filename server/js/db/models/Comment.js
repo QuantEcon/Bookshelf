@@ -19,11 +19,15 @@ var commentSchema = new Schema({
 
     edited: Boolean,
     editedDate: Date,
+    deletedDate: Date,
 
     replies: [ObjectId],
 
     flagged: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+
+    isReply: Boolean,
+    parentID: ObjectId
 
 });
 

@@ -54,7 +54,7 @@ app.get('/all-submissions', function (req, res) {
         }
     }
     var page = req.query.page;
-    var select = "_id title author views comments score summary published lang totalComments viewers";
+    var select = "_id title author views comments score summary published lang totalComments viewers flagged";
 
     var options = {
         limit: 10,
@@ -226,17 +226,31 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             console.log("[Search] error searching for submission: ", err)
                             callback(err)
                         } else if (submission) {
-                            console.log("[Search] - found submission")
-                            console.log("[Seach] - submission author: ", submission.author)
                             notebook = submission
-                            console.log("[Search] - copied submission. author: ", notebook.author)
-                            // console.log("[Search] - copied submission:" , notebook)
                             notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
                             // TODO: This needs to be tested
                             //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
+                            var totalComments = submission.comments.length
+                            console.log("comments.length: ", totalComments)
+                            Comment.find({"_id": {"$in": submission.comments}}, (err, comments) => {
+                                if(err){
+                                    console.error("Error getting comments: ", err)
+                                } else if(comments){
+                                    comments.forEach((comment) => {
+                                        console.log("replies: ", comment.replies)
+                                        totalComments += comment.replies.length
+                                        console.log("total comments now at ", totalComments)
+                                    })
+                                    console.log("total comments: ", totalComments)
+                                    submission.totalComments = totalComments
+                                    submission.save()
+                                } 
+                            })
+                           
+
                             if(!submission.viewers){
                                 console.log("No viewers")
                                 submission.viewers = []

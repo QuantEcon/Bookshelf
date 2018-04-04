@@ -52,6 +52,7 @@ if cont == 'y' or cont == 'Y':
 
         var clientHostNameAndPort
         var clientHostName
+        var redirectURL
 
         const mailgun = {
             apiKey: '%s',
@@ -61,9 +62,11 @@ if cont == 'y' or cont == 'Y':
         if(debug){
             clientHostName = "http://localhost"
             clientHostNameAndPort = clientHostName + clientPort
+            redirectURL = "http://localhost:" + clientPort + "/temp"            
         } else {
             clientHostName = hostname
             clientHostNameAndPort = clientHostName + clientPort
+            redirectURL = "http://" + hostname + "/temp"            
         }
 
 		module.exports = {
@@ -74,7 +77,7 @@ if cont == 'y' or cont == 'Y':
 		    urlAndPort: 'http://' + hostname + ':' + port,
             clientPort: clientPort,
             clientHostNameAndPort: clientHostNameAndPort,
-            redirectURL: 'http://' + hostname + "/temp",
+            redirectURL: redirecURL,
             preRender: false,
             filesDirectory: "/files",
             rootDirectory: __dirname,

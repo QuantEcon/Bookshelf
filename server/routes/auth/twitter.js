@@ -6,6 +6,7 @@ const User = require('../../js/db/models/User');
 const jwt = require('jsonwebtoken');
 const qs = require('query-string');
 const appConfig = require('../../_config')
+const AdminList = require('../../js/db/models/AdminList')
 
 var app = express.Router();
 var referer = '';
@@ -17,7 +18,6 @@ app.get('/add', jwtAuth.authenticate('jwt', {
 }), passport.authenticate('twitter', {
     scope: 'email'
 }));
-
 
 // register/login with twitter
 /**
@@ -45,7 +45,7 @@ app.get('/callback',
         console.log('[TwitterAuth] - after second auth');
 
         const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
-        ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
+            ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
         User.findOne({
             '_id': req.user._id
         }, select, function (err, user) {
@@ -53,39 +53,52 @@ app.get('/callback',
                 console.log('[TwitterAuth] - error finding user')
                 res.sendStatus(500);
             } else if (user) {
-                console.log('[TwitterAuth] - found user')
-                //sign new jwt
-                var token = jwt.sign({
-                    user: {
-                        _id: user._id
+                AdminList.findOne({}, (err, adminList) => {
+                    var token = jwt.sign({
+                        user: {
+                            _id: user._id
+                        }
+                    }, "banana horse laser muffin");
+
+                    if (!err && adminList && adminList.adminIDs.indexOf(user._id) != -1) {
+                        console.log("User is admin")
+                        token = adminToken({
+                            user: {_id: user._id},
+                            isAdmin: true
+                        })
                     }
-                }, "banana horse laser muffin");
-                var queryString = qs.stringify({
-                    token,
-                    uid: req.user._id,
-                    fromAPI: true
-                });
-                user.currentProvider = 'Twitter';
+
+                    user.currentProvider = 'Twitter';
+
+                    var queryString = qs.stringify({
+                        token,
+                        uid: req.user._id,
+                        fromAPI: true
+                    });
+
+                    user
+                        .save(function (err) {
+                            if (err) {
+                                res.sendStatus(500);
+                            } else {
+                                const redirect = appConfig.redirectURL + "?" + queryString
+                                console.log("[Google Auth] - redirect: ", redirect)
+                                res.redirect(redirect);
+                            }
+                        })
+                })
             } else {
                 console.log('[TwitterAuth] - no user found')
                 res.sendStatus(500);
             }
-            user
-                .save(function (err) {
-                    if (err) {
-                        console.log('[TwitterAuth] - error saving user')
-                        res.sendStatus(500);
-                    } else {
-                        console.log('[TwitterAuth] - redirect back to client: ', req)
-                        var redirect = appConfig.hostName + '/signin' + '?' + queryString;
-                        console.log('[TwitterAuth] - redirect url: ', redirect);
-                        res.redirect(redirect);
-                    }
-                })
         });
 
     }
-
 );
+
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
 
 module.exports = app;

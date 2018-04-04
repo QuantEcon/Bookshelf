@@ -65,6 +65,11 @@ class Head extends Component {
                                     <li>
                                         <Link to='/about'>About</Link>
                                     </li>
+                                    {this.props.showAdmin && this.props.isSignedIn
+                                    ? <li>
+                                        <Link to='/admin'>Admin</Link>
+                                    </li>
+                                    : null}
                                 </ul>
                             </div>
 

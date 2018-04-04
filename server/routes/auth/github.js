@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const secret = require('../../_config').secret
 const jwtAuth = require('../../js/auth/jwt');
 const appConfig = require('../../_config')
-
+const AdminList = require('../../js/db/models/AdminList')
 
 const qs = require('query-string');
 
@@ -22,7 +22,6 @@ app.get('/add', jwtAuth.authenticate('jwt', {
 }), passport.authenticate('github', {
     scope: 'email'
 }));
-
 // register with github
 /**
  * @api {get} /api/auth/fb Github
@@ -54,41 +53,51 @@ app.get('/callback', passport.authenticate('github', {
             res.sendStatus(500);
         } else if (user) {
             //sign new jwt
-            var token = jwt.sign({
-                user: {
-                    _id: user._id
+            AdminList.findOne({}, (err, adminList) => {
+                var token = jwt.sign({
+                    user: {
+                        _id: user._id
+                    }
+                }, "banana horse laser muffin");
+
+                if (!err && adminList && adminList.adminIDs.indexOf(user._id) != -1) {
+                    console.log("User is admin")
+                    token = adminToken({
+                        user: {
+                            _id: user._id
+                        },
+                        isAdmin: true
+                    })
                 }
-            }, "banana horse laser muffin");
-            var queryString = qs.stringify({
-                token,
-                uid: req.user._id,
-                fromAPI: true
-            });
-            console.log('[Github] - query string:', queryString);
-            user.currentProvider = 'Github';
+
+                user.currentProvider = 'Github';
+                var queryString = qs.stringify({
+                    token,
+                    uid: req.user._id,
+                    fromAPI: true
+                });
+
+                user
+                    .save(function (err) {
+                        if (err) {
+                            res.sendStatus(500);
+                        } else {
+                            const redirect = appConfig.redirectURL + "?" + queryString
+                            console.log("[Github Auth] - redirect: ", redirect)
+                            res.redirect(redirect);
+                        }
+                    })
+            })
         } else {
             console.log('[Github] - err2: ');
             res.sendStatus(500);
         }
-        user
-            .save(function (err) {
-                if (err) {
-                    console.log('[Github] - err3: ', err);
-                    res.sendStatus(500);
-                } else {
-                    console.log("[Github Auth] - req.body: ", req)
-                    console.log('[Github] - req.headers.referer: ', req.headers.referer)
-                    res.redirect(req.headers.referer + '?' + queryString)
-                    // if (appConfig.debug) {
-                    //     console.log('[Github] - redirect: ', appConfig.clientHostNameAndPort + '/signin' + '?' + queryString)
-                    //     res.redirect(appConfig.clientHostNameAndPort + '/signin?' + queryString)
-                    // } else {
-                    //     console.log('[Github] - redirect: ', appConfig.hostName + '/signin' + '?' + queryString)
-                    //     res.redirect(appConfig.hostName + '/signin' + '?' + queryString);
-                    // }
-                }
-            })
     });
 });
+
+const adminToken = (data) => {
+    var token = jwt.sign(data, "banana horse laser muffin")
+    return token
+}
 
 module.exports = app;

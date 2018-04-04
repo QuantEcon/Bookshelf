@@ -65,6 +65,11 @@ class SubmissionPreview extends Component {
 
                         in
                         <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
+                        {this.state.submission.deletedDate
+                        ? <span>
+                            {' (deleted '} <Time value={this.state.submission.deletedDate} relative/>{')'}
+                        </span>
+                        : null}
                     </p>
                     <MarkdownRender
                         disallowedTypes={['heading']}

@@ -13,6 +13,7 @@ import GithubIcon from 'react-icons/lib/fa/github'
 import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import EmailIcon from 'react-icons/lib/md/email'
 import GearIcon from 'react-icons/lib/fa/cog'
+import FlagIcon from 'react-icons/lib/md/flag'
 
 class User extends Component {
     constructor(props) {
@@ -83,6 +84,11 @@ class User extends Component {
                                                 </ul>
                                             </div>
                                         : null}
+                                    <ul className="details-options">
+                                        <li>
+                                            <a onClick={() => {this.props.flagUser({userID: this.props.data._id})}}><FlagIcon/></a>
+                                        </li>
+                                    </ul>
                                     <p className='date'>
                                         Joined {!this.props.isLoading
                                             ? <Time value={this.props.data.joinDate} format='d MMM YYYY'/>

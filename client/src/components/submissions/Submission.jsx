@@ -17,12 +17,15 @@ import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
 import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
+import FlagIcon from 'react-icons/lib/md/flag'
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
 /** 
  * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
@@ -65,18 +68,6 @@ class Submission extends Component {
             .bind(this);
         this.onSubmitComment = this
             .onSubmitComment
-            .bind(this);
-        this.upvoteComment = this
-            .upvoteComment
-            .bind(this);
-        this.downvoteComment = this
-            .downvoteComment
-            .bind(this);
-        this.upvoteReply = this
-            .upvoteReply
-            .bind(this);
-        this.downvoteReply = this
-            .downvoteReply
             .bind(this);
         this.download = this
             .download
@@ -151,7 +142,7 @@ class Submission extends Component {
             .props
             .actions
             .upvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 237 solves this problem
     }
     /**
      * Dispatches a downvote submission action
@@ -161,34 +152,21 @@ class Submission extends Component {
             .props
             .actions
             .downvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
-    upvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .upvoteComment({commentID, submissionID: this.props.submissionID});
+    flagSubmission = () => {
+        console.log("[Submission] - flag submission clicked")
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
     }
-
-    downvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .downvoteComment({commentID, submissionID: this.props.submissionID});
-    }
-    upvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .upvoteReply({commentID, replyID, submissionID: this.props.submissionID});
-    }
-
-    downvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .downvoteReply({commentID, replyID, submissionID: this.props.submissionID});
+    
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report this content?',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagSubmission(),    
+         })
     }
 
     encounteredURI(uri) {
@@ -322,10 +300,10 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.upvote} className='active'>
+                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
                                         </a>
-                                    : <a onClick={this.upvote}>
+                                    : <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>}
 
@@ -338,10 +316,10 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.downvote} className='active'>
+                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
                                             <ThumbsDown/>
                                         </a>
-                                    : <a onClick={this.downvote}>
+                                    : <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>}
                             </div>
@@ -370,6 +348,13 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
+                                    <ul className='details-options'>
+                                        <li>
+                                            {!this.props.isLoading && this.props.submission.data.flagged
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+                                        </li>
+                                    </ul>
                                     {!this.props.isLoading
                                         ? <ul className='topics'>
                                                 {this
@@ -556,10 +541,6 @@ class Submission extends Component {
                                             comments={this.props.submission.data.comments}
                                             replies={this.props.submission.data.replies}
                                             commentAuthors={this.props.submission.data.commentAuthors}
-                                            downvote={this.downvoteComment}
-                                            upvote={this.upvoteComment}
-                                            upvoteReply={this.upvoteReply}
-                                            downvoteReply={this.downvoteReply}
                                             postComment={this.onSubmitComment}
                                             postReply={this.submitReply}
                                             currentUser={this.props.currentUser}

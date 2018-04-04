@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 
-import Comment from './Comment';
+import CommentContainer from "../../containers/comment/CommentContainer";
 
 /**
  * Renders a reply to a comment. Wraps a {@link Comment} in a reply div.
@@ -30,13 +30,11 @@ class Reply extends Component {
     render() {
         return (
             <div className='comment-nested'>
-                <Comment
+                <CommentContainer
                     comment={this.state.reply}
                     author={this.state.author}
                     isReply={true}
-                    currentUser={this.props.currentUser}
-                    upvote={this.props.upvote}
-                    downvote={this.props.downvote}/>
+                    currentUser={this.props.currentUser}/>
             </div>
         )
     }

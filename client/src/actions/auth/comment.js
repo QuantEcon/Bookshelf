@@ -1,3 +1,8 @@
+import axios from 'axios'
+import store from "../../store/store"
+import {authPostReply} from '../auth/auth'
+import {postComment} from '../submission'
+
 /**
  * @file Actions for comments
  * @author Trevor Lyon
@@ -63,7 +68,7 @@ export const submitComment = ({
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
             console.log('dispatch submission actions post comment');
-            dispatch(SubmissionActions.postComment({
+            dispatch(postComment({
                 submissionID: response.data.submissionID,
                 comment: response.data.comment
             }))

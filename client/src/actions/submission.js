@@ -140,7 +140,34 @@ const editSubmissionAction = ({
         submission,
         error
     }
+
 }
+
+export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
+const flagSubmissionAction = ({
+    submissionID,
+    error
+}) => {
+    return {
+        type: FLAG_SUBMISSION,
+        submissionID,
+        error
+    }
+}
+
+export const FLAG_COMMENT = "FLAG_COMMENT"
+const flagCommentAction = ({
+    commentID,
+    error
+}) => {
+    return {
+        type: FLAG_COMMENT,
+        commentID,
+        error
+    }
+}
+
+// ============================================================
 
 /**
  * @function editSubmission
@@ -238,7 +265,7 @@ export const deleteSubmission = (submissionID, callback) => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             //check if the submission is the user's
-            if (store.getState().auth.user.submissions.indexOf(submissionID) > -1) {
+            if (store.getState().auth.isAdmin || store.getState().auth.user.submissions.indexOf(submissionID) > -1) {
                 axios.post('/api/delete/submission', {
                     submissionID
                 }, {
@@ -332,6 +359,37 @@ export const fetchNBInfo = ({
         } else {
             console.log('[FetchSub] - don\'t need to fetch');
         }
+    }
+}
+
+export const flagSubmission = ({submissionID}) => {
+    console.log("[SubmissionActions] - flag submission: ", submissionID)
+    return (dispatch) => {
+        axios.post("/api/flag/submission", {submissionID}, {
+            headers: {
+                "Authorization": "JWT " + store.getState().auth.token
+            }
+        }).then(
+            resp => {
+                dispatch(flagSubmissionAction({submissionID}))
+            },
+            err => {
+                dispatch(flagSubmissionAction({error: err}))
+            }
+        )
+    }
+}
+
+export const flagComment = ({commentID}) => {
+    return (dispatch) => {
+        axios.post("/api/flag/comment", {commentID}).then(
+            resp => {
+                dispatch(flagCommentAction({commentID}))
+            },
+            err => {
+                dispatch(flagCommentAction({error: err}))
+            }
+        )
     }
 }
 

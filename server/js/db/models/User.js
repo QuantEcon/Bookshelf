@@ -68,7 +68,7 @@ var userSchema = new Schema({
     // meta
     flagged: Boolean,
     deleted: Boolean,
-    new: Boolean
+    new: Boolean,
 });
 
 userSchema.plugin(mongoosePaginate);

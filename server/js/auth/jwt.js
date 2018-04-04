@@ -8,9 +8,12 @@ var opts = {
     jwtFromRequest: ExtractJwt.fromExtractors([ExtractJwt.fromAuthHeaderWithScheme('jwt'), ExtractJwt.fromUrlQueryParameter('jwt')]),
     secretOrKey: "banana horse laser muffin"
 }
+
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
 ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial emailSettings'
+
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
+    console.log("[JWTStrategy]JWT Payload: ", jwt_payload)
     User.findOne({
         _id: jwt_payload.user._id
     }, select, function (err, user) {
@@ -19,7 +22,7 @@ passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
             return done(err, false)
         } else if (user) {
             // console.log('[JWTStrategy] - found user: ', user);
-            done(null, user);
+            done(null, user, {isAdmin: jwt_payload.isAdmin});
         } else {
             console.log('[JWTStrategy] - no user');
             done(null, false);
