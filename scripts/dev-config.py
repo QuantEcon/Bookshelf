@@ -66,7 +66,11 @@ if cont == 'y' or cont == 'Y':
         } else {
             clientHostName = hostname
             clientHostNameAndPort = clientHostName + clientPort
-            redirectURL = "http://" + hostname + "/temp"            
+            if(hostname == 'localhost'){
+                redirectURL = "http://localhost:" + port + "/temp"
+            } else {
+                redirectURL = "http://" + hostname + "/temp"            
+            }
         }
 
 		module.exports = {
@@ -77,7 +81,7 @@ if cont == 'y' or cont == 'Y':
 		    urlAndPort: 'http://' + hostname + ':' + port,
             clientPort: clientPort,
             clientHostNameAndPort: clientHostNameAndPort,
-            redirectURL: redirecURL,
+            redirectURL: redirectURL,
             preRender: false,
             filesDirectory: "/files",
             rootDirectory: __dirname,
