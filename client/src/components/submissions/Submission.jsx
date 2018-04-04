@@ -1,22 +1,16 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
-// import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 }
-// from 'react-html-parser'; import 'normalize-css' import
-// 'typeface-source-code-pro' import 'typeface-source-sans-pro' import
-// 'codemirror/lib/codemirror.css'; import
-// '@nteract/notebook-preview/styles/main.css'; import
-// '@nteract/notebook-preview/styles/theme-light.css' import
-// '../../assets/css/notebookPreview.css'
+import {typesetMath} from "mathjax-electron"
 
-import NotebookPreview from '@nteract/notebook-preview';
+import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
-
-// import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
@@ -33,8 +27,28 @@ import NotebookFromHTML from '../NotebookFromHTML';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
+/** 
+ * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
+ * the necessary data from Redux and passes it to this component
+ * 
+ * Children: {@link CommentsThread}
+ */
 class Submission extends Component {
-
+    /**
+     * @prop {Object}   actions         Contains all redux actions for the submission page (voting, commenting, etc...)
+     * @prop {Object}   submission      Contains all data necessary to render the submission, (notebook, title, author, comments, etc...)
+     *                                  This is obtained from the API and passed to the component via Redux
+     * @prop {boolean}  isLoading       Flag to tell react if the data is still being loaded from the API
+     * @prop {Object}   currentUser     Object containing the current user's information. If there is no user signed in, it will be `null`
+     * @prop {Object}   history         Needed for navigation. Passed from the Submission Container
+     */
+    static propTypes = {
+        actions: PropTypes.object.isRequired,
+        submission: PropTypes.object,
+        isLoading: PropTypes.bool,
+        currentUser: PropTypes.object,
+        history: PropTypes.object.isRequired
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -42,7 +56,7 @@ class Submission extends Component {
             flipper: true,
             deleteModalOpen: false
         }
-
+        
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -73,14 +87,34 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
+        this.renderMathJax = this.renderMathJax.bind(this)
     }
 
     componentDidMount() {
         this.forceUpdate();
+        // Wait half a second for things to load, then render mathjax
+        setTimeout(() => {
+            this.renderMathJax()    
+        }, 500);
+        
     }
 
+    renderMathJax(numTimes) {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+        } else if(numTimes < 3){
+            console.log("No mathjax")
+            setTimeout(() => {
+                this.renderMathJax(numTimes ? numTimes++ : 1)
+            }, 500)
+        } else {
+            console.warn("Mathjax couldn't be loaded");
+        }
+    }
+
+
     componentWillReceiveProps(props) {
-        console.log("[Submission] - will receive props: ", props)
         if (props.submission.data) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
@@ -100,6 +134,9 @@ class Submission extends Component {
         FileSaver.saveAs(file)
     }
 
+    /**
+     * Dispatches an upvote submission action
+     */
     upvote() {
         this
             .props
@@ -107,7 +144,9 @@ class Submission extends Component {
             .upvoteSubmission({submissionID: this.props.submissionID});
         //TODO: unfocus button after click : changes on line 237 solves this problem
     }
-
+    /**
+     * Dispatches a downvote submission action
+     */
     downvote() {
         this
             .props
@@ -134,6 +173,10 @@ class Submission extends Component {
         console.log('encountered uri in markdown: ', uri);
     }
 
+    /**
+     * Dispatches a submit comment action
+     * @param {String} comment Text of the new comment entered in the form
+     */
     onSubmitComment(comment) {
         this
             .props
@@ -141,6 +184,12 @@ class Submission extends Component {
             .submitComment(this.props.submissionID, comment);
     }
 
+    /**
+     * 
+     * @param {Object} param0 
+     * @param {String} param0.reply Text of the reply entered in the form
+     * @param {String} param0.commentID ID of the comment being replied to
+     */
     submitReply({reply, commentID}) {
         this
             .props
@@ -148,18 +197,28 @@ class Submission extends Component {
             .submitReply({reply, commentID, submissionID: this.props.submissionID})
     }
 
+    /**
+     * Toggles the view between the notebook and the comments thread
+     */
     toggleView() {
         this.setState({
             showNotebook: !this.state.showNotebook
         });
     }
 
+    /**
+     * Toggles the visiblity of the delete submission modal
+     */
     toggleDeleteModal() {
         this.setState({
             deleteModalOpen: !this.state.deleteModalOpen
         });
     }
 
+    /**
+     * Dispatches a delete submission action, then closes the modal. Once the action
+     * is completed `deleteCallback` will be called
+     */
     deleteSubmission() {
         console.log('[Submission] - delete submission clicked');
         this
@@ -169,6 +228,11 @@ class Submission extends Component {
         this.toggleDeleteModal();
     }
 
+    /**
+     * Called by redux after the call to the api compeletes. If there was an error
+     * deleting the submission, `successful` will be false, otherwise, it will be true.
+     * @param {boolean} successful Deletion was successful or not
+     */
     deleteCallback(successful) {
         console.log("Deletion callback: ", successful)
         // Redirect if successful
@@ -346,8 +410,8 @@ class Submission extends Component {
                             <div className='details-body'>
                                 <div className='details-primary'>
                                     {!this.props.isLoading
-                                        ? <Markdown
-                                                disallowedTypes={['headings']}
+                                        ? <MarkdownRender
+                                                disallowedTypes={['heading']}
                                                 source={this.props.submission.data.notebook.summary
                                                 ? this.props.submission.data.notebook.summary
                                                 : '*No summary*'}/>
@@ -449,10 +513,12 @@ class Submission extends Component {
                                             </div>
 
                                             {this.props.submission.data.html
-                                                ? <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                ? <div>
+                                                    <p>(pre-rendered notebook)</p>
+                                                    <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                </div>
                                                 : <div id='notebook'>
-                                                    <NotebookPreview
-                                                        notebook={this.props.submission.data.notebookJSON}/>
+                                                    <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
                                                 </div>}
 
                                         </div>

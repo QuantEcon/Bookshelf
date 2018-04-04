@@ -1,3 +1,9 @@
+/**
+ * @file Sign out actions
+ * @author Trevor Lyon
+ * 
+ * @module signOutActions
+ */
 import axios from 'axios'
 import store from '../../store/store';
 
@@ -11,6 +17,12 @@ const signOutAction = ({
     }
 }
 
+/**
+ * @function signOut
+ * @description
+ * Makes an api request to invalidate the token. Then removes the token from local storage
+ * and sets the `currentUser` in the redux store to `null`
+ */
 export const signOut = () => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {

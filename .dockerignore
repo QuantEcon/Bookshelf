@@ -1,0 +1,5 @@
+server/node_modules
+server/npm-debug.log
+client/build
+client/node_modules
+client/docs

@@ -1,22 +1,47 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import {typesetMath} from "mathjax-electron"
 
 import Time from 'react-time';
 
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 
 class SubmissionPreview extends Component {
     constructor(props) {
         super(props);
-        console.log("[SubmissionPreview] - props:", props)
         this.state = {
             submission: props.submission,
             author: props.author
         }
+
+        this.renderMathJax = this.renderMathJax.bind(this)
+    }
+
+    renderMathJax() {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+            console.log("Mathjax config: ", window.MathJax)
+        } else {
+            console.log("No mathjax")
+            this.renderMathJax()
+        }
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.renderMathJax()
+        }, 500)
+    }
+
+    componentDidUpdate() {
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 500)
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("[SubmissionPreview] - next props: ", nextProps)
         this.setState({submission: nextProps.submission, author: nextProps.author});
     }
 
@@ -46,12 +71,12 @@ class SubmissionPreview extends Component {
                         </span>
                         : null}
                     </p>
-                    <Markdown
+                    <MarkdownRender
                         disallowedTypes={['heading']}
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}
-                        className='short'/>
+                        className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
                 <p className="avatar">

@@ -1,3 +1,9 @@
+/**
+ * @file Submission actions
+ * @author Trevor Lyon
+ * 
+ * @module submissionActions
+ */
 import axios from 'axios'
 import store from '../store/store'
 import {
@@ -163,6 +169,18 @@ const flagCommentAction = ({
 
 // ============================================================
 
+/**
+ * @function editSubmission
+ * @description Makes an API request to edit a submission. Will replace any data supplied
+ * with the data in the database.
+ * @param {Object} param0 
+ * @param {Object} param0.formData Data the user filled out in the submit form
+ * @param {File} param0.file File the user uploaded. (Can be null if `notebookJSON` is provided)
+ * @param {Object} param0.notebookJSON JSON object representing the ipynb file. (can by null if
+ * a new file was uploaded)
+ * @param {String} param0.submissionID ID of the submission being edited
+ * @param {func} callback Method to call when the API returns
+ */
 export const editSubmission = ({
     formData,
     file,
@@ -176,9 +194,9 @@ export const editSubmission = ({
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
-            fileName: file.name
         };
         if (file) {
+            submission.fileName = file.name
             //read and parse file
             var reader = new FileReader();
             reader.readAsText(file);
@@ -195,12 +213,14 @@ export const editSubmission = ({
                         dispatch(editSubmissionAction({
                             error: response.data.error
                         }))
+                        console.log("false callback")
                         callback(false)
                     } else {
                         console.log("[EditSubmission] - received edited submission: ", submission)
                         dispatch(editSubmissionAction({
                             submission
                         }));
+                        console.log("true callback")
                         callback(true)
                     }
                 })
@@ -218,10 +238,12 @@ export const editSubmission = ({
                     dispatch(editSubmissionAction({
                         error: response.data.error
                     }))
+                    callback(false)
                 } else {
                     dispatch(editSubmissionAction({
                         submission
                     }));
+                    callback(true)
                 }
             })
         } else {
@@ -232,6 +254,12 @@ export const editSubmission = ({
     }
 }
 
+/**
+ * @function deleteSubmission
+ * @description Makes an API request to flag the submission as deleted
+ * @param {String} submissionID ID of the submission being deleted
+ * @param {func} callback Function to call after the API request returns
+ */
 export const deleteSubmission = (submissionID, callback) => {
     console.log("Delete submission action")
     return function (dispatch) {
@@ -270,6 +298,14 @@ export const deleteSubmission = (submissionID, callback) => {
     }
 }
 
+/**
+ * @function fetchNBInfo
+ * @description Makes an API request to get all data for the submission specified by the 
+ * notebookID
+ * @param {Object} param0 
+ * @param {String} param0.notebookID ID of the notebook being requested
+ * @param {bool} forced Flag to bypass the needToFetch check
+ */
 export const fetchNBInfo = ({
     notebookID,
     forced

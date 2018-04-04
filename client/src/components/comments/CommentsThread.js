@@ -1,10 +1,31 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 
 
 import CommentContainer from "../../containers/comment/CommentContainer"
 
+/**
+ * Contains and renders all comments for the submission
+ * 
+ * Children: {@link Comment}
+ */
 class CommentsThread extends Component {
+    /**
+     * @prop {Array} comments Array of Comment objects for all comments on the submission
+     * @prop {Array} commentAuthors Array of User objects for all authors of all comments
+     * @prop {Array} replies Array of Comment objects for all replies on the submission
+     * @prop {func}  postComment Method called when the user submits a new comment
+     * @prop {func}  postReply Method called when the user submits a new reply
+     */
+    static propTypes = {
+        comments: PropTypes.array,
+        commentAuthors: PropTypes.array,
+        replies: PropTypes.array,
+        postComment: PropTypes.func.isRequired,
+        postReply: PropTypes.func.isRequired
+    }
+
     constructor(props) {
         super(props);
 
@@ -30,6 +51,10 @@ class CommentsThread extends Component {
         this.setState({comments: props.comments, commentAuthors: props.commentAuthors, replies: props.replies})
     }
 
+    /**
+     * Listens for changes in the new comment text field.
+     * @param {Object} e Event passed from the `onChange` listener
+     */
     newCommentTextChange(e) {
         this.newCommentText = e.target.value
         this.forceUpdate();
@@ -37,6 +62,7 @@ class CommentsThread extends Component {
 
     newCommentText = "";
 
+    /**Dispatches a postComment action  */
     submitNewComment() {
         if(!this.props.currentUser){
             this.setState({
@@ -51,6 +77,12 @@ class CommentsThread extends Component {
         document.getElementById('newCommentTextArea').value = '';
     }
 
+    /**
+     * Dispatches a postReply action
+     * @param {Object} param0 
+     * @param {String} param0.reply Content of the reply
+     * @param {String} param0.commentID ID of the comment being replied to
+     */
     postReply({reply, commentID}) {
         this
             .props

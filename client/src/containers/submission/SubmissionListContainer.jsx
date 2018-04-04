@@ -14,7 +14,6 @@ class SubmissionListContainer extends Component {
     }
 
     onSearch = (searchParams) => {
-        console.log('[SubmissionListContainer] - search params: ', searchParams);
         this.setState({
             searchParams: searchParams
         })

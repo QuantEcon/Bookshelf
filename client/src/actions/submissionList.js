@@ -1,3 +1,10 @@
+/**
+ * @file Submission List actions
+ * @author Trevor Lyon
+ * 
+ * @module submissionListActions
+ */
+
 import queryString from 'query-string';
 import store from '../store/store'
 
@@ -52,6 +59,13 @@ export const resetSearchParams = () => {
 
 //TODO: Dispatch on error action
 
+/**
+ * @function fetchSubmissions
+ * @description Makes an API request to get all submission that match the `searchParams`
+ * @param {Object} param0 
+ * @param {Object} param0.searchParams Search params provided by the user
+ * @param {bool} param0.forced Boolean flag to bypass the `needToFetch` check
+ */
 export const fetchSubmissions = ({searchParams, forced}) => {
     var sp = Object.assign({}, {
         lang: 'All',

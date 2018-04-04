@@ -6,19 +6,24 @@
   <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML'>
     MathJax.Hub.Config({
       tex2jax: {
-        inlineMath: [['$','$'], ["$$", "$$"], ["\\(","\\)"]],
-        processEscapes: true
-      }
+        inlineMath: [['$','$'], ["\\(", "\\)"]],
+        displayMath: [["$$", "$$"], ["\\[", "\\]"]],
+        processEscapes: true,
+        processEnvironments: true,
+      },
     })
   </script>
-  <script>
-    if(window.MathJax){
-      MathJax.Hub.Queue(
-        ["Typeset", MathJax.Hub]
-      )
-    }
-  </script>
   <title>Bookshelf</title>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-54984338-4"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-54984338-4');
+  </script>
+
 </head>
 
 <body>
