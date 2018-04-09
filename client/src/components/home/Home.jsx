@@ -11,7 +11,6 @@ class Home extends Component {
 
         var resetSearch = false
         var searchParams = this.getUrlVars(window.location.href);
-        console.log("[Home] - search params: ", searchParams)
         if(searchParams.reset) {
             resetSearch = true
         }

@@ -1,14 +1,15 @@
-// import React, {Component} from 'react';
-// import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 } from 'react-html-parser';
+import React, {Component} from 'react';
 
-// class NotebookFromHTML extends Component {
-//     render() {
-//         return (
-//             <div>
-//                 {ReactHtmlParser(this.props.html)}
-//             </div>
-//         )
-//     }
-// }
+import renderHTML from 'react-render-html'
 
-// export default NotebookFromHTML
+class NotebookFromHTML extends Component {
+    render() {
+        return (
+            <div>
+                {renderHTML(this.props.html)}
+            </div>
+        )
+    }
+}
+
+export default NotebookFromHTML

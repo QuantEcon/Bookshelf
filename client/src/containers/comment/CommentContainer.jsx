@@ -3,17 +3,19 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import Comment from '../../components/comments/Comment'
 
-import {upvoteComment, downvoteComment} from '../../actions/auth/vote';
-import {editComment} from '../../actions/auth/comment'
+import {editComment, submitReply} from '../../actions/auth/comment'
+import {flagComment} from '../../actions/submission'
+
 var actions = {
-    upvoteComment,
-    downvoteComment,
-    editComment
+    editComment,
+    flagComment,
+    submitReply
 }
 
 class CommentContainer extends Component {
     constructor(props){
         super(props);
+        console.log("[CommentContainer] - constructor props: ", props)
         this.state = {
             comment: this.props.comment,
             replies: this.props.replies,
@@ -26,22 +28,30 @@ class CommentContainer extends Component {
         return(
             <div>
                 <Comment
-                    comment={this.state.comment}
+                    comment={this.props.comment}
                     replies={this.state.replies}
                     author={this.state.author}
                     authors={this.state.authors}
                     currentUser={this.state.currentUser}
                     actions={this.props.actions}
+                    showAdmin={this.props.isAdmin}
+                    isReply={this.props.isReply}
                 />
             </div>
         )
     }
 }
 
-mapDispatchToProps = (dispatch) => {
+const mapStateToProps = (state, props) => {
+    return {
+        isAdmin: state.auth.isAdmin,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
     return {
         actions: bindActionCreators(actions, dispatch)
     }
 }
 
-export default connect(null, mapDispatchToProps)(CommentContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentContainer);

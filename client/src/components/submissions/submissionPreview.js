@@ -1,22 +1,46 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import {typesetMath} from "mathjax-electron"
 
 import Time from 'react-time';
 
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 
 class SubmissionPreview extends Component {
     constructor(props) {
         super(props);
-        console.log("[SubmissionPreview] - props:", props)
         this.state = {
             submission: props.submission,
             author: props.author
         }
+
+        this.renderMathJax = this.renderMathJax.bind(this)
+    }
+
+    renderMathJax() {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+        } else {
+            console.log("No mathjax")
+            this.renderMathJax()
+        }
+    }
+
+    componentDidMount() {
+        setTimeout(() => {
+            this.renderMathJax()
+        }, 500)
+    }
+
+    componentDidUpdate() {
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 500)
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("[SubmissionPreview] - next props: ", nextProps)
         this.setState({submission: nextProps.submission, author: nextProps.author});
     }
 
@@ -40,13 +64,18 @@ class SubmissionPreview extends Component {
 
                         in
                         <Link to={'/?lang=' + this.state.submission.lang}>{' '}{this.state.submission.lang}</Link>
+                        {this.state.submission.deletedDate
+                        ? <span>
+                            {' (deleted '} <Time value={this.state.submission.deletedDate} relative/>{')'}
+                        </span>
+                        : null}
                     </p>
-                    <Markdown
-                        disallowedTypes={['headings']}
+                    <MarkdownRender
+                        disallowedTypes={['heading']}
                         source={this.state.submission.summary
                         ? this.state.submission.summary
                         : '*No summary*'}
-                        className='short'/>
+                        className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
                 <p className="avatar">

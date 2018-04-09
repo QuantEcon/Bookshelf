@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
 import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
-import {fetchNBInfo, deleteSubmission} from '../../actions/submission'
+import {fetchNBInfo, deleteSubmission, flagSubmission} from '../../actions/submission'
 import NotFound from '../../components/NotFound'
 
 const actions = {
@@ -12,10 +13,24 @@ const actions = {
     fetchNBInfo,
     downvoteSubmission,
     upvoteSubmission,
-    deleteSubmission
+    deleteSubmission,
+    flagSubmission
 }
 
+/**
+ * Submission Container
+ * 
+ * Parent container for {@link Submission}. Retrieves all data from the Redux store
+ * and passes it to the child Submission component. 
+ */
 class SubmissionContainer extends Component {
+    /**
+     * @prop {Object} actions Contains the actions required for the submission page.
+     */
+    static propTypes = {
+        actions: PropTypes.object.isRequired
+    }
+
     constructor(props) {
         super(props);
         this
@@ -40,7 +55,8 @@ class SubmissionContainer extends Component {
                         isLoading={this.props.isLoading}
                         currentUser={this.props.currentUser}
                         actions={this.props.actions}
-                        history={this.props.history}/>
+                        history={this.props.history}
+                        showAdmin={this.props.isAdmin}/>
                 </div>
             )
         }
@@ -54,13 +70,13 @@ function mapStateToProps(state, props) {
     if (state.submissionByID[props.match.params.id]) {
         il = state.submissionByID[props.match.params.id].isFetching
     }
-    console.log("[SubmissionComponent] - map state to props: ", state)
     return {
         submission: state.submissionByID[props.match.params.id],
         currentUser: state.auth.isSignedIn
             ? state.auth.user
             : null,
-        isLoading: il
+        isLoading: il,
+        isAdmin: state.auth.isAdmin
     }
 }
 

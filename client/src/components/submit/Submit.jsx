@@ -1,14 +1,37 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import Dropzone from 'react-dropzone';
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
+import {typesetMath} from 'mathjax-electron'
+// import {transforms, displayOrder} from '@nteract/transforms-full';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 
+/**
+ * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
+ * passes the `submit` function as a prop.
+ */
 class Submit extends Component {
+    
+    /**
+     * @prop {Object} user Contains all the current user's data.
+     * @prop {func} submit Method to call after successful form validation and when the user
+     * clicks on submit
+     * @prop {Object} history Required for navigation.
+     * @prop {func} save Method to call after successful form validation and when the user
+     * clicks on save. This is used if this is an EditSubmission page
+     */
+    static propTypes = {
+        user: PropTypes.object.isRequired,
+        submit: PropTypes.func,
+        history: PropTypes.object.isRequired,
+        save: PropTypes.func
+    }
 
     topics = [
         'All',
@@ -51,6 +74,7 @@ class Submit extends Component {
             uploadError: false,
             showSummaryPreview: false,
             modalOpen: false,
+            markdownRefereceModal: false,
             notebookDataReady: false,
             notebookJSON: {}
         }
@@ -70,7 +94,12 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
+<<<<<<< HEAD
         this.coAuthorChanged = this.coAuthorChanged.bind(this)
+=======
+        this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
+        this.submit = this.submit.bind(this);
+>>>>>>> master
     }
 
     componentDidMount() {
@@ -81,7 +110,10 @@ class Submit extends Component {
         }
     }
 
-    toggleTermsAndConditionsModal = () => {
+    /**
+     * Toggles the visibliity of the Terms and Conditions Modal
+     */
+    toggleTermsAndConditionsModal(){
         this.setState({
             termsAndConditionsModalOpen: !this.termsAndConditionsModalOpen
         })
@@ -116,7 +148,13 @@ class Submit extends Component {
         agreement: false
     }
 
-    validate = () => {
+    /**
+     * Validates the form to ensure all required fields are filled out correctly. 
+     * 
+     * If there is an error in a field, an error message will be displayed underneath the 
+     * input.
+     */
+    validate () {
         var valid = true;
 
         if (!this.formData.title) {
@@ -153,13 +191,19 @@ class Submit extends Component {
         }, () => this.forceUpdate());
     }
 
-    removeTopic = (topic, array) => {
+    /**
+     * Removes the topic from the selected topics array
+     * @param {String} topic Topic to remove from form data
+     * @param {Array} array Array of topics
+     */
+    removeTopic (topic, array) {
         var index = array.indexOf(topic);
         if (index > -1) {
             array.splice(index, 1);
         }
     }
 
+<<<<<<< HEAD
     coAuthorChanged = (event, num) => {
         if(event) {
             this.formData.coAuthors[num] = event.target.value        
@@ -168,6 +212,13 @@ class Submit extends Component {
         }
     }
 
+=======
+    /**
+     * Listener method for `onChange` on the topics' checkboxes. Adds/removes the topic
+     * from the form data topic list
+     * @param {Object} event Event passed from the `onChange` listener
+     */
+>>>>>>> master
     topicChanged(event) {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
@@ -180,7 +231,12 @@ class Submit extends Component {
         }
     }
 
-    submit = (e) => {
+    /**
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * the submission is being edited
+     * @param {Object} e Event passed from the `submit` listener
+     */
+    submit(e) {
         e.preventDefault();
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
@@ -225,6 +281,13 @@ class Submit extends Component {
         this.setState({
             showSummaryPreview: !this.state.showSummaryPreview
         });
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 20);
+    }
+
+    renderMath = () => {
+        typesetMath(this.rendered)
     }
 
     summaryChanged = (event) => {
@@ -232,6 +295,11 @@ class Submit extends Component {
         this.forceUpdate();
     }
 
+    /**
+     * Listener for when a user drops files into the drop zone
+     * @param {Array} accepted Array of accepeted files
+     * @param {Array} rejected Array of rejected files
+     */
     onDrop(accepted, rejected) {
         if (accepted.length) {
             var reader = new FileReader();
@@ -255,7 +323,11 @@ class Submit extends Component {
         }
     }
 
-    toggleOpenModal = (e) => {
+    /**
+     * Opens the submission preview modal
+     * @param {Object} e Event passed from the `onClick` listener
+     */
+    toggleOpenModal(e) {
         console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
@@ -263,7 +335,8 @@ class Submit extends Component {
         })
     }
 
-    readNotebookFile = () => {
+    /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
+    readNotebookFile(){
         if (!this.state.notebookDataReady) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});
@@ -292,6 +365,13 @@ class Submit extends Component {
             .indexOf(topic) > -1;
     }
 
+    toggleMarkdownReferenceModal(e) {
+        e.preventDefault()
+        this.setState({
+            markdownRefereceModal: !this.state.markdownRefereceModal
+        })
+    }
+
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
@@ -301,6 +381,28 @@ class Submit extends Component {
                 <Breadcrumbs title='Submit'/>
                 <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
+                    <NotebookPreview notebook={this.state.notebookJSON}/>
+                </Modal>
+                <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
+                    <div className='my-modal'>
+                    <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>Markdown Reference</h1>
+                        </div>
+                        <div className='modal-body'>
+                            <ul>
+                                <li>
+                                    <MarkdownRender source="Use ticks (``) for code: \`code\` -> code`"/>
+                                </li>
+                                <li>
+                                    <MarkdownRender source="Use * for italics: \*italics\* -> *italics*"/>
+                                </li>
+                                <li>    
+                                    <MarkdownRender source="Use ** for bold: \*\*bold\*\* -> **bold**"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <NotebookPreview
                         notebook={this.state.notebookJSON}/>
                 </Modal>
@@ -406,6 +508,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
+                                        maxLength="30"
                                         defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
@@ -487,7 +590,7 @@ class Submit extends Component {
 
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">You can use{' '}
-                                        <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer">markdown</a>{' '}
+                                        <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
@@ -497,14 +600,16 @@ class Submit extends Component {
 
                                     {this.state.showSummaryPreview
                                         ? <div>
-                                                <Markdown
+                                                <MarkdownRender
+                                                    disallowedTypes={['heading']}
                                                     source={this.formData.summary
                                                     ? this.formData.summary
                                                     : '*No summary*'}/>
-                                                <p
-                                                    className="input-hint-after input-hint orange bold"
-                                                    onClick={this.toggleSummaryPreview}>
-                                                    Close Preview
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
+                                                </p>
+                                                <p className="input-hint-after input-hint">
+                                                    <a onClick={this.renderMath}>Render Math</a>
                                                 </p>
                                             </div>
                                         : <p className="input-hint input-hint-after">

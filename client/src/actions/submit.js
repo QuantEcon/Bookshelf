@@ -1,3 +1,10 @@
+/**
+ * @file Submit Actions
+ * @author Trevor Lyon
+ * 
+ * @module submitActions
+ */
+
 import store from '../store/store'
 import axios from 'axios'
 import {fetchSubmissions} from './submissionList';
@@ -48,6 +55,26 @@ export const confirmSubmit = ({
     }
 }
 
+/**
+ * @function submit
+ * @description Creates a `submission` object to be sent to the API to create a new
+ * submission document. If there is a file uploaded, the file will be read and the JSON 
+ * will be extracted.
+ * 
+ * The method will then call `confirm` passing the created `submission` object
+ * 
+ * @param {Object} formData Data filled out by the user in the submit form:
+ * ```
+ * {
+ *      agreement: Boolean,
+ *      title: String,
+ *      summary: String,
+ *      lang: String,
+ *      topics: Array[String],
+ *      coAuthors: Array[String]
+ * }```
+ * @param {file} file File uploaded by the user
+ */
 export const submit = (formData, file) => {
     return function (dispatch) {
         console.log('[SubmitActions] - submit: ', formData, file);
@@ -74,6 +101,18 @@ export const submit = (formData, file) => {
     }
 }
 
+/**
+ * @function confirm
+ * @description Makes an API request to create a new submission document in the database.
+ * Called by `submit`
+ * 
+ * If the submission is successful, the API will return the new submission docuement and 
+ * it will be added to the redux store
+ * 
+ * @param {Object} param0 
+ * @param {Object} param0.submission Contains all the data necessary to create a new submission
+ * document
+ */
 export const confirm = ({submission}) => {
     return function (dispatch) {
         console.log('[SubmitActions] - confirm submit: ', submission)
@@ -101,6 +140,10 @@ export const confirm = ({submission}) => {
     }
 }
 
+/**
+ * @function cancel
+ * @description Cancels the submit action and returns the user to the homepage
+ */
 export const cancel = () => {
     return function (dispatch) {
         console.log('[SubmitActions] - cancelSubmit');

@@ -1,3 +1,10 @@
+/**
+ * @file Actions for editing a submission
+ * @author Trevor Lyon
+ * 
+ * @module editSubmissionActions
+ */
+
 import store from '../store/store'
 
 export const SAVE_SUBMISSION = 'SAVE_SUBMISSION';
@@ -11,7 +18,10 @@ const saveSubmissionAction = ({
 }
 
 /**
- * Builds a submission JSON object that is used for rendering in the modal that is displayed when the user clicks on the 
+ * @function
+ * @name buildSubmissionPreview
+ * 
+ * @description Builds a submission JSON object that is used for rendering in the modal that is displayed when the user clicks on the 
  * Preview button.
  * 
  * Note: only one of the parameters `file` and `notebookJSON` should be used. The other should be `null`. If the user supplies
@@ -28,7 +38,7 @@ const saveSubmissionAction = ({
  *      lang: String,
  *      topics: Array[String],
  *      coAuthors: Array[String]
- * }
+ * }```
  * @param {File} data.file - The file of the notebook. This should be a file with an .ipynb file extension
  * @param {Object} data.notebookJSON - The JSON of the notebook
  * @param {String} data.submissionID - The ID of the submission being edited
@@ -68,7 +78,8 @@ export const buildSubmissionPreview = ({
 }
 
 /**
- * REDUX ACTION: Builds the submission object and dispatches an action to save the changes
+ * @function buildAndSave
+ * @description REDUX ACTION: Builds the submission object and dispatches an action to save the changes
  * 
  * @param {Object} data - Data used to build the submission preview. Contains `formData`, `file`, `notebookJSON`, `submissionID`
  * @param {Object} data.formData - A JSON Object of the data filled out by the form. This object should contain the following:
@@ -80,7 +91,7 @@ export const buildSubmissionPreview = ({
  *      lang: String,
  *      topics: Array[String],
  *      coAuthors: Array[String]
- * }
+ * }```
  * @param {File} data.file - The file of the notebook. This should be a file with an .ipynb file extension
  * @param {Object} data.notebookJSON - The JSON of the notebook. This is used incase the user didn't select a new file but is using
  * the existing file

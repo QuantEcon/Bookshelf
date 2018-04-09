@@ -61,7 +61,11 @@ class Head extends Component {
         console.log("redirect to home")
         //reset search params
         this.props.resetSearchParams()
-        this.props.history.replace("/")
+        if(this.props.history){
+            this.props.history.replace("/")
+        } else {
+            window.location.href = '/'
+        }
     }
 
     inviteClick = () => {
@@ -124,8 +128,8 @@ class Head extends Component {
                 <a
                     className="submit-feedback"
                     target="_blank"
-                    href="http://discourse.quantecon.org/c/bookshelf-feedback"
-                    rel="noopener noreferrer">Submit Feedback</a>
+                    rel="noopener noreferrer"
+                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
 
                 <header className="header">
 
@@ -143,7 +147,6 @@ class Head extends Component {
                                             </h2>
                                         </div>
                                     </span>
-
                                 </a>
 
                             </div>
@@ -160,6 +163,11 @@ class Head extends Component {
                                     <li>
                                         <Link to='/about'>About</Link>
                                     </li>
+                                    {this.props.showAdmin && this.props.isSignedIn
+                                    ? <li>
+                                        <Link to='/admin'>Admin</Link>
+                                    </li>
+                                    : null}
                                 </ul>
                             </div>
 

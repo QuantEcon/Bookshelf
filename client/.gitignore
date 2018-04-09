@@ -23,3 +23,4 @@ yarn-error.log*
 /src/assets/js/MathJax
 
 docs
+docs/

@@ -2,6 +2,12 @@ import React, {Component} from 'react';
 
 import Reply from './Reply';
 
+/**
+ * Simliar to {@link CommentsThread} but used for replies. Renders all 
+ * replies to comments
+ * 
+ * Children: {@link Reply}
+ */
 class ReplyList extends Component {
     constructor(props) {
         super(props);
@@ -35,9 +41,7 @@ class ReplyList extends Component {
                             reply={reply}
                             author={author[0]}
                             key={index}
-                            currentUser={this.props.currentUser}
-                            upvote={this.props.upvote}
-                            downvote={this.props.downvote}/>
+                            currentUser={this.props.currentUser}/>
                     })}
             </div>
         )

@@ -1,3 +1,10 @@
+/**
+ * @file Actions used for sigining in
+ * @author Trevor Lyon
+ * 
+ * @module signInActions
+ */
+
 import store from '../../store/store'
 
 import {
@@ -19,13 +26,14 @@ export const beginUserAuthentication = (provider) => {
 }
 
 export const END_USER_AUTHENTICATION = 'END_USER_AUTHENTICATION'
-export const endUserAuthentication = (provider, user = {}, token, error) => {
+export const endUserAuthentication = (provider, user = {}, token, error, isAdmin) => {
     return {
         type: END_USER_AUTHENTICATION,
         provider,
         user,
         token,
-        error
+        error,
+        isAdmin
     }
 }
 export const BEGIN_ADD_SOCIAL = 'BEGIN_ADD_SOCIAL'
@@ -66,16 +74,28 @@ export const END_REAUTHENTICATION = 'END_REAUTHENTICATION'
 const endReauthentication = ({
     error,
     user,
-    token
+    token,
+    isAdmin
 }) => {
     return {
         type: END_REAUTHENTICATION,
         error,
         user,
-        token
+        token,
+        isAdmin
     }
 }
 
+/**
+ * @function reauthenticate
+ * 
+ * @description If there is a current JWT scored in local storage, this makes an api request 
+ * to revalidate the token.
+ * 
+ * If the token is valid, the user will be authenticated and signed in.
+ * 
+ * If the token is invalid, it will be removed local storage.
+ */
 export const reauthenticate = () => {
     console.log('REAUTHENTICATE');
     return (dispatch) => {
@@ -91,7 +111,8 @@ export const reauthenticate = () => {
                 if (response.data.user) {
                     dispatch(endReauthentication({
                         user: response.data.user,
-                        token: localState.token
+                        token: localState.token,
+                        isAdmin: response.data.isAdmin
                     }))
                 }
             }).catch(err => {
@@ -108,6 +129,19 @@ export const reauthenticate = () => {
     }
 }
 
+/**
+ * @function mergeAccounts
+ * @description Sends an API request to merge two accounts. 
+ * 
+ * If the merge was successful, the API will return the social profile of the merged account,
+ * and `next(true)` will be called
+ * 
+ * If the merge was unsucessful an error will be logged and `next(false)` will be called
+ * 
+ * @param {Object} param0 
+ * @param {Object} param0.accountToMerge Account to merge into the current account
+ * @param {func} next Callback after the API request returns
+ */
 export const mergeAccounts = ({accountToMerge, next}) => {
     return function(dispatch){
         console.log("[MergeAccounts] - req.body: ", )
@@ -141,6 +175,19 @@ export const mergeAccounts = ({accountToMerge, next}) => {
     }
 }
 
+/**
+ * @function addSocial
+ * @description Makes an API request to add a social account to the current one. 
+ * 
+ * If the add was successful, the API will return the updated user document and
+ * `next(true)` will be called
+ * 
+ * If the add was unsuccessful, an error will be logged and `next(false)` will be
+ * called
+ * 
+ * @param {String} provider Social to add (Github, Twitter, Facebook, Google)
+ * @param {func} next Callback for after the API request returns
+ */
 export const addSocial = (provider, next) => {
     console.log('[SignIn] - provider:', provider);
     return function (dispatch) {
@@ -209,7 +256,7 @@ export const addSocial = (provider, next) => {
                     if (resp.data.error) {
                         if (resp.data.error.status === 4) {
                             console.log('[SignInActions] - user profile already exists');
-                            //TODO: ask user if he/she wants to merge accounts
+                            //ask user if he/she wants to merge accounts
                             dispatch(endAddSocial({
                                 provider: 'fb',
                                 existingUser: resp.data.user,
@@ -268,6 +315,18 @@ export const addSocial = (provider, next) => {
     }
 }
 
+/**
+ * @function signIn
+ * @description Makes an api request to sign in with the `provider`.
+ * 
+ * On successful authentication, the `currentUser` will be set in the redux store and `next(true)`
+ * will be called.
+ * 
+ * On unsuccessful authentication, an error will be logged and `next(false)` will be called
+ * 
+ * @param {String} provider Social provider to sign in with (Github, Twitter, Facebook, Google)
+ * @param {func} next Callback to be called after API request
+ */
 export const signIn = (provider, next) => {
     return function (dispatch) {
         dispatch(beginUserAuthentication(provider));
@@ -275,7 +334,7 @@ export const signIn = (provider, next) => {
         switch (provider) {
             case 'Github':
                 authenticate('github').then(resp => {
-                    dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Github', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -293,7 +352,7 @@ export const signIn = (provider, next) => {
             case 'Twitter':
                 authenticate('twitter').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Twitter', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -311,7 +370,7 @@ export const signIn = (provider, next) => {
             case 'Google':
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });
@@ -329,7 +388,7 @@ export const signIn = (provider, next) => {
             case 'Facebook':
                 authenticate('fb').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null))
+                    dispatch(endUserAuthentication('Facebook', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                     saveState({
                         token: resp.credentials.token
                     });

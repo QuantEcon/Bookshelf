@@ -65,7 +65,7 @@
 }
 
 .pagination-previous {
-  a::before, &.disabled::before {
+  a::before {
     display: inline-block;
     margin-right: 0.5rem;
     content: '\00ab';
@@ -73,7 +73,7 @@
 }
 
 .pagination-next {
-  a::after, &.disabled::after {
+  a::after {
     display: inline-block;
     margin-left: 0.5rem;
     content: '\00bb';

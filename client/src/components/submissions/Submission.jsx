@@ -1,37 +1,54 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types'
 
-import Markdown from 'react-markdown';
+// import {MarkdownRender} from '../MarkdownMathJax';
+import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import {Link} from 'react-router-dom'
 import Modal from 'react-modal'
-// import ReactHtmlParser, { processNodes, convertNodeToElement, htmlparser2 }
-// from 'react-html-parser'; import 'normalize-css' import
-// 'typeface-source-code-pro' import 'typeface-source-sans-pro' import
-// 'codemirror/lib/codemirror.css'; import
-// '@nteract/notebook-preview/styles/main.css'; import
-// '@nteract/notebook-preview/styles/theme-light.css' import
-// '../../assets/css/notebookPreview.css'
+import {typesetMath} from "mathjax-electron"
 
-import NotebookPreview from '@nteract/notebook-preview';
+import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
-
-// import {transforms, displayOrder} from '@nteract/transforms-full';
 
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
 import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
+import FlagIcon from 'react-icons/lib/md/flag'
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
+import { confirmAlert } from 'react-confirm-alert'; // Import
+import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
+/** 
+ * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
+ * the necessary data from Redux and passes it to this component
+ * 
+ * Children: {@link CommentsThread}
+ */
 class Submission extends Component {
-
+    /**
+     * @prop {Object}   actions         Contains all redux actions for the submission page (voting, commenting, etc...)
+     * @prop {Object}   submission      Contains all data necessary to render the submission, (notebook, title, author, comments, etc...)
+     *                                  This is obtained from the API and passed to the component via Redux
+     * @prop {boolean}  isLoading       Flag to tell react if the data is still being loaded from the API
+     * @prop {Object}   currentUser     Object containing the current user's information. If there is no user signed in, it will be `null`
+     * @prop {Object}   history         Needed for navigation. Passed from the Submission Container
+     */
+    static propTypes = {
+        actions: PropTypes.object.isRequired,
+        submission: PropTypes.object,
+        isLoading: PropTypes.bool,
+        currentUser: PropTypes.object,
+        history: PropTypes.object.isRequired
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -39,7 +56,7 @@ class Submission extends Component {
             flipper: true,
             deleteModalOpen: false
         }
-
+        
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -51,18 +68,6 @@ class Submission extends Component {
             .bind(this);
         this.onSubmitComment = this
             .onSubmitComment
-            .bind(this);
-        this.upvoteComment = this
-            .upvoteComment
-            .bind(this);
-        this.downvoteComment = this
-            .downvoteComment
-            .bind(this);
-        this.upvoteReply = this
-            .upvoteReply
-            .bind(this);
-        this.downvoteReply = this
-            .downvoteReply
             .bind(this);
         this.download = this
             .download
@@ -82,14 +87,34 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
+        this.renderMathJax = this.renderMathJax.bind(this)
     }
 
     componentDidMount() {
         this.forceUpdate();
+        // Wait half a second for things to load, then render mathjax
+        setTimeout(() => {
+            this.renderMathJax()    
+        }, 500);
+        
     }
 
+    renderMathJax(numTimes) {
+        if(window.MathJax){
+            console.log("Rendering math...")
+            typesetMath(this.rendered)
+        } else if(numTimes < 3){
+            console.log("No mathjax")
+            setTimeout(() => {
+                this.renderMathJax(numTimes ? numTimes++ : 1)
+            }, 500)
+        } else {
+            console.warn("Mathjax couldn't be loaded");
+        }
+    }
+
+
     componentWillReceiveProps(props) {
-        console.log("[Submission] - will receive props: ", props)
         if (props.submission.data) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
@@ -109,53 +134,49 @@ class Submission extends Component {
         FileSaver.saveAs(file)
     }
 
+    /**
+     * Dispatches an upvote submission action
+     */
     upvote() {
         this
             .props
             .actions
             .upvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 237 solves this problem
     }
-
+    /**
+     * Dispatches a downvote submission action
+     */
     downvote() {
         this
             .props
             .actions
             .downvoteSubmission({submissionID: this.props.submissionID});
-        //TODO: unfocus button after click
+        //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
-    upvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .upvoteComment({commentID, submissionID: this.props.submissionID});
+    flagSubmission = () => {
+        console.log("[Submission] - flag submission clicked")
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
     }
-
-    downvoteComment(commentID) {
-        this
-            .props
-            .actions
-            .downvoteComment({commentID, submissionID: this.props.submissionID});
-    }
-    upvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .upvoteReply({commentID, replyID, submissionID: this.props.submissionID});
-    }
-
-    downvoteReply({replyID, commentID}) {
-        this
-            .props
-            .actions
-            .downvoteReply({commentID, replyID, submissionID: this.props.submissionID});
+    
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report this content?',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagSubmission(),    
+         })
     }
 
     encounteredURI(uri) {
         console.log('encountered uri in markdown: ', uri);
     }
 
+    /**
+     * Dispatches a submit comment action
+     * @param {String} comment Text of the new comment entered in the form
+     */
     onSubmitComment(comment) {
         this
             .props
@@ -163,6 +184,12 @@ class Submission extends Component {
             .submitComment(this.props.submissionID, comment);
     }
 
+    /**
+     * 
+     * @param {Object} param0 
+     * @param {String} param0.reply Text of the reply entered in the form
+     * @param {String} param0.commentID ID of the comment being replied to
+     */
     submitReply({reply, commentID}) {
         this
             .props
@@ -170,18 +197,28 @@ class Submission extends Component {
             .submitReply({reply, commentID, submissionID: this.props.submissionID})
     }
 
+    /**
+     * Toggles the view between the notebook and the comments thread
+     */
     toggleView() {
         this.setState({
             showNotebook: !this.state.showNotebook
         });
     }
 
+    /**
+     * Toggles the visiblity of the delete submission modal
+     */
     toggleDeleteModal() {
         this.setState({
             deleteModalOpen: !this.state.deleteModalOpen
         });
     }
 
+    /**
+     * Dispatches a delete submission action, then closes the modal. Once the action
+     * is completed `deleteCallback` will be called
+     */
     deleteSubmission() {
         console.log('[Submission] - delete submission clicked');
         this
@@ -191,6 +228,11 @@ class Submission extends Component {
         this.toggleDeleteModal();
     }
 
+    /**
+     * Called by redux after the call to the api compeletes. If there was an error
+     * deleting the submission, `successful` will be false, otherwise, it will be true.
+     * @param {boolean} successful Deletion was successful or not
+     */
     deleteCallback(successful) {
         console.log("Deletion callback: ", successful)
         // Redirect if successful
@@ -258,10 +300,10 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.upvote} className='active'>
+                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
                                         </a>
-                                    : <a onClick={this.upvote}>
+                                    : <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
                                     </a>}
 
@@ -274,10 +316,10 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a onClick={this.downvote} className='active'>
+                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
                                             <ThumbsDown/>
                                         </a>
-                                    : <a onClick={this.downvote}>
+                                    : <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
                                     </a>}
                             </div>
@@ -306,6 +348,13 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
+                                    <ul className='details-options'>
+                                        <li>
+                                            {!this.props.isLoading && this.props.submission.data.flagged
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+                                        </li>
+                                    </ul>
                                     {!this.props.isLoading
                                         ? <ul className='topics'>
                                                 {this
@@ -361,8 +410,8 @@ class Submission extends Component {
                             <div className='details-body'>
                                 <div className='details-primary'>
                                     {!this.props.isLoading
-                                        ? <Markdown
-                                                disallowedTypes={['headings']}
+                                        ? <MarkdownRender
+                                                disallowedTypes={['heading']}
                                                 source={this.props.submission.data.notebook.summary
                                                 ? this.props.submission.data.notebook.summary
                                                 : '*No summary*'}/>
@@ -475,10 +524,12 @@ class Submission extends Component {
                                             </div>
 
                                             {this.props.submission.data.html
-                                                ? <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                ? <div>
+                                                    <p>(pre-rendered notebook)</p>
+                                                    <NotebookFromHTML html={this.props.submission.data.html}/>
+                                                </div>
                                                 : <div id='notebook'>
-                                                    <NotebookPreview
-                                                        notebook={this.props.submission.data.notebookJSON}/>
+                                                    <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
                                                 </div>}
 
                                         </div>
@@ -501,10 +552,6 @@ class Submission extends Component {
                                             comments={this.props.submission.data.comments}
                                             replies={this.props.submission.data.replies}
                                             commentAuthors={this.props.submission.data.commentAuthors}
-                                            downvote={this.downvoteComment}
-                                            upvote={this.upvoteComment}
-                                            upvoteReply={this.upvoteReply}
-                                            downvoteReply={this.downvoteReply}
                                             postComment={this.onSubmitComment}
                                             postReply={this.submitReply}
                                             currentUser={this.props.currentUser}

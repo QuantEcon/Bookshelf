@@ -1,3 +1,24 @@
+import axios from 'axios'
+import store from "../../store/store"
+import {authPostReply} from '../auth/auth'
+import {postComment} from '../submission'
+
+/**
+ * @file Actions for comments
+ * @author Trevor Lyon
+ * 
+ * @module commentActions
+ */
+
+/**
+ * @function editComment
+ * @description Makes an API request to modify the `text` value in the Comment object
+ * in the database
+ * 
+ * @param {Object} param0 
+ * @param {String} param0.commentID ID of the comment being edited
+ * @param {String} param0.newCommentText New contents to replace the comment text
+ */
 export const editComment = ({
     commentID,
     newCommentText
@@ -18,6 +39,14 @@ export const editComment = ({
     }
 }
 
+/**
+ * @function submitComment
+ * @description Makes an API request to create a new comment in the database
+ * 
+ * @param {Object} param0 
+ * @param {String} param0.submissionID ID of the submission being commented on
+ * @param {String} param0.comment Content of the new comment
+ */
 export const submitComment = ({
     submissionID,
     comment,
@@ -39,7 +68,7 @@ export const submitComment = ({
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
             console.log('dispatch submission actions post comment');
-            dispatch(SubmissionActions.postComment({
+            dispatch(postComment({
                 submissionID: response.data.submissionID,
                 comment: response.data.comment
             }))
@@ -49,6 +78,15 @@ export const submitComment = ({
     }
 }
 
+/**
+ * @function submitReply
+ * @description Makes an API request to create a new reply in the database
+ * 
+ * @param {Object} param0 
+ * @param {String} param0.submissionID ID of the submission the reply belongs to
+ * @param {String} param0.commentID ID of the comment the reply belongs to
+ * @param {String} param0.reply Content of the new reply
+ */
 export const submitReply = ({
     submissionID,
     commentID,

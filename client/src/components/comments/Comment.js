@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
-
-// import ThumbsUp from 'react-icons/lib/md/thumb-up';
-// import ThumbsDown from 'react-icons/lib/md/thumb-down';
+import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
-import DeleteIcon from 'react-icons/lib/md/delete';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
 
@@ -12,7 +9,37 @@ import Time from 'react-time';
 
 import ReplyList from './ReplyList';
 
+/**
+ * Component to render all data for a Comment. The {@link CommentsThread} component passes
+ * all neccessary data down to this component.
+ * 
+ * Children: {@link ReplyList}
+ */
 class Comment extends Component {
+
+    /**
+     * @prop {Object} comment Comment object from the database
+     * @prop {Array} replies Array of comment objets representing the replies to this comment
+     * @prop {Object} author Data for the author of the comment
+     * @prop {Array} authors Data for all authors of the replies to this comment
+     * @prop {func} postReply Method called when the user clicks "Reply"
+     * @prop {Object} currentUser Data representing the current user. If no user is signed in,
+     * this will be `null`
+     * @prop {func} editComment Method called when the user clicks "Edit"
+     * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to 
+     * this comment is disabled
+     */
+    static propTypes = {
+        comment: PropTypes.object.isRequired,
+        replies: PropTypes.array,
+        author: PropTypes.object.isRequired,
+        authors: PropTypes.array,
+        postReply: PropTypes.func.isRequired,
+        currentUser: PropTypes.object,
+        editComment: PropTypes.func,
+        isReply: PropTypes.bool
+    }
+
     constructor(props) {
         super(props);
 
@@ -32,13 +59,6 @@ class Comment extends Component {
         this.toggleInsertReply = this
             .toggleInsertReply
             .bind(this)
-
-        this.upvote = this
-            .upvote
-            .bind(this)
-        this.downvote = this
-            .downvote
-            .bind(this);
         this.submitRepsonse = this
             .submitRepsonse
             .bind(this);
@@ -60,6 +80,7 @@ class Comment extends Component {
         this.deleteComment = this
             .deleteComment
             .bind(this);
+        this.flagComment = this.flagComment.bind(this)
     }
 
     componentWillReceiveProps(props) {
@@ -71,16 +92,22 @@ class Comment extends Component {
             showInsertReply: false,
             authors: props.authors,
             currentUser: props.currentUser,
-            isReply: props.isReply
+            isReply: props.isReply,
         })
     }
 
+    /**Toggles the visibility of the edit comment text input */
     toggleShowEditComment() {
         this.setState({
             showEditComment: !this.state.showEditComment
         })
     }
 
+    /**Called when the user clicks edit comment.
+     * 
+     * @param {Object} e Event passed from the `onClick` listener
+     * This method then calls the prop `editComment`
+     */
     editComment(e) {
         e.preventDefault();
         var newText = document
@@ -91,6 +118,7 @@ class Comment extends Component {
             .value = '';
         console.log('[Comment] - edit comment. new text: ', newText);
         this.toggleShowEditComment();
+        console.log("actions: " ,this.props)
         this
             .props
             .actions
@@ -98,27 +126,16 @@ class Comment extends Component {
     }
 
     flagComment() {
-        alert('Work in Progess\nThis will flag the comment');
+        this.props.actions.flagComment({commentID: this.props.comment._id})
     }
-
-    replyText = '';
-
-    upvote() {
-        console.log('[Comment] - Upvote comment: ', this.props.comment._id);
-        this
-            .props
-            .upvote(this.props.comment._id);
-        this.forceUpdate();
-    }
-
-    downvote() {
-        console.log('[Comment] - Downvote comment: ', this.props.comment._id);
-        this
-            .props
-            .downvote(this.props.comment._id);
-        this.forceUpdate();
-    }
-
+    
+    /**
+     * Method called when the user clicks submit reply.
+     * 
+     * This method then calls the `postReply` method passed down as a prop.
+     * 
+     * @param {Object} e Event object passed from the `onClick` listener
+     */
     submitRepsonse(e) {
         e.preventDefault();
         if (!this.state.currentUser) {
@@ -127,13 +144,19 @@ class Comment extends Component {
         }
         this
             .props
-            .postReply({reply: this.state.replyText, commentID: this.props.comment._id});
+            .actions
+            .submitReply({reply: this.state.replyText, commentID: this.props.comment._id, submissionID: this.props.comment.submission});
     }
 
+    /**
+     * Listener for changes in the reply text field. Sets the state.replyText value
+     * @param {Object} e Event object passed from the `onChange` listener
+     */
     replyTextChanged(e) {
         this.setState({replyText: e.target.value})
     }
 
+    /**Toggles the visibility of the reply text input field */
     toggleInsertReply() {
         this.setState({
             showInsertReply: !this.state.showInsertReply
@@ -146,6 +169,7 @@ class Comment extends Component {
         this.toggleDeleteModal();
     }
 
+    /**Toggles thi visibility of the comment deletion modal */
     toggleDeleteModal() {
         console.log('[Comment] - toggle delete modal: ', this.state.deleteModalOpen);
         this.setState({
@@ -269,9 +293,9 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        <a onClick={this.toggleDeleteModal}>
+                                        {/* <a onClick={this.toggleDeleteModal}>
                                             <DeleteIcon/>
-                                        </a>
+                                        </a> */}
                                     </div>
                                 : null}
                         </ul>
