@@ -202,6 +202,7 @@ export const editSubmission = ({
             reader.readAsText(file);
             reader.onload = (event) => {
                 submission.notebookJSON = JSON.parse(event.target.result);
+                submission.fileName = file.name
                 axios.post('/api/submit/edit-submission', {
                     submissionData: submission
                 }, {

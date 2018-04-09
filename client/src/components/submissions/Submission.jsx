@@ -438,10 +438,21 @@ class Submission extends Component {
 
                                             </li>
                                             <li>
+                                                <div>
                                                 <span>Co-Authors:</span>
                                                 {!this.props.isLoading && this.props.submission.data.coAuthors.length
-                                                    ? <a>co-author name</a>
+                                                    ? <div className="co-authors">
+                                                        {this.props.submission.data.coAuthors.map((coAuthor) => {
+                                                            if(coAuthor._id){
+                                                                return <Link to={'/user/' + coAuthor._id}>{coAuthor.name}</Link>
+                                                            } else {
+                                                                return <a href={'mailto:' + coAuthor.email}>{coAuthor.email}</a>
+                                                            }
+                                                        })}
+                                                    </div>
                                                     : <div>None</div>}
+                                                </div>
+                                                
                                             </li>
                                             <li>
                                                 <span>Language:</span>

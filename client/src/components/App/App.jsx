@@ -47,7 +47,6 @@ class App extends Component {
               <Route path='/about' component={About}/>
               <Route path='/submission/:id' component={SubmissionContainer}/>
               <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
-              <ProtectedRoute exact path='/edit-submission/:id/preview' component={EditSubmissionPreviewContainer}/>
               <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
               <ProtectedRoute path='/submit' component={SubmitContainer}/>
               <Route path='/signin' exact component={SignIn}/>

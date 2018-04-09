@@ -17,7 +17,7 @@ var submissionSchema = new Schema({
     ipynbFile: String,
 
     author: ObjectId,
-    coAuthors: [ObjectId],
+    coAuthors: Array,
     comments: [ObjectId],
     totalComments: Number,
 

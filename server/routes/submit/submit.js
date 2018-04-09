@@ -3,6 +3,7 @@ var multiparty = require('connect-multiparty');
 const passport = require('../../js/auth/jwt');
 const bodyParser = require('body-parser');
 const multer = require('multer');
+const series = require("async/series")
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -188,92 +189,216 @@ app.post('/confirm', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
     var newSub = new Submission();
-    console.log("[Submit] - confirm. req.body: ", req.body)
+    console.log("[Submit] - confirm. req.body: \n", req.body)
+    var coAuthors = req.body.submission.coAuthors
+    series({
+        first: (callback) => {
+            if (coAuthors[1]) {
+                User.findOne({
+                    email: coAuthors[1]
+                }, (err, user) => {
+                    if (err) {
+                        callback(err, null)
+                    } else if (user) {
+                        callback(null, {
+                            email: user.email,
+                            name: user.name,
+                            _id: user._id,
+                            agreement: false
+                        })
+                    } else {
+                        callback(null, {
+                            email: coAuthors[1],
+                            agreement: false
+                        })
+                    }
+                })
+            } else {
+                callback(null, null)
+            }
 
-    newSub.title = req.body.submission.title;
+        },
+        second: (callback) => {
+            if (coAuthors[2]) {
+                User.findOne({
+                    email: coAuthors[2]
+                }, (err, user) => {
+                    if (err) {
+                        callback(err, null)
+                    } else if (user) {
+                        callback(null, {
+                            email: user.email,
+                            name: user.name,
+                            _id: user._id,
+                            agreement: false
+                        })
+                    } else {
+                        callback(null, {
+                            email: coAuthors[2],
+                            agreement: false
+                        })
+                    }
+                })
+            } else {
+                callback(null, null)
+            }
 
-    newSub.topics = req.body.submission.topics;
+        },
+        third: (callback) => {
+            if (coAuthors[3]) {
+                User.findOne({
+                    email: coAuthors[3]
+                }, (err, user) => {
+                    if (err) {
+                        callback(err, null)
+                    } else if (user) {
+                        callback(null, {
+                            email: user.email,
+                            name: user.name,
+                            _id: user._id,
+                            agreement: false
+                        })
+                    } else {
+                        callback(null, {
+                            email: coAuthors[3],
+                            agreement: false
+                        })
+                    }
+                })
+            } else {
+                callback(null, null)
+            }
 
-    newSub.lang = req.body.submission.lang;
-    newSub.summary = req.body.submission.summary;
+        },
+        fourth: (callback) => {
+            if (coAuthors[4]) {
+                User.findOne({
+                    email: coAuthors[4]
+                }, (err, user) => {
+                    if (err) {
+                        callback(err, null)
+                    } else if (user) {
+                        callback(null, {
+                            email: user.email,
+                            name: user.name,
+                            _id: user._id,
+                            agreement: false
+                        })
+                    } else {
+                        callback(null, {
+                            email: coAuthors[4],
+                            agreement: false
+                        })
+                    }
+                })
+            } else {
+                callback(null, null)
+            }
 
-    //todo: not sure if we should have this or not newSub.file = file;
-
-    newSub.author = req.user._id;
-    //todo: parse co-authors newSub.coAuthors = coAuthors
-    newSub.comments = [];
-    newSub.totalComments = 0;
-
-    newSub.score = 0;
-    newSub.views = 0;
-
-    newSub.published = Date.now();
-    newSub.lastUpdated = Date.now();
-
-    newSub.deleted = false;
-    newSub.flagged = false;
-
-    newSub.fileName = req.body.submission.fileName;
-    newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
-
-    newSub.views = 0
-    newSub.viewers = []
-
-
-    User.findById(req.user._id, (err, user) => {
+        }
+    }, (err, results) => {
         if (err) {
-            console.err('[Submit] - error finding user: ', err);
-            res.status(500);
-            res.send({
-                error: err
-            });
-        } else if (user) {
-            newSub.save((err, submission) => {
+            console.error("Error getting coauthors: ", err)
+            res.sendStatus(500)
+        } else {
+
+            var coAuthors = []
+            if(results.first) coAuthors.push(results.first)
+            if(results.second) coAuthors.push(results.second)
+            if(results.third) coAuthors.push(results.third)
+            if(results.fourth) coAuthors.push(results.fourth)
+            console.log("Co autrhors: ", coAuthors)
+            newSub.coAuthors = coAuthors
+
+            newSub.title = req.body.submission.title;
+
+            newSub.topics = req.body.submission.topics;
+
+            newSub.lang = req.body.submission.lang;
+            newSub.summary = req.body.submission.summary;
+
+            newSub.author = req.user._id;
+
+            //todo: parse co-authors newSub.coAuthors = coAuthors
+
+            newSub.comments = [];
+            newSub.totalComments = 0;
+
+            newSub.score = 0;
+            newSub.views = 0;
+
+            newSub.published = Date.now();
+            newSub.lastUpdated = Date.now();
+
+            newSub.deleted = false;
+            newSub.flagged = false;
+
+            newSub.fileName = req.body.submission.fileName;
+            newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
+
+            newSub.views = 0
+            newSub.viewers = []
+
+
+            User.findById(req.user._id, (err, user) => {
                 if (err) {
-                    console.err('[Submit] - error saving user: ', err);
+                    console.error('[Submit] - error finding user: ', err);
                     res.status(500);
                     res.send({
                         error: err
                     });
-                } else {
-                    // TODO insert pre-render support here========================================
-                    if (config.preRender) {
-                        renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
-                        submission.preRendered = true;
-                        submission.save();
-                    }
-                    // ============================================================================
-
-                    console.log('[Submit] - add to user.submissions: ', submission._id);
-                    user.submissions.push(submission._id)
-                    user.save((err, savedUser) => {
+                } else if (user) {
+                    newSub.save((err, submission) => {
                         if (err) {
                             console.error('[Submit] - error saving user: ', err);
+                            res.status(500);
+                            res.send({
+                                error: err
+                            });
                         } else {
-                            console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
-                            if (savedUser.email && savedUser.emailSettings && savedUser.emailSettings.submission) {
-                                //TODO: notify user
-                                sendNotification({
-                                    type: notificationTypes.SUBMISSION,
-                                    recipient: savedUser,
-                                    submissionID: submission._id
-                                })
+                            // TODO insert pre-render support here========================================
+                            if (config.preRender) {
+                                renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
+                                submission.preRendered = true;
+                                submission.save();
                             }
+                            // ============================================================================
+
+                            console.log('[Submit] - add to user.submissions: ', submission._id);
+                            user.submissions.push(submission._id)
+                            user.save((err, savedUser) => {
+                                if (err) {
+                                    console.error('[Submit] - error saving user: ', err);
+                                } else {
+                                    console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
+                                    if (savedUser.email && savedUser.emailSettings && savedUser.emailSettings.submission) {
+                                        //TODO: notify user
+                                        sendNotification({
+                                            type: notificationTypes.SUBMISSION,
+                                            recipient: savedUser,
+                                            submissionID: submission._id
+                                        })
+                                    }
+                                }
+                            });
+                            //TODO: Send email to co-authors asking for permission
+
+                            res.send({
+                                submissionID: submission._id
+                            });
                         }
-                    });
+                    })
+                } else {
+                    console.warn('[Submit] - no user was found');
+                    res.status(500);
                     res.send({
-                        submissionID: submission._id
+                        error: 'No user found'
                     });
                 }
             })
-        } else {
-            console.warn('[Submit] - no user was found');
-            res.status(500);
-            res.send({
-                error: 'No user found'
-            });
         }
     })
+
 });
 
 
@@ -342,7 +467,37 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                     console.log('Submission saved!')
                     res.sendStatus(200);
                 }
-            });
+            }, (err, results) => {
+                var coAuthors = []
+                
+                if(results.first) coAuthors.push(results.first)
+                if(results.second) coAuthors.push(results.second)
+                if(results.third) coAuthors.push(results.third)
+                if(results.fourth) coAuthors.push(results.fourth)
+                
+                submission.coAuthors = coAuthors
+                submission.title = req.body.submissionData.title;
+                submission.coAuthors = req.body.submissionData.coAuthors;
+                submission.summary = req.body.submissionData.summary;
+                submission.lang = req.body.submissionData.lang
+                submission.lastUpdated = Date.now();
+                submission.topics = req.body.submissionData.topics
+                if(req.body.submissionData.fileName) submission.fileName = req.body.submissionData.fileName
+    
+                submission.save((err) => {
+                    if (err) {
+                        console.log('Error saving submission: ', err)
+                        res.status(500);
+                        res.send({
+                            error: err
+                        });
+                    } else {
+                        console.log('Submission saved!')
+                        res.sendStatus(200);
+                    }
+                });
+            })
+            
         } else {
             console.log("Couldn't find submission");
             res.status(500);
@@ -601,7 +756,7 @@ app.post('/reply', passport.authenticate('jwt', {
                     comment
                         .replies
                         .push(reply._id);
-                   
+
                     comment.save(function (err) {
                         if (err) {
                             // TODO: delete reply
@@ -635,7 +790,7 @@ app.post('/reply', passport.authenticate('jwt', {
                                                 User.findById(comment.author, (err, author) => {
                                                     if (err) {
                                                         console.error("[Submit] - error finding author for notification: ", err)
-                                                    } else if (author){
+                                                    } else if (author) {
                                                         if (author._id != reply.author && author.email && author.emailSettings && author.emailSettings.newComment) {
                                                             const notification = {
                                                                 type: notificationTypes.NEW_REPLY,
@@ -648,7 +803,7 @@ app.post('/reply', passport.authenticate('jwt', {
                                                     } else {
                                                         console.warn("[Submit] - couldn't find author of comment for notifications")
                                                     }
-                                                    
+
                                                 })
                                                 res.send({
                                                     commentID: comment._id,

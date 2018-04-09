@@ -28,6 +28,7 @@ const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
+const inviteRoutes = require('./routes/invite');
 const adminRoutes = require("./routes/admin")
 const flagRoutes = require("./routes/flag/flag")
 // =============================================================================
@@ -151,6 +152,8 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/search", searchRoutes);
 
 app.use('/api/delete', deleteRoutes);
+
+app.use('/api/invite', inviteRoutes);
 
 // login
 app.use('/api/auth/fb', fbAuthRoutes);
