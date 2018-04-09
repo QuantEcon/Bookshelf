@@ -94,12 +94,8 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
-<<<<<<< HEAD
-        this.coAuthorChanged = this.coAuthorChanged.bind(this)
-=======
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
         this.submit = this.submit.bind(this);
->>>>>>> master
     }
 
     componentDidMount() {
@@ -203,22 +199,11 @@ class Submit extends Component {
         }
     }
 
-<<<<<<< HEAD
-    coAuthorChanged = (event, num) => {
-        if(event) {
-            this.formData.coAuthors[num] = event.target.value        
-        } else {
-            console.warn("No event!")
-        }
-    }
-
-=======
     /**
      * Listener method for `onChange` on the topics' checkboxes. Adds/removes the topic
      * from the form data topic list
      * @param {Object} event Event passed from the `onChange` listener
      */
->>>>>>> master
     topicChanged(event) {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
