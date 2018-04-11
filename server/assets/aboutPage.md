@@ -61,3 +61,13 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Software published on this site will be understood as having been released
 under the 3 Clause BSD license. 
+
+### Provided Jupyter Notebook and Content
+
+Jupyter notebooks uploaded to this site will be considered to be released as
+[CC BY-ND 4.0 International](https://creativecommons.org/licenses/by-nd/4.0/).
+Users may copy and redistribute the material so long as attribution is 
+provided to the original author of the notebook, and users may not remix,
+transform, or build upon the material. 
+
+<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nd/4.0/80x15.png" /></a>

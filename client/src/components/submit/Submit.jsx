@@ -416,6 +416,10 @@ class Submit extends Component {
                                     BSD-3 license.
                                 </li>
                                 <li>
+                                    5. Jupyter notebooks uploaded to this site are considered to be released under 
+                                    a CC BY-ND 4.0 International license.
+                                </li>
+                                <li>
                                     5. QuantEcon reserves the right the delete your notebook if found to violate
                                     these terms and conditions
                                 </li>
