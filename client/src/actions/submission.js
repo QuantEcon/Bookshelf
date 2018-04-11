@@ -54,7 +54,48 @@ export function receiveNBInfo({
             receivedAt: Date.now(),
         }
     }
-    
+
+}
+
+export const REQUEST_NB = 'REQUEST_NB'
+export const requestNBAction = (notebookID) => {
+    return {
+        type: REQUEST_NB,
+        notebookID
+    }
+}
+
+export const RECEIVE_NB = 'RECEIVE_NB'
+export const receiveNBAction = ({
+    notebookID,
+    json,
+    error
+}) => {
+    if (error) {
+        return {
+            type: RECEIVE_NB,
+            error: true,
+            message: error,
+            receivedAt: Date.now()
+        }
+    } else {
+        return {
+            type: RECEIVE_NB,
+            notebookID,
+            json,
+            receivedAt: Date.now()
+        }
+    }
+}
+
+export const NB_PROGRESS = "NB_PROGRESS"
+export const nbProgressAction = (dataReceived, totalData, notebookID) => {
+    return {
+        type: NB_PROGRESS,
+        dataReceived,
+        totalData,
+        notebookID
+    }
 }
 
 export const INVALIDATE_NB_INFO = 'INVALIDATE_NB_INFO';
@@ -295,7 +336,7 @@ export const deleteSubmission = (submissionID, callback) => {
         } else {
             console.warn("[SubmissionActions (DeleteSubmission)] - user not signed in")
         }
-        
+
     }
 }
 
@@ -357,38 +398,83 @@ export const fetchNBInfo = ({
                     }))
                 }
             )
+
+            dispatch(requestNBAction(notebookID))
+
+            var nbJSONReqConfig = {
+                onDownloadProgress: function (progressEvent) {
+                    console.log("request progress: ", progressEvent)
+                    dispatch(nbProgressAction(progressEvent.loaded, progressEvent.total, notebookID))
+                }
+            }
+
+            axios.get('/api/search/notebook_json/' + notebookID, nbJSONReqConfig).then(
+                resp => {
+                    console.log("resp: ", resp)
+                    dispatch(receiveNBAction({
+                        notebookID,
+                        json: resp.data.json
+                    }))
+                },
+                err => {
+                    console.log("[FetchNBJSON] - error fetching notebook json: ", err.response)
+
+                    dispatch(receiveNBAction({
+                        error: err,
+                        notebookID
+                    }))
+                }
+            )
+
+
         } else {
             console.log('[FetchSub] - don\'t need to fetch');
         }
     }
 }
 
-export const flagSubmission = ({submissionID}) => {
+export const flagSubmission = ({
+    submissionID
+}) => {
     console.log("[SubmissionActions] - flag submission: ", submissionID)
     return (dispatch) => {
-        axios.post("/api/flag/submission", {submissionID}, {
+        axios.post("/api/flag/submission", {
+            submissionID
+        }, {
             headers: {
                 "Authorization": "JWT " + store.getState().auth.token
             }
         }).then(
             resp => {
-                dispatch(flagSubmissionAction({submissionID}))
+                dispatch(flagSubmissionAction({
+                    submissionID
+                }))
             },
             err => {
-                dispatch(flagSubmissionAction({error: err}))
+                dispatch(flagSubmissionAction({
+                    error: err
+                }))
             }
         )
     }
 }
 
-export const flagComment = ({commentID}) => {
+export const flagComment = ({
+    commentID
+}) => {
     return (dispatch) => {
-        axios.post("/api/flag/comment", {commentID}).then(
+        axios.post("/api/flag/comment", {
+            commentID
+        }).then(
             resp => {
-                dispatch(flagCommentAction({commentID}))
+                dispatch(flagCommentAction({
+                    commentID
+                }))
             },
             err => {
-                dispatch(flagCommentAction({error: err}))
+                dispatch(flagCommentAction({
+                    error: err
+                }))
             }
         )
     }

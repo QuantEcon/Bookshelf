@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
 import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
-import {fetchNBInfo, deleteSubmission, flagSubmission} from '../../actions/submission'
+import {fetchNBInfo, deleteSubmission, flagSubmission, fetchNB} from '../../actions/submission'
 import NotFound from '../../components/NotFound'
 
 const actions = {
@@ -56,7 +56,10 @@ class SubmissionContainer extends Component {
                         currentUser={this.props.currentUser}
                         actions={this.props.actions}
                         history={this.props.history}
-                        showAdmin={this.props.isAdmin}/>
+                        showAdmin={this.props.isAdmin}
+                        nbLoading={this.props.nbLoading}
+                        dataReceived={this.props.dataReceived}
+                        totalData={this.props.totalData}/>
                 </div>
             )
         }
@@ -67,8 +70,14 @@ class SubmissionContainer extends Component {
 
 function mapStateToProps(state, props) {
     var il = true;
+    var nbLoading = true;
+    var dataReceived = 0;
+    var totalData = 10000;
     if (state.submissionByID[props.match.params.id]) {
         il = state.submissionByID[props.match.params.id].isFetching
+        nbLoading = state.submissionByID[props.match.params.id].isFetchingNB
+        dataReceived = state.submissionByID[props.match.params.id].dataReceived
+        totalData = state.submissionByID[props.match.params.id].totalData
     }
     return {
         submission: state.submissionByID[props.match.params.id],
@@ -76,6 +85,9 @@ function mapStateToProps(state, props) {
             ? state.auth.user
             : null,
         isLoading: il,
+        nbLoading,
+        dataReceived,
+        totalData,
         isAdmin: state.auth.isAdmin
     }
 }
