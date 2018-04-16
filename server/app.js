@@ -12,6 +12,7 @@ const series = require('async/series');
 const waterfall = require('async/waterfall');
 const path = require('path');
 const cors = require('cors');
+const compression = require('compression')
 
 // routes
 // ==============================================================================
@@ -56,6 +57,8 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 const app = express();
+
+app.use(compression())
 
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
