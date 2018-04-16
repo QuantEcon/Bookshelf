@@ -437,7 +437,7 @@ class Submission extends Component {
                                                     : <p>loading...</p>}
 
                                             </li>
-                                            <li>
+                                            {/* <li>
                                                 <div>
                                                 <span>Co-Authors:</span>
                                                 {!this.props.isLoading && this.props.submission.data.coAuthors.length
@@ -453,7 +453,7 @@ class Submission extends Component {
                                                     : <div>None</div>}
                                                 </div>
                                                 
-                                            </li>
+                                            </li> */}
                                             <li>
                                                 <span>Language:</span>
                                                 {/*TODO: Link to homepage with language search query*/}

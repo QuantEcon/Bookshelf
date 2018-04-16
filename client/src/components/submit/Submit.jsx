@@ -506,7 +506,7 @@ class Submit extends Component {
                             </div>
 
                             <div className='submit-primary'>
-                                <div className='submit-primary-group1'>
+                                {/* <div className='submit-primary-group1'>
                                     <h2 className='section-title'>Co-Authors</h2>
                                     <p>An email will be sent to each co-author requesting their permission to be
                                         acknowledged.</p>
@@ -516,7 +516,7 @@ class Submit extends Component {
                                         <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 3)}/>
                                         <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 4)}/>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className='submit-primary-group2'>
                                     <h2 className='section-title'>Author
