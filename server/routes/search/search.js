@@ -216,7 +216,8 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-                var select = "_id title author views comments score summary topics published lang fileName notebookJSONString preRendered viewers views coAuthors";
+
+                var select = "_id title author views comments score summary topics published lang fileName viewers views coAuthors notebookJSONString";
                 try {
                     Submission.findOne({
                         _id: mdb.ObjectId(notebookID),
@@ -227,7 +228,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             callback(err)
                         } else if (submission) {
                             notebook = submission
-                            notebook.notebookJSON = JSON.parse(submission.notebookJSONString);
+                            notebook.nbLength = submission.notebookJSONString.length
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
@@ -381,22 +382,18 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 }
             }
 
-            var location = __dirname + notebook.notebook;
-            // var notebookHTML = fs.readFileSync(path.resolve(location), 'utf8');
-            //TODO: refactor to store JSON on submission then send that
-
             var nb = JSON.parse(JSON.stringify(results.nb))
             nb.notebookJSONString = null
             var data = {
                 notebook: nb,
                 html: results.nb.html,
-                notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
                 coAuthors: results.nb.coAuthors,
                 comments: results.coms,
                 replies: results.reps,
-                commentAuthors: results.comAuth
+                commentAuthors: results.comAuth,
+                nbLength: results.nb.nbLength
             };
             // console.log("notebook data: ", data);
             if (req.user) {
@@ -410,6 +407,26 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
         }
     );
 });
+
+app.get('/notebook_json/:nbid', function(req, res) {
+    var select = "notebookJSONString"
+
+    Submission.findById(req.params.nbid, select, (err, submission) => {
+        if(err) {
+            console.warn("[Search-SubmissionJSON] - Error searching for notebook json: ", err)
+            res.sendStatus(500)
+        } else if(submission){
+            const json = JSON.parse(submission.notebookJSONString)
+            res.set('content-length', submission.notebookJSONString.length)
+            res.send({
+                json,
+            })
+        } else {
+            res.sendStatus(404)
+        }
+    })
+
+})
 
 
 /**

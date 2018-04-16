@@ -7,7 +7,10 @@ import {
     UPVOTE_SUBMISSION,
     DOWNVOTE_COMMENT,
     DOWNVOTE_SUBMISSION,
-    EDIT_SUBMISSION
+    EDIT_SUBMISSION,
+    REQUEST_NB,
+    RECEIVE_NB,
+    NB_PROGRESS
 } from '../actions/submission';
 
 //notebook.comments
@@ -153,34 +156,59 @@ const SubmissionReducer = (state = {}, action) => {
         case REQUEST_NB_INFO:
             return Object.assign({}, state, {
                 isFetching: true,
-                [action.notebookID]: {
+                [action.notebookID]: Object.assign({}, state[action.notebookID],{
                     isFetching: true,
                     didInvalidate: false
-                }
+                })
 
             });
         case RECEIVE_NB_INFO:
             if(action.error){
                 return Object.assign({}, state, {
                     isFetching: false,
-                    [action.notebookID]: {
+                    [action.notebookID]: Object.assign({}, state[action.notebookID],{
                         isFetching: false,
                         didInvalidate: false,
                         lastUpdated: action.receivedAt,
-                        error: action.error
-                    }
+                        error: action.error,
+                    })
                 })
             } else {
                 return Object.assign({}, state, {
                     isFetching: false,
-                    [action.notebookID]: {
+                    [action.notebookID]: Object.assign({}, state[action.notebookID], {
                         isFetching: false,
                         didInvalidate: false,
                         lastUpdated: action.receivedAt,
-                        data: action.data
-                    }
+                        data: Object.assign({}, state[action.notebookID].data, action.data),
+                        totalData: action.data.nbLength
+                    })
                 })
             }
+        case REQUEST_NB:
+            return Object.assign({}, state, {
+                [action.notebookID]: Object.assign({},state[action.notebookID], {
+                    isFetchingNB: true,
+                })
+            })
+
+        case RECEIVE_NB:
+            return Object.assign({}, state, {
+                
+                [action.notebookID]: Object.assign({}, state[action.notebookID], {
+                    isFetchingNB: false,
+                    data: Object.assign({}, state[action.notebookID].data, {
+                        notebookJSON: action.json
+                    })
+                })
+            })
+
+        case NB_PROGRESS:
+            return Object.assign({}, state, {
+                [action.notebookID]: Object.assign({}, state[action.notebookID], {
+                    dataReceived: action.dataReceived,
+                })
+            })
             
         case POST_COMMENT:
             console.log('[SubmissionActions] - post comment action: ', action);

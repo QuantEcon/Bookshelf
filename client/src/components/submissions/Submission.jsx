@@ -115,7 +115,7 @@ class Submission extends Component {
 
 
     componentWillReceiveProps(props) {
-        if (props.submission.data) {
+        if (props.submission.data && props.submission.data.notebook) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
         }
         this.setState({
@@ -501,64 +501,95 @@ class Submission extends Component {
                         </div>
                     </div>
 
-                    {/* TODO: extract to Component? */}
-                    <div className='tile'>
-                        {this.props.isLoading
-                            ? <h3>Loading...</h3>
+                    <div className='tile'>                           
+                        {this.state.showNotebook
+                        ? <div>
+                            {this.props.nbLoading
+                            ? <div>
+                                {/* TODO: display download progress */}
+                                <div className='tile-header'>
+                                    <h2 className='tile-title'>Notebook</h2>
+                                    <ul className='tile-options'>
+                                        <li>
+                                            <a className='active'>Notebook</a>
+                                        </li>
+                                        <li>
+                                            <a onClick={this.toggleView}>Comments</a>
+                                        </li>
+                                        <li>
+                                            <a className='alt' onClick={this.download}>Download</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    Loading... ({this.props.dataReceived} / {this.props.totalData})
+                                    <br/>
+                                    <progress value={this.props.dataReceived} max={this.props.totalData}></progress>
+                                </div>
+                            </div>
                             : <div>
-                                {this.state.showNotebook
-                                    ? <div>
-                                            <div className='tile-header'>
-                                                <h2 className='tile-title'>Notebook</h2>
-                                                <ul className='tile-options'>
-                                                    <li>
-                                                        <a className='active'>Notebook</a>
-                                                    </li>
-                                                    <li>
-                                                        <a onClick={this.toggleView}>Comments</a>
-                                                    </li>
-                                                    <li>
-                                                        <a className='alt' onClick={this.download}>Download</a>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                <div>
+                                    <div className='tile-header'>
+                                        <h2 className='tile-title'>Notebook</h2>
+                                        <ul className='tile-options'>
+                                            <li>
+                                                <a className='active'>Notebook</a>
+                                            </li>
+                                            <li>
+                                                <a onClick={this.toggleView}>Comments</a>
+                                            </li>
+                                            <li>
+                                                <a className='alt' onClick={this.download}>Download</a>
+                                            </li>
+                                        </ul>
+                                    </div>
 
-                                            {this.props.submission.data.html
-                                                ? <div>
-                                                    <p>(pre-rendered notebook)</p>
-                                                    <NotebookFromHTML html={this.props.submission.data.html}/>
-                                                </div>
-                                                : <div id='notebook'>
-                                                    <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
-                                                </div>}
+                                    {this.props.submission.data.html
+                                        ? <div>
+                                            <p>(pre-rendered notebook)</p>
+                                            <NotebookFromHTML html={this.props.submission.data.html}/>
+                                        </div>
+                                        : <div id='notebook'>
+                                            <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
+                                        </div>}
 
-                                        </div>
-                                    : <div>
-                                        <div className='tile-header'>
-                                            <h2 className='tile-title'>Comments</h2>
-                                            <ul className='tile-options'>
-                                                <li>
-                                                    <a onClick={this.toggleView}>Notebook</a>
-                                                </li>
-                                                <li>
-                                                    <a className='active'>Comments</a>
-                                                </li>
-                                                <li>
-                                                    <a className='alt' onClick={this.download}>Download</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <CommentsThread
-                                            comments={this.props.submission.data.comments}
-                                            replies={this.props.submission.data.replies}
-                                            commentAuthors={this.props.submission.data.commentAuthors}
-                                            postComment={this.onSubmitComment}
-                                            postReply={this.submitReply}
-                                            currentUser={this.props.currentUser}
-                                            editComment={this.props.actions.editComment}/>
-                                    </div>}
+                                </div>
                             </div>}
+
+                        </div>
+                        : <div>
+                            {this.props.isLoading
+                            ? <div>
+                                <h3>Loading...</h3>
+                            </div>
+                            : <div>
+                            <div className='tile-header'>
+                                <h2 className='tile-title'>Comments</h2>
+                                <ul className='tile-options'>
+                                    <li>
+                                        <a onClick={this.toggleView}>Notebook</a>
+                                    </li>
+                                    <li>
+                                        <a className='active'>Comments</a>
+                                    </li>
+                                    <li>
+                                        <a className='alt' onClick={this.download}>Download</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <CommentsThread
+                                comments={this.props.submission.data.comments}
+                                replies={this.props.submission.data.replies}
+                                commentAuthors={this.props.submission.data.commentAuthors}
+                                postComment={this.onSubmitComment}
+                                postReply={this.submitReply}
+                                currentUser={this.props.currentUser}
+                                editComment={this.props.actions.editComment}/>
+                        </div>}
+                        </div>}
                     </div>
+                    {/* TODO: extract to Component? */}
                 </div>
             </div>
         )
