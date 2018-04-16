@@ -96,6 +96,7 @@ class Submit extends Component {
             .bind(this);
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
         this.submit = this.submit.bind(this);
+        
     }
 
     componentDidMount() {
@@ -312,7 +313,7 @@ class Submit extends Component {
      * Opens the submission preview modal
      * @param {Object} e Event passed from the `onClick` listener
      */
-    toggleOpenModal(e) {
+    toggleOpenModal = (e) => {
         console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
