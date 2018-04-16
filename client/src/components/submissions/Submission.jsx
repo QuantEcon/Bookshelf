@@ -52,9 +52,19 @@ class Submission extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showNotebook: true,
             flipper: true,
             deleteModalOpen: false
+        }
+        
+        if(window.location.href.indexOf("comment") > -1)
+        {
+          this.state = {
+          showNotebook : false
+          }
+        }
+        else
+        this.state = {
+        showNotebook : true
         }
         
         this.toggleView = this
