@@ -7,6 +7,7 @@ import NotebookPreview from '@nteract/notebook-preview';
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
+import CoAuthorInput from '../coAuthors/coAuthorInput'
 
 class Submit extends Component {
 
@@ -70,7 +71,9 @@ class Submit extends Component {
         this.toggleTermsAndConditionsModal = this
             .toggleTermsAndConditionsModal
             .bind(this);
-        this.coAuthorChanged = this.coAuthorChanged.bind(this)
+        this.coAuthorChanged = this
+            .coAuthorChanged
+            .bind(this)
     }
 
     componentDidMount() {
@@ -160,12 +163,8 @@ class Submit extends Component {
         }
     }
 
-    coAuthorChanged = (event, num) => {
-        if(event) {
-            this.formData.coAuthors[num] = event.target.value        
-        } else {
-            console.warn("No event!")
-        }
+    coAuthorChanged = (value) => {
+        this.formData.coAuthors = value;
     }
 
     topicChanged(event) {
@@ -422,10 +421,7 @@ class Submit extends Component {
                                     <p>An email will be sent to each co-author requesting their permission to be
                                         acknowledged.</p>
                                     <div className='coauthor-emails'>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 1)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 2)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 3)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 4)}/>
+                                        <CoAuthorInput onSelectCoAuthor={this.coAuthorChanged}/>
                                     </div>
                                 </div>
 
