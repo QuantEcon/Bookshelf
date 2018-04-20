@@ -161,7 +161,7 @@ app.post('/confirm', passport.authenticate('jwt', {
         first: (callback) => {
             if (coAuthors[1]) {
                 User.findOne({
-                    email: coAuthors[1]
+                    _id: coAuthors[1]
                 }, (err, user) => {
                     if (err) {
                         callback(err, null)
@@ -187,7 +187,7 @@ app.post('/confirm', passport.authenticate('jwt', {
         second: (callback) => {
             if (coAuthors[2]) {
                 User.findOne({
-                    email: coAuthors[2]
+                    _id: coAuthors[2]
                 }, (err, user) => {
                     if (err) {
                         callback(err, null)
@@ -213,7 +213,7 @@ app.post('/confirm', passport.authenticate('jwt', {
         third: (callback) => {
             if (coAuthors[3]) {
                 User.findOne({
-                    email: coAuthors[3]
+                    _id: coAuthors[3]
                 }, (err, user) => {
                     if (err) {
                         callback(err, null)
@@ -239,7 +239,7 @@ app.post('/confirm', passport.authenticate('jwt', {
         fourth: (callback) => {
             if (coAuthors[4]) {
                 User.findOne({
-                    email: coAuthors[4]
+                    _id: coAuthors[4]
                 }, (err, user) => {
                     if (err) {
                         callback(err, null)
@@ -396,7 +396,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 first: (callback) => {
                     if (coAuthors[1]) {
                         User.findOne({
-                            email: coAuthors[1]
+                            _id: coAuthors[1]
                         }, (err, user) => {
                             if (err) {
                                 callback(err, null)
@@ -422,7 +422,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 second: (callback) => {
                     if (coAuthors[2]) {
                         User.findOne({
-                            email: coAuthors[2]
+                            _id: coAuthors[2]
                         }, (err, user) => {
                             if (err) {
                                 callback(err, null)
@@ -448,7 +448,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 third: (callback) => {
                     if (coAuthors[3]) {
                         User.findOne({
-                            email: coAuthors[3]
+                            _id: coAuthors[3]
                         }, (err, user) => {
                             if (err) {
                                 callback(err, null)
@@ -474,7 +474,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 fourth: (callback) => {
                     if (coAuthors[4]) {
                         User.findOne({
-                            email: coAuthors[4]
+                            _id: coAuthors[4]
                         }, (err, user) => {
                             if (err) {
                                 callback(err, null)
