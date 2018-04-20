@@ -161,6 +161,9 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
+                .main-start {
+                    width: 100%;
+                }
                 .main-start input {
                     width:98%;
                     margin:1rem 0 0 0;
