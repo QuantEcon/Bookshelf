@@ -352,6 +352,27 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     );
 });
 
+app.get('/userList', (req, res) => {
+    var err = null;
+    var select = "_id avatar name joinDate";
+    if (err) {
+        res.status(500);
+        res.send({
+            error: err
+        });
+    } else {
+        User.find({},select, function(err, users) {
+        var userMap = {};
+
+        users.forEach(function(user) {
+          userMap[user._id] = user;
+        });
+
+        res.send(userMap);
+      });
+    }
+});
+
 app.get('/users', function (req, res) {
     console.log("Received user search request: ", req.query);
     var params = {};
