@@ -152,6 +152,7 @@ class CoAuthorInput extends Component {
 
 
 	getContributors (input, callback) {
+		// TODO: Exclude current user
 		console.log("in get contributors");
 		input = input.toLowerCase();
 		var options = CONTRIBUTORS.filter(i => {
@@ -178,7 +179,15 @@ class CoAuthorInput extends Component {
 			return (
 			<div id="main-start" className="main-start">
 
-				<Select.Async multi={this.state.multi} value={this.state.value} onChange={this.onChange} onValueClick={this.gotoContributor} valueKey="id" labelKey="name" loadOptions={this.getContributors} />
+				{/* TODO: Include user's avatar in results */}
+				<Select.Async multi={this.state.multi} 
+					value={this.state.value} 
+					onChange={this.onChange} 
+					onValueClick={this.gotoContributor} 
+					valueKey="id" 
+					labelKey="name" 
+					loadOptions={this.getContributors} />
+
 				<Modal
 					isOpen={this.state.modalIsOpen}
 					onAfterOpen={this.afterOpenModal}
