@@ -29,110 +29,111 @@ class CoAuthorInput extends Component {
     constructor(props){
       super(props);
 
-			this.state = {
-			loading : false,
+      this.state = {
+	loading : false,
     	multi : true,
-			value: '',
-			modalIsOpen : false,
-			selectedId : null,
-			selectedName : '',
-			selectedAvatar : null
+	value: '',
+	modalIsOpen : false,
+	selectedId : null,
+	selectedName : '',
+	selectedAvatar : null
     };
 
     this.onChange=this
-				.onChange
-				.bind(this)
+	.onChange
+	.bind(this)
 
     this.switchToMulti=this
-				.switchToMulti
-				.bind(this)
+	.switchToMulti
+	.bind(this)
 
     this.switchToSingle=this
-				.switchToSingle
-				.bind(this)
+	.switchToSingle
+	.bind(this)
 
     this.getContributors=this
-				.getContributors
-				.bind(this)
+	.getContributors
+	.bind(this)
 
-		this.gotoContributor=this
-				.gotoContributor
-				.bind(this)
+    this.gotoContributor=this
+	.gotoContributor
+	.bind(this)
 
-		this.openModal = this
-				.openModal
-				.bind(this);
+    this.openModal = this
+	.openModal
+	.bind(this);
 
-		this.afterOpenModal = this
-				.afterOpenModal
-				.bind(this);
+    this.afterOpenModal = this
+	.afterOpenModal
+	.bind(this);
 
-		this.closeModal = this
-				.closeModal
-				.bind(this);
+    this.closeModal = this
+	.closeModal
+	.bind(this);
 
     }
 
-		componentDidMount(){
-					console.log("Setting loading to true");
-					this.setState({
-						loading : true
-					});
+	componentDidMount(){
+		console.log("Setting loading to true");
+		this.setState({
+			loading : true
+		});
 
-					axios.get('/api/search/userList').then(response => {
-							p = response.data;
-							for (var key in p) {
-							if (p.hasOwnProperty(key)) {
-								console.log(p[key]);
-							CONTRIBUTORS.push({id:key,name:p[key].name});
+		axios.get('/api/search/userList').then(response => {
+			p = response.data;
+			for (var key in p) {
+				if (p.hasOwnProperty(key)) {
+					console.log(p[key]);
+					CONTRIBUTORS.push({id:key,name:p[key].name});
 					}
 			}
 
-							this.setState({
-								loading : false
-							});
-							return true;
+		this.setState({
+			loading : false
+		});
+			return true;
 
-					}).catch(error => {
-							console.log('error in adding Co-Author: ', error);
-							return false;
-					})
-
-		}
-
-
-		gotoContributor(value,event){
-
-			this.openModal(value.id);
+			}).catch(error => {
+				console.log('error in adding Co-Author: ', error);
+				return false;
+			})
 
 		}
-		openModal(id) {
-			this.setState({modalIsOpen: true,
-											selectedId : id,
-										 	selectedName : p[id].name,
-											selectedAvatar : p[id].avatar});
+
+
+	gotoContributor(value,event){
+		this.openModal(value.id);
+	}
+		
+	openModal(id) {
+		this.setState({modalIsOpen: true,
+				selectedId : id,
+				selectedName : p[id].name,
+				selectedAvatar : p[id].avatar});
 		}
 
-		afterOpenModal() {
-			// references are now sync'd and can be accessed.
-			this.subtitle.style.color = '#f00';
+	afterOpenModal() {
+		this.subtitle.style.color = '#f00';
 		}
 
-		closeModal() {
-			this.setState({modalIsOpen: false});
+	closeModal() {
+		this.setState({modalIsOpen: false});
 		}
 
 	onChange = (value) => {
-		console.log(value);
-		this.setState({
-			value: value
-		});
+		if(value.length < 5)
+		{
+			console.log(value);
+			this.setState({
+				value: value
+			});
 
-    for(var i=0;i<value.length;i++)
-    {
-      coAuthors[i]=value[i].id;
-    }
-    this.props.onSelectCoAuthor(coAuthors);
+			for(var i=0;i<value.length;i++)
+			{
+				coAuthors[i]=value[i].id;
+			}
+			this.props.onSelectCoAuthor(coAuthors);
+		}
 	}
 
 	switchToMulti = () => {
