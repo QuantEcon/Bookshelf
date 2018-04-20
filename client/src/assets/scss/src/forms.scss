@@ -161,12 +161,9 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-between;
-                input {
-                    width:48%;
+                .main-start input {
+                    width:98%;
                     margin:1rem 0 0 0;
-                    &:nth-child(1), &:nth-child(2) {
-                        margin:0;
-                    }
                 }
             }
         }
