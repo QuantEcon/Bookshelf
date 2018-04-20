@@ -164,6 +164,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
+    var coAuthorIds;
 
     var notebookID = req.params.nbid;
 
@@ -190,7 +191,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
-                            notebook.coAuthors = submission.coAuthors
+                            coAuthorIds = submission.coAuthors
                             // TODO: This needs to be tested
                             //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
                             if(!submission.viewers){
@@ -306,6 +307,20 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         callback(null, commentAuthors);
                     }
                 });
+            },
+            coAuth: (callback) => {
+                var select = "_id avatar name";
+                User.find({
+                    _id: {
+                        $in: coAuthorIds
+                    },
+                    deleted: false
+                }, (err, coAuthors) => {
+                    if(err) callback(err)
+                    else {
+                        callback(null, coAuthors)
+                    }
+                })
             }
         },
         //callback
@@ -334,7 +349,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 notebookJSON: results.nb.notebookJSON,
                 fileName: results.nb.fileName,
                 author: results.auth,
-                coAuthors: results.nb.coAuthors,
+                coAuthors: results.coAuth,
                 comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth
