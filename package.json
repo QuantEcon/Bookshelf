@@ -53,6 +53,8 @@
     "passport-youtube-v3": "^2.0.0",
     "query-string": "^5.x.x",
     "react-jupyter": "^0.1.0",
+    "react-modal": "^3.3.1",
+    "react-select": "^1.2.1",
     "sprintf": "^0.1.5",
     "tmp": "0.0.33"
   }
