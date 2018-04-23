@@ -191,214 +191,94 @@ app.post('/confirm', passport.authenticate('jwt', {
     var newSub = new Submission();
     console.log("[Submit] - confirm. req.body: \n", req.body)
     var coAuthors = req.body.submission.coAuthors
-    series({
-        first: (callback) => {
-            if (coAuthors[1]) {
-                User.findOne({
-                    email: coAuthors[1]
-                }, (err, user) => {
-                    if (err) {
-                        callback(err, null)
-                    } else if (user) {
-                        callback(null, {
-                            email: user.email,
-                            name: user.name,
-                            _id: user._id,
-                            agreement: false
-                        })
-                    } else {
-                        callback(null, {
-                            email: coAuthors[1],
-                            agreement: false
-                        })
-                    }
-                })
-            } else {
-                callback(null, null)
-            }
+    newSub.coAuthors = coAuthors
 
-        },
-        second: (callback) => {
-            if (coAuthors[2]) {
-                User.findOne({
-                    email: coAuthors[2]
-                }, (err, user) => {
-                    if (err) {
-                        callback(err, null)
-                    } else if (user) {
-                        callback(null, {
-                            email: user.email,
-                            name: user.name,
-                            _id: user._id,
-                            agreement: false
-                        })
-                    } else {
-                        callback(null, {
-                            email: coAuthors[2],
-                            agreement: false
-                        })
-                    }
-                })
-            } else {
-                callback(null, null)
-            }
+    newSub.title = req.body.submission.title;
 
-        },
-        third: (callback) => {
-            if (coAuthors[3]) {
-                User.findOne({
-                    email: coAuthors[3]
-                }, (err, user) => {
-                    if (err) {
-                        callback(err, null)
-                    } else if (user) {
-                        callback(null, {
-                            email: user.email,
-                            name: user.name,
-                            _id: user._id,
-                            agreement: false
-                        })
-                    } else {
-                        callback(null, {
-                            email: coAuthors[3],
-                            agreement: false
-                        })
-                    }
-                })
-            } else {
-                callback(null, null)
-            }
+    newSub.topics = req.body.submission.topics;
 
-        },
-        fourth: (callback) => {
-            if (coAuthors[4]) {
-                User.findOne({
-                    email: coAuthors[4]
-                }, (err, user) => {
-                    if (err) {
-                        callback(err, null)
-                    } else if (user) {
-                        callback(null, {
-                            email: user.email,
-                            name: user.name,
-                            _id: user._id,
-                            agreement: false
-                        })
-                    } else {
-                        callback(null, {
-                            email: coAuthors[4],
-                            agreement: false
-                        })
-                    }
-                })
-            } else {
-                callback(null, null)
-            }
+    newSub.lang = req.body.submission.lang;
+    newSub.summary = req.body.submission.summary;
 
-        }
-    }, (err, results) => {
+    newSub.author = req.user._id;
+
+    //todo: parse co-authors newSub.coAuthors = coAuthors
+
+    newSub.comments = [];
+    newSub.totalComments = 0;
+
+    newSub.score = 0;
+    newSub.views = 0;
+
+    newSub.published = Date.now();
+    newSub.lastUpdated = Date.now();
+
+    newSub.deleted = false;
+    newSub.flagged = false;
+
+    newSub.fileName = req.body.submission.fileName;
+    newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
+
+    newSub.views = 0
+    newSub.viewers = []
+
+
+    User.findById(req.user._id, (err, user) => {
         if (err) {
-            console.error("Error getting coauthors: ", err)
-            res.sendStatus(500)
-        } else {
-
-            var coAuthors = []
-            if(results.first) coAuthors.push(results.first)
-            if(results.second) coAuthors.push(results.second)
-            if(results.third) coAuthors.push(results.third)
-            if(results.fourth) coAuthors.push(results.fourth)
-            console.log("Co autrhors: ", coAuthors)
-            newSub.coAuthors = coAuthors
-
-            newSub.title = req.body.submission.title;
-
-            newSub.topics = req.body.submission.topics;
-
-            newSub.lang = req.body.submission.lang;
-            newSub.summary = req.body.submission.summary;
-
-            newSub.author = req.user._id;
-
-            //todo: parse co-authors newSub.coAuthors = coAuthors
-
-            newSub.comments = [];
-            newSub.totalComments = 0;
-
-            newSub.score = 0;
-            newSub.views = 0;
-
-            newSub.published = Date.now();
-            newSub.lastUpdated = Date.now();
-
-            newSub.deleted = false;
-            newSub.flagged = false;
-
-            newSub.fileName = req.body.submission.fileName;
-            newSub.notebookJSONString = JSON.stringify(req.body.submission.notebookJSON)
-
-            newSub.views = 0
-            newSub.viewers = []
-
-
-            User.findById(req.user._id, (err, user) => {
+            console.error('[Submit] - error finding user: ', err);
+            res.status(500);
+            res.send({
+                error: err
+            });
+        } else if (user) {
+            newSub.save((err, submission) => {
                 if (err) {
-                    console.error('[Submit] - error finding user: ', err);
+                    console.error('[Submit] - error saving user: ', err);
                     res.status(500);
                     res.send({
                         error: err
                     });
-                } else if (user) {
-                    newSub.save((err, submission) => {
+                } else {
+                    // TODO insert pre-render support here========================================
+                    if (config.preRender) {
+                        renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
+                        submission.preRendered = true;
+                        submission.save();
+                    }
+                    // ============================================================================
+
+                    console.log('[Submit] - add to user.submissions: ', submission._id);
+                    user.submissions.push(submission._id)
+                    user.save((err, savedUser) => {
                         if (err) {
                             console.error('[Submit] - error saving user: ', err);
-                            res.status(500);
-                            res.send({
-                                error: err
-                            });
                         } else {
-                            // TODO insert pre-render support here========================================
-                            if (config.preRender) {
-                                renderer.renderHTMLFromJSON(submission.notebookJSONString, submission._id);
-                                submission.preRendered = true;
-                                submission.save();
+                            console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
+                            if (savedUser.email && savedUser.emailSettings && savedUser.emailSettings.submission) {
+                                //TODO: notify user
+                                sendNotification({
+                                    type: notificationTypes.SUBMISSION,
+                                    recipient: savedUser,
+                                    submissionID: submission._id
+                                })
                             }
-                            // ============================================================================
-
-                            console.log('[Submit] - add to user.submissions: ', submission._id);
-                            user.submissions.push(submission._id)
-                            user.save((err, savedUser) => {
-                                if (err) {
-                                    console.error('[Submit] - error saving user: ', err);
-                                } else {
-                                    console.log('[Submit] - user saved. Submissions: ', savedUser.submissions)
-                                    if (savedUser.email && savedUser.emailSettings && savedUser.emailSettings.submission) {
-                                        //TODO: notify user
-                                        sendNotification({
-                                            type: notificationTypes.SUBMISSION,
-                                            recipient: savedUser,
-                                            submissionID: submission._id
-                                        })
-                                    }
-                                }
-                            });
-                            //TODO: Send email to co-authors asking for permission
-
-                            res.send({
-                                submissionID: submission._id
-                            });
                         }
-                    })
-                } else {
-                    console.warn('[Submit] - no user was found');
-                    res.status(500);
+                    });
+                    //TODO: Send email to co-authors asking for permission
+
                     res.send({
-                        error: 'No user found'
+                        submissionID: submission._id
                     });
                 }
             })
+        } else {
+            console.warn('[Submit] - no user was found');
+            res.status(500);
+            res.send({
+                error: 'No user found'
+            });
         }
     })
-
 });
 
 
