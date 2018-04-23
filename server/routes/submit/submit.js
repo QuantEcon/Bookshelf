@@ -659,7 +659,14 @@ app.post('/comment', passport.authenticate('jwt', {
                                             const notification = {
                                                 type: notificationTypes.NEW_COMMENT,
                                                 recipient: author,
-                                                comment,
+                                                comment: {
+                                                    _id: comment._id,
+                                                    content: comment.content,
+                                                    author: {
+                                                        _id: comment.author,
+                                                        name: req.user.name,
+                                                    }
+                                                },
                                                 submissionID: submission._id
                                             }
 

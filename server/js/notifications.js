@@ -1,3 +1,4 @@
+const mustache = require('mustache')
 const notificationTypes = {
     NEW_COMMENT: 'NEW_COMMENT',
     NEW_REPLY: 'NEW_REPLY',
@@ -12,7 +13,8 @@ const mailgun = require("mailgun-js")({
     domain: config.mailgun.domain
 })
 
-
+const fs = require("fs")
+var template = fs.readFileSync(__dirname + "/../assets/email-template.html").toString()
 /*
 var data = {
     from: 'QuantEcon Bookshelf <postmaster@mg.quantecon.org>',
@@ -68,14 +70,20 @@ function sendNotification(notification) {
     console.log("[SendNotification] - notification: ", notification)
     switch (notification.type) {
         case notificationTypes.NEW_COMMENT:
+            var output = mustache.render(template, {
+                name: notification.recipient.name,
+                subject: notification.comment.author.name + " has commented on your submission:",
+                comment: notification.comment.content,
+                url: config.url + "/submission/" + notification.submissionID + '#comments'
+            })
+
             data = {
                 from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Comment On Your Submission",
-                // TODO: Include and HTML rendering of the comment here
-                text: "There is a new comment on your submission! To view this comment, click here: " +
-                    config.hostName + "/submission/" + notification.submissionID + '#commentID=' + notification.comment._id
+                html: output
             }
+            
             mailgun.messages().send(data, (error, body) => {
                 if (error) {
                     console.error("[Mailgun] Error occured sending notification: ", error)
