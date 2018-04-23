@@ -73,7 +73,7 @@ function sendNotification(notification) {
             var output = mustache.render(template, {
                 name: notification.recipient.name,
                 subject: notification.comment.author.name + " has commented on your submission:",
-                comment: notification.comment.content,
+                details: notification.comment.content,
                 url: config.url + "/submission/" + notification.submissionID + '#comments'
             })
 
@@ -95,13 +95,18 @@ function sendNotification(notification) {
             break
 
         case notificationTypes.NEW_REPLY:
+            
             data = {
                 from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Reply To Your Comment",
                 // TODO: Include and HTML rendering of the comment here
-                text: "Someone replied to your comment! To view this reply, click here: " +
-                    config.hostName + "/submission/" + notification.submissionID + '#commentID=' + notification.commentID
+                html: mustache.render(template, {
+                    name: notification.recipient.name,
+                    subject: notification.reply.author.name + " replied to your comment: ",
+                    details: notification.reply.content,
+                    url: config.url + "/submission/" + notification.submissionID + "#comments"
+                })
             }
             mailgun.messages().send(data, (error, body) => {
                 if (error) {

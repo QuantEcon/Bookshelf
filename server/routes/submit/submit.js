@@ -799,11 +799,21 @@ app.post('/reply', passport.authenticate('jwt', {
                                                         console.error("[Submit] - error finding author for notification: ", err)
                                                     } else if (author) {
                                                         if (author._id != reply.author && author.email && author.emailSettings && author.emailSettings.newComment) {
+
                                                             const notification = {
                                                                 type: notificationTypes.NEW_REPLY,
                                                                 recipient: author,
                                                                 submissionID: submission._id,
-                                                                commentID: comment._id
+                                                                commentID: comment._id,
+                                                                reply: {
+                                                                    author: {
+                                                                        name: req.user.name,
+                                                                        _id: req.user._id,
+                                                                        avatar: req.user.avatar
+                                                                    },
+                                                                    content: reply.content,
+                                                                    _id: reply._id
+                                                                }
                                                             }
                                                             sendNotification(notification)
                                                         }
