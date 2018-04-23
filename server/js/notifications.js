@@ -121,10 +121,11 @@ function sendNotification(notification) {
                 from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "Successfuly Submitted new Notebook",
-                text: "Your notebook submission was successful.\n\n" +
-                    "To view your submission click [here](" + config.hostName + "/submission/" + notification.submissionID +
-                    ")\n\nThank your for submitting!"
-
+                html: mustache.render(template, {
+                    name: notification.recipient.name,
+                    subject: "Your notebook submission was successful!",
+                    url: config.url + "/submission/" + notification.submissionID
+                })
             }
             mailgun.messages().send(data, (error, body) => {
                 if (error) {
