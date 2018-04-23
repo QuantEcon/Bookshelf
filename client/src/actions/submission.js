@@ -307,6 +307,7 @@ export const deleteSubmission = (submissionID, callback) => {
     return function (dispatch) {
         if (store.getState().auth.isSignedIn) {
             //check if the submission is the user's
+            console.log('index of submission: ', store.getState().auth.user.submissions.indexOf(submissionID))
             if (store.getState().auth.isAdmin || store.getState().auth.user.submissions.indexOf(submissionID) > -1) {
                 axios.post('/api/delete/submission', {
                     submissionID

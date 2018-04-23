@@ -14,6 +14,7 @@ import {
 } from '../actions/admin'
 
 const AdminReducer = (state = {}, action) => {
+    console.log("[AdminReducer] - action: ", action)
     switch(action.type){
         case REQUEST_FLAGGED_CONTENT:
             return Object.assign({}, state, {
@@ -114,8 +115,12 @@ const AdminReducer = (state = {}, action) => {
             })
 
         case REMOVE_SUBMISSION:
-            const newFSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
-            const newDSubmissions = state.flaggedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
+            const newFSubmissions = state.flaggedSubmissions.filter((submission) => {
+                return submission.data._id !== action.submissionID
+            })
+            const newDSubmissions = state.deletedSubmissions.filter((submission) => {
+                return submission.data._id !== action.submissionID
+            })
 
             return Object.assign({}, state, {
                 flaggedSubmissions: newFSubmissions,
