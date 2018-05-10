@@ -123,13 +123,13 @@ class Head extends Component {
     render() {
         return (
             <div>
-                <div className="corner-ribbon">Beta</div>
+                {/* <div className="corner-ribbon">Beta</div> */}
 
-                <a
+                {/* <a
                     className="submit-feedback"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a>
+                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a> */}
 
                 <header className="header">
 

@@ -41,7 +41,7 @@ class Home extends Component {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
-                <BetaBanner/>
+                {/* <BetaBanner/> */}
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
             </div>
 

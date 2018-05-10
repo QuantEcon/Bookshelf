@@ -149,7 +149,9 @@ class AdminContainer extends Component {
 }
 
 const mapStateToProps = (state, props) => {
+    console.log('state: ', state)
     return {
+        authIsLoading: state.auth.loading,
         flaggedComments: state.adminData.flaggedComments,
         deletedComments: state.adminData.deletedComments,
         flaggedSubmissions: state.adminData.flaggedSubmissions,

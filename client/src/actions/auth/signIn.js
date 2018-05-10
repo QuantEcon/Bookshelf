@@ -96,8 +96,8 @@ const endReauthentication = ({
  * 
  * If the token is invalid, it will be removed local storage.
  */
-export const reauthenticate = () => {
-    console.log('REAUTHENTICATE');
+export const reauthenticate = (url) => {
+    console.log('REAUTHENTICATE: ', url);
     return (dispatch) => {
         dispatch(beginReauthentication());
         //get token from local storage

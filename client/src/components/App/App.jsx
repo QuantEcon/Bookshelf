@@ -33,7 +33,9 @@ class App extends Component {
 
   constructor(props){
     super(props);
-    props.actions.reauthenticate();
+    var url = window.location.href
+    props.actions.reauthenticate(window.location.href);
+    // Wait for reauthentication
   }
 
   render() {
@@ -70,4 +72,11 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(App);
+const mapStateToProps = (state, props) => {
+  return {
+    isSignedIn: state.auth.isSignedIn,
+    isLoading: state.auth.isLoading
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
