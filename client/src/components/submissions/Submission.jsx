@@ -523,7 +523,7 @@ class Submission extends Component {
                                 </div>
                                 
                                 <div>
-                                    Loading... ({this.props.dataReceived} / {this.props.totalData})
+                                    Loading... ({this.props.dataReceived / 1000.0} KB / {this.props.totalData / 1000.0} KB)
                                     <br/>
                                     <progress value={this.props.dataReceived} max={this.props.totalData}></progress>
                                 </div>
