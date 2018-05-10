@@ -143,7 +143,7 @@ class Head extends Component {
                                         <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
                                         <div>
                                             <h2 className="site-name">Quant<span>Econ</span>
-                                                <strong>Bookshelf</strong>
+                                                <strong>Notes</strong>
                                             </h2>
                                         </div>
                                     </span>

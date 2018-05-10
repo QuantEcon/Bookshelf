@@ -65,15 +65,18 @@
             .site-name {
                 font-family: Exo,sans-serif;
                 font-weight: 200;
-                font-size: 1.6rem;
+                font-size: 1.3rem;
                 margin:0;
                 line-height:1.2;
                 span {
                     font-weight: 400;
                 }
                 strong {
+                    display: block;
                     font-weight: 400;
-                    font-size: 2rem;
+                    font-size: 2.6rem;
+                    position: relative;
+                    left: -2px;
                 }
             }
             img {
@@ -86,6 +89,9 @@
             a {
                 display: block;
                 color: $color-dark;
+                >span>div {
+                    display: inline-block;
+                }
             }
         }
         .site-nav {
