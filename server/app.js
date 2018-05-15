@@ -50,7 +50,7 @@ const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
 const AdminList = require("./js/db/models/AdminList")
-
+const Announcement = require('./js/db/models/Announcement')
 // config
 // ==============================================================================
 const port = require('./_config').port;
@@ -153,9 +153,7 @@ passportInit();
 // ==============================================================================
 app.use('/api/admin', adminRoutes);
 app.use("/api/search", searchRoutes);
-
 app.use('/api/delete', deleteRoutes);
-
 app.use('/api/invite', inviteRoutes);
 
 // login
@@ -166,15 +164,6 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
-
-//submit
-app.use('/api/submit', submitRoutes);
-
-//vote
-app.use('/api/upvote', upvoteRoutes);
-app.use('/api/downvote', downvoteRoutes);
-app.use('/api/flag', flagRoutes)
-
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
         root: __dirname
@@ -188,6 +177,24 @@ app.get('/api/auth/popup/:provider', (req, res) => {
         }
     });
 });
+//submit
+app.use('/api/submit', submitRoutes);
+
+//vote
+app.use('/api/upvote', upvoteRoutes);
+app.use('/api/downvote', downvoteRoutes);
+app.use('/api/flag', flagRoutes)
+
+app.get('/api/announcements', (req, res) => {
+    Announcement.find({}, (err, announcements) => {
+        if(err){
+            console.log('[GETAnncouncements] - error occurred fetching announcements - ', err)
+            res.send(500)
+        } else {
+            res.send(announcements)
+        }
+    })
+})
 
 app.get("/temp", (req, res) => {
     res.send("Loading...")

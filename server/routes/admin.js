@@ -6,6 +6,7 @@ var User = require('../js/db/models/User');
 var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
 const AdminList = require('../js/db/models/AdminList')
+const Announcement = require('../js/db/models/Announcement')
 
 var series = require('async/series');
 
@@ -1289,6 +1290,27 @@ app.post("/unflag-comment", passport.authenticate("adminjwt", {
     } else {
         res.sendStatus(400)
     }
+})
+
+app.post('/new-announcement', passport.authenticate('adminjwt', {
+    session: false
+}),(req, res) => {
+    var announcement = new Announcement()
+
+    announcement.date = Date.now()
+    announcement.postedBy = req.user._id
+    announcement.content = req.body.content
+
+    announcement.save(((err, savedAnnouncement) => {
+        if(err){
+            console.error('[Admin-NewAnnouncement] - error occurred posting new announcement', err)
+            res.sendStatus(500)
+
+        } else {
+            console.log("[Admin-NewAnnouncement] - successfully posted new announcement")
+            res.send(savedAnnouncement)
+        }
+    }))
 })
 
 

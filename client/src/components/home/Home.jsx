@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
 import BetaBanner from '../partials/BetaBanner';
+import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
 
 class Home extends Component {
     constructor(props){
@@ -42,6 +43,7 @@ class Home extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 {/* <BetaBanner/> */}
+                <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
             </div>
 

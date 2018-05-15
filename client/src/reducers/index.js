@@ -4,6 +4,7 @@ import SubmissionReducer from './Submission';
 import EditSubmissionReducer from './EditSubmission';
 import UserReducer from './User'
 import AdminReducer from './Admin'
+import AnnouncementReducer from './Announcements'
 // import {authStateReducer} from 'redux-auth';
 import AuthReducer from './auth/AuthReducer'
 import {LogReducer} from './Utils'
@@ -15,7 +16,8 @@ const rootReducer = combineReducers({
     auth: AuthReducer,
     editSubmissionByID: EditSubmissionReducer,
     logs: LogReducer,
-    adminData: AdminReducer
+    adminData: AdminReducer,
+    announcements: AnnouncementReducer
 });
 
 export default rootReducer;
