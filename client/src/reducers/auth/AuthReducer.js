@@ -350,7 +350,8 @@ const AuthReducer = (state = {}, action) => {
                 token: null,
                 user: null,
                 isSignedIn: false,
-                valid: null
+                valid: null,
+                isAdmin: false
             })
         default:
             return state;

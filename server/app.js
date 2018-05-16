@@ -196,6 +196,37 @@ app.get('/api/announcements', (req, res) => {
     })
 })
 
+app.get('/api/announcements/recent' , (req, res) => {
+    Announcement.find({}, {}, {sort: {date: -1}}, (err, announcements) => {
+        console.log("found announcements: ", announcements)
+        if(err){
+            console.log('[GETAnncouncements] - error occurred fetching announcements - ', err)
+            res.send(500)
+        } else {
+            res.send(announcements[0])
+        }
+
+    })
+})
+
+app.post('/api/announcements/add', passport.authenticate('adminjwt', {
+    session: 'false'
+}), (req, res) => {
+    var newAnnouncement = Announcement()
+
+    newAnnouncement.content = req.body.content
+    newAnnouncement.date = Date.now()
+    newAnnouncement.postedBy = req.user._id
+
+    newAnnouncement.save((err, savedAnnouncement) => {
+        if(err){
+            console.error("[Announcement-Add] - error saving new announcement: ", err)
+        } else {
+            res.send(savedAnnouncement)
+        }
+    })
+})
+
 app.get("/temp", (req, res) => {
     res.send("Loading...")
 })

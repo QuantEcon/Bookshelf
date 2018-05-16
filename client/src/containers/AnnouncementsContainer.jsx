@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {fetchAnnouncements} from '../actions/announcements'
+import {fetchAnnouncements, addAnnouncement} from '../actions/announcements'
 
 import AnnouncementsBanner from '../components/partials/AnnouncementsBanner'
 
@@ -15,11 +15,13 @@ class AnnouncementsContainer extends Component {
 
     render() {
         return (
-            <AnnouncementsBanner actions={this.props.actions} 
+            <AnnouncementsBanner 
+                actions={this.props.actions} 
                 announcements={this.props.announcements ?
                     this.props.announcements :
                     []
                 }
+                showAdmin={this.props.showAdmin}
             />
         )
     }
@@ -27,14 +29,16 @@ class AnnouncementsContainer extends Component {
 
 function mapStateToProps(state, props) {
     return {
-        announcements: state.announcements.announcements
+        announcements: state.announcements.announcements,
+        showAdmin: state.auth.isAdmin
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
        actions: bindActionCreators({
-           fetchAnnouncements
+           fetchAnnouncements,
+           addAnnouncement
        }, dispatch) 
     }
 }

@@ -1,6 +1,7 @@
 import {
     REQUEST_ANNOUNCEMENTS,
-    RECEIVE_ANNOUCEMENTS
+    RECEIVE_ANNOUCEMENTS,
+    ADD_ANNOUNCEMENT
 } from '../actions/announcements'
 
 const AnnoucnementsReducer = (announcements = {}, action) => {
@@ -10,16 +11,25 @@ const AnnoucnementsReducer = (announcements = {}, action) => {
                 isFetching: true
             })
         case RECEIVE_ANNOUCEMENTS:
-            console.log('[RECIEVE_ANNOUNCEMENTS] - action: ', action)
             return Object.assign({}, announcements, {
                 isFetching: false,
                 announcements: action.announcements,
                 error: action.error
             })
+        case ADD_ANNOUNCEMENT:
+            if(action.error){
+                console.warn('[AnnouncementsReducers] - api returned error: ', action.error)
+            }
+
+            return Object.assign({}, announcements, {
+                // For now, just replace the array
+                announcements: [action.announcement],
+                error: action.error
+            })
+        default:
+            return announcements
 
     }
-
-    return Object.assign({}, announcements, )
 }
 
 
