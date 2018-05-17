@@ -42,8 +42,8 @@ export default class AnnouncementBanner extends Component {
 
     render(){
         return (
-            <div className='container'>
-                <div className='tile'>
+            <div className='announcements'>
+                <div className='container'>
                     {/* TODO: Announcements title here */}
                     <div className='announcements-list'>
                         {this.props.announcements.map((announcement, index) => {

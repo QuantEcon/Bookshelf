@@ -1,11 +1,11 @@
 //  settings.scss
 //  Default element styles, variables, mixins
 
-$color-dark: #444444; // Defailt font colour
+$color-dark: #444444; // Default font colour
 $color-medium: #cacaca; // Borders
 $color-light: #888888; // Faint font colour
-$color-primary: #d84d0a;
-$color-secondary: #389C90;
+$color-primary: #2473a8;
+$color-secondary: #d8655e;
 
 $body-font-family: 'Raleway', sans-serif;
 
@@ -30,13 +30,13 @@ body {
 
 a {
     line-height: inherit;
-    color: #d84d0a;
+    color: $color-primary;
     text-decoration: none;
     cursor: pointer;
 }
 
 a:hover, a:focus {
-    color: #8f3307;
+    color: darken( $color-primary, 10% );
 }
 
 a:active, a:hover {

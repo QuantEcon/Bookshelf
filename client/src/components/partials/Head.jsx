@@ -1,6 +1,9 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
+import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
+import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'
+import sloanLogo from '../../assets/img/landing-sloan-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
@@ -151,87 +154,99 @@ class Head extends Component {
 
                             </div>
 
-                            <div className="site-nav">
-                                <p className="site-tag">Open notebook library for economic modeling</p>
-                                <ul>
-                                    <li>
-                                        <Link to='/'>Home</Link>
-                                    </li>
-                                    <li>
-                                        <Link to='/faq'>FAQ</Link>
-                                    </li>
-                                    <li>
-                                        <Link to='/about'>About</Link>
-                                    </li>
-                                    {this.props.showAdmin && this.props.isSignedIn
-                                    ? <li>
-                                        <Link to='/admin'>Admin</Link>
-                                    </li>
-                                    : null}
-                                </ul>
-                            </div>
+                            <p className="site-tag">Open notebook library for economic modeling</p>
 
-                            {this.props.isSignedIn
-                                ? <ul className='site-menu'>
-                                        <li className='menu-user'>
-                                            <Link to="/user/my-profile">
-                                                <div className='avatar'>
-                                                    <img src={this.props.user.avatar} alt="My Avatar"/>
-                                                </div>
-                                                <span>My Profile</span>
-                                            </Link>
+                            <div className="site-nav">
+                                <div className="site-links">
+                                    <ul>
+                                        <li>
+                                            <Link to='/'>Home</Link>
+                                        </li>
+                                        <li>
+                                            <Link to='/about'>About</Link>
+                                        </li>
+                                        <li>
+                                            <Link to='/contact'>Contact</Link>
+                                        </li>
+                                        {this.props.showAdmin && this.props.isSignedIn
+                                        ? <li>
+                                            <Link to='/admin'>Admin</Link>
+                                        </li>
+                                        : null}
+                                    </ul>
+                                </div>
+
+                                {this.props.isSignedIn
+                                    ? <ul className='site-menu'>
+                                            <li className='menu-user'>
+                                                <Link to="/user/my-profile">
+                                                    <div className='avatar'>
+                                                        <img src={this.props.user.avatar} alt="My Avatar"/>
+                                                    </div>
+                                                    <span>My Profile</span>
+                                                </Link>
+                                            </li>
+                                            <li className='menu-submit'>
+                                                <Link to="/submit">Submit Notebook</Link>
+                                            </li>
+                                            <li className='menu-submit invite-button'>
+                                                <a onClick={() => {this.inviteClick()}}> + Invite</a>
+                                                <Modal
+                                                  isOpen={this.state.modalIsOpen}
+                                                  onAfterOpen={this.afterOpenModal}
+                                                  onRequestClose={this.closeModal}
+                                                  style={customStyles}
+                                                  contentLabel="Example Modal"
+                                                >
+
+                                                  <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
+
+
+                                                  <form onSubmit={this.handleSubmit}>
+                                                    <label>
+
+                                                      <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
+                                                    </label>
+                                                    <ul className="button-row">
+                                                      <li>
+                                                        <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                      </li>
+                                                      <li>
+                                                        <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
+                                                      </li>
+                                                    </ul>
+                                                  </form>
+                                                </Modal>
+
+                                            </li>
+                                        </ul>
+                                    : <ul className='site-menu'>
+                                        <li className="menu-signin">
+                                            <Link to='/signin'>Sign In</Link>
                                         </li>
                                         <li className='menu-submit'>
-                                            <Link to="/submit">Submit Notebook</Link>
+                                            <Link to="/signin">Submit Notebook</Link>
                                         </li>
                                         <li className='menu-submit invite-button'>
-                                            <a onClick={() => {this.inviteClick()}}> + Invite</a>
-                                            <Modal
-                                              isOpen={this.state.modalIsOpen}
-                                              onAfterOpen={this.afterOpenModal}
-                                              onRequestClose={this.closeModal}
-                                              style={customStyles}
-                                              contentLabel="Example Modal"
-                                            >
-
-                                              <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
-
-
-                                              <form onSubmit={this.handleSubmit}>
-                                                <label>
-
-                                                  <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
-                                                </label>
-                                                <ul className="button-row">
-                                                  <li>
-                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
-                                                  </li>
-                                                  <li>
-                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
-                                                  </li>
-                                                </ul>
-                                              </form>
-                                            </Modal>
-
+                                            <Link to="/signin">+ Invite</Link>
                                         </li>
-                                    </ul>
-                                : <ul className='site-menu'>
-                                    <li className="menu-signin">
-                                        <Link to='/signin'>Sign In</Link>
-                                    </li>
-                                    <li className='menu-submit'>
-                                        <Link to="/signin">Submit Notebook</Link>
-                                    </li>
-                                    <li className='menu-submit invite-button'>
-                                        <Link to="/signin">+ Invite</Link>
-                                    </li>
-                                </ul>}
+                                    </ul>}
+                            </div>
 
                         </div>
 
                     </div>
 
                 </header>
+                <div className='landing-logos'>
+                    <div className='container'>
+                        <ul>
+                            <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
+                            <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
+                            <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         );
     };
