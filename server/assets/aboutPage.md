@@ -1,25 +1,21 @@
 ## Summary
 
-QuantEcon Bookshelf is an open notebook repository and archive that hosts 
-Jupyter notebooks related to all areas of economics and econometrics.
+QuantEcon Notes is a public repository that hosts Jupyter notebooks related to
+all areas of economics and econometrics.
 
-Anyone can submit a notebook on either of these topics. Peer review is
-conducted purely by the free market, in the form of upvotes and downvotes.
+**Anyone can submit a notebook on either of these topics.**
 
 We encourage submissions containing either original material or replications
-of existing studies in an open and reproducible manner.  Users are encouraged
-both to submit their own material and also to vote and comment on existing
-submissions.
+of existing studies in an open and reproducible manner.  Peer review is
+conducted purely by the free market, in the form of upvotes and downvotes.
 
-We hope that votes will be determined by the quality and perceived value of
-the content of a given notebook to economic research and public policy.
+Our objective is to facilitate communication between economists and enhance
+reproducibility in research.
 
-Once the site goes beyond beta status, URLs to individual notebooks will be
-permanent and can be used in citations.
+URLs to individual notebooks will be permanent and can be used in citations.
 
-QuantEcon Bookshelf is a [QuantEcon](https://quantecon.org) project funded by
-the [Alfred P. Sloan Foundation](https://sloan.org/) and designed and built by
-the team listed below.
+QuantEcon Notes is a [QuantEcon](https://quantecon.org) project funded by
+the [Alfred P. Sloan Foundation](https://sloan.org/).
 
 
 ## Project Team
@@ -46,6 +42,26 @@ the team listed below.
 * Natasha Watkins
 
 
+
+## FAQs
+
+Can you handle supporting files?
+
+Not yet, but we're getting there.  
+
+Is this site only for economics?
+
+Yes, with room for some finance or operations research if it closely relates
+to economics.  Please downvote or [alert us to] content that you think is off
+topic.
+
+What should I do if I find an issue with the website?
+
+[Contact us]
+
+
+
+
 ## License and Disclaimer
 
 THE SOFTWARE ON THIS SITE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
@@ -61,6 +77,7 @@ EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Software published on this site will be understood as having been released
 under the 3 Clause BSD license. 
+
 
 ### Provided Jupyter Notebook and Content
 
