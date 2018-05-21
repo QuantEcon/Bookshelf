@@ -78,7 +78,7 @@ passport.use('twitter', new TwitterStrategy({
                         newUser.flagged = false;
                         newUser.deleted = false;
 
-                        newUser.isNew = true;
+                        newUser.new = true;
 
                         newUser.save(function (err) {
                             if (err) {

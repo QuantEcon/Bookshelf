@@ -45,7 +45,7 @@ app.get('/callback',
         console.log('[TwitterAuth] - after second auth');
 
         const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
-            ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial'
+            ' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial new'
         User.findOne({
             '_id': req.user._id
         }, select, function (err, user) {

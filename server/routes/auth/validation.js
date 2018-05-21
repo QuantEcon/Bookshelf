@@ -50,7 +50,7 @@ app.get('/', passport.authenticate('jwt', {
     if (isAdd) {
         //check to see if it already exists
         console.log('[ValidateToken] - is add')
-        if (req.user.isNew) {
+        if (req.user.new) {
             console.log('[ValidateToken] - profile is new')
             User.findById(req.user._id).remove(function () {
                 console.log('[ValidateToken] - req.user: ', req.user[profile]);

@@ -50,10 +50,18 @@ class EditProfileContainer extends Component {
         })
     }
 
+    componentWillReceiveProps(props){
+        if(!props.loading && !props.isSignedIn){
+            props.history.push('/signin')
+        }
+    }
+
     render() {
         return (
             <div>
-                <EditProfile
+                {this.props.loading
+                ? "loading..."
+                : <EditProfile
                     user={this.props.user}
                     saveProfile={this.saveProfile}
                     cancel={this.cancel}
@@ -63,23 +71,19 @@ class EditProfileContainer extends Component {
                     editProfileError={this.props.editProfileError}
                     editProfileSuccess={this.props.editProfileSuccess}
                     mergeAccounts={this.mergeAccounts}
-                    history={this.props.history}/>
+                    history={this.props.history}/>}
             </div>
         )
     }
 }
 
 function mapStateToProps(state, props) {
-    if (state.auth.isSignedIn) {
-        return {
-            user: state.auth.user,
-            editProfileError: state.auth.editProfileError,
-            editProfileSuccess: state.auth.editProfileSuccess
-        }
-    } else {
-        props
-            .history
-            .replace('/signin')
+    return {
+        user: state.auth.user,
+        editProfileError: state.auth.editProfileError,
+        editProfileSuccess: state.auth.editProfileSuccess,
+        loading: state.auth.loading,
+        isSignedIn: state.auth.isSignedIn
     }
 }
 

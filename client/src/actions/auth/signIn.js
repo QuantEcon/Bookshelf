@@ -338,7 +338,7 @@ export const signIn = (provider, next) => {
                     saveState({
                         token: resp.credentials.token
                     });
-                    next(true);
+                    next(true, resp.data.user.new);
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
                     console.log('\tprovider: ', provider);
@@ -356,7 +356,7 @@ export const signIn = (provider, next) => {
                     saveState({
                         token: resp.credentials.token
                     });
-                    next(true)
+                    next(true, resp.data.user.new)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
                     console.log('\tprovider: ', provider);
@@ -374,7 +374,7 @@ export const signIn = (provider, next) => {
                     saveState({
                         token: resp.credentials.token
                     });
-                    next(true)
+                    next(true, resp.data.user.new)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
                     console.log('\tprovider: ', provider);
@@ -392,7 +392,7 @@ export const signIn = (provider, next) => {
                     saveState({
                         token: resp.credentials.token
                     });
-                    next(true)
+                    next(true, resp.data.user.new)
                 }, error => {
                     console.log('[SignInActions] - error authenticating:')
                     console.log('\tprovider: ', provider);

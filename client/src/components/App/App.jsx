@@ -41,11 +41,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        {this.props.isLoading 
-        ? <h1>
-            "loading..."
-          </h1>
-        : <BrowserRouter>
+        <BrowserRouter>
             <div>
               <Switch>
                 <Route exact path='/' component={Home}/>
@@ -61,11 +57,11 @@ class App extends Component {
                 <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
                 <Route exact path='/temp' component={TempComponent}/>
                 <Route path='/admin' exact component={AdminContainer}/>
-                <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
+                <Route path='/user/:userID' component={UserContainer}/>
                 <Route path='*' component={NotFound}/>
               </Switch>
             </div>
-          </BrowserRouter> }
+          </BrowserRouter> 
       </div>
     );
   }

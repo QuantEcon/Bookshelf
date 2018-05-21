@@ -10,7 +10,7 @@ var opts = {
 }
 
 const select = 'name views numComments joinDate voteScore position submissions upvotes downvotes' +
-' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial emailSettings'
+' avatar website email summary activeAvatar currentProvider github fb twitter google oneSocial emailSettings new'
 
 passport.use(new JwtStrategy(opts, function (jwt_payload, done) {
     console.log("[JWTStrategy]JWT Payload: ", jwt_payload)

@@ -83,7 +83,7 @@ passport.use('github', new GithubStrategy({
                         newUser.flagged = false;
                         newUser.deleted = false;
 
-                        newUser.isNew = true;
+                        newUser.new = true;
 
 
                         newUser.save(function (err) {

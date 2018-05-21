@@ -73,7 +73,7 @@ passport.use('facebook', new FacebookStrategy({
                         newUser.flagged = false;
                         newUser.deleted = false;
 
-                        newUser.isNew = true;
+                        newUser.new = true;
 
                         //save user to db
                         newUser.save(function (err) {

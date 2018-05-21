@@ -18,29 +18,6 @@ class AdminPage extends Component {
             showDeletedContent: false,
             addAdminModalOpen: false,
         }
-
-        this.foldFlaggedUsers = this.foldFlaggedUsers.bind(this)
-        this.foldDeletedUsers = this.foldDeletedUsers.bind(this)
-
-        this.foldFlaggedSubmissions = this.foldFlaggedSubmissions.bind(this)
-        this.foldDeletedSubmissions = this.foldDeletedSubmissions.bind(this)
-        
-        this.foldFlaggedComments = this.foldFlaggedComments.bind(this)
-        this.foldDeletedComments = this.foldDeletedComments.bind(this)
-
-        this.foldFlaggedContent = this.foldFlaggedContent.bind(this)
-        this.foldDeletedContent = this.foldDeletedContent.bind(this)
-
-        this.removeSubmission = this.removeSubmission.bind(this)
-        this.removeUser = this.removeUser.bind(this)
-        this.removeComment = this.removeComment.bind(this)
-        this.unflagUser = this.unflagUser.bind(this)
-        this.unflagSubmission = this.unflagSubmission.bind(this)
-        this.unflagComment = this.unflagComment.bind(this)
-        this.restoreUser = this.restoreUser.bind(this)
-        this.restoreSubmission = this.restoreSubmission.bind(this)
-        this.restoreComment = this.restoreComment.bind(this)
-
     }
     
     removeSubmission = (submissionID) => {

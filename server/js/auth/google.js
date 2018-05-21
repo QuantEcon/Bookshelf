@@ -55,7 +55,7 @@ passport.use('google', new GoogleStrategy({
                         newUser.flagged = false;
                         newUser.deleted = false;
 
-                        newUser.isNew = true;
+                        newUser.new = true;
                         newUser.emailSettings = {
                             newComment: true,
                             newReply: true,

@@ -48,8 +48,10 @@ const actions = {
 class AdminContainer extends Component {
     constructor(props){
         super(props)
-        this.props.actions.fetchFlaggedContent()
-        this.props.actions.fetchAdminUsers()
+        if(props.isSignedIn && props.isAdmin){
+            this.props.actions.fetchFlaggedContent()
+            this.props.actions.fetchAdminUsers()
+        }
         this.state = {
             addAdminModalOpen: false,
             removeSubmissionModalOpen: false
@@ -111,38 +113,48 @@ class AdminContainer extends Component {
         this.props.actions.addAdmin({userID})
     }
 
+    componentWillReceiveProps(props){
+        
+    }
+
     render() {
         return (
             <div>
-                 {/* Add admin modal */}
-                 <AddAdminModal isOpen={this.state.addAdminModalOpen}
-                    onCancel={this.toggleAddAdminModal}
-                    onSearch={this.searchUsers}
-                    searchResults={this.props.searchResults}
-                    makeAdmin={this.makeAdmin}/>
-                {this.state.removeSubmissionModalOpen
-                ?<RemoveSubmissionModal isOpen={this.state.removeSubmissionModalOpen}
-                    onCancel={this.onRemoveCancel}
-                    onRemove={this.onRemove}
-                    submission={this.state.submissionToRemove}/>
-                : null}
-                
+                {this.props.authIsLoading
+                ? "auth is loading..."
+                : <div>
+                     {/* Add admin modal */}
+                    <AddAdminModal isOpen={this.state.addAdminModalOpen}
+                        onCancel={this.toggleAddAdminModal}
+                        onSearch={this.searchUsers}
+                        searchResults={this.props.searchResults}
+                        makeAdmin={this.makeAdmin}/>
+                    {this.state.removeSubmissionModalOpen
+                    ?<RemoveSubmissionModal isOpen={this.state.removeSubmissionModalOpen}
+                        onCancel={this.onRemoveCancel}
+                        onRemove={this.onRemove}
+                        submission={this.state.submissionToRemove}/>
+                    : null}
+                    
 
-                <AdminPage
-                    flaggedComments={this.props.flaggedComments}
-                    deletedComments={this.props.deletedComments}
-                    flaggedSubmissions={this.props.flaggedSubmissions}
-                    flaggedUsers={this.props.flaggedUsers}
-                    deletedUsers={this.props.deletedUsers}
-                    deletedSubmissions={this.props.deletedSubmissions}
-                    adminUsers={this.props.adminUsers}
-                    showAdminModal={this.toggleAddAdminModal}
-                    showRemoveModal={this.toggleRemoveSubmissionModal}
-                    currentUser={this.props.currentUser}
-                    isLoading={this.props.isLoading}
-                    history={this.props.history}
-                    actions={this.props.actions}
-                />
+                    <AdminPage
+                        flaggedComments={this.props.flaggedComments}
+                        deletedComments={this.props.deletedComments}
+                        flaggedSubmissions={this.props.flaggedSubmissions}
+                        flaggedUsers={this.props.flaggedUsers}
+                        deletedUsers={this.props.deletedUsers}
+                        deletedSubmissions={this.props.deletedSubmissions}
+                        adminUsers={this.props.adminUsers}
+                        showAdminModal={this.toggleAddAdminModal}
+                        showRemoveModal={this.toggleRemoveSubmissionModal}
+                        currentUser={this.props.currentUser}
+                        isLoading={this.props.isLoading}
+                        history={this.props.history}
+                        actions={this.props.actions}
+                        authIsLoading={this.props.authIsLoading}
+                    />
+                </div> }
+                
             </div>
         )
     }
@@ -161,7 +173,9 @@ const mapStateToProps = (state, props) => {
         adminUsers: state.adminData.adminUsers,
         currentUser: state.auth.user,
         searchResults: state.adminData.searchResults,
-        isLoading: state.adminData.fetching || state.adminData.adminUsers.fetching
+        isLoading: state.adminData.fetching || state.adminData.adminUsers.fetching,
+        isSignedIn: state.auth.isSignedIn,
+        isAdmin: state.auth.isAdmin
     }
 }
 

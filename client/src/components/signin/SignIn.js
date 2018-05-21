@@ -17,7 +17,7 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showErrorMessage: false
+            showErrorMessage: props.authError ? true : false
         }
 
         this.onSignInEnd = this
@@ -30,11 +30,11 @@ class SignIn extends Component {
         document.title = 'Sign In - QuantEcon Bookshelf'
     }
 
-    showErrorMessage = false;
+    showErrorMessage = true;
 
-    onSignInEnd(didAuthenticate) {
+    onSignInEnd(didAuthenticate, isNew) {
         if (didAuthenticate) {
-            if (this.props.user.isNew) {
+            if (isNew) {
                 console.log('[SignIn] - brand new user. Move to registration page');
                 this
                     .props
@@ -56,6 +56,7 @@ class SignIn extends Component {
     }
 
     componentWillReceiveProps(props) {
+        console.log("props:" ,props)
         if (props.isSignedIn) {
             this
                 .props
@@ -80,8 +81,10 @@ class SignIn extends Component {
                             </div>
                         </div>
                     : null}
-
-                <div className='modal'>
+                
+                {this.props.loading
+                ? "loading..."
+                :<div className='modal'>
                     <div className='modal-header'>
                         <h1 className='modal-title'>Sign In</h1>
                     </div>
@@ -123,14 +126,14 @@ class SignIn extends Component {
                             <strong>{' '}Submit{' '}</strong>
                             Notebooks.</p>
                     </div>
-                </div>
+                </div>}
             </div>
         );
     }
 }
 
 const mapStateToProps = (state, props) => {
-    return {isSignedIn: state.auth.isSignedIn, authError: state.auth.error, user: state.auth.user}
+    return {isSignedIn: state.auth.isSignedIn, authError: state.auth.error, user: state.auth.user, loading: state.auth.loading}
 }
 
 export default connect(mapStateToProps, null)(SignIn);

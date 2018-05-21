@@ -13,7 +13,7 @@ export default function PrivateRoute({
     return (
         <Route
             {...rest}
-            render={(props) => state.auth.isSignedIn === true || fromAPI
+            render={(props) => state.auth.isSignedIn === true || fromAPI || state.auth.loading
             ? <div>            
                 {fromAPI 
                 ? <TempComponent/>
