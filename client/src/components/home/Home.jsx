@@ -5,6 +5,9 @@ import SubmissionListContainer from '../../containers/submission/SubmissionListC
 import HeadContainer from '../../containers/HeadContainer';
 import BetaBanner from '../partials/BetaBanner';
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
+import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
+import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'
+import sloanLogo from '../../assets/img/landing-sloan-logo.png'
 
 class Home extends Component {
     constructor(props){
@@ -42,6 +45,15 @@ class Home extends Component {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
+                <div className='landing-logos'>
+                    <div className='container'>
+                        <ul>
+                            <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
+                            <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
+                            <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
+                        </ul>
+                    </div>
+                </div>
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>

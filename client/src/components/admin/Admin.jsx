@@ -4,6 +4,7 @@ import UserPreview from '../user/UserPreview'
 import SubmissionPreview from '../submissions/submissionPreview'
 import Comment from '../comments/Reply' 
 import * as config from '../../_config'
+import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
 
 class AdminPage extends Component {
     constructor(props) {
@@ -150,22 +151,30 @@ class AdminPage extends Component {
                             {this.props.isLoading
                                 ? <h3>Loading...</h3>
                                 :<div>
+
+                                    <AnnouncementsContainer showAdmin={true}/>
                                     {/* Admin Users */}
                                     <div className="tile">
                                         <span className="section-header">
                                             <h2>Admin Users</h2>
                                         </span>
                                         <div className="summaries">
-                                            {this.props.adminUsers.users.map((user, index) => {
-                                                return <div key={index}>
-                                                    <UserPreview user={user}/>
-                                                    <ul className="admin-button-row">
-                                                        <li>
-                                                            <button onClick={()=>this.props.actions.removeAdmin({userID: user._id})} disabled={user._id ===this.props.currentUser._id}>Remove</button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            })}
+                                            {this.props.adminUsers.users
+                                            ? <div>
+                                                {this.props.adminUsers.users.map((user, index) => {
+                                                    return <div key={index}>
+                                                        <UserPreview user={user}/>
+                                                        <ul className="admin-button-row">
+                                                            <li>
+                                                                <button onClick={()=>this.props.actions.removeAdmin({userID: user._id})} disabled={user._id ===this.props.currentUser._id}>Remove</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                })}
+                                             </div>
+                                            : null}
+                                            
+                                           
                                         </div>
                                         <hr/>
                                         <ul className="admin-button-row">

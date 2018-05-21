@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux'
 import {bindActionCreators} from 'redux'
-import {fetchAnnouncements, addAnnouncement} from '../actions/announcements'
+import {editRecent, fetchRecent, deleteRecent} from '../actions/announcements'
 
 import AnnouncementsBanner from '../components/partials/AnnouncementsBanner'
 
@@ -10,35 +10,38 @@ class AnnouncementsContainer extends Component {
     constructor(props) {
         super(props)
 
-        props.actions.fetchAnnouncements()
+        props.actions.fetchRecent()
     }
 
     render() {
         return (
-            <AnnouncementsBanner 
-                actions={this.props.actions} 
-                announcements={this.props.announcements ?
-                    this.props.announcements :
-                    []
-                }
-                showAdmin={this.props.showAdmin}
-            />
+            <div>
+                {this.props.announcement || this.props.showAdmin
+                ? <AnnouncementsBanner 
+                    actions={this.props.actions} 
+                    announcement={this.props.announcement}
+                    showAdmin={this.props.showAdmin}
+                />
+                : null}
+                
+            </div>
+           
         )
     }
 }
 
 function mapStateToProps(state, props) {
     return {
-        announcements: state.announcements.announcements,
-        showAdmin: state.auth.isAdmin
+        announcement: state.announcements.recent
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return {
        actions: bindActionCreators({
-           fetchAnnouncements,
-           addAnnouncement
+           fetchRecent,
+           editRecent,
+           deleteRecent
        }, dispatch) 
     }
 }

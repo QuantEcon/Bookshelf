@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Markdown from '@nteract/markdown'
+import Moment from 'react-moment'
 
 export default class AnnouncementBanner extends Component {
     constructor(props){
@@ -28,13 +29,21 @@ export default class AnnouncementBanner extends Component {
         })
     }
 
+    deleteRecent = (e) => {
+        if(e){
+            e.preventDefault()
+        }
+
+        this.props.actions.deleteRecent()
+    }
+
 
     submit = (e) => {
         if(e){
             e.preventDefault()
         }
 
-        this.props.actions.addAnnouncement(this.state.editText)
+        this.props.actions.editRecent(this.state.editText)
         this.setState({
             showEdit: false
         })
@@ -46,40 +55,41 @@ export default class AnnouncementBanner extends Component {
                 <div className='container'>
                     {/* TODO: Announcements title here */}
                     <div className='announcements-list'>
-                        {this.props.announcements.map((announcement, index) => {
-                            return (
-                                // TODO: Style this div
-                                <div key={index} className='announcement'>
-                                    <p>{announcement.date}</p>
-                                    
-                                    {this.props.showAdmin
-                                    ? <div>
-                                    {this.state.showEdit ? 
-                                        <div>
-                                            <Markdown source={this.state.editText} />  
+                        <div className='announcement'>
+                            {this.props.announcement 
+                                ? <Moment date={this.props.announcement.date} format="dddd, DD MMMM YYYY, H:mm A"/>
+                                : null}
+                            
+                            {this.props.showAdmin
+                            ? <div>
+                                {this.state.showEdit ? 
+                                    <div>
+                                        <Markdown source={this.state.editText} />  
 
-                                            <textarea name="editAnnouncement" 
-                                            id="editAnnouncementTextArea" 
-                                            cols="30" 
-                                            rows="10"
-                                            placeholder="You can use markdown here..."
-                                            onChange={this.editTextChanged}/>
+                                        <textarea name="editAnnouncement" 
+                                        id="editAnnouncementTextArea" 
+                                        cols="30" 
+                                        rows="10"
+                                        placeholder="You can use markdown here..."
+                                        onChange={this.editTextChanged}/>
 
-                                            <button onClick={this.toggleEdit}>Cancel</button>
+                                        <button onClick={this.toggleEdit}>Cancel</button>
 
-                                            <button onClick={this.submit}>Submit</button>
-                                        </div>
-
-                                        : <div>
-                                            <Markdown source={announcement.content} />                                        
-                                            <button onClick={this.toggleEdit}>Edit</button>
-                                        </div>}
+                                        <button onClick={this.submit}>Submit</button>
                                     </div>
-                                    : <Markdown source={announcement.content} />}
+
+                                    : <div>
+                                        <Markdown source={this.props.announcement ? this.props.announcement.content : null} />
+                                        <button onClick={this.toggleEdit}>Edit</button>
+                                        {this.props.announcement
+                                        ? <button onClick={this.deleteRecent}>Delete</button>
+                                        : null }
+                                    </div>}
                                 </div>
-                            )
-                        })}
+                                : <Markdown source={this.props.announcement.content} />}
+                        </div>
                     </div>
+                    
                 </div>
             </div>
         )

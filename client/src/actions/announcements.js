@@ -32,6 +32,62 @@ export const addAnnouncementAction = ({
     }
 }
 
+export const CHANGE_ANNOUNCEMENT = 'CHANGE_ANNOUNCEMENT'
+export const changeAnnouncementAction = ({
+    error,
+    announcement
+}) => {
+    return {
+        type: CHANGE_ANNOUNCEMENT,
+        announcement,
+        error
+    }
+}
+
+export const RECEIVE_RECENT = 'RECEIVE_RECENT'
+export const receiveRecentAction = ({
+    error,
+    announcement
+}) => {
+    return {
+        type: RECEIVE_RECENT,
+        announcement,
+        error
+    }
+}
+
+export const DELETE_RECENT = 'DELETE_RECENT'
+export const deleteRecentAction = ({
+    error
+}) => {
+    return {
+        type: DELETE_RECENT,
+        error
+    }
+}
+
+export const deleteRecent = () => {
+    return function(dispatch){
+        Axios.post('/api/announcements/delete').then(
+            resp => {
+                if(resp.err){
+                    dispatch(deleteRecentAction({
+                        error: resp.data.message
+                    }))
+                } else {
+                    dispatch(deleteRecentAction({}))
+                }
+            },
+            err => {
+                dispatch(deleteRecentAction({
+                    error: err.response
+                }))
+            }
+        )
+    }
+}
+
+
 export const fetchAnnouncements = () => {
     return function (dispatch) {
         dispatch(requestAnnoucementsAction())
@@ -43,8 +99,10 @@ export const fetchAnnouncements = () => {
                         error: resp.data.message
                     }))
                 } else {
+                    console.log("resp.data: ", resp.data, " END")
+
                     dispatch(receiveAnnouncementsAction({
-                        announcements: [resp.data]
+                        announcements: resp.data
                     }))
                 }
             },
@@ -52,6 +110,34 @@ export const fetchAnnouncements = () => {
                 console.warn('[Announcements] - error fetching announcements: ', err.response)
 
                 dispatch(receiveAnnouncementsAction({
+                    error: err.response
+                }))
+            }
+        )
+    }
+}
+
+export const fetchRecent = () => {
+    return function (dispatch) {
+        dispatch(requestAnnoucementsAction())
+
+        Axios.get('/api/announcements/recent').then(
+            resp => {
+                console.log("resp: ", resp)
+                if(resp.err){
+                    dispatch(receiveRecentAction({
+                        error: resp.data.message
+                    }))
+                } else {
+                    dispatch(receiveRecentAction({
+                        announcement: resp.data
+                    }))
+                }
+            },
+            err => {
+                console.warn('[Announcements] - error fetching announcements: ', err.response)
+
+                dispatch(receiveRecentAction({
                     error: err.response
                 }))
             }
@@ -78,5 +164,26 @@ export const addAnnouncement = (content) => {
                 announcements: []
             }))
         })
+    }
+}
+
+export const editRecent = (content) => {
+    return function (dispatch) {
+        Axios.post('/api/announcements/change', {
+            content
+        }, {
+            headers: {
+                "Authorization" : "JWT " + store.getState().auth.token
+            }
+        }).then(resp => {
+            dispatch(changeAnnouncementAction({
+                announcement: resp.data
+            }))
+        }).catch(err => {
+            console.warn("[Announcements-Add] - error adding announcement: ", err)
+            dispatch(changeAnnouncementAction({
+                error: err,
+            }))
+        }) 
     }
 }

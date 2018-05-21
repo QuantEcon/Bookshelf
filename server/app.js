@@ -196,16 +196,28 @@ app.get('/api/announcements', (req, res) => {
     })
 })
 
-app.get('/api/announcements/recent' , (req, res) => {
-    Announcement.find({}, {}, {sort: {date: -1}}, (err, announcements) => {
-        console.log("found announcements: ", announcements)
+app.post('/api/announcements/delete', (req, res) => {
+    Announcement.deleteOne({recent: true}, (err) => {
         if(err){
-            console.log('[GETAnncouncements] - error occurred fetching announcements - ', err)
-            res.send(500)
+            console.log('[GETAnncouncements] - error occurred deleting recent - ', err)
+            res.sendStatus(500)
         } else {
-            res.send(announcements[0])
+            res.sendStatus(200)
         }
+    })
+})
 
+app.get('/api/announcements/recent' , (req, res) => {
+    Announcement.findOne({recent: true}, (err, announcement) => {
+        if(err){
+            console.error("[Announcement-Add] - error finding recent announcement: ", err)
+            res.sendStatus(500)
+        } else if(announcement) {
+            console.log("announcement: ", announcement)
+            res.send(announcement)
+        } else {
+            res.sendStatus(404)
+        }
     })
 })
 
@@ -223,6 +235,44 @@ app.post('/api/announcements/add', passport.authenticate('adminjwt', {
             console.error("[Announcement-Add] - error saving new announcement: ", err)
         } else {
             res.send(savedAnnouncement)
+        }
+    })
+})
+
+app.post('/api/announcements/change', passport.authenticate('adminjwt', {
+    session: false
+}), (req, res) => {
+    Announcement.findOne({recent: true}, (err, announcement) => {
+        if(err){
+            console.error("[Announcement-Add] - error finding recent announcement: ", err)
+        } else {
+            if(announcement){
+                announcement.content = req.body.content
+                announcement.date = Date.now()
+                announcement.postedBy = req.user._id
+    
+                announcement.save((err, savedAnnouncement) => {
+                    if(err){
+                        console.error("[Announcement-Add] - error saving recent announcement: ", err)
+                    } else {
+                        res.send(savedAnnouncement)
+                    }
+                })
+            } else {
+                var newAnnouncement = Announcement()
+
+                newAnnouncement.content = req.body.content
+                newAnnouncement.date = Date.now()
+                newAnnouncement.postedBy = req.user._id
+                newAnnouncement.recent = true
+                newAnnouncement.save((err, savedAnnouncement) => {
+                    if(err){
+                        console.error("[Announcement-Add] - error saving recent announcement: ", err)
+                    } else {
+                        res.send(savedAnnouncement)
+                    }
+                })
+            }
         }
     })
 })

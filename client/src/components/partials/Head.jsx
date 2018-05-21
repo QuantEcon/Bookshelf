@@ -1,9 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
-import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
-import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'
-import sloanLogo from '../../assets/img/landing-sloan-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
@@ -238,15 +235,6 @@ class Head extends Component {
                     </div>
 
                 </header>
-                <div className='landing-logos'>
-                    <div className='container'>
-                        <ul>
-                            <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
-                            <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
-                            <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
-                        </ul>
-                    </div>
-                </div>
             </div>
         );
     };
