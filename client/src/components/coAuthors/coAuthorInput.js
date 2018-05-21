@@ -5,71 +5,242 @@ import axios from 'axios';
 import Modal from 'react-modal';
 
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
+// const customStyles = {
+//   content : {
+//     top                   : '50%',
+//     left                  : '50%',
+//     right                 : 'auto',
+//     bottom                : 'auto',
+//     marginRight           : '-50%',
+//     transform             : 'translate(-50%, -50%)'
+//   }
+// };
 
-const MAX_CONTRIBUTORS = 4;
-const ASYNC_DELAY = 400;
-var CONTRIBUTORS =[];
+// const MAX_CONTRIBUTORS = 4;
+// const ASYNC_DELAY = 400;
+// var CONTRIBUTORS =[];
 
+// var p={};
+// var coAuthors=[];
+
+// class CoAuthorInput extends Component {
+
+
+//     constructor(props){
+//       super(props);
+
+//       this.state = {
+// 	loading : false,
+//     	multi : true,
+// 	value: '',
+// 	modalIsOpen : false,
+// 	selectedId : null,
+// 	selectedName : '',
+// 	selectedAvatar : null
+//     };
+
+//     this.onChange=this
+// 	.onChange
+// 	.bind(this)
+
+//     this.switchToMulti=this
+// 	.switchToMulti
+// 	.bind(this)
+
+//     this.switchToSingle=this
+// 	.switchToSingle
+// 	.bind(this)
+
+//     this.getContributors=this
+// 	.getContributors
+// 	.bind(this)
+
+//     this.gotoContributor=this
+// 	.gotoContributor
+// 	.bind(this)
+
+//     this.openModal = this
+// 	.openModal
+// 	.bind(this);
+
+//     this.afterOpenModal = this
+// 	.afterOpenModal
+// 	.bind(this);
+
+//     this.closeModal = this
+// 	.closeModal
+// 	.bind(this);
+
+//     }
+
+// 	componentDidMount(){
+// 		console.log("Setting loading to true");
+// 		this.setState({
+// 			loading : true
+// 		});
+
+// 		axios.get('/api/search/userList').then(response => {
+// 			p = response.data;
+// 			for (var key in p) {
+// 				if (p.hasOwnProperty(key)) {
+// 					console.log(p[key]);
+// 					CONTRIBUTORS.push({id:key,name:p[key].name});
+// 					}
+// 			}
+
+// 		this.setState({
+// 			loading : false
+// 		});
+// 			return true;
+
+// 			}).catch(error => {
+// 				console.log('error in adding Co-Author: ', error);
+// 				return false;
+// 			})
+
+// 		}
+
+
+// 	gotoContributor(value,event){
+// 		this.openModal(value.id);
+// 	}
+		
+// 	openModal(id) {
+// 		this.setState({modalIsOpen: true,
+// 				selectedId : id,
+// 				selectedName : p[id].name,
+// 				selectedAvatar : p[id].avatar});
+// 		}
+
+// 	afterOpenModal() {
+// 		this.subtitle.style.color = '#f00';
+// 		}
+
+// 	closeModal() {
+// 		this.setState({modalIsOpen: false});
+// 		}
+
+// 	onChange = (value) => {
+// 		if(value.length < 5)
+// 		{
+// 			console.log(value);
+// 			this.setState({
+// 				value: value
+// 			});
+
+// 			for(var i=0;i<value.length;i++)
+// 			{
+// 				coAuthors[i]=value[i].id;
+// 			}
+// 			this.props.onSelectCoAuthor(coAuthors);
+// 		}
+// 	}
+
+// 	switchToMulti = () => {
+// 		this.setState({
+// 			multi: true,
+// 			value: this.state.value
+// 		});
+// 	}
+
+// 	switchToSingle () {
+// 		this.setState({
+// 			multi: false,
+// 			value: this.state.value[0]
+// 		});
+// 	}
+
+
+// 	getContributors (input, callback) {
+// 		// TODO: Exclude current user
+// 		console.log("in get contributors");
+// 		input = input.toLowerCase();
+// 		var options = CONTRIBUTORS.filter(i => {
+// 			return (i.name.substr(0, input.length)).localeCompare(input);
+// 		});
+// 		var data = {
+// 			options: options,
+// 			complete: options.length <= MAX_CONTRIBUTORS,
+// 		};
+
+// 		setTimeout(function() {
+// 			callback(null, data);
+// 		}, ASYNC_DELAY);
+// 	}
+
+
+
+// 	render () {
+// 		if(this.state.loading){
+// 			return(
+// 				<div>Loading...</div>
+// 			)
+// 		}
+// 			return (
+// 			<div id="main-start" className="main-start">
+
+// 				{/* TODO: Include user's avatar in results */}
+// 				<Select.Async multi={this.state.multi} 
+// 					value={this.state.value} 
+// 					onChange={this.onChange} 
+// 					onValueClick={this.gotoContributor} 
+// 					valueKey="id" 
+// 					labelKey="name" 
+// 					loadOptions={this.getContributors} />
+
+// 				<Modal
+// 					isOpen={this.state.modalIsOpen}
+// 					onAfterOpen={this.afterOpenModal}
+// 					onRequestClose={this.closeModal}
+// 					style={customStyles}
+// 					contentLabel="User Modal">
+
+// 					<h2 ref={subtitle => this.subtitle = subtitle}>{this.state.selectedName}</h2>
+// 					<div><img src={this.state.selectedAvatar} alt='User avatar'/></div>
+// 					<button className='invite-modal-button' onClick={this.closeModal}>Close</button>
+
+// 				</Modal>
+// 			</div>
+// 		);
+// 	}
+// }
+
+var options = [];
 var p={};
 var coAuthors=[];
+
 
 class CoAuthorInput extends Component {
 
 
     constructor(props){
-      super(props);
+      	super(props);
+	this.state = {
+		loading : false,
+    		multi : true,
+		value: '',
+	};
+	this.setValue=this
+	    .setValue
+	    .bind(this)
 
-      this.state = {
-	loading : false,
-    	multi : true,
-	value: '',
-	modalIsOpen : false,
-	selectedId : null,
-	selectedName : '',
-	selectedAvatar : null
-    };
+    	this.switchToMulti=this
+	    .switchToMulti
+	    .bind(this)
 
-    this.onChange=this
-	.onChange
-	.bind(this)
+    	this.switchToSingle=this
+	    .switchToSingle
+	    .bind(this)
 
-    this.switchToMulti=this
-	.switchToMulti
-	.bind(this)
+        this.renderOption=this
+	    .renderOption
+	    .bind(this)
 
-    this.switchToSingle=this
-	.switchToSingle
-	.bind(this)
+    	this.renderValue=this
+            .renderValue
+            .bind(this)
 
-    this.getContributors=this
-	.getContributors
-	.bind(this)
 
-    this.gotoContributor=this
-	.gotoContributor
-	.bind(this)
-
-    this.openModal = this
-	.openModal
-	.bind(this);
-
-    this.afterOpenModal = this
-	.afterOpenModal
-	.bind(this);
-
-    this.closeModal = this
-	.closeModal
-	.bind(this);
 
     }
 
@@ -84,57 +255,36 @@ class CoAuthorInput extends Component {
 			for (var key in p) {
 				if (p.hasOwnProperty(key)) {
 					console.log(p[key]);
-					CONTRIBUTORS.push({id:key,name:p[key].name});
+					options.push({value:key, label:p[key].name , image:p[key].avatar});
 					}
 			}
 
-		this.setState({
-			loading : false
-		});
+			this.setState({
+				loading : false
+			});
 			return true;
-
 			}).catch(error => {
 				console.log('error in adding Co-Author: ', error);
 				return false;
-			})
+				})
 
 		}
 
 
-	gotoContributor(value,event){
-		this.openModal(value.id);
-	}
-		
-	openModal(id) {
-		this.setState({modalIsOpen: true,
-				selectedId : id,
-				selectedName : p[id].name,
-				selectedAvatar : p[id].avatar});
-		}
 
-	afterOpenModal() {
-		this.subtitle.style.color = '#f00';
-		}
+    setValue = (value) => {
+    if(value.length < 5)
+      {
+          console.log(value);
+  		    this.setState({ value });
 
-	closeModal() {
-		this.setState({modalIsOpen: false});
-		}
-
-	onChange = (value) => {
-		if(value.length < 5)
-		{
-			console.log(value);
-			this.setState({
-				value: value
-			});
-
-			for(var i=0;i<value.length;i++)
-			{
-				coAuthors[i]=value[i].id;
-			}
-			this.props.onSelectCoAuthor(coAuthors);
-		}
-	}
+          for(var i=0;i<value.length;i++)
+          {
+            coAuthors[i]=value[i].value;
+          }
+          this.props.onSelectCoAuthor(coAuthors);
+       }
+     }
 
 	switchToMulti = () => {
 		this.setState({
@@ -150,59 +300,38 @@ class CoAuthorInput extends Component {
 		});
 	}
 
-
-	getContributors (input, callback) {
-		// TODO: Exclude current user
-		console.log("in get contributors");
-		input = input.toLowerCase();
-		var options = CONTRIBUTORS.filter(i => {
-			return (i.name.substr(0, input.length)).localeCompare(input);
-		});
-		var data = {
-			options: options,
-			complete: options.length <= MAX_CONTRIBUTORS,
-		};
-
-		setTimeout(function() {
-			callback(null, data);
-		}, ASYNC_DELAY);
+  	renderOption = (option) => {
+		return (
+      			<div>
+			  <em>{option.label}</em>
+      			  &emsp;
+      			  <img src={option.image}/>
+      			</div>
+		);
 	}
 
+	renderValue = (option) => {
+    		console.log(option.label);
+		return option.label;
+	}
 
-
-	render () {
-		if(this.state.loading){
-			return(
-				<div>Loading...</div>
-			)
-		}
-			return (
-			<div id="main-start" className="main-start">
-
-				{/* TODO: Include user's avatar in results */}
-				<Select.Async multi={this.state.multi} 
-					value={this.state.value} 
-					onChange={this.onChange} 
-					onValueClick={this.gotoContributor} 
-					valueKey="id" 
-					labelKey="name" 
-					loadOptions={this.getContributors} />
-
-				<Modal
-					isOpen={this.state.modalIsOpen}
-					onAfterOpen={this.afterOpenModal}
-					onRequestClose={this.closeModal}
-					style={customStyles}
-					contentLabel="User Modal">
-
-					<h2 ref={subtitle => this.subtitle = subtitle}>{this.state.selectedName}</h2>
-					<div><img src={this.state.selectedAvatar} alt='User avatar'/></div>
-					<button className='invite-modal-button' onClick={this.closeModal}>Close</button>
-
-				</Modal>
+	render = () => {
+		return (
+			<div className="section">
+				<Select
+         				multi={this.state.multi}
+					onInputChange={(inputValue) => this._inputValue = inputValue}
+					options={options}
+					optionRenderer={this.renderOption}
+					onChange={this.setValue}
+					value={this.state.value}
+					valueRenderer={this.renderValue}
+					/>
+				 <div className="hint">If your Co-Author is not in the list, you can always send them an invite.</div>
 			</div>
 		);
 	}
+
 }
 
 export default CoAuthorInput;
