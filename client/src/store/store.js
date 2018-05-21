@@ -10,6 +10,9 @@ var store = createStore({
     editSubmissionByID: {},
     adminData: {
         fetching: true
+    },
+    auth: {
+        loading: true
     }
 })
 

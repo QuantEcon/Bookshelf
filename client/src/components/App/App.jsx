@@ -33,34 +33,39 @@ class App extends Component {
 
   constructor(props){
     super(props);
+
+    console.log("props: ", props)
     var url = window.location.href
     props.actions.reauthenticate(window.location.href);
-    // Wait for reauthentication
   }
 
   render() {
     return (
       <div>
-        <BrowserRouter>
-          <div>
-            <Switch>
-              <Route exact path='/' component={Home}/>
-              <Route path='/faq' component={FAQ}/>
-              <Route path='/about' component={About}/>
-              <Route path='/submission/:id' component={SubmissionContainer}/>
-              <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
-              <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
-              <ProtectedRoute path='/submit' component={SubmitContainer}/>
-              <Route path='/signin' exact component={SignIn}/>
-              <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
-              <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
-              <Route exact path='/temp' component={TempComponent}/>
-              <Route path='/admin' exact component={AdminContainer}/>
-              <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
-              <Route path='*' component={NotFound}/>
-            </Switch>
-          </div>
-        </BrowserRouter>
+        {this.props.isLoading 
+        ? <h1>
+            "loading..."
+          </h1>
+        : <BrowserRouter>
+            <div>
+              <Switch>
+                <Route exact path='/' component={Home}/>
+                <Route path='/faq' component={FAQ}/>
+                <Route path='/about' component={About}/>
+                <Route path='/submission/:id' component={SubmissionContainer}/>
+                <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
+                <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
+                <ProtectedRoute path='/submit' component={SubmitContainer}/>
+                <Route path='/signin' exact component={SignIn}/>
+                <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
+                <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
+                <Route exact path='/temp' component={TempComponent}/>
+                <Route path='/admin' exact component={AdminContainer}/>
+                <Route path='/user/:userID' component={UserContainer}/> {/*Page not found*/}
+                <Route path='*' component={NotFound}/>
+              </Switch>
+            </div>
+          </BrowserRouter> }
       </div>
     );
   }
@@ -75,7 +80,7 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state, props) => {
   return {
     isSignedIn: state.auth.isSignedIn,
-    isLoading: state.auth.isLoading
+    isLoading: state.auth.loading
   }
 }
 
