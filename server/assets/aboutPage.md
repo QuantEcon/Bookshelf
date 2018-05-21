@@ -86,5 +86,3 @@ Jupyter notebooks uploaded to this site will be considered to be released as
 Users may copy and redistribute the material so long as attribution is 
 provided to the original author of the notebook, and users may not remix,
 transform, or build upon the material. 
-
-<img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nd/4.0/80x15.png" /></a>

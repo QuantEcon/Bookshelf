@@ -12,7 +12,6 @@ import SubmitContainer from '../../containers/SubmitContainer'
 import PreviewContainer from '../../containers/PreviewContainer'
 import EditProfileContainer from '../../containers/user/EditProfileContainer'
 import EditSubmissionContainer from '../../containers/submission/EditSubmissionContainer';
-import EditSubmissionPreviewContainer from '../../containers/submission/EditSubmissionPreviewContainer';
 import AdminContainer from '../../containers/admin/AdminContainer'
 import Contact from '../Contact'
 //Components
@@ -36,7 +35,6 @@ class App extends Component {
     super(props);
 
     console.log("props: ", props)
-    var url = window.location.href
     props.actions.reauthenticate(window.location.href);
   }
 

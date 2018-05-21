@@ -13,10 +13,12 @@ class Contact extends Component {
                     <div className="page-title">
                         <h2 className="title-name">Contact</h2>
                     </div>
-
-                    <div>
-                        <p>Please send feedback to <a href="mailto:contact@quantecon.org">contact@quantecon.org</a></p>
+                    <div className='tile'>
+                        <div>
+                            <p>Please send feedback to <a href="mailto:contact@quantecon.org">contact@quantecon.org</a></p>
+                        </div>
                     </div>
+                  
                 </div>
               
             </div>

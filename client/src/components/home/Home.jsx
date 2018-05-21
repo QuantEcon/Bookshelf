@@ -3,7 +3,6 @@ import React, {Component} from 'react';
 // import SubmissionList from '../submissions/SubmissionList';
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
-import BetaBanner from '../partials/BetaBanner';
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
 import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
 import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'

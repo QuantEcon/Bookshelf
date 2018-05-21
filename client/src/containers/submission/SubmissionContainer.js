@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux'
 import Submission from '../../components/submissions/Submission';
 import * as AuthActions from '../../actions/auth/auth';
 import {downvoteSubmission, upvoteSubmission} from '../../actions/auth/vote'
-import {fetchNBInfo, deleteSubmission, flagSubmission, fetchNB} from '../../actions/submission'
+import {fetchNBInfo, deleteSubmission, flagSubmission} from '../../actions/submission'
 import NotFound from '../../components/NotFound'
 
 const actions = {
