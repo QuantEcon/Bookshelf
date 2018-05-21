@@ -116,7 +116,8 @@
                         font-weight:700;
                         color:#fff;
                         &:hover {
-                            color: darken( #fff, 10% );
+                            //color: darken( #fff, 10% );
+                            text-decoration: underline;
                         }
                     }
                 }
@@ -179,6 +180,8 @@
                     align-items: center;
                     //color: $color-dark;
                     line-height: 1;
+                    border:0;
+                    padding:0;
                     span {
                         font-weight: 700;
                         padding:0.5rem 1rem;
@@ -193,6 +196,7 @@
                     }
                     &:hover {
                         //color: $color-primary;
+                        text-decoration: underline;
                         .avatar {
                             img {
                                 opacity: 1;
