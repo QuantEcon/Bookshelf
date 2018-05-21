@@ -4,6 +4,8 @@ Code for the site QuantEconLib
 ### Contributing
 Please work in branches and make PR's
 
+To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!), then test to make sure your code is still working as inteded. This way, all merge conflicts will already be resolved in the PR.
+
 ### Building Documentation
 * API Docs: run `npm run api-docs` to build the API documentation. Output will be in `/docs/`
 * Client Docs: run `npm run client-docs` to build the client documentation. Output will be in `/client/docs/`
