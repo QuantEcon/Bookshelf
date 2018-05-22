@@ -1,5 +1,16 @@
 .admin-content {
-	padding: 2rem;
+    padding: 1rem;
+    margin: 1rem;
+    .section-header {
+		button {
+			@include medium-button;
+			display: inline-block;
+			background:#fff;
+			color: $color-primary;
+			margin:0 1rem 0 0;
+			cursor: pointer;
+		}
+    }
 }
 
 .admin-button-row {
@@ -10,8 +21,9 @@
 	li {
 		margin:0 1rem 0 0;
 		button {
-			@include small-button;
+			@include medium-button;
 			color: $color-primary;
+			cursor: pointer;
 		}
 	}
 }
@@ -22,9 +34,12 @@
 
 .announcements {
 	button {
-		@include small-button;
+		@include medium-button;
+		display: inline-block;
+		background:#fff;
 		color: $color-primary;
 		margin:0 1rem 0 0;
+		cursor: pointer;
 	}
 }
 
