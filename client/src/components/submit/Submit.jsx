@@ -34,11 +34,10 @@ class Submit extends Component {
     }
 
     topics = [
-        'All',
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",
