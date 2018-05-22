@@ -10,11 +10,35 @@
 	li {
 		margin:0 1rem 0 0;
 		button {
-			@include medium-button;
+			@include small-button;
+			color: $color-primary;
 		}
 	}
 }
 
-.page-title .accouncements .container {
+.page-title .announcements .container {
 	width: auto;
+}
+
+.announcements {
+	button {
+		@include small-button;
+		color: $color-primary;
+		margin:0 1rem 0 0;
+	}
+}
+
+.announcements-list {
+    border: 1px solid #c3c3c3;
+    background: #dee7db;
+    padding: 1rem 2rem;
+    border-radius: 5px;
+    margin: 2rem 0;
+    .announcement {
+        border-bottom: 1px solid #c3c3c3;
+        font-weight: 700;
+        &:last-child {
+            border-bottom:0;
+        }
+    }
 }
