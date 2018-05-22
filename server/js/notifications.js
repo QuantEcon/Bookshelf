@@ -3,7 +3,8 @@ const notificationTypes = {
     NEW_COMMENT: 'NEW_COMMENT',
     NEW_REPLY: 'NEW_REPLY',
     SUBMISSION: 'SUBMISSION',
-    INVITE_SENT : 'INVITE_SENT'
+    INVITE_SENT : 'INVITE_SENT',
+    CONTENT_FLAGGED: 'CONTENT_FLAGGED'
     // TODO other notification types here...
 }
 const config = require("../_config")
@@ -78,7 +79,7 @@ function sendNotification(notification) {
             })
 
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Comment On Your Submission",
                 html: output
@@ -97,7 +98,7 @@ function sendNotification(notification) {
         case notificationTypes.NEW_REPLY:
             
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Reply To Your Comment",
                 // TODO: Include and HTML rendering of the comment here
@@ -118,7 +119,7 @@ function sendNotification(notification) {
             break
         case notificationTypes.SUBMISSION:
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "Successfuly Submitted new Notebook",
                 html: mustache.render(template, {
@@ -138,7 +139,7 @@ function sendNotification(notification) {
             
         case notificationTypes.INVITE_SENT:
                   data = {
-                  from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                  from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                   to: notification.recipient.email,
                   subject: notification.sender + " Invited you to Join Bookshelf",
                   // TODO: Include and HTML rendering of the comment here
@@ -154,6 +155,22 @@ function sendNotification(notification) {
                   }
              })
              break
+        case notificationTypes.CONTENT_FLAGGED:
+             data = {
+                 from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
+                 to: notification.recipient.email,
+                 subject: "Content Flagged on QuantEcon Notes",
+                 html: "A " + notification.contentType + " has been flagged as \"" + notification.flagReason + 
+                 "\". Please review this content on the admin page: notes.quantecon.org/admin"
+             }
+
+            mailgun.messages().send(data, (error, body) => {
+                if (error) {
+                    console.error("[Mailgun] Error occured sending notification: ", error)
+                } else {
+                    console.log("[Mailgun] Success sending notification: ", body)
+                }
+           })
     }
 }
 
