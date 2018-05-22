@@ -124,16 +124,16 @@ class AdminPage extends Component {
                         <h2 className='title-name'>
                             Admin
                         </h2>
+                        <AnnouncementsContainer showAdmin={true}/>
                     </div>
                     <div className="page-content">
                         <div className='column'>
                             {this.props.isLoading
                                 ? <h3>Loading...</h3>
                                 :<div>
-
-                                    <AnnouncementsContainer showAdmin={true}/>
+   
                                     {/* Admin Users */}
-                                    <div className="page-content">
+                                    <div className="admin-content">
                                         <span className="section-header">
                                             <h2>Admin Users</h2>
                                         </span>
@@ -164,7 +164,7 @@ class AdminPage extends Component {
                                     </div>
 
                                     {/* Flagged Users */}
-                                    <div className='page-content'>
+                                    <div className='admin-content'>
                                         <span className="section-header">
                                             <h2>Flagged Content ({this.props.flaggedComments.length + this.props.flaggedSubmissions.length + this.props.flaggedUsers.length})</h2>
                                             {this.state.showFlaggedContent
@@ -174,7 +174,7 @@ class AdminPage extends Component {
                                         </span>
                                         {this.state.showFlaggedContent
                                         ? <div>
-                                            <div className="page-content">
+                                            <div className="admin-content">
                                                 <span className="section-header">
                                                     <h2>
                                                         Users ({this.props.flaggedUsers.length})
@@ -214,7 +214,7 @@ class AdminPage extends Component {
                                                 : null}
                                             </div>
                                         {/* Flagged Submissions */}
-                                        <div className="page-content">
+                                        <div className="admin-content">
                                             <span className="section-header">
                                                 <h2>Submissions ({this.props.flaggedSubmissions.length})</h2>
                                                 {this.state.showFlaggedSubmissions
@@ -249,7 +249,7 @@ class AdminPage extends Component {
                                         </div>
                                         
                                         {/* Flagged Comments */}
-                                        <div className="page-content">
+                                        <div className="admin-content">
                                             <span className="section-header">
                                                 <h2>Comments ({this.props.flaggedComments.length})</h2>
                                                 {this.state.showFlaggedComments
@@ -289,7 +289,7 @@ class AdminPage extends Component {
                                         
                                     </div>
 
-                                    <div className="page-content">
+                                    <div className="admin-content">
                                         <span className="section-header">
                                             <h2>Deleted Content ({this.props.deletedUsers.length + this.props.deletedSubmissions.length + this.props.deletedComments.length})</h2>
                                             {this.state.showDeletedContent
@@ -299,7 +299,7 @@ class AdminPage extends Component {
                                         {this.state.showDeletedContent
                                         ? <div>
                                             {/* Deleted Users */}
-                                            <div className="page-content">
+                                            <div className="admin-content">
                                                 <span className="section-header">
                                                     <h2>
                                                         Users ({this.props.deletedUsers.length})
@@ -340,7 +340,7 @@ class AdminPage extends Component {
                                             </div>
 
                                             {/* Deleted submissions */}
-                                            <div className="page-content">
+                                            <div className="admin-content">
                                                 <span className="section-header">
                                                     <h2>Submissions ({this.props.deletedSubmissions.length})</h2>
                                                     {this.state.showDeletedSubmissions
@@ -375,7 +375,7 @@ class AdminPage extends Component {
                                             </div>
                                             
                                             {/* Deleted Comments */}
-                                            <div className="page-content">
+                                            <div className="admin-content">
                                                 <span className="section-header">
                                                     <h2>Comments ({this.props.deletedComments.length})</h2>
                                                     {this.state.showDeletedComments
