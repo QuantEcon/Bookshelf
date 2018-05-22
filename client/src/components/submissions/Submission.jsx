@@ -358,11 +358,11 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
-                                    <ul className='details-options'>
+                                    <ul className='details-flag'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
-                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+                                            ?  <a title='Flag as inappropriate' onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a title='Flag as inappropriate' onClick={this.flagClick}><FlagIcon/></a>}
                                         </li>
                                     </ul>
                                     {!this.props.isLoading

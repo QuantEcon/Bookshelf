@@ -220,4 +220,19 @@
             }
         }
     }
+    .details-flag {
+        list-style: none;
+        margin: 0;
+        padding:0;
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        li {
+            float: left;
+            a {
+                @include small-button;
+                line-height: 1;
+            }
+        }
+    }
 }
