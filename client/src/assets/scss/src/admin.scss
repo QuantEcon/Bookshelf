@@ -1,0 +1,13 @@
+.admin-button-row {
+	list-style: none;
+	padding:0;
+	margin:1rem 0;
+	display: flex;
+	li {
+		margin:0 1rem 0 0;
+		button {
+			@include medium-button;
+		}
+	}
+}
+
