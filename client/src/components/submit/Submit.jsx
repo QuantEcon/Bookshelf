@@ -78,25 +78,10 @@ class Submit extends Component {
             notebookDataReady: false,
             notebookJSON: {}
         }
+    }
 
-        this.onDrop = this
-            .onDrop
-            .bind(this);
-        this.printState = this
-            .printState
-            .bind(this);
-        this.titleChanged = this
-            .titleChanged
-            .bind(this);
-        this.topicChanged = this
-            .topicChanged
-            .bind(this);
-        this.toggleTermsAndConditionsModal = this
-            .toggleTermsAndConditionsModal
-            .bind(this);
-        this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
-        this.submit = this.submit.bind(this);
-        
+    componentWillMount() {
+        Modal.setAppElement('body')
     }
 
     componentDidMount() {
@@ -151,7 +136,7 @@ class Submit extends Component {
      * If there is an error in a field, an error message will be displayed underneath the 
      * input.
      */
-    validate () {
+    validate = () => {
         var valid = true;
 
         if (!this.formData.title) {
@@ -193,7 +178,7 @@ class Submit extends Component {
      * @param {String} topic Topic to remove from form data
      * @param {Array} array Array of topics
      */
-    removeTopic (topic, array) {
+    removeTopic = (topic, array) => {
         var index = array.indexOf(topic);
         if (index > -1) {
             array.splice(index, 1);
@@ -205,7 +190,7 @@ class Submit extends Component {
      * from the form data topic list
      * @param {Object} event Event passed from the `onChange` listener
      */
-    topicChanged(event) {
+    topicChanged = (event) => {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
             this
@@ -222,7 +207,7 @@ class Submit extends Component {
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
-    submit(e) {
+    submit = (e) => {
         e.preventDefault();
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
@@ -251,7 +236,7 @@ class Submit extends Component {
         this.formData.lang = event.target.value
     }
 
-    titleChanged(event) {
+    titleChanged = (event) => {
         this.dirtyFields.title = true;
         this.formData.title = event.target.value;
         this.validate();
@@ -286,7 +271,7 @@ class Submit extends Component {
      * @param {Array} accepted Array of accepeted files
      * @param {Array} rejected Array of rejected files
      */
-    onDrop(accepted, rejected) {
+    onDrop = (accepted, rejected) => {
         if (accepted.length) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});
@@ -322,7 +307,7 @@ class Submit extends Component {
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
-    readNotebookFile(){
+    readNotebookFile = () =>{
         if (!this.state.notebookDataReady) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});
@@ -337,21 +322,14 @@ class Submit extends Component {
         this.toggleOpenModal();
     }
 
-    printState() {
-        console.log("state: ", this.state);
-        console.log('errors: ', this.errors);
-        console.log('dirty fields: ', this.dirtyFields);
-        console.log('formdata: ', this.formData);
-    }
-
-    isTopicSelected(topic) {
+    isTopicSelected = (topic) => {
         return this
             .formData
             .topics
             .indexOf(topic) > -1;
     }
 
-    toggleMarkdownReferenceModal(e) {
+    toggleMarkdownReferenceModal = (e) => {
         e.preventDefault()
         this.setState({
             markdownRefereceModal: !this.state.markdownRefereceModal
@@ -369,6 +347,7 @@ class Submit extends Component {
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
+
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
                     <div className='my-modal'>
                     <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
@@ -378,20 +357,19 @@ class Submit extends Component {
                         <div className='modal-body'>
                             <ul>
                                 <li>
-                                    <MarkdownRender source="Use ticks (``) for code: \`code\` -> code`"/>
+                                    <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
                                 </li>
                                 <li>
-                                    <MarkdownRender source="Use * for italics: \*italics\* -> *italics*"/>
+                                    <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
                                 </li>
                                 <li>    
-                                    <MarkdownRender source="Use ** for bold: \*\*bold\*\* -> **bold**"/>
+                                    <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <NotebookPreview
-                        notebook={this.state.notebookJSON}/>
                 </Modal>
+
                 <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>
                     <div className='submit-footer'>
