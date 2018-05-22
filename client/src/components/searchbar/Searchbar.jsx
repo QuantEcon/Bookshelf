@@ -64,6 +64,7 @@ class Searchbar extends Component {
     }
 
     topics = [
+        "All",
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
