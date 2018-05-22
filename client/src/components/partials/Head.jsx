@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
+import notesLogo from '../../assets/img/notes-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
@@ -129,7 +129,7 @@ class Head extends Component {
                     className="submit-feedback"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a> */}
+                    href="http://discourse.quantecon.org/c/notes-feedback">Submit Feedback</a> */}
 
                 <header className="header">
 
@@ -140,7 +140,7 @@ class Head extends Component {
                             <div className="site-title">
                                 <a onClick={this.redirectToHome}>
                                     <span>
-                                        <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                        <img src={notesLogo} alt="Notes Logo" className="notes-logo"/>
                                         <div>
                                             <h2 className="site-name">Quant<span>Econ</span>
                                                 <strong>Notes</strong>

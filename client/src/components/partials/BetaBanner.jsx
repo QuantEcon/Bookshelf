@@ -103,7 +103,7 @@ class BetaBanner extends Component {
                             <div className="container">
                                 <p className="callout-message">
                                     <CheckmarkIcon/>
-                                    Thank you! We'll keep you updated on Bookshelf releases.
+                                    Thank you! We'll keep you updated on QuantEcon Notes releases.
                                 </p>
                             </div>
                         </div>
@@ -122,8 +122,8 @@ class BetaBanner extends Component {
 
                 <div className="alert callout">
                     <div className="container">
-                        <p>Bookshelf is currently in beta. <a onClick={this.toggleShowModal}>Subscribe</a> to updates about future releases.</p>
-                        <p>Please <a href="http://discourse.quantecon.org/c/bookshelf-feedback">submit feedback</a> if you run into any issues or notice any bugs.</p>
+                        <p>Notes is currently in beta. <a onClick={this.toggleShowModal}>Subscribe</a> to updates about future releases.</p>
+                        <p>Please <a href="http://discourse.quantecon.org/c/notes-feedback">submit feedback</a> if you run into any issues or notice any bugs.</p>
                     </div>
                 </div>
 

@@ -37,8 +37,8 @@ class About extends Component {
                     <div className='tile'>
                         <p>
                             If you run into any issues or bugs, please follow
-                            <a href="http://discourse.quantecon.org/c/bookshelf-feedback"> this link </a>
-                            to post an issue. Submit the issue under the category 'bookshelf'. 
+                            <a href="http://discourse.quantecon.org/c/notes-feedback"> this link </a>
+                            to post an issue. Submit the issue under the category 'Notes feedback'. 
                         </p>
                         <p>Thank you for your help.</p>
                     </div>
