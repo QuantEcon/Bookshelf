@@ -50,6 +50,18 @@ class AdminPage extends Component {
         this.props.actions.unflagSubmission({submissionID})
     }
 
+    hideComment = (commentID, submissionID) => {
+        this.props.actions.deleteComment({commentID, submissionID})
+    }
+
+    hideSubmission = (submissionID) => {
+        this.props.actions.deleteSubmission({submissionID})
+    }
+
+    hideUser = (userID) => {
+        this.props.actions.deleteUser({userID})
+    }
+
     restoreSubmission = (submissionID) => {
         console.log("Restore submission clicked: ", submissionID)
         this.props.actions.restoreSubmission({submissionID})
@@ -205,6 +217,11 @@ class AdminPage extends Component {
                                                                             Unflag
                                                                         </button>
                                                                     </li>
+                                                                    <li>
+                                                                        <button onClick={() => this.hideUser(user._id)}>
+                                                                            Hide
+                                                                        </button>
+                                                                    </li>
                                                                 </ul>
                                                             </div>
                                                         })}
@@ -238,7 +255,11 @@ class AdminPage extends Component {
                                                                         Unflag
                                                                     </button>
                                                                 </li>
-                                                                
+                                                                <li>
+                                                                    <button onClick={() => this.hideSubmission(submission.data._id)}>
+                                                                        Hide
+                                                                    </button>
+                                                                </li>
                                                             </ul>
                                                         </div>
                                                     })}
@@ -263,7 +284,6 @@ class AdminPage extends Component {
                                                             <Comment 
                                                                 reply={comment.data} 
                                                                 author={comment.author}/>
-                                                            {/* TODO: add delete/remove/edit buttons */}
                                                             <ul className="admin-button-row">
                                                                 <li>
                                                                     <button onClick={() => this.removeComment(comment.data._id)}>
@@ -273,6 +293,11 @@ class AdminPage extends Component {
                                                                 <li>
                                                                     <button onClick={() => this.unflagComment(comment.data._id)}>
                                                                         Unflag
+                                                                    </button>
+                                                                </li>
+                                                                <li>
+                                                                    <button onClick={() => this.hideComment(comment.data._id, comment.data.submission)}>
+                                                                        Hide
                                                                     </button>
                                                                 </li>
                                                             </ul>
@@ -384,12 +409,11 @@ class AdminPage extends Component {
                                                 ? <div className="comments">
                                                     <div className="comments-thread">
                                                         {this.props.deletedComments.map((comment, index) => {
+                                                            console.log("DELETED COMMENT: " ,comment)
                                                             return <div key={index}>
                                                                 <Comment 
-                                                                    comment={comment.data} 
-                                                                    replies={[]} 
+                                                                    reply={comment.data} 
                                                                     author={comment.author}/>
-                                                                {/* TODO: add delete/remove/edit buttons */}
                                                                 <ul className="admin-button-row">
                                                                     <li>
                                                                         <button onClick={() => this.removeComment(comment.data._id)}>

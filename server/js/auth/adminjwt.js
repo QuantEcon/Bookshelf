@@ -18,6 +18,7 @@ passport.use('adminjwt', new JwtStrategy(opts, function (jwt_payload, done) {
         // Check userid is listed as an admin
         AdminList.findOne({}, (err, adminList) => {
             if(err){
+                console.warn("401: UNAUTHORIZED - Error getting admin list from database")
                 return done({message: "Error getting admin list from database", code: "5-10"}, null)
             } else if(adminList){
                 console.log("[AdminJWT] - adminList: ", adminList)
@@ -25,22 +26,27 @@ passport.use('adminjwt', new JwtStrategy(opts, function (jwt_payload, done) {
                 if(adminList.adminIDs && adminList.adminIDs.indexOf(jwt_payload.user._id) != -1){
                     User.findById(jwt_payload.user._id, (err, user) => {
                         if (err){
+                            console.warn("401: UNAUTHORIZED - Error finding user in database: " , err)
                             return done({message: "Error finding user in database", code:"5-11"})
                         } else if (user){
                             return done(null, user)
                         } else {
+                            console.warn("401: UNAUTHORIZED - Couldn't find user in database")
                             return done({message: "Couldn't find user in database", code:"5-20"}, null)
                         }
                     })
                 } else {
                     // TODO: SOMETHING BAD IS HAPPENING. TOKEN SAID WAS ADMIN BUT NOT LISTED IN DATABASE
+                    console.warn("401: UNAUTHORIZED - User is not listed in database as admin")
                     return done({message: "User is not listed in database as admin", code: "5-5"}, null)
                 }
             } else {
+                console.warn("401: UNAUTHORIZED - Admin list doesn't exit in database")
                 return done({message: "Admin list doesn't exist in database", code: "5-21"},null)
             }
         })
     } else {
+        console.warn("401: UNAUTHORIZED - User is not an admin")
         return done({message: "User is not admin", code: 5}, null)
     }
 }));
