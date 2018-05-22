@@ -1,22 +1,6 @@
 // header.scss
 // Template header styles
 
-.corner-ribbon{
-    width: 200px;
-    background: #e43;
-    position: absolute;
-    top: 25px;
-    left: -50px;
-    transform: rotate(-45deg);
-    text-align: center;
-    text-transform: uppercase;
-    font-weight:700;
-    line-height: 50px;
-    letter-spacing: 1px;
-    color: #f0f0f0;
-    box-shadow: 0 0 3px rgba(0,0,0,.3);
-}
-
 .submit-feedback {
     display: block;
     z-index:999;
@@ -261,7 +245,7 @@
     margin:2rem 0;
     background:#fff;
     .tile-header {
-        display: flex;
+        //display: flex;
         border-bottom:1px solid #e5e5e5;
         padding:1rem 2rem;
         margin:0 0 2rem 0;
@@ -271,6 +255,8 @@
             flex:1;
         }
         .tile-options {
+            display: flex;
+            justify-content: flex-end;
             list-style: none;
             padding:0;
             margin:0;

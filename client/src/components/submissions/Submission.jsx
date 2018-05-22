@@ -518,7 +518,6 @@ class Submission extends Component {
                             ? <div>
                                 {/* TODO: display download progress */}
                                 <div className='tile-header'>
-                                    <h2 className='tile-title'>Notebook</h2>
                                     <ul className='tile-options'>
                                         <li>
                                             <a className='active'>Notebook</a>
@@ -541,7 +540,6 @@ class Submission extends Component {
                             : <div>
                                 <div>
                                     <div className='tile-header'>
-                                        <h2 className='tile-title'>Notebook</h2>
                                         <ul className='tile-options'>
                                             <li>
                                                 <a className='active'>Notebook</a>
@@ -575,7 +573,6 @@ class Submission extends Component {
                             </div>
                             : <div>
                             <div className='tile-header'>
-                                <h2 className='tile-title'>Comments</h2>
                                 <ul className='tile-options'>
                                     <li>
                                         <a onClick={this.toggleView}>Notebook</a>
