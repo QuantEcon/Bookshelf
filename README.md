@@ -1,10 +1,12 @@
-# QuantEconLib
-Code for the site QuantEconLib
+# QuantEcon Notes
+
+Code for the QuantEcon Notes Project
 
 ### Contributing
 Please work in branches and make PR's
 
-To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!), then test to make sure your code is still working as inteded. This way, all merge conflicts will already be resolved in the PR.
+To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!), 
+then test to make sure your code is still working as intended. This way, all merge conflicts will already be resolved in the PR.
 
 ### Building Documentation
 * API Docs: run `npm run api-docs` to build the API documentation. Output will be in `/docs/`
@@ -21,7 +23,7 @@ Ensure you have `npm v5+` and `node v8+` installed. I am currently using `npm 5.
 5. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
 
 #### Running Commands
-If you are in developement mode, you will need to have _both_ the webpack developement server for the React client _and_ the node express server running. To do this, run these commands:
+If you are in development mode, you will need to have _both_ the webpack development server for the React client _and_ the node express server running. To do this, run these commands:
 
 1. `npm start` from the `/` directory
 2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
@@ -147,6 +149,6 @@ Please review existing issues before submitting a new one. If no related issue e
 * Label the issue with 'bug'
 * Provide a detailed description of how to recreate the bug
 * Include related browser console outputs
-#### Enchancement requests:
-* Label the issue with 'enchancement'
-* Provide detailed description of what enchancement you would like
+#### Enhancement requests:
+* Label the issue with 'enhancement'
+* Provide detailed description of what enhancement you would like
