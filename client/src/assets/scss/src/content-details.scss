@@ -215,7 +215,7 @@
         li {
             float: left;
             a {
-                @include medium-button;
+                @include small-button;
                 line-height: 1;
             }
         }
