@@ -84,9 +84,9 @@ class User extends Component {
                                                 </ul>
                                             </div>
                                         : null}
-                                    <ul className="details-options">
+                                    <ul className="details-flag">
                                         <li>
-                                            <a onClick={() => {this.props.flagUser({userID: this.props.data._id})}}><FlagIcon/></a>
+                                            <a title='Flag user' onClick={() => {this.props.flagUser({userID: this.props.data._id})}}><FlagIcon/></a>
                                         </li>
                                     </ul>
                                     <p className='date'>

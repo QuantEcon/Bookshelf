@@ -358,11 +358,11 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
-                                    <ul className='details-options'>
+                                    <ul className='details-flag'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
-                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+                                            ?  <a title='Flag as inappropriate' onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a title='Flag as inappropriate' onClick={this.flagClick}><FlagIcon/></a>}
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
@@ -518,7 +518,6 @@ class Submission extends Component {
                             ? <div>
                                 {/* TODO: display download progress */}
                                 <div className='tile-header'>
-                                    <h2 className='tile-title'>Notebook</h2>
                                     <ul className='tile-options'>
                                         <li>
                                             <a className='active'>Notebook</a>
@@ -541,7 +540,6 @@ class Submission extends Component {
                             : <div>
                                 <div>
                                     <div className='tile-header'>
-                                        <h2 className='tile-title'>Notebook</h2>
                                         <ul className='tile-options'>
                                             <li>
                                                 <a className='active'>Notebook</a>
@@ -575,7 +573,6 @@ class Submission extends Component {
                             </div>
                             : <div>
                             <div className='tile-header'>
-                                <h2 className='tile-title'>Comments</h2>
                                 <ul className='tile-options'>
                                     <li>
                                         <a onClick={this.toggleView}>Notebook</a>
