@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import HeadContainer from '../../containers/HeadContainer';
+import Breadcrumbs from './partials/Breadcrumbs'
 import UserPreview from '../user/UserPreview'
 import SubmissionPreview from '../submissions/submissionPreview'
 import Comment from '../comments/Reply' 
