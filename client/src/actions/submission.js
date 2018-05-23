@@ -372,7 +372,6 @@ export const fetchNBInfo = ({
             axios.get('/api/search/notebook/' + notebookID).then(
                 resp => {
                     var sizeKB = sizeof(resp.data) / 1000;
-                    console.log('size of response in KB: ', sizeKB);
                     request.size = sizeKB
 
                     //Used for network analysis
@@ -404,14 +403,12 @@ export const fetchNBInfo = ({
 
             var nbJSONReqConfig = {
                 onDownloadProgress: function (progressEvent) {
-                    console.log("request progress: ", progressEvent)
                     dispatch(nbProgressAction(progressEvent.loaded, progressEvent.total, notebookID))
                 }
             }
 
             axios.get('/api/search/notebook_json/' + notebookID, nbJSONReqConfig).then(
                 resp => {
-                    console.log("resp: ", resp)
                     dispatch(receiveNBAction({
                         notebookID,
                         json: resp.data.json
