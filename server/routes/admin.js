@@ -7,6 +7,7 @@ var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
 const AdminList = require('../js/db/models/AdminList')
 const Announcement = require('../js/db/models/Announcement')
+const config = require('../_config')
 
 var series = require('async/series');
 
@@ -501,7 +502,7 @@ app.post("/make-admin", passport.authenticate('adminjwt', {
                             err
                         })
                     } else if (adminList) {
-                        if (adminList.adminIDs.length < 5) {
+                        if (adminList.adminIDs.length < config.maxNumAdmins) {
                             // Add userID and user's email to adminList
                             adminList.adminIDs.push(req.body.userID)
                             adminList.save((err) => {
