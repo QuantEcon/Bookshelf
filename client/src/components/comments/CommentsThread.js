@@ -43,7 +43,8 @@ class CommentsThread extends Component {
         this.state = {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
-            replies: props.replies
+            replies: props.replies,
+            submitDisabled: true
         };
     }
 
@@ -55,9 +56,23 @@ class CommentsThread extends Component {
      * Listens for changes in the new comment text field.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    newCommentTextChange(e) {
+    newCommentTextChange = (e) => {
+        if(e){
+            e.preventDefault();
+        }
+
+        if(e.target.value && this.state.submitDisabled){
+            this.setState({
+                submitDisabled: false
+            })
+        } else if(!e.target.value && !this.state.submitDisabled){
+            this.setState({
+                submitDisabled: true
+            })
+        }
+        
         this.newCommentText = e.target.value
-        this.forceUpdate();
+        // this.forceUpdate();
     }
 
     newCommentText = "";
@@ -72,7 +87,7 @@ class CommentsThread extends Component {
         console.log('submit new comment: ', this.state.newCommentText);
         this
             .props
-            .postComment(this.newCommentText);
+            .postComment(this.state.newCommentText);
         this.newCommentText="";
         document.getElementById('newCommentTextArea').value = '';
     }
@@ -132,7 +147,7 @@ class CommentsThread extends Component {
                             placeholder='You can use markdown here...'
                             onChange={this.newCommentTextChange}></textarea>
                         <div className='submit-comment'>
-                            <button onClick={this.submitNewComment} disabled={!this.newCommentText}>Submit</button>
+                            <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
                         </div>
                         {this.state.submitError && !this.props.currentUser
                                     ? <p className="error-help-text">
