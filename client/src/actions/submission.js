@@ -152,12 +152,14 @@ export function upvoteCom({
 export const POST_COMMENT = 'POST_COMMENT'
 export function postComment({
     submissionID,
-    comment
+    comment,
+    author
 }) {
     return {
         type: POST_COMMENT,
         submissionID,
-        comment
+        comment,
+        author
     }
 }
 
