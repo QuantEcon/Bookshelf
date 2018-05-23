@@ -22,7 +22,6 @@ class Comment extends Component {
      * @prop {Array} replies Array of comment objets representing the replies to this comment
      * @prop {Object} author Data for the author of the comment
      * @prop {Array} authors Data for all authors of the replies to this comment
-     * @prop {func} postReply Method called when the user clicks "Reply"
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
@@ -34,7 +33,6 @@ class Comment extends Component {
         replies: PropTypes.array,
         author: PropTypes.object.isRequired,
         authors: PropTypes.array,
-        postReply: PropTypes.func.isRequired,
         currentUser: PropTypes.object,
         editComment: PropTypes.func,
         isReply: PropTypes.bool
@@ -261,7 +259,7 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
-                        <Markdown disallowedTypes={['headings']} source={this.state.comment.content}/>
+                        <Markdown disallowedTypes={['heading']} source={this.state.comment.content}/>
                         <div>
                             {this.state.comment.edited
                                 ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
