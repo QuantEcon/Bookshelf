@@ -519,6 +519,7 @@ app.post("/make-admin", passport.authenticate('adminjwt', {
                                 }
                             })
                         } else {
+                            console.warn("[MakeAdmin] - reached maxmimum amount of admins(", config.maxNumAdmins, ")!")
                             res.status(400)
                             res.send({
                                 error: true,
