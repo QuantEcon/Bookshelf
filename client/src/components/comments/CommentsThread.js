@@ -84,10 +84,10 @@ class CommentsThread extends Component {
                 submitError: true
             })
         }
-        console.log('submit new comment: ', this.state.newCommentText);
+        console.log('submit new comment: ', this.newCommentText);
         this
             .props
-            .postComment(this.state.newCommentText);
+            .postComment(this.newCommentText);
         this.newCommentText="";
         document.getElementById('newCommentTextArea').value = '';
     }
