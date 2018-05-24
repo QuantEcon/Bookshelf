@@ -31,6 +31,7 @@
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^4.0.8",
     "react-scripts": "^1.0.14",
+    "react-select": "^1.2.1",
     "react-time": "^4.3.0",
     "redux": "^3.7.2",
     "redux-observable": "^0.17.0",

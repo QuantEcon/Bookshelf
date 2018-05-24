@@ -18,11 +18,11 @@ var config = require('../../_config');
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
  * @apiname GetSubmissions
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Queries the database for all submissions matching the parameters
- * 
+ *
  * @apiParam {string}   lang        language of the notebook (Python, Julia, Other).
  * @apiParam {string}   topic       topic of the notebook. Given by the list of topics in the submission page.
  * @apiParam {id}       author      database id of the author.
@@ -30,7 +30,7 @@ var config = require('../../_config');
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
  * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Views, Trending, Date).
- * 
+ *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
  * @apiSuccess (200) {Object[]}     authors             the author database objects for each submission.
@@ -166,24 +166,56 @@ app.get('/all-submissions', function (req, res) {
     });
 });
 
+
+
+/* get a list of users for co-Author list */
+
+app.get('/userList', (req, res) => {
+    var err = null;
+    var select = "_id avatar name joinDate";
+    if (err) {
+        res.status(500);
+        res.send({
+            error: err
+        });
+    } else {
+        User.find({},select, function(err, users) {
+
+        var userMap = {};
+        console.log(req.query._id);
+
+        users.forEach(function(user) {
+            if (user._id != req.query._id ) {
+                userMap[user._id] = user;
+
+            }
+
+
+        });
+
+        res.send(userMap);
+      });
+    }
+});
+
 /**
  * @api {get} /api/search/notebook/:nbid Get Submission
  * @apiGroup Search
  * @apiName GetSubmission
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiParam {string} nbID the id of the submission being searched for.
- * 
+ *
  * @apiDescription If the nbid matches one of the objects in the database, and object will be sent
  * back
  *
- * Note: the authors' objects will only contain the necessary data to display a summary - 
+ * Note: the authors' objects will only contain the necessary data to display a summary -
  * avatar, name and author id
- * 
- * If there is a current user supplied in the req.currentUser, then a data.user object will be appended to 
+ *
+ * If there is a current user supplied in the req.currentUser, then a data.user object will be appended to
  * the reponse
- * 
+ *
  * @apiSuccess (200) {Object}   data                The data for the submission
  * @apiSuccess (200) {Object}   data.notebook       the notebook object from the database.
  * @apiSuccess (200) {String}   data.html           the pre-rendered notebook html (if pre-rendering was enabled).
@@ -198,7 +230,7 @@ app.get('/all-submissions', function (req, res) {
  * @apiSuccess (200) {ID}       data.user._id       ID of the current user
  * @apiSuccess (200) {ID[]}     data.user.upvotes   Array of object id's representing the user's upvotes
  * @apiSuccess (200) {ID[]}     data.user.downvotes Array of object id's representing the user's downvotes
- * 
+ *
  * @apiError (404) NotebookNotFound No notebook was found with matching id
  * @apiError (500) InternalServerError An error occurred searching the database for relevant data
  */
@@ -209,6 +241,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
+    var coAuthorIds;
 
     var notebookID = req.params.nbid;
 
@@ -232,7 +265,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
-                            notebook.coAuthors = submission.coAuthors
+                            coAuthorIds = submission.coAuthors
                             // TODO: This needs to be tested
                             //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
                             var totalComments = submission.comments.length
@@ -249,9 +282,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                     console.log("total comments: ", totalComments)
                                     submission.totalComments = totalComments
                                     submission.save()
-                                } 
+                                }
                             })
-                           
+
 
                             if(!submission.viewers){
                                 console.log("No viewers")
@@ -282,7 +315,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 console.log('[Search] - typeof notebookJSON: ', typeof (notebook.notebookJSON));
                                 callback(null, notebook);
                             })
-                            // notebook.notebookJSONString = null;                            
+                            // notebook.notebookJSONString = null;
                         } else {
                             console.log('submission not found');
                             callback('Not found', null);
@@ -366,7 +399,21 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         callback(null, commentAuthors);
                     }
                 });
-            }
+            },
+            coAuth: (callback) => {
+                var select = "_id avatar name";
+                User.find({
+                    _id: {
+                        $in: coAuthorIds
+                    },
+                    deleted: false
+                }, (err, coAuthors) => {
+                    if(err) callback(err)
+                    else {
+                        callback(null, coAuthors)
+                    }
+                })
+              }
         },
         //callback
         function (err, results) {
@@ -389,7 +436,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 html: results.nb.html,
                 fileName: results.nb.fileName,
                 author: results.auth,
-                coAuthors: results.nb.coAuthors,
+                coAuthors: results.coAuth,
                 comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth,
@@ -433,19 +480,19 @@ app.get('/notebook_json/:nbid', function(req, res) {
  * @api {get} /api/search/users Get Users
  * @apiGroup Search
  * @apiName GetUsers
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Queries the database for a user with the matching _id from req.query.
- * 
+ *
  * If no user is found with a matching id or if no id was supplied in the request,
  * a 404 will be returned.
- * 
+ *
  * If a user is found with a matching id, an object will be returned
- * 
- * @apiParam {string} _id Database id of the user being search for. 
- * 
- * @apiSuccess (200) {Object[]} users            Array of matching user objects. 
+ *
+ * @apiParam {string} _id Database id of the user being search for.
+ *
+ * @apiSuccess (200) {Object[]} users            Array of matching user objects.
  * @apiSuccess (200) {String} users._id          database id of the user.
  * @apiSuccess (200) {String} users.name         name of the user.
  * @apiSuccess (200) {String} users.avatar       url to user's avatar.
@@ -453,9 +500,9 @@ app.get('/notebook_json/:nbid', function(req, res) {
  * @apiSuccess (200) {String} users.joinDate     date the user joined Bookshelf.
  * @apiSuccess (200) {Boolean} users.oneSocial   boolean flag if the user as only authenticated one social account.
  * @apiSuccess (200) {ID[]} users.submissions    array of submission id's.
- * 
+ *
  * @apiError (404) UserNotFound No user was found with matching id
- * 
+ *
  * @apiError (500) InternalServerError an error occured querying the database
  */
 app.get('/users', function (req, res) {

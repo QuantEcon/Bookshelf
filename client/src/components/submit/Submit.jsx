@@ -11,13 +11,14 @@ import {typesetMath} from 'mathjax-electron'
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
+import CoAuthorInput from '../coAuthors/coAuthorInput'
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
  */
 class Submit extends Component {
-    
+
     /**
      * @prop {Object} user Contains all the current user's data.
      * @prop {func} submit Method to call after successful form validation and when the user
@@ -96,7 +97,7 @@ class Submit extends Component {
             .bind(this);
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
         this.submit = this.submit.bind(this);
-        
+
     }
 
     componentDidMount() {
@@ -146,9 +147,9 @@ class Submit extends Component {
     }
 
     /**
-     * Validates the form to ensure all required fields are filled out correctly. 
-     * 
-     * If there is an error in a field, an error message will be displayed underneath the 
+     * Validates the form to ensure all required fields are filled out correctly.
+     *
+     * If there is an error in a field, an error message will be displayed underneath the
      * input.
      */
     validate () {
@@ -218,7 +219,7 @@ class Submit extends Component {
     }
 
     /**
-     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
@@ -261,6 +262,13 @@ class Submit extends Component {
         this.dirtyFields.agreement = true;
         this.formData.agreement = event.target.checked;
         this.validate();
+    }
+
+    coAuthorChanged = (value) => {
+
+            this.formData.coAuthors = value;
+
+
     }
 
     toggleSummaryPreview = () => {
@@ -383,7 +391,7 @@ class Submit extends Component {
                                 <li>
                                     <MarkdownRender source="Use * for italics: \*italics\* -> *italics*"/>
                                 </li>
-                                <li>    
+                                <li>
                                     <MarkdownRender source="Use ** for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
@@ -417,7 +425,7 @@ class Submit extends Component {
                                     BSD-3 license.
                                 </li>
                                 <li>
-                                    5. Jupyter notebooks uploaded to this site are considered to be released under 
+                                    5. Jupyter notebooks uploaded to this site are considered to be released under
                                     a CC BY-ND 4.0 International license.
                                 </li>
                                 <li>
@@ -425,7 +433,7 @@ class Submit extends Component {
                                     these terms and conditions
                                 </li>
                                 <li>
-                                    6. If you choose to delete your account, your submissions and comments will 
+                                    6. If you choose to delete your account, your submissions and comments will
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>
@@ -514,17 +522,13 @@ class Submit extends Component {
                             </div>
 
                             <div className='submit-primary'>
-                                {/* <div className='submit-primary-group1'>
+                                <div className='submit-primary-group1'>
                                     <h2 className='section-title'>Co-Authors</h2>
-                                    <p>An email will be sent to each co-author requesting their permission to be
-                                        acknowledged.</p>
-                                    <div className='coauthor-emails'>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 1)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 2)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 3)}/>
-                                        <input type="email" placeholder='Email address' onChange={(e) => this.coAuthorChanged(e, 4)}/>
-                                    </div>
-                                </div> */}
+                                    <p>An email will be sent to each co-author for acknowledgement.</p>
+                                        <div className='coauthor-emails'>
+                                            <CoAuthorInput userId = {this.props.user._id} onSelectCoAuthor={this.coAuthorChanged}/>
+                                        </div>
+                                </div>
 
                                 <div className='submit-primary-group2'>
                                     <h2 className='section-title'>Author
