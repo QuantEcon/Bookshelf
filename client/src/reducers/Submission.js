@@ -113,12 +113,36 @@ const RepliesReducer = (replies = [], action) => {
 const DataReducer = (data = {}, action) => {
     switch (action.type) {
         case POST_COMMENT:
-            return Object.assign({}, data, {
-                comments: [
-                    ...data.comments,
-                    action.comment
-                ]
-            })
+            
+            var authorExits = false
+            for(var i=0; i<data.commentAuthors.length; i++){
+                if(data.commentAuthors[i]._id === action.author._id){
+                    authorExits = true
+                    break;
+                }
+            }
+
+            if(authorExits){
+                return Object.assign({}, data, {
+                    comments: [
+                        ...data.comments,
+                        action.comment
+                    ]
+                })
+            } else {
+                return Object.assign({}, data, {
+                    comments: [
+                        ...data.comments,
+                        action.comment
+                    ],
+                    commentAuthors: [
+                        ...data.commentAuthors,
+                        action.author
+                    ]
+                })
+            }
+
+           
         case POST_REPLY:
             console.log('[SubmissionDataReducer] - old state: ', data);
 

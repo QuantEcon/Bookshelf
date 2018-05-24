@@ -15,7 +15,7 @@ var actions = {
 class CommentContainer extends Component {
     constructor(props){
         super(props);
-        console.log("[CommentContainer] - constructor props: ", props)
+        // console.log("[CommentContainer] - constructor props: ", props)
         this.state = {
             comment: this.props.comment,
             replies: this.props.replies,

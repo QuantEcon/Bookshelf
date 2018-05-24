@@ -28,6 +28,7 @@ if cont == 'y' or cont == 'Y':
         debug = input("(Y/n) Run in debug mode? [n]: ")
         mailgun_key = input("Enter the mailgun api key: ")
         mailgun_domain = input("Enter the mailgun domain: ")
+        max_num_admins = input("Enter the maximum number of admins [5]: ")
 
         if not hostname:
             hostname = default_hostname
@@ -37,6 +38,8 @@ if cont == 'y' or cont == 'Y':
             client_port = default_client_port
         if not secret:
             secret = default_secret
+        if not max_num_admins:
+            max_num_admins = default_admins
         if debug == 'y' or debug == 'Y':
             debug = "true"
         else:
@@ -53,6 +56,8 @@ if cont == 'y' or cont == 'Y':
         var clientHostNameAndPort
         var clientHostName
         var redirectURL
+
+        const maxNumAdmins = '%s'
 
         const mailgun = {
             apiKey: '%s',
@@ -88,7 +93,7 @@ if cont == 'y' or cont == 'Y':
 		    secret: secret,
             mailgun: mailgun
 		};
-        """ % (hostname, server_port, client_port, secret, debug, mailgun_key, mailgun_domain)
+        """ % (hostname, server_port, client_port, secret, debug, max_num_admins, mailgun_key, mailgun_domain)
 
         server_config_file = open('../server/_config.js', 'w')
         server_config_file.write(server_output)
@@ -177,10 +182,53 @@ if cont == 'y' or cont == 'Y':
         db_file.write(db_output)
         print("Writing ./server/js/db/_config.js...\n")
 
-    if overwite_server:
-        print("Overwriting ./client/_config.js")
-        num_admins = input("Enter the maxmim number of admins [5]: ")
+    # if overwite_server:
+    #     print("Overwriting ./client/_config.js")
+    #     num_admins = input("Enter the maxmim number of admins [5]: ")
 
+    #     if not num_admins:
+    #         num_admins = default_admins
+
+    #     client_output = """
+    #     const hostname = '%s';
+    #     const port = '%s';
+    #     const debug = %s;
+    #     const serverPort = '%s';
+    #     const max_num_admins = %s;
+    #     module.exports = {
+    #         debug: debug,
+    #         url: 'http://' + hostname,
+    #         urlPlusPort: 'http://' + hostname + ':' + serverPort,
+    #         serverPort,
+    #         max_num_admins,
+    #         port
+    #     };
+    #     """ % (hostname, client_port, debug, server_port, num_admins)
+
+    #     client_file = open("../client/src/_config.js", 'w')
+    #     client_file.write(client_output)
+    # else:
+    overwrite_client = input("(Y/n) Overwrite ./client/_config.js? [n]: ")
+    if overwrite_client == 'Y' or overwrite_client == 'y':
+        hostname = input("Enter server hostname [localhost]: ")
+        client_port = input ("Enter the client port [3000]: ")
+        debug = input("(Y/n) Run in debug mode? [Y]: ")
+        server_port = input("Enter server port [8080]: ")
+        if not overwite_server:
+            num_admins = input("Enter the maxmimum number of admin users [5]: ")
+        else:
+            num_admins = max_num_admins
+
+        if not hostname:
+            hostname = default_hostname
+        if not client_port:
+            client_port = default_client_port
+        if not debug:
+            debug = 'true'
+        else:
+            debug = 'false'
+        if not server_port:
+            server_port = default_server_port
         if not num_admins:
             num_admins = default_admins
 
@@ -202,45 +250,5 @@ if cont == 'y' or cont == 'Y':
 
         client_file = open("../client/src/_config.js", 'w')
         client_file.write(client_output)
-    else:
-        overwrite_client = input("(Y/n) Overwrite ./client/_config.js? [n]: ")
-        if overwrite_client == 'Y' or overwrite_client == 'y':
-            hostname = input("Enter server hostname [localhost]: ")
-            client_port = input ("Enter the client port [3000]: ")
-            debug = input("(Y/n) Run in debug mode? [Y]: ")
-            server_port = input("Enter server port [8080]: ")
-            num_admins = input("Enter the maxmimum number of admin users [5]: ")
-
-            if not hostname:
-                hostname = default_hostname
-            if not client_port:
-                client_port = default_client_port
-            if not debug:
-                debug = 'true'
-            else:
-                debug = 'false'
-            if not server_port:
-                server_port = default_server_port
-            if not num_admins:
-                num_admins = default_admins
-
-            client_output = """
-            const hostname = '%s';
-            const port = '%s';
-            const debug = %s;
-            const serverPort = '%s';
-            const max_num_admins = %s;
-            module.exports = {
-                debug: debug,
-                url: 'http://' + hostname,
-                urlPlusPort: 'http://' + hostname + ':' + serverPort,
-                serverPort,
-                max_num_admins,
-                port
-            };
-            """ % (hostname, client_port, debug, server_port, num_admins)
-
-            client_file = open("../client/src/_config.js", 'w')
-            client_file.write(client_output)
 
     
