@@ -186,12 +186,14 @@ const editSubmissionAction = ({
 
 export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
 const flagSubmissionAction = ({
-    submissionID,
+    submissionID, 
+    flaggedReason,
     error
 }) => {
     return {
         type: FLAG_SUBMISSION,
         submissionID,
+        flaggedReason,
         error
     }
 }
@@ -437,10 +439,11 @@ export const fetchNBInfo = ({
 export const flagSubmission = ({
     submissionID
 }) => {
-    console.log("[SubmissionActions] - flag submission: ", submissionID)
+    console.log("[SubmissionActions] - flag submission: ", submissionID, flaggerReason)
     return (dispatch) => {
         axios.post("/api/flag/submission", {
-            submissionID
+            submissionID,
+            flaggedReason
         }, {
             headers: {
                 "Authorization": "JWT " + store.getState().auth.token
@@ -448,7 +451,8 @@ export const flagSubmission = ({
         }).then(
             resp => {
                 dispatch(flagSubmissionAction({
-                    submissionID
+                    submissionID,
+                    flaggedReason
                 }))
             },
             err => {
