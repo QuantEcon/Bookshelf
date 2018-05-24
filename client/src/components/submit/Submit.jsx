@@ -479,7 +479,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
-                                        maxLength="80"
+                                        maxLength="120"
                                         defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
