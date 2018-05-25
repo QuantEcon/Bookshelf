@@ -95,7 +95,7 @@ class EditProfile extends Component {
     }
 
     componentDidMount() {
-        document.title = 'Edit Profile - QuantEcon Bookshelf'
+        document.title = 'Edit Profile - QuantEcon Notes'
         // this     .props     .router     .setRouteLeaveHook(this.props.route, () => {
         // if (this.dirtyFields.name ||             this.dirtyFields.email ||
         // this.dirtyFields.summary ||             this.dirtyFields.website) {

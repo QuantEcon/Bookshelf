@@ -34,6 +34,7 @@ class About extends Component {
                             About
                         </h1>
                     </div>
+
                     <div className='page-content'>
                         <Markdown source={this.state.content}/>
                     </div>
