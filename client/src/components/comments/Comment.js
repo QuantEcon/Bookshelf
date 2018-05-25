@@ -8,6 +8,8 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
@@ -125,6 +127,15 @@ class Comment extends Component {
 
     flagComment() {
         this.props.actions.flagComment({commentID: this.props.comment._id})
+    }
+
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report this comment?',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagComment(),    
+         })
     }
     
     /**
@@ -252,7 +263,7 @@ class Comment extends Component {
                             : <a onClick={this.flagComment}>
                                 <FlagIcon/>
                             </a>} */}
-                        <a onClick={this.flagComment}>
+                        <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>
 
