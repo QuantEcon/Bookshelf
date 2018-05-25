@@ -85,9 +85,9 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Bookshelf'
+            document.title = 'Edit Submission - QuantEcon Notes'
         } else {
-            document.title = 'Submit - QuantEcon Bookshelf'
+            document.title = 'Submit - QuantEcon Notes'
         }
     }
 
@@ -606,7 +606,7 @@ class Submit extends Component {
                                     <br/>
                                     <br/>
                                     By submitting to
-                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
+                                    {' '}<span className='title'>QuantEcon Notes</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>

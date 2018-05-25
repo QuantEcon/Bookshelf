@@ -126,7 +126,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
+            document.title = props.submission.data.notebook.title + " - QuantEcon Notes"
         }
         this.setState({
             flipper: !this.state.flipper
