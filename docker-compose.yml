@@ -3,7 +3,7 @@ services:
     server:
       container_name: notes
       restart: always
-      image: "notes-server:0.1"
+      image: "bookshelf-server:0.1"
       ports:
         - "8080:8080"
       links:
