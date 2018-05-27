@@ -10,6 +10,12 @@ var options = [];
 var p={};
 var coAuthors=[];
 
+var avatarStyle = {
+   height:'40px',
+   width: '40px',
+
+};
+
 
 class CoAuthorInput extends Component {
 
@@ -57,7 +63,14 @@ class CoAuthorInput extends Component {
 		for (var key in p) {
 			if (p.hasOwnProperty(key)) {
 				console.log(p[key]);
-				options.push({value:key, label:p[key].name , image:p[key].avatar});
+				if(p[key].github) { keywords = keywords.concat(p[key].github.url) }
+
+				if(p[key].fb) { keywords = keywords.concat(p[key].fb.url) }
+
+				if(p[key].twitter) { keywords = keywords.concat(p[key].twitter.url) }
+
+				console.log(keywords);
+				options.push({value:key, label:p[key].name , image:p[key].avatar, keywords:p[key].name + " "+ p[key].email+ " "+ keywords});
 					}
 			}
 
@@ -107,7 +120,7 @@ class CoAuthorInput extends Component {
 		return (<div>
 			<em> {option.label} </em>
       			&emsp;
-      			<img src={option.image}/>
+      			<img style={avatarStyle} src={option.image}/>
       			</div>);
 	}
 
@@ -119,7 +132,7 @@ class CoAuthorInput extends Component {
     render = () => {
 	return (
 		<div className="section">
-		<Select
+		<Select filterOption={(option, filter) => option.keywords.indexOf(filter.toLowerCase()) >= 0}
           	multi={this.state.multi}
 		onInputChange={(inputValue) => this._inputValue = inputValue}
 		options={options}
