@@ -172,7 +172,7 @@ app.get('/all-submissions', function (req, res) {
 
 app.get('/userList', (req, res) => {
     var err = null;
-    var select = "_id avatar name joinDate";
+    var select = "_id avatar name fb.url github.url twitter.url email";
     if (err) {
         res.status(500);
         res.send({
