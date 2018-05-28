@@ -136,6 +136,10 @@ img.loading-avatar {
 
 /* Notebook rendering */
 
+.notebook-preview {
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .notebook-preview .cell .prompt {
     width: 30px !important;
 }
