@@ -70,7 +70,7 @@ class CoAuthorInput extends Component {
 
 				if(p[key].twitter) { keywords = keywords.concat(p[key].twitter.username) }
 				
-				if(p[key].google) { keywords = keywords.concat(p[key].twitter.displayName) }
+				if(p[key].google) { keywords = keywords.concat(p[key].google.displayName) }
 
 				console.log(keywords);
 				options.push({value:key, label:p[key].name , image:p[key].avatar, keywords:p[key].name + " "+ p[key].email+ " "+ keywords});
