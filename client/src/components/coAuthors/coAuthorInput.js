@@ -62,12 +62,15 @@ class CoAuthorInput extends Component {
 		p = response.data;
 		for (var key in p) {
 			if (p.hasOwnProperty(key)) {
+				var keywords = "";
 				console.log(p[key]);
-				if(p[key].github) { keywords = keywords.concat(p[key].github.url) }
+				if(p[key].github) { keywords = keywords.concat(p[key].github.username) }
 
-				if(p[key].fb) { keywords = keywords.concat(p[key].fb.url) }
+				if(p[key].fb) { keywords = keywords.concat(p[key].fb.displayName) }
 
-				if(p[key].twitter) { keywords = keywords.concat(p[key].twitter.url) }
+				if(p[key].twitter) { keywords = keywords.concat(p[key].twitter.username) }
+				
+				if(p[key].google) { keywords = keywords.concat(p[key].twitter.displayName) }
 
 				console.log(keywords);
 				options.push({value:key, label:p[key].name , image:p[key].avatar, keywords:p[key].name + " "+ p[key].email+ " "+ keywords});
