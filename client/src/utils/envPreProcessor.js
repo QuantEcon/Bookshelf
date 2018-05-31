@@ -16,6 +16,14 @@ const processEnv = src => {
   var envIndexes = [];
   for (var i = 0; i < src.length; i++) {
     // Find environment outside of math mode
+    if (src[i] === '`'){
+      i++
+      while (src[i] !== "`" && i < src.length) {
+        // ch = src[i];
+        i++;
+      }
+    }
+    
     if (src[i] === "\\") {
       var env = src[i];
       var envBegin = i;
@@ -66,7 +74,7 @@ const processEnv = src => {
           console.error(
             "[EnvPreProcessor] - Couldn't find matching end tag for environment: ",
             beginMatch,
-            src
+            src[i]
           );
           return {
             error: true,
@@ -96,14 +104,7 @@ const processEnv = src => {
             // ch = src[i];
             i++;
           }
-        } else if (src[i] === '`'){
-          console.warn("found back tick!")
-          while (src[i] !== "`" && i < src.length) {
-            // ch = src[i];
-            console.log("skipping...")
-            i++;
-          }
-        } else if (src[i] === "$") {
+        }  else if (src[i] === "$") {
           foundCount += 1;
           // If inline math, break
           if (foundCount === fenceCount) {
