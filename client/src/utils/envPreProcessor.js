@@ -65,7 +65,8 @@ const processEnv = src => {
         if (!foundEnd) {
           console.error(
             "[EnvPreProcessor] - Couldn't find matching end tag for environment: ",
-            beginMatch
+            beginMatch,
+            src
           );
           return {
             error: true,
@@ -93,6 +94,13 @@ const processEnv = src => {
         //   var ch = src[i];
           while (src[i] !== " " && src[i] !== "\n" && i < src.length) {
             // ch = src[i];
+            i++;
+          }
+        } else if (src[i] === '`'){
+          console.warn("found back tick!")
+          while (src[i] !== "`" && i < src.length) {
+            // ch = src[i];
+            console.log("skipping...")
             i++;
           }
         } else if (src[i] === "$") {

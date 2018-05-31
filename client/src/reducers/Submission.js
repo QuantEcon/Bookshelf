@@ -226,7 +226,14 @@ const SubmissionReducer = (state = {}, action) => {
                     var joinedSource = cell.source.join("")
                     var processSource = processEnv(joinedSource);
 
-                    cell.source = processSource
+                    if(processSource.error){
+                        console.log("processEnv returned and error!")
+                        console.log("processedSource: ", processSource)
+                    } else {
+                        cell.source = processSource                    
+                    }
+
+
                 }
             });
             
