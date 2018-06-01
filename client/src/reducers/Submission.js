@@ -223,7 +223,8 @@ const SubmissionReducer = (state = {}, action) => {
               // pre-process environments here
             action.json.cells.forEach(cell => {
                 if(cell.cell_type === "markdown"){
-                    var joinedSource = cell.source.join("")
+                    var joinedSource = (typeof(cell.source) === "string") ? cell.source : cell.source.join("")
+                    
                     var processSource = processEnv(joinedSource);
 
                     if(processSource.error){
