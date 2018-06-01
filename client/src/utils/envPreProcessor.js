@@ -36,14 +36,12 @@ const processEnv = src => {
       var beginMatch = BEGIN.exec(env);
       // In environment eat text until end
       if (beginMatch) {
-        console.log("got begin match: ", beginMatch)
         var foundEnd = false;
         var beginCount = 1;
 
         while (i < src.length) {
           var end = "";
           if (src[i] === "\\") {
-            console.log("while")
             while (src[i] !== "\n" && src[i] !== " " && i < src.length && src[i-1] !== "}") {
               end += src[i];
               if(src[i+1] == '\\'){
@@ -54,7 +52,6 @@ const processEnv = src => {
 
             //If we find another begin, skip to next token. Increment env count
             if (BEGIN.exec(end)) {
-              console.log("found another begin: ", end)
               beginCount++;
               continue;
             }
@@ -63,7 +60,6 @@ const processEnv = src => {
             var endMatch = END.exec(end);
             // Found end env
             if (endMatch) {
-              console.log("End match on: ", end, endMatch)
               // Decrement env count
               beginCount--;
               // Check env names match
@@ -142,6 +138,10 @@ const processEnv = src => {
     modSrc.push(newEnv);
     prevEnd = env.end;
   });
+
+  if(prevEnd < src.length && prevEnd !== 0){
+    modSrc.push(src.slice(prevEnd, src.length - 1))
+  }
 
   if (modSrc.length) {
     // Found env. Join all strings and return
