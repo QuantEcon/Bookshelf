@@ -44,7 +44,7 @@ const processEnv = src => {
           if (src[i] === "\\") {
             while (src[i] !== "\n" && src[i] !== " " && i < src.length && src[i-1] !== "}") {
               end += src[i];
-              if(src[i+1] == '\\'){
+              if(src[i+1] === '\\'){
                 break;
               }
               i++
