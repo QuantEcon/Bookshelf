@@ -8,6 +8,8 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
@@ -22,7 +24,6 @@ class Comment extends Component {
      * @prop {Array} replies Array of comment objets representing the replies to this comment
      * @prop {Object} author Data for the author of the comment
      * @prop {Array} authors Data for all authors of the replies to this comment
-     * @prop {func} postReply Method called when the user clicks "Reply"
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
@@ -34,7 +35,6 @@ class Comment extends Component {
         replies: PropTypes.array,
         author: PropTypes.object.isRequired,
         authors: PropTypes.array,
-        postReply: PropTypes.func.isRequired,
         currentUser: PropTypes.object,
         editComment: PropTypes.func,
         isReply: PropTypes.bool
@@ -43,7 +43,7 @@ class Comment extends Component {
     constructor(props) {
         super(props);
 
-        console.log('[Comment] - props: ', props);
+        // console.log('[Comment] - props: ', props);
 
         this.state = {
             comment: props.comment,
@@ -127,6 +127,15 @@ class Comment extends Component {
 
     flagComment() {
         this.props.actions.flagComment({commentID: this.props.comment._id})
+    }
+
+    flagClick = () => {
+        confirmAlert({
+            title: 'Are you sure you want to report this comment?',                       
+            confirmLabel: 'Yes',                          
+            cancelLabel: 'Cancel',                             
+            onConfirm: () => this.flagComment(),    
+         })
     }
     
     /**
@@ -254,14 +263,14 @@ class Comment extends Component {
                             : <a onClick={this.flagComment}>
                                 <FlagIcon/>
                             </a>} */}
-                        <a onClick={this.flagComment}>
+                        <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>
 
                     </div>
 
                     <div className='comment-body'>
-                        <Markdown disallowedTypes={['headings']} source={this.state.comment.content}/>
+                        <Markdown disallowedTypes={['heading']} source={this.state.comment.content}/>
                         <div>
                             {this.state.comment.edited
                                 ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>

@@ -25,16 +25,16 @@ class User extends Component {
 
     compoentDidMount() {
         if (this.props.isMyProfile) {
-            document.title = 'My Profile - QuantEcon Bookshelf'
+            document.title = 'My Profile - QuantEcon Notes'
         }
     }
 
     componentWillReceiveProps(props) {
         if (props.data) {
             if (props.isMyProfile) {
-                document.title = 'My Profile - QuantEcon Bookshelf'
+                document.title = 'My Profile - QuantEcon Notes'
             } else {
-                document.title = props.data.name + " - QuantEcon Bookshelf"
+                document.title = props.data.name + " - QuantEcon Notes"
             }
         }
     }
@@ -84,9 +84,9 @@ class User extends Component {
                                                 </ul>
                                             </div>
                                         : null}
-                                    <ul className="details-options">
+                                    <ul className="details-flag">
                                         <li>
-                                            <a onClick={() => {this.props.flagUser({userID: this.props.data._id})}}><FlagIcon/></a>
+                                            <a title='Flag user' onClick={() => {this.props.flagUser({userID: this.props.data._id})}}><FlagIcon/></a>
                                         </li>
                                     </ul>
                                     <p className='date'>

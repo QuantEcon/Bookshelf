@@ -14,7 +14,6 @@ import {
 } from '../actions/admin'
 
 const AdminReducer = (state = {}, action) => {
-    console.log("[AdminReducer] - action: ", action)
     switch(action.type){
         case REQUEST_FLAGGED_CONTENT:
             return Object.assign({}, state, {

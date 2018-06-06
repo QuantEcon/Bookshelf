@@ -30,11 +30,11 @@ class Searchbar extends Component {
     }
 
     topics = [
-        'All',
+        "All",
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",

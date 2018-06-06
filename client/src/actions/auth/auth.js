@@ -335,14 +335,22 @@ export const submitComment = (submissionID, comment) => {
                     .token
             }
         }).then(response => {
-            console.log('[AuthActions] - submit comment reponse: ', response);
+            var state = store.getState()
+            
             if (response.data.error) {
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
-            console.log('dispatch submission actions post comment');
+
+            
+
             dispatch(SubmissionActions.postComment({
                 submissionID: response.data.submissionID,
-                comment: response.data.comment
+                comment: response.data.comment,
+                author: {
+                    _id: state.auth.user._id,
+                    avatar: state.auth.user.avatar,
+                    name: state.auth.user.name
+                }
             }))
         }).catch(error => {
             console.log('[AuthActions] - error submitting comment: ', error);

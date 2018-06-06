@@ -39,6 +39,13 @@ const customStyles = {
   }
 };
 
+const flaggedReasons = {
+    'inappropriate': 'Inappropriate Content',
+    'spam': 'Spam',
+    'copyright': 'Copyright Issue',
+    'other': 'Other'
+}
+
 /** 
  * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
  * the necessary data from Redux and passes it to this component
@@ -66,19 +73,14 @@ class Submission extends Component {
         this.state = {
             flipper: true,
             deleteModalOpen: false,
-            value: '',
-            modalIsOpen: false
+            flaggedReason: 'inappropriate',
+            modalIsOpen: false,
         }
         
-        if(window.location.href.indexOf("comment") > -1)
-        {
-          this.state = {
-          showNotebook : false
-          }
-        }
-        else
-        this.state = {
-        showNotebook : true
+        if(window.location.href.indexOf("comment") > -1) {
+          this.state.showNotebook = false
+        } else {
+            this.state.showNotebook = true
         }
         
         this.toggleView = this
@@ -158,7 +160,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
+            document.title = props.submission.data.notebook.title + " - QuantEcon Notes"
         }
         this.setState({
             flipper: !this.state.flipper
@@ -198,7 +200,7 @@ class Submission extends Component {
     }
 
     flagSubmission = (flaggedReason) => {
-        console.log("[Submission] - flag submission clicked")
+        console.log("[Submission] - flag submission clicked: ", flaggedReason)
         this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id, flaggedReason:flaggedReason})
     }
 
@@ -291,6 +293,7 @@ class Submission extends Component {
 /* modal for flagging Reason */
     openModal = () => {
       this.setState({modalIsOpen: true});
+      console.log('state: ', this.state)
     }
 
     afterOpenModal = () => {
@@ -304,15 +307,20 @@ class Submission extends Component {
     }
 
     handleChange = (event) => {
-      this.setState({value: event.target.value});
+        console.log("event: ", event.target.value)
+        this.setState({flaggedReason: event.target.value});
 
     }
 
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({modalIsOpen: false});
-        var  flaggedReason = this.state.value;
-        console.log('flag option initiated')
+
+        console.log("flaggedReasons: ", flaggedReasons)
+        console.log("reason: ", this.state.flaggedReason)
+        var flaggedReason = flaggedReasons[this.state.flaggedReason]
+
+        console.log('flag option initiated: ', flaggedReason)
         console.log(this.state.value)
 
         this.setState({value:''}); //Reset state of modal
@@ -420,7 +428,7 @@ class Submission extends Component {
                                                 </li>
                                             </ul>
                                         : null}
-                                    <ul className='details-options'>
+                                    <ul className='details-flag'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
                                             ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
@@ -436,9 +444,9 @@ class Submission extends Component {
                                               <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
                                               <form onSubmit={this.handleSubmit}>
                                                 <label>
-                                                  <select value={this.state.value} onChange={this.handleChange} required>
-                                                    <option value="spam" >Spam</option>
+                                                  <select value={this.state.flaggedReason} onChange={this.handleChange} required>
                                                     <option value="inappropriate" selected>Inappropriate Content</option>
+                                                    <option value="spam" >Spam</option>                                                    
                                                     <option value="copyright">Violates Copyright</option>
                                                     <option value="other">Other</option>
                                                   </select>
@@ -608,7 +616,6 @@ class Submission extends Component {
                             ? <div>
                                 {/* TODO: display download progress */}
                                 <div className='tile-header'>
-                                    <h2 className='tile-title'>Notebook</h2>
                                     <ul className='tile-options'>
                                         <li>
                                             <a className='active'>Notebook</a>
@@ -631,7 +638,6 @@ class Submission extends Component {
                             : <div>
                                 <div>
                                     <div className='tile-header'>
-                                        <h2 className='tile-title'>Notebook</h2>
                                         <ul className='tile-options'>
                                             <li>
                                                 <a className='active'>Notebook</a>
@@ -665,7 +671,6 @@ class Submission extends Component {
                             </div>
                             : <div>
                             <div className='tile-header'>
-                                <h2 className='tile-title'>Comments</h2>
                                 <ul className='tile-options'>
                                     <li>
                                         <a onClick={this.toggleView}>Notebook</a>
