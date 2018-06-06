@@ -44,6 +44,7 @@ app.post("/submission", (req, res) => {
                                         if(err){
                                             console.warn("[FlagSubmission - Admin] - error finding admin details: ", err)
                                         } else if(admins){
+                                            console.log("Sending email to admins...")
                                             admins.forEach(admin => {
                                                 if(admin.email){
                                                     sendNotification({
@@ -52,7 +53,8 @@ app.post("/submission", (req, res) => {
                                                             name: admin.name
                                                         },
                                                         contentType: 'submission',
-                                                        flaggedReason: req.body.flaggedReason
+                                                        flaggedReason: req.body.flaggedReason,
+                                                        type: notificationTypes.CONTENT_FLAGGED
                                                     })
                                                 }
                                             });
