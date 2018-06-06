@@ -14,3 +14,4 @@ _config.js
 docs
 
 docs/
+.ipynb_checkpoints/
