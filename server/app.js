@@ -157,7 +157,7 @@ app.use('/api/delete', deleteRoutes);
 app.use('/api/invite', inviteRoutes);
 
 // login
-app.use('/api/auth/fb', fbAuthRoutes);
+// app.use('/api/auth/fb', fbAuthRoutes);
 app.use('/api/auth/github', githubAuthRoutes);
 app.use('/api/auth/google', googleAuthRoutes);
 app.use('/api/auth/twitter', twitterAuthRoutes);

@@ -115,9 +115,9 @@ if cont == 'y' or cont == 'Y':
         google_id = input("Enter Google OAuth client ID: ")
         google_secret = input("Enter Google OAuth client secret: ")
 
-        # Setup Facebook
-        facebook_id = input("Enter Facebook OAuth client ID: ")
-        facebook_secret = input("Enter Facebook OAuth client secret: ")
+        # # Setup Facebook
+        # facebook_id = input("Enter Facebook OAuth client ID: ")
+        # facebook_secret = input("Enter Facebook OAuth client secret: ")
 
         auth_output = """
         var appConfig = require('../../_config');
@@ -142,12 +142,6 @@ if cont == 'y' or cont == 'Y':
                 callbackURL: appConfig.urlAndPort + '/api/auth/google/callback',
                 addCallbackURL: appConfig.urlAndPort + '/api/auth/google/callback/add'
             },
-            facebook: {
-                clientID: '%s',
-                clientSecret: '%s',
-                callbackURL: appConfig.urlAndPort + '/api/auth/fb/callback',
-                addCallbackURL: appConfig.urlAndPort + '/api/auth/fb/callback/add'
-            }
         };
 
         module.exports = ids;
