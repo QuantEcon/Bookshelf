@@ -24,8 +24,27 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+// import { confirmAlert } from 'react-confirm-alert'; // Import
+// import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+
+/* Custom styles for the modal */
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const flaggedReasons = {
+    'inappropriate': 'Inappropriate Content',
+    'spam': 'Spam',
+    'copyright': 'Copyright Issue',
+    'other': 'Other'
+}
 
 /** 
  * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
@@ -53,18 +72,15 @@ class Submission extends Component {
         super(props);
         this.state = {
             flipper: true,
-            deleteModalOpen: false
+            deleteModalOpen: false,
+            flaggedReason: 'inappropriate',
+            modalIsOpen: false,
         }
         
-        if(window.location.href.indexOf("comment") > -1)
-        {
-          this.state = {
-          showNotebook : false
-          }
-        }
-        else
-        this.state = {
-        showNotebook : true
+        if(window.location.href.indexOf("comment") > -1) {
+          this.state.showNotebook = false
+        } else {
+            this.state.showNotebook = true
         }
         
         this.toggleView = this
@@ -97,7 +113,24 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
-        this.renderMathJax = this.renderMathJax.bind(this)
+        this.renderMathJax = this
+            .renderMathJax
+            .bind(this)
+        this.openModal = this
+            .openModal
+            .bind(this);
+        this.afterOpenModal = this
+            .afterOpenModal
+            .bind(this);
+        this.closeModal = this
+            .closeModal
+            .bind(this);
+        this.handleChange = this
+            .handleChange
+            .bind(this);
+        this.handleSubmit = this
+            .handleSubmit
+            .bind(this);
     }
 
     componentDidMount() {
@@ -107,6 +140,7 @@ class Submission extends Component {
             this.renderMathJax()    
         }, 500);
         
+        Modal.setAppElement('body');
     }
 
     renderMathJax(numTimes) {
@@ -165,18 +199,14 @@ class Submission extends Component {
         //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
-    flagSubmission = () => {
-        console.log("[Submission] - flag submission clicked")
-        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
+    flagSubmission = (flaggedReason) => {
+        console.log("[Submission] - flag submission clicked: ", flaggedReason)
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id, flaggedReason:flaggedReason})
     }
-    
+
     flagClick = () => {
-        confirmAlert({
-            title: 'Are you sure you want to report this content?',                       
-            confirmLabel: 'Yes',                          
-            cancelLabel: 'Cancel',                             
-            onConfirm: () => this.flagSubmission(),    
-         })
+        console.log('in inviteClick method');
+        this.openModal();
     }
 
     encounteredURI(uri) {
@@ -258,6 +288,46 @@ class Submission extends Component {
             console.error("Error deleting submission")
             this.setState({showDeletionError: true})
         }
+    }
+
+/* modal for flagging Reason */
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+      console.log('state: ', this.state)
+    }
+
+    afterOpenModal = () => {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
+    handleChange = (event) => {
+        console.log("event: ", event.target.value)
+        this.setState({flaggedReason: event.target.value});
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+
+        console.log("flaggedReasons: ", flaggedReasons)
+        console.log("reason: ", this.state.flaggedReason)
+        var flaggedReason = flaggedReasons[this.state.flaggedReason]
+
+        console.log('flag option initiated: ', flaggedReason)
+        console.log(this.state.value)
+
+        this.setState({value:''}); //Reset state of modal
+
+        this.flagSubmission(flaggedReason)
+
+
     }
 
     render() {
@@ -361,8 +431,36 @@ class Submission extends Component {
                                     <ul className='details-flag'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a title='Flag as inappropriate' onClick={this.flagClick} className="active"><FlagIcon/></a>
-                                            :  <a title='Flag as inappropriate' onClick={this.flagClick}><FlagIcon/></a>}
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+                                            
+                                             <Modal
+                                              isOpen={this.state.modalIsOpen}
+                                              onAfterOpen={this.afterOpenModal}
+                                              onRequestClose={this.closeModal}
+                                              style={customStyles}
+                                              contentLabel="Example Modal">
+
+                                              <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+                                              <form onSubmit={this.handleSubmit}>
+                                                <label>
+                                                  <select value={this.state.flaggedReason} onChange={this.handleChange} required>
+                                                    <option value="inappropriate" selected>Inappropriate Content</option>
+                                                    <option value="spam" >Spam</option>                                                    
+                                                    <option value="copyright">Violates Copyright</option>
+                                                    <option value="other">Other</option>
+                                                  </select>
+                                                </label>
+                                                <ul className="button-row">
+                                                  <li>
+                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                  </li>
+                                                  <li>
+                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
+                                                  </li>
+                                                </ul>
+                                              </form>
+                                            </Modal>
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
