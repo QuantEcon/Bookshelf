@@ -249,36 +249,6 @@ export const addSocial = (provider, next) => {
                     next(false);
                 })
                 break
-            case 'Facebook':
-                authenticateNewSocial('fb').then(resp => {
-                    console.log('[AddSocial] - resp: ', resp);
-                    if (resp.data.error) {
-                        if (resp.data.error.status === 4) {
-                            console.log('[SignInActions] - user profile already exists');
-                            //ask user if he/she wants to merge accounts
-                            dispatch(endAddSocial({
-                                provider: 'fb',
-                                existingUser: resp.data.user,
-                                existingProfile: true
-                            }))
-                            next(false, 'fb')
-                        }
-                    } else {
-                        console.log('[AddSocial] - no error');
-                        dispatch(endAddSocial({
-                            provider: 'fb',
-                            profile: resp.data.profile
-                        }))
-                        next(true);
-                    }
-
-                }, error => {
-                    dispatch(endAddSocial({
-                        error: 'Error adding fb'
-                    }))
-                    next(false);
-                })
-                break;
             case 'Google':
                 authenticateNewSocial('google').then(resp => {
                     console.log('[AddSocial] - resp: ', resp);

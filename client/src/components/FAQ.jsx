@@ -59,9 +59,9 @@ class FAQ extends Component {
                             </p>
                             <p className='answer'>
                                 Follow
-                                <a href="http://discourse.quantecon.org/c/bookshelf-feedback"> this link </a>
+                                <a href="http://discourse.quantecon.org/c/notes-feedback"> this link </a>
                                 and post an issue. Please provide a detailed description of the issue and what
-                                you were doing at the time. Submit the issue under the category "bookshelf".
+                                you were doing at the time. Submit the issue under the category "Notes Feedback".
                             </p>
                         </div>
 
