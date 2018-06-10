@@ -526,7 +526,7 @@ class Submit extends Component {
                                     <h2 className='section-title'>Co-Authors</h2>
                                     <p>An email will be sent to each co-author for acknowledgement.</p>
                                         <div className='coauthor-emails'>
-                                            <CoAuthorInput userId = {this.props.user._id} onSelectCoAuthor={this.coAuthorChanged}/>
+                                            <CoAuthorInput current = {this.formData.coAuthors} userId = {this.props.user._id} onSelectCoAuthor={this.coAuthorChanged}/>
                                         </div>
                                 </div>
 
