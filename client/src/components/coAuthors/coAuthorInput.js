@@ -55,15 +55,18 @@ class CoAuthorInput extends Component {
 	this.setState({
 		loading : true
 	});
-
-        var userID=this.props.userId
+	   
+	options =[];
+        var userID=this.props.userId;
 
 	axios.get('/api/search/userList/?_id=' + userID).then(response => {
 		p = response.data;
 		for (var key in p) {
 			if (p.hasOwnProperty(key)) {
 				var keywords = "";
-				console.log(p[key]);
+				keywords = keywords.concat(p[key].name);
+				if(p[key].email) {keywords = keywords.concat(p[key].email)}
+				
 				if(p[key].github) { keywords = keywords.concat(p[key].github.username) }
 
 				if(p[key].fb) { keywords = keywords.concat(p[key].fb.displayName) }
@@ -72,14 +75,36 @@ class CoAuthorInput extends Component {
 				
 				if(p[key].google) { keywords = keywords.concat(p[key].google.displayName) }
 
+				keywords = keywords.toLowerCase();
 				console.log(keywords);
-				options.push({value:key, label:p[key].name , image:p[key].avatar, keywords:p[key].name + " "+ p[key].email+ " "+ keywords});
+				options.push({value:key, label:p[key].name , image:p[key].avatar, keywords:keywords});
 					}
 			}
-
+		var temp = [];
 		this.setState({
 			loading : false
 		});
+		
+		if(this.state.loading === false)
+              	{
+                
+                if (this.props.current.length > 0)
+                {
+                    console.log(options);
+                    for (var i = 0; i < this.props.current.length; i++) {
+                      for (var j = 0; j< options.length; j++) {
+                          console.log(options[j]);
+                         if (this.props.current[i] == options[j].value) {
+                           temp.push(options[j])
+                           console.log(temp);
+                         }
+                      }
+
+                    }
+                    this.setState({value : temp })
+                }
+              }
+
 		return true;
 
 		}).catch(error => {
@@ -95,7 +120,7 @@ class CoAuthorInput extends Component {
     if(value.length < 5)
       {
           console.log(value);
-  		    this.setState({ value });
+  	  this.setState({ value });
 
           for(var i=0;i<value.length;i++)
           {
@@ -133,6 +158,11 @@ class CoAuthorInput extends Component {
 	}
 
     render = () => {
+	if(this.state.loading){
+    		return(
+    			<div>Loading...</div>
+    		)
+    	}
 	return (
 		<div className="section">
 		<Select filterOption={(option, filter) => option.keywords.indexOf(filter.toLowerCase()) >= 0}
