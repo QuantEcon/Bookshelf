@@ -136,8 +136,8 @@ img.loading-avatar {
 
 /* Notebook rendering */
 
-.notebook-preview {
-    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+.notebook-preview .cell .outputs code {
+    font-family: monospace !important;
 }
 
 .notebook-preview .cell .prompt {
