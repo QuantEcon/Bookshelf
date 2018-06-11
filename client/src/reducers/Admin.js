@@ -108,7 +108,9 @@ const AdminReducer = (state = {}, action) => {
             })
 
         case UNFLAG_COMMENT:
-            const newFlaggedComments = state.flaggedComments.filter((comment) => comment._id !== action.commentID)
+            const newFlaggedComments = state.flaggedComments.filter((comment) => comment.data._id !== action.commentID)
+            console.log("Flagged comments: ", state.flaggedComments)
+            console.log("new flagged comments: ", newFlaggedComments)
             return Object.assign({}, state, {
                 flaggedComments: newFlaggedComments
             })
