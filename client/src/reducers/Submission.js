@@ -13,6 +13,8 @@ import {
     NB_PROGRESS
 } from '../actions/submission';
 
+import { processEnv } from '../utils/envPreProcessor'
+
 //notebook.comments
 const CommentsReducer = (comments = [], action) => {
     console.log('[CommentsReducer] - comments: ', comments);
@@ -198,6 +200,7 @@ const SubmissionReducer = (state = {}, action) => {
                     })
                 })
             } else {
+              
                 return Object.assign({}, state, {
                     isFetching: false,
                     [action.notebookID]: Object.assign({}, state[action.notebookID], {
@@ -217,6 +220,24 @@ const SubmissionReducer = (state = {}, action) => {
             })
 
         case RECEIVE_NB:
+              // pre-process environments here
+            action.json.cells.forEach(cell => {
+                if(cell.cell_type === "markdown"){
+                    var joinedSource = (typeof(cell.source) === "string") ? cell.source : cell.source.join("")
+                    
+                    var processSource = processEnv(joinedSource);
+
+                    if(processSource.error){
+                        console.log("processEnv returned and error!")
+                        console.log("processedSource: ", processSource)
+                    } else {
+                        cell.source = processSource                    
+                    }
+
+
+                }
+            });
+            
             return Object.assign({}, state, {
                 
                 [action.notebookID]: Object.assign({}, state[action.notebookID], {
