@@ -16,6 +16,18 @@ const customStyles = {
   }
 };
 
+const errorStyle = {
+  marginLeft : '23%',
+  color : 'green'
+};
+
+const checkStyle = {
+  marginLeft : '33%',
+  color : 'red'
+};
+
+var temp= [];
+
 
 class Head extends Component {
     constructor(props) {
@@ -29,7 +41,10 @@ class Head extends Component {
                 modalIsOpen: false
             };
 
-            this.state = {value: ''};
+            this.state = {
+              value: '',
+              visibility: false,
+              check : true};
 
             this.inviteClick = this
                 .inviteClick
@@ -69,8 +84,27 @@ class Head extends Component {
     }
 
     inviteClick = () => {
-      console.log('in inviteClick method');
-      this.openModal();
+        this.setState({
+        visibility : false,
+        check : true
+        })
+        var userID=this.props.user._id;
+        axios.get('/api/search/userList/?_id=' + userID).then(response => {
+          var p = response.data;
+          for (var key in p) {
+          if (p.hasOwnProperty(key)) {
+
+            temp.push(p[key].email);
+            }
+          }
+
+          return true;
+
+        }).catch(error => {
+          console.log('error in adding Co-Author: ', error);
+          return false;
+        })
+        this.openModal();
 
     }
 
@@ -94,30 +128,40 @@ class Head extends Component {
     }
 
     handleSubmit = (event) => {
-        event.preventDefault();
-        this.setState({modalIsOpen: false});
-        var  inviteEmail = this.state.value;
-        console.log('Invite a friend initiated')
-        console.log(this.state.value)
+      event.preventDefault();
 
-        this.setState({value:''}); //Reset state of modal
+      var  inviteEmail = this.state.value;
+      this.setState({value:''}); //Reset state of modal
 
-      //Send request to api endpoint /invite to send notification
+      if (temp.includes(inviteEmail) && inviteEmail != '')
+        {
+        this.setState({visibility : true,
+                      check : true})
+        }
+
+      else if (inviteEmail.includes('@') && inviteEmail != '') {
+        //Send request to api endpoint /invite to send notification
         axios.post('/api/invite',{
-            inviteEmail
+        inviteEmail
         }, {
-            headers: {
-               'Authorization': 'JWT ' + store.getState().auth.token
-            }
+        headers: {
+           'Authorization': 'JWT ' + store.getState().auth.token
+        }
         }).then(response => {
-            console.log(response);
-            console.log('[InviteActions] - invite success: ');
-            return true;
+        console.log(response);
+        console.log('[InviteActions] - invite success: ');
+        return true;
 
         }).catch(error => {
-            console.log('[SubmitActions] - error in invite submit: ', error);
-            return false;
+        console.log('[SubmitActions] - error in invite submit: ', error);
+        return false;
         })
+      }
+
+      else {
+        this.setState({check : false,
+                      visibility : false})
+      }
     }
 
     render() {
@@ -212,6 +256,8 @@ class Head extends Component {
                                                         <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
                                                       </li>
                                                     </ul>
+                                                    { this.state.visibility ? <h3 style={errorStyle} >This user is already part of QuantEcon Notes</h3> : null }
+                                                    { this.state.check ? null : <h3 style={checkStyle} >Please enter a valid email id</h3> }
                                                   </form>
                                                 </Modal>
 
