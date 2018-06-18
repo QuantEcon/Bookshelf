@@ -134,3 +134,19 @@ img.loading-avatar {
     color: black;
 }
 
+/* Notebook rendering */
+
+.notebook-preview .cell .outputs code {
+    font-family: monospace !important;
+}
+
+.notebook-preview .cell .prompt {
+    width: 30px !important;
+}
+
+.notebook-preview .content-margin {
+    padding-left: 40px !important;
+}
+
+
+
