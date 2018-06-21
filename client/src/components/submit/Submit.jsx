@@ -304,6 +304,10 @@ class Submit extends Component {
             modalOpen: !this.state.modalOpen
         })
     }
+    
+    closeModal = () => {
+      this.setState({modalOpen: false});
+    }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
     readNotebookFile = () =>{
@@ -342,7 +346,9 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
+                <Modal isOpen={this.state.modalOpen} 
+                       onRequestClose={this.closeModal}
+                       contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
