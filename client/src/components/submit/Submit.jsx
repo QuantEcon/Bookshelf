@@ -565,6 +565,7 @@ class Submit extends Component {
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
+                                        maxLength="240"
                                         id="summary"
                                         onChange={this.summaryChanged}
                                         defaultValue={this.formData.summary}></textarea>
