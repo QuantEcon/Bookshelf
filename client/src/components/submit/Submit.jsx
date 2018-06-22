@@ -11,6 +11,7 @@ import {typesetMath} from 'mathjax-electron'
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
+import { Prompt } from 'react-router'
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
@@ -75,7 +76,8 @@ class Submit extends Component {
             modalOpen: false,
             markdownRefereceModal: false,
             notebookDataReady: false,
-            notebookJSON: {}
+            notebookJSON: {},
+            contentSaved: false
         }
     }
 
@@ -207,28 +209,31 @@ class Submit extends Component {
      * @param {Object} e Event passed from the `submit` listener
      */
     submit = (e) => {
+        this.setState({contentSaved : true}, () => {
         e.preventDefault();
+        console.log(this.state.contentSaved)
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
             var file = this.state.accepted[0]
-                ? this.state.accepted[0]
-                : null
+              ? this.state.accepted[0]
+              : null
             var notebookJSON = this.state.accepted[0]
-                ? null
-                : this.props.submission.data.notebookJSON
-            this.formData.score = this.props.submission.data.notebook.score
-            this.formData.views = this.props.submission.data.notebook.views
-            this.formData.published = this.props.submission.data.notebook.published
-            this
-                .props
-                .save({formData: this.formData, file, notebookJSON});
-        } else {
-            console.log('[EditSubmission] - not edit')
+              ? null
+              : this.props.submission.data.notebookJSON
+          this.formData.score = this.props.submission.data.notebook.score
+          this.formData.views = this.props.submission.data.notebook.views
+          this.formData.published = this.props.submission.data.notebook.published
+          this
+              .props
+              .save({formData: this.formData, file, notebookJSON});
+      } else {
+          console.log('[EditSubmission] - not edit')
 
-            this
-                .props
-                .submit(this.formData, this.state.accepted[0]);
-        }
+          this
+              .props
+              .submit(this.formData, this.state.accepted[0]);
+      }
+     });
     }
 
     langChanged = (event) => {
@@ -346,6 +351,7 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
+                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!=true}/>
                 <Modal isOpen={this.state.modalOpen} 
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
