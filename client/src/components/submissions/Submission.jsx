@@ -375,33 +375,52 @@ class Submission extends Component {
                             <div className="vote">
                                 {/*TODO:Loading spinners?*/}
 
-                                {this.props.currentUser && this
+                               {this.props.currentUser && this
                                     .props
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
-                                        </a>
-                                    : <a title="This is a good submission" onClick={this.upvote}>
+                                          </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>
+                                      }
+                                      </div>
+                                    : <div>
+                                     {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>}
+                                        </div>
+                                        }
 
                                 {!this.props.isLoading
                                     ? <span className='score'>{this.props.submission.data.notebook.score}</span>
                                     : <p>loading</p>}
 
-                                {this.props.currentUser && this
+                               {this.props.currentUser && this
                                     .props
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
-                                            <ThumbsDown/>
-                                        </a>
-                                    : <a title="This submission could use some work" onClick={this.downvote}>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                            ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
+                                            <ThumbsDown/></a>
+                                            : <Link to='/signin'><ThumbsDown/></Link>}
+                                      </div>
+                                    : <div>{
+                                    this.props.isSignedIn
+                                        ?
+                                        <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsDown/></Link>}
+                                    </div>
+                                    }
                             </div>
 
                             {/*TODO: Admin options*/}
