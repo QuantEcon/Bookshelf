@@ -112,7 +112,7 @@ class SignIn extends Component {
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                         </ul>
-                        <p>Singing in allows you to
+                        <p>Signing in allows you to
                             <strong>{' '}Vote</strong>,
                             <strong>{' '}Comment{' '}</strong>
                             and
