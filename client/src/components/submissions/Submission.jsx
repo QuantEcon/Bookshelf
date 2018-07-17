@@ -39,6 +39,11 @@ const customStyles = {
   }
 };
 
+const editStyle = {
+  paddingTop:'2.5px',
+  paddingBottom:'2.5px'
+};
+
 const flaggedReasons = {
     'inappropriate': 'Inappropriate Content',
     'spam': 'Spam',
@@ -440,7 +445,7 @@ class Submission extends Component {
                                     {!this.props.isLoading && (this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id)
                                         ? <ul className='details-options'>
                                                 <li>
-                                                    <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                    <Link to={'/edit-submission/' + this.props.submissionID} style={editStyle}>Edit</Link>
                                                 </li>
                                                 <li>
                                                     <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>
