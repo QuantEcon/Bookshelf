@@ -119,7 +119,7 @@ app.get('/all-submissions', function (req, res) {
             case 'Views':
                 console.log("Sort by views")
                 options.sort = {
-                    'viewers': -1,
+                    'viewers_count': -1,
                     'published': -1
                 }
                 break;
@@ -285,9 +285,11 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             if(!submission.viewers){
                                 console.log("No viewers")
                                 submission.viewers = []
+                                submission.viewers_count = 0
                             }
                             if (req.user && submission.viewers.indexOf(req.user._id) == -1) {
                                 submission.viewers.push(req.user._id)
+                                submission.viewers_count += 1
                             }
                             // Check if has been preRendered and we want to send the pre-rendered notebook
                             if (submission.preRendered && config.preRender) {

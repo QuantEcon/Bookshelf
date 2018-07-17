@@ -202,7 +202,7 @@ class Searchbar extends Component {
                                     value={this.state.searchParams.sortBy}>
                                     <option value="Date">Date</option>
                                     <option value="Trending">Trending</option>
-                                    <option value="Views">Views</option>
+                                    <option value="Views">Viewers</option>
                                     <option value="Comments">Comments</option>
                                     <option value="Votes">Votes</option>
                                 </select>

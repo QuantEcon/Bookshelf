@@ -35,7 +35,8 @@ var submissionSchema = new Schema({
 
     preRendered: Boolean,
     views: Number,
-    viewers: [ObjectId]
+    viewers: [ObjectId],
+    viewers_count: Number
 });
 
 submissionSchema.plugin(mongoosePaginate);
