@@ -209,8 +209,10 @@ class Submit extends Component {
      * @param {Object} e Event passed from the `submit` listener
      */
     submit = (e) => {
+        if(e) {
+            e.preventDefault()
+        }
         this.setState({contentSaved : true}, () => {
-        e.preventDefault();
         console.log(this.state.contentSaved)
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
@@ -660,7 +662,7 @@ class Submit extends Component {
                                         </li>
                                     : null}
                                 <li>
-                                    <button disabled={!this.state.valid}>
+                                    <button disabled={!this.state.valid} onClick={this.submit}>
                                         Submit
                                     </button>
                                 </li>
