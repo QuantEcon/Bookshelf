@@ -17,7 +17,7 @@ then test to make sure your code is still working as intended. This way, all mer
 1. **npm 5+** : `node install -g npm`
 2. **node v8+** 
 3. **reactjs v16+** : `npm install -g create-react-app`
-4. 
+
 #### Installation Commands 
 Ensure you have `npm v5+` and `node v8+` installed. 
 1. Pull from repository using `git pull`.
