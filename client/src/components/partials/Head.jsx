@@ -130,16 +130,16 @@ class Head extends Component {
     handleSubmit = (event) => {
       event.preventDefault();
 
-      var  inviteEmail = this.state.value;
+      var inviteEmail = this.state.value;
       this.setState({value:''}); //Reset state of modal
 
-      if (temp.includes(inviteEmail) && inviteEmail != '')
+      if (temp.includes(inviteEmail) && inviteEmail !== '')
         {
         this.setState({visibility : true,
                       check : true})
         }
 
-      else if (inviteEmail.includes('@') && inviteEmail != '') {
+      else if (inviteEmail.includes('@') && inviteEmail !== '') {
         //Send request to api endpoint /invite to send notification
         axios.post('/api/invite',{
         inviteEmail

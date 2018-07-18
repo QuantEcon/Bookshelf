@@ -115,9 +115,9 @@ app.get('/all-submissions', function (req, res) {
                 };
                 break;
             case 'Trending':
+                console.log("Trending Algorithm");
                 break;
             case 'Views':
-                console.log("Sort by views")
                 options.sort = {
                     'viewers_count': -1,
                     'published': -1
