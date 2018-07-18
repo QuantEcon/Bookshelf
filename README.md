@@ -42,6 +42,9 @@ If you would like to test a production build, run `npm run build` from inside th
 
 If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
 
+#### How-To 
+Inside the client directory, there is an extensive README.md on client-side. 
+
 **UPDATE AS OF 29 MAR 2018:**
 
 The server and mongo requirements now exist inside a Docker container. To run the server and mongo through docker,
