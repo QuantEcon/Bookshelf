@@ -11,7 +11,7 @@
     }
     .page-title {
         font-size: 2rem;
-        margin: 0 0 1rem 0;     
+        margin: 0 0 1rem 0;
         padding:0 2rem;
     }
     .section-title {
@@ -37,7 +37,7 @@
         &.input-hint-after {
             margin-top:0.5rem;
         }
-    }   
+    }
     .edit-profile-header {
         display: flex;
         align-items: center;
@@ -65,7 +65,7 @@
         border-top: 1px solid $color-medium;
         .edit-profile-primary-group1 {
             flex: 1;
-            padding:0 2rem 0 0; 
+            padding:0 2rem 0 0;
             textarea {
                 height: 80px;
             }
@@ -89,7 +89,7 @@
     }
     .page-title {
         font-size: 2rem;
-        margin: 0 0 1rem 0;     
+        margin: 0 0 1rem 0;
         padding:0 2rem;
     }
     .section-title {
@@ -118,7 +118,7 @@
     }
     .submit-upload {
         padding:2rem;
-        .dropzone { 
+        .dropzone {
             background: #fff;
             border: 3px dashed #c2c2c2;
             min-height:100px;
@@ -127,7 +127,7 @@
                 margin: 20px 0 0 0;
                 //font-weight: bold;
                 .hint {
-                    font-size: 1.5rem;                      
+                    font-size: 1.5rem;
                 }
             }
             .dz-error-message {
@@ -137,7 +137,7 @@
                 border-color: #cc4b37;
                 background-color: #f9ecea;
             }
-        }       
+        }
     }
     .submit-header {
         display: flex;
@@ -156,7 +156,7 @@
         border-top: 1px solid $color-medium;
         .submit-primary-group1 {
             flex: 1;
-            padding:0 2rem 0 0; 
+            padding:0 2rem 0 0;
             .coauthor-emails {
                 display: flex;
                 flex-wrap: wrap;
@@ -186,7 +186,7 @@
                         border:1px solid $color-primary;
                         padding:0.1rem 0.5rem;
                         font-weight: bold;
-                        font-size: 0.9rem; 
+                        font-size: 0.9rem;
                         border-radius: 5px;
                         margin:0 1rem 0 0;
                         &:hover {
@@ -215,8 +215,8 @@
         border-bottom: 1px solid $color-medium;
         .submit-secondary-group1 {
             flex: 1;
-            padding:0 2rem 0 0; 
-            .submit-topics { 
+            padding:0 2rem 0 0;
+            .submit-topics {
                 margin:0;
                 padding: 2rem;
                 border:1px solid $color-medium;
@@ -248,7 +248,7 @@
             textarea {
                 height:200px;
                 margin:0;
-            }       
+            }
         }
     }
     .submit-footer {
@@ -302,7 +302,7 @@
     border-width:1px 0;
     text-align: center;
     .container {
-        padding: 0 2rem; 
+        padding: 0 2rem;
         box-sizing: border-box;
     }
     p {

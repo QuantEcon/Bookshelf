@@ -89,7 +89,7 @@ img.loading-avatar {
 }
 
 .question {
-    
+
 }
 
 .question::before {
@@ -107,7 +107,7 @@ img.loading-avatar {
 }
 
 .answer {
-    
+
 }
 
 .border-bottom {
@@ -123,13 +123,14 @@ img.loading-avatar {
 }
 
 .page-title {
+  text-align: center;
     //padding: 0;
     //border-radius: 5px !important;
 }
 
 .title-name {
     padding: 1rem 0;
-    font-size: 2rem;
+    font-size: 2.3rem;
     border-bottom: 1px solid #cacaca;
     color: black;
 }
@@ -147,6 +148,3 @@ img.loading-avatar {
 .notebook-preview .content-margin {
     padding-left: 40px !important;
 }
-
-
-
