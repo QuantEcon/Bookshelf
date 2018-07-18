@@ -13,14 +13,17 @@ then test to make sure your code is still working as intended. This way, all mer
 * Client Docs: run `npm run client-docs` to build the client documentation. Output will be in `/client/docs/`
 
 ### Setup
-
+##### Prerequisites
+1. **npm 5+** : `node install -g npm`
+2. **node v8+** 
+3. **reactjs v16+** : `npm install -g create-react-app`
+4. 
 #### Installation Commands 
-Ensure you have `npm v5+` and `node v8+` installed. I am currently using `npm 5.6.0` and `node v9.5.0`
-1. Pull from repository using `git pull`
-2. Update npm using the command `node install -g npm`
-3. Run `npm install -g create-react-app`
-4. Run `npm run install-all` to install all dependencies.
-5. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
+Ensure you have `npm v5+` and `node v8+` installed. 
+1. Pull from repository using `git pull`.
+2. Cd into project root directory.
+3. Run `npm run install-all` to install all dependencies.
+4. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
 
 #### Running Commands
 If you are in development mode, you will need to have _both_ the webpack development server for the React client _and_ the node express server running. To do this, run these commands:
