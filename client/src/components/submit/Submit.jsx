@@ -18,7 +18,7 @@ import { Prompt } from 'react-router'
  * passes the `submit` function as a prop.
  */
 class Submit extends Component {
-    
+
     /**
      * @prop {Object} user Contains all the current user's data.
      * @prop {func} submit Method to call after successful form validation and when the user
@@ -132,9 +132,9 @@ class Submit extends Component {
     }
 
     /**
-     * Validates the form to ensure all required fields are filled out correctly. 
-     * 
-     * If there is an error in a field, an error message will be displayed underneath the 
+     * Validates the form to ensure all required fields are filled out correctly.
+     *
+     * If there is an error in a field, an error message will be displayed underneath the
      * input.
      */
     validate = () => {
@@ -204,7 +204,7 @@ class Submit extends Component {
     }
 
     /**
-     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
@@ -311,7 +311,7 @@ class Submit extends Component {
             modalOpen: !this.state.modalOpen
         })
     }
-    
+
     closeModal = () => {
       this.setState({modalOpen: false});
     }
@@ -353,8 +353,8 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!=true}/>
-                <Modal isOpen={this.state.modalOpen} 
+                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+                <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
@@ -375,7 +375,7 @@ class Submit extends Component {
                                 <li>
                                     <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
                                 </li>
-                                <li>    
+                                <li>
                                     <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
@@ -408,7 +408,7 @@ class Submit extends Component {
                                     BSD-3 license.
                                 </li>
                                 <li>
-                                    5. Jupyter notebooks uploaded to this site are considered to be released under 
+                                    5. Jupyter notebooks uploaded to this site are considered to be released under
                                     a CC BY-ND 4.0 International license.
                                 </li>
                                 <li>
@@ -416,7 +416,7 @@ class Submit extends Component {
                                     these terms and conditions
                                 </li>
                                 <li>
-                                    6. If you choose to delete your account, your submissions and comments will 
+                                    6. If you choose to delete your account, your submissions and comments will
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>

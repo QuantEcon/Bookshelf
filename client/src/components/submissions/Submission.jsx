@@ -15,7 +15,7 @@ import FileSaver from 'file-saver'
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
-import GearIcon from 'react-icons/lib/fa/cog'
+// import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
 import FlagIcon from 'react-icons/lib/md/flag'
 
@@ -51,10 +51,10 @@ const flaggedReasons = {
     'other': 'Other'
 }
 
-/** 
- * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
+/**
+ * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves
  * the necessary data from Redux and passes it to this component
- * 
+ *
  * Children: {@link CommentsThread}
  */
 class Submission extends Component {
@@ -81,13 +81,13 @@ class Submission extends Component {
             flaggedReason: 'inappropriate',
             modalIsOpen: false,
         }
-        
+
         if(window.location.href.indexOf("comment") > -1) {
           this.state.showNotebook = false
         } else {
             this.state.showNotebook = true
         }
-        
+
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -142,9 +142,9 @@ class Submission extends Component {
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
         setTimeout(() => {
-            this.renderMathJax()    
+            this.renderMathJax()
         }, 500);
-        
+
         Modal.setAppElement('body');
     }
 
@@ -230,8 +230,8 @@ class Submission extends Component {
     }
 
     /**
-     * 
-     * @param {Object} param0 
+     *
+     * @param {Object} param0
      * @param {String} param0.reply Text of the reply entered in the form
      * @param {String} param0.commentID ID of the comment being replied to
      */
@@ -288,7 +288,7 @@ class Submission extends Component {
                 .props
                 .history
                 .replace("/")
-            
+
         } else { // display error message if unsuccessful
             console.error("Error deleting submission")
             this.setState({showDeletionError: true})
@@ -457,7 +457,7 @@ class Submission extends Component {
                                             {!this.props.isLoading && this.props.submission.data.flagged
                                             ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
                                             :  <a onClick={this.flagClick}><FlagIcon/></a>}
-                                            
+
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onAfterOpen={this.afterOpenModal}
@@ -470,7 +470,7 @@ class Submission extends Component {
                                                 <label>
                                                   <select value={this.state.flaggedReason} onChange={this.handleChange} required>
                                                     <option value="inappropriate" selected>Inappropriate Content</option>
-                                                    <option value="spam" >Spam</option>                                                    
+                                                    <option value="spam" >Spam</option>
                                                     <option value="copyright">Violates Copyright</option>
                                                     <option value="other">Other</option>
                                                   </select>
@@ -584,7 +584,7 @@ class Submission extends Component {
                                                     </div>
                                                     : <div>None</div>}
                                                 </div>
-                                                
+
                                             </li> */}
                                             <li>
                                                 <span>Language:</span>
@@ -633,7 +633,7 @@ class Submission extends Component {
                         </div>
                     </div>
 
-                    <div className='tile'>                           
+                    <div className='tile'>
                         {this.state.showNotebook
                         ? <div>
                             {this.props.nbLoading
@@ -652,7 +652,7 @@ class Submission extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                                
+
                                 <div>
                                     Loading... ({this.props.dataReceived} / {this.props.totalData})
                                     <br/>

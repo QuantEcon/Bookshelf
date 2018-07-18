@@ -81,7 +81,7 @@ const AdminReducer = (state = {}, action) => {
                     users: state.adminUsers.users.concat(action.user)
                 }
             })
-        
+
         case REMOVE_ADMIN:
             const newUsers = state.adminUsers.users.filter((user) => user._id !== action.userID)
             return Object.assign({}, state, {
@@ -89,7 +89,7 @@ const AdminReducer = (state = {}, action) => {
                     users: newUsers
                 }
             })
-        
+
         case RESTORE_SUBMISSION:
             const newSubmissions = state.deletedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
             return Object.assign({}, state, {
@@ -130,18 +130,19 @@ const AdminReducer = (state = {}, action) => {
             })
         case REMOVE_COMMENT:
             const newFComments = state.flaggedComments.filter((comment) => {
-                return comment.data._id != action.commentID
+                console.log(comment.data._id, typeof comment.data._id);
+                return comment.data._id !== action.commentID
             })
 
             const newDComments = state.deletedComments.filter((comment) => {
-                return comment.data._id != action.commentID
+                return comment.data._id !== action.commentID
             })
 
             return Object.assign({}, state, {
                 flaggedComments: newFComments,
                 deletedComments: newDComments
             })
-            
+
         default:
             return state
     }
