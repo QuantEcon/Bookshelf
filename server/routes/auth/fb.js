@@ -24,19 +24,7 @@
 //     console.log('in options for fb auth');
 // })
 
-// /**
-//  * @api {get} /api/auth/fb Facebook
-//  * @apiGroup Authentication
-//  * @apiName AuthenticateFacebook
-//  * 
-//  * @apiVersion 1.0.0
-//  * 
-//  * @apiDescription API endpoint for Facebook OAuth. The user is redirected to Facebook's OAuth
-//  * screen.
-//  * 
-//  * On a successful authentication, the window will be redirected with a JSON Web Token in the url
-//  * parameters which the client uses for future authentication
-//  */
+
 // app.get('/', passport.authenticate('facebook', {
 //     scope: 'email'
 // }));

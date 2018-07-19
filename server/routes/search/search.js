@@ -22,6 +22,9 @@ var config = require('../../_config');
  * @apiVersion 1.0.0
  *
  * @apiDescription Queries the database for all submissions matching the parameters
+ * 
+ * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
+ * This was to reduce the potential for false inflation of the `views` field.
  *
  * @apiParam {string}   lang        language of the notebook (Python, Julia, Other).
  * @apiParam {string}   topic       topic of the notebook. Given by the list of topics in the submission page.
@@ -29,7 +32,8 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Views, Trending, Date).
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date). 
+ *                                  
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
