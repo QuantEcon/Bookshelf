@@ -17,12 +17,12 @@ class SubmissionList extends Component {
         // console.log('[SubmissionList] - received new props: ', props);
         this.setState({submissionPreviews: props.submissionPreviews})
     }
-    
+
     onSearch = (searchParams) => {
         this.setState({
             searchParams
         }, () => {
-            this.props.onSearch(searchParams);            
+            this.props.onSearch(searchParams);
         })
     }
     onPageChange = (page) => {
@@ -64,7 +64,7 @@ class SubmissionList extends Component {
 }
                             </div>}
                     </div>
-                    <Paginate 
+                    <Paginate
                         onPageChange={this.onPageChange}
                         pageCount={this.props.totalSubmissions/10}
                         pageRangeDisplayed ={this.props.totalSubmissions/10}

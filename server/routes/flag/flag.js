@@ -67,7 +67,7 @@ app.post("/submission", (req, res) => {
                                 }
                             })
                         }
-                        
+
                         res.sendStatus(200)
                     }
                 })
@@ -87,6 +87,7 @@ app.post("/user", (req, res) => {
             if(err){
                 res.sendStatus(500)
             } else if(user){
+                console.log("inside of /user", user);
                 var notify = true
                 if(user.flagged){
                     notify = false
@@ -128,7 +129,7 @@ app.post("/user", (req, res) => {
                                 }
                             })
                         }
-                        
+
 
                         res.sendStatus(200)
                     }
@@ -192,7 +193,7 @@ app.post("/comment", (req, res) => {
                                 }
                             })
                         }
-                        
+
                         res.sendStatus(200)
                     }
                 })
