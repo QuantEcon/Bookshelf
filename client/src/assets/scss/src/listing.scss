@@ -5,7 +5,7 @@
     position: relative;
     display: flex;
     .sort-inputs {
-        flex:1; 
+        flex:1;
     }
     .filter-inputs {
     }
@@ -98,8 +98,8 @@
             word-break: break-all;
             a {
                 &:hover {
-                }           
-            } 
+                }
+            }
         }
         .date {
             margin:0 0 0.25rem 0;
@@ -125,7 +125,7 @@
         height:50px;
         overflow: hidden;
         border-radius: 5px;
-        border:1px solid $color-medium; 
+        border:1px solid $color-medium;
         img {
             width:50px;
         }

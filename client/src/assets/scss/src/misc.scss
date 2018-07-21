@@ -1,6 +1,15 @@
 // misc.scss
 // Miscellaneous styles
 
+#submissionContent {
+  padding-bottom: 100px;
+}
+
+.wrapper {
+  min-height: 100%;
+  position: relative;
+}
+
 .loading-spinner {
     margin: auto;
     display: block;

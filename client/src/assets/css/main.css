@@ -12,7 +12,8 @@ html {
   -ms-text-size-adjust: 100%;
   /* 2 */
   -webkit-text-size-adjust: 100%;
-  /* 2 */ }
+  /* 2 */
+  height: 100%; }
 
 /* Sections
    ========================================================================== */
@@ -20,7 +21,8 @@ html {
  * Remove the margin in all browsers (opinionated).
  */
 body {
-  margin: 0; }
+  margin: 0;
+  height: 100%; }
 
 /**
  * Add the correct display in IE 9-.
@@ -2148,32 +2150,11 @@ button {
           .header .header-container .site-menu .menu-user a:hover .avatar img {
             opacity: 1; }
 
-.landing-logos {
-  background: #fff;
-  border-bottom: 1px solid #c3c3c3; }
-  .landing-logos ul {
-    list-style: none;
-    margin: 0;
-    padding: 1rem 0;
-    display: -ms-flexbox;
-    display: flex;
-    -ms-flex-pack: center;
-        justify-content: center;
-    -ms-flex-align: center;
-        align-items: center; }
-    .landing-logos ul li {
-      margin: 0 4rem;
-      padding: 0; }
-      .landing-logos ul li a {
-        display: block; }
-        .landing-logos ul li a img {
-          width: 100px; }
-
 .tile {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
   border-radius: 5px;
   padding: 2rem;
-  margin: 2rem 0;
+  margin: 5rem 0;
   background: #fff; }
   .tile .tile-header {
     border-bottom: 1px solid #e5e5e5;
@@ -2219,16 +2200,30 @@ button {
   padding: 0.3rem 0.5rem;
   color: #d84d0a; }
 
-.footer {
-  margin: 4rem 0 0 0;
+.landing-logos {
+  width: 100%;
+  position: absolute;
+  bottom: 0;
+  left: 0;
   background: #fff;
-  padding: 4rem 0 2rem 0;
-  border-top: 1px solid rgba(10, 10, 10, 0.25); }
-  .footer ul {
+  border-bottom: 1px solid #c3c3c3; }
+  .landing-logos ul {
     list-style: none;
-    margin: 0; }
-  .footer a {
-    font-weight: bold; }
+    margin: 0;
+    padding: 1rem 0;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+        justify-content: center;
+    -ms-flex-align: center;
+        align-items: center; }
+    .landing-logos ul li {
+      margin: 0 4rem;
+      padding: 0; }
+      .landing-logos ul li a {
+        display: block; }
+        .landing-logos ul li a img {
+          width: 100px; }
 
 .filters {
   position: relative;
@@ -3863,6 +3858,13 @@ div.my-modal {
     font-weight: 700; }
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
+
+#submissionContent {
+  padding-bottom: 100px; }
+
+.wrapper {
+  min-height: 100%;
+  position: relative; }
 
 .loading-spinner {
   margin: auto;

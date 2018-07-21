@@ -16,7 +16,7 @@ class SubmissionPreview extends Component {
         }
         console.log("THI IS:", this.state.submission);
         this.renderMathJax = this.renderMathJax.bind(this);
-      
+
     }
 
     renderMathJax() {
@@ -46,8 +46,6 @@ class SubmissionPreview extends Component {
     }
 
     render() {
-        console.log("HELLO WORLD!!!!!!!!!!!!!!!");
-        console.log("This state", this.state.submission);
         return (
             <div className="notebook-summary">
 
@@ -89,7 +87,7 @@ class SubmissionPreview extends Component {
                 <div className="stats">
                     <ul>
                         <li className="views">
-                            <span className="count">{this.state.submission.viewers 
+                            <span className="count">{this.state.submission.viewers
                                     ? this.state.submission.viewers.length
                                     : 0}</span>
                             Viewers</li>

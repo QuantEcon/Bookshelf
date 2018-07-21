@@ -35,7 +35,7 @@ class SubmissionList extends Component {
 
     render() {
         return (
-            <div className="container">
+            <div id="submissionContent" className="container">
                 <div className="tile">
                     <Searchbar
                         searchParams={this.props.searchParams}
