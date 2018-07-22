@@ -79,6 +79,10 @@ class Submit extends Component {
             notebookJSON: {},
             contentSaved: false
         }
+        
+        this.onOpenClick = this
+            .onOpenClick
+            .bind(this);
     }
 
     componentWillMount() {
@@ -299,6 +303,10 @@ class Submit extends Component {
             }, () => this.validate());
         }
     }
+    
+    onOpenClick = ()=> {
+      this.refs.dropzoneref.open();
+    }
 
     /**
      * Opens the submission preview modal
@@ -438,6 +446,7 @@ class Submit extends Component {
                                 </p>
                                 <Dropzone
                                     multiple={false}
+                                    ref = 'dropzoneref'
                                     className='dropzone'
                                     maxSize={10000000}
                                     onDrop={this.onDrop}
@@ -472,6 +481,14 @@ class Submit extends Component {
                                     </div>
                                 </Dropzone>
                                 <ul className='button-row'>
+                                    <li>
+                                        <button type="button"
+                                              disabled = {!this.props.isEdit}
+                                              onClick={this.onOpenClick}>
+                                              Update Notebook
+                                        </button>
+
+                                    </li>
                                     <li>
                                         <button
                                             disabled={!this.state.fileUploaded || !this.state.notebookDataReady}
