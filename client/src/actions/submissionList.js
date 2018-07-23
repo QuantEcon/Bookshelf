@@ -1,7 +1,7 @@
 /**
  * @file Submission List actions
  * @author Trevor Lyon
- * 
+ *
  * @module submissionListActions
  */
 
@@ -40,7 +40,7 @@ export const INVALIDATE_SUBMISSION_LIST = 'INVALIDATE_SUBMISSION_LIST';
 export function invalidateSubmissionList() {
     return {
         type: INVALIDATE_SUBMISSION_LIST,
-        
+
     }
 }
 
@@ -62,7 +62,7 @@ export const resetSearchParams = () => {
 /**
  * @function fetchSubmissions
  * @description Makes an API request to get all submission that match the `searchParams`
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {Object} param0.searchParams Search params provided by the user
  * @param {bool} param0.forced Boolean flag to bypass the `needToFetch` check
  */

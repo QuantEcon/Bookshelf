@@ -21,7 +21,7 @@ class Home extends Component {
             searchParams.topic = decodeURIComponent(searchParams.topic);
         }
         console.log('[Home] - url search params: ', searchParams);
-        
+
         this.state = {
             searchParams: searchParams,
             reset: resetSearch
@@ -44,18 +44,20 @@ class Home extends Component {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
-                <div className='landing-logos'>
-                    <div className='container'>
-                        <ul>
-                            <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
-                            <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
-                            <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
-                        </ul>
-                    </div>
-                </div>
+
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
+                <footer className='landing-logos'>
+                      <div className='container'>
+                          <ul>
+                              <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
+                              <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
+                              <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
+                          </ul>
+                      </div>
+
+                </footer>
             </div>
 
         );
