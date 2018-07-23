@@ -3234,6 +3234,7 @@ html.is-reveal-open {
     border-bottom: 1px solid #cacaca;
     padding: 2rem 0 1rem 0; }
     .modal .modal-header .modal-title {
+      text-align: center;
       font-size: 1.8rem;
       line-height: 1;
       padding: 0;

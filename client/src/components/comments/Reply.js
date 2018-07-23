@@ -5,7 +5,7 @@ import CommentContainer from "../../containers/comment/CommentContainer";
 
 /**
  * Renders a reply to a comment. Wraps a {@link Comment} in a reply div.
- * 
+ *
  * Becuase replies to a reply is not available, passing `isReply: true` to the {@link Comment}
  * as a prop disables this functionality.
  */

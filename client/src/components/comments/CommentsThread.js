@@ -7,7 +7,7 @@ import CommentContainer from "../../containers/comment/CommentContainer"
 
 /**
  * Contains and renders all comments for the submission
- * 
+ *
  * Children: {@link Comment}
  */
 class CommentsThread extends Component {
@@ -70,7 +70,7 @@ class CommentsThread extends Component {
                 submitDisabled: true
             })
         }
-        
+
         this.newCommentText = e.target.value
         // this.forceUpdate();
     }
@@ -79,7 +79,10 @@ class CommentsThread extends Component {
 
     /**Dispatches a postComment action  */
     submitNewComment() {
+        console.log("Inside of Props:", this.props);
+        // if currentUser is null or do not exists, then display error message
         if(!this.props.currentUser){
+
             this.setState({
                 submitError: true
             })
@@ -94,7 +97,7 @@ class CommentsThread extends Component {
 
     /**
      * Dispatches a postReply action
-     * @param {Object} param0 
+     * @param {Object} param0
      * @param {String} param0.reply Content of the reply
      * @param {String} param0.commentID ID of the comment being replied to
      */
