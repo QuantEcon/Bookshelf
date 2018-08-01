@@ -1,19 +1,29 @@
 
-@import '_normalize.scss';  //  normalize.css v7.0.0
-@import '_html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
-@import '_foundation-icons.scss';   //  Foundation Icons v 3.0
-@import '_qe-menubar.scss'; // QuantEcon menubar styles
-@import '_settings.scss';   //  Default element styles, variables, mixins
-@import 'header.scss';  // Template header styles
-@import 'footer.scss';  // Template footer styles
-@import 'listing.scss'; // Submission listing styles
-@import 'content-details.scss'; //  Layout styles for submission and user landing pages
-@import 'forms.scss';   //  Submission and edit profile form styles
-@import 'breadcrumbs.scss'; //  Breadcrumb styles
-@import 'pagination.scss';  //  Pagination styles
-@import 'modals.scss';  // Modal styles
-@import 'dropzone.scss';    // Dropzone file submission upload styles
+//Liraries
+@import './libraries/normalize.scss';  //  normalize.css v7.0.0
+@import './libraries/html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
+
+//Partials
+@import './partials/_variables.scss';	// Variables
+@import './partials/_foundation-icons.scss';   //  Foundation Icons v 3.0
+@import './partials/_qe-menubar.scss'; // QuantEcon menubar styles
+@import './partials/_settings.scss';   //  Default element styles, variables, mixins
+
+//Components
 @import './components/comments.scss';    //  Submission commenting styles
+@import './components/modals.scss';  // Modal styles
+@import './components/forms.scss';   //  Submission and edit profile form styles
+@import './components/header.scss';  // Template header styles
+@import './components/footer.scss';  // Template footer styles
+@import './components/listing.scss'; // Submission listing styles
+@import './components/pagination.scss';  //  Pagination styles
+@import './components/admin.scss';	// Admin area styles
+@import './components/breadcrumbs.scss'; //  Breadcrumb styles
+
+//Layouts
+@import './layouts/content-details.scss'; //  Layout styles for submission and user landing pages
 //@import 'notebook-render.scss'; //  Notebook rendering styles
-@import 'admin.scss';	// Admin area styles
+@import './layouts/dropzone.scss';    // Dropzone file submission upload styles
+
+//Miscs
 @import 'misc.scss';	// Miscellaneous styles
