@@ -1,3 +1,4 @@
+
 @import '_normalize.scss';  //  normalize.css v7.0.0
 @import '_html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
 @import '_foundation-icons.scss';   //  Foundation Icons v 3.0
@@ -12,7 +13,7 @@
 @import 'pagination.scss';  //  Pagination styles
 @import 'modals.scss';  // Modal styles
 @import 'dropzone.scss';    // Dropzone file submission upload styles
-@import 'comments.scss';    //  Submission commenting styles
+@import './components/comments.scss';    //  Submission commenting styles
 //@import 'notebook-render.scss'; //  Notebook rendering styles
 @import 'admin.scss';	// Admin area styles
 @import 'misc.scss';	// Miscellaneous styles
