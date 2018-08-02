@@ -6,7 +6,7 @@ var sprintf = require('sprintf');
 var exec = require('child_process').exec;
 var tmp = require('tmp');
 var fs = require('fs');
- var config = require('../_config');
+var config = require('../_config');
 
  function renderHTMLFromFile(file, id){
     var outputDir = config.rootDirectory + config.filesDirectory

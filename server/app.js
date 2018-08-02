@@ -66,17 +66,18 @@ app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
+app.use(express.static('assets'));
 
 /**
  * @api {get} /api/about Get About Page
  * @apiGroup Information
  * @apiName GetAboutPage
- * 
+ *
  * @apiDescription Returns the text to display on the About page
- * 
+ *
  * @apiSuccess (200) {Object} data
  * @apiSuccess (200) {String} data.content Contents of the About page
- * 
+ *
  * @apiError (500) InternalServerError An occurred reading the About page file
  */
 app.get('/api/about', (req, res) => {
@@ -250,7 +251,7 @@ app.post('/api/announcements/change', passport.authenticate('adminjwt', {
                 announcement.content = req.body.content
                 announcement.date = Date.now()
                 announcement.postedBy = req.user._id
-    
+
                 announcement.save((err, savedAnnouncement) => {
                     if(err){
                         console.error("[Announcement-Add] - error saving recent announcement: ", err)
