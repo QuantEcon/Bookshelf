@@ -5,6 +5,7 @@ import SubmissionListContainer from '../../containers/submission/SubmissionListC
 import HeadContainer from '../../containers/HeadContainer';
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
 
+// import Image component and json of image data details
 import Image from '../Image.jsx';
 import data from '../../imageData.json';
 import uuid from 'uuid';
@@ -42,6 +43,7 @@ class Home extends Component {
     }
 
     createImage = (image) => {
+      // Temporarily using uuid() for now as unique keys
       return <Image source={image}  key={ uuid() }/>;
     }
 

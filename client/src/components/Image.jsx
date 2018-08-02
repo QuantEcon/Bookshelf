@@ -1,7 +1,8 @@
+'''Image Component requires from imageData.json file'''
+
 import React from 'react';
 
 let Image = function statelessFunctionComponentClass(props) {
-  console.log("props:", props);
 
   let imageUrl = props.source.image;
   let className = props.source.class_name;
