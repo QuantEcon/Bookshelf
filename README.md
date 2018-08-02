@@ -42,6 +42,26 @@ If you would like to test a production build, run `npm run build` from inside th
 
 If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
 
+#### Updating the Instance
+NOTE: Paths are relative to the root of the project
+
+First stop the instance:
+1. `npm run stop-docker`
+
+Then pull the latest code:
+1. `git pull`
+
+Then you'll need to rebuild the client application:
+1. `cd /client`
+2. `npm run build`
+
+Then you'll need to update the docker image:
+1. `cd /`
+2. `npm run build-docker-server`
+
+Finally restart the instance:
+1. `npm run docker-daemon`
+
 #### How-To 
 Inside the client directory, there is an extensive README.md on client-side. 
 
