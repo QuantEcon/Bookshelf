@@ -27,7 +27,7 @@ import {
     removeAdmin
 } from '../../actions/admin'
 
-const actions = { 
+const actions = {
     fetchFlaggedContent,
     removeComment,
     removeSubmission,
@@ -114,7 +114,7 @@ class AdminContainer extends Component {
     }
 
     componentWillReceiveProps(props){
-        
+
     }
 
     render() {
@@ -136,7 +136,6 @@ class AdminContainer extends Component {
                         submission={this.state.submissionToRemove}/>
                     : null}
                     
-
                     <AdminPage
                         flaggedComments={this.props.flaggedComments}
                         deletedComments={this.props.deletedComments}
@@ -154,7 +153,7 @@ class AdminContainer extends Component {
                         authIsLoading={this.props.authIsLoading}
                     />
                 </div> }
-                
+
             </div>
         )
     }

@@ -27,6 +27,7 @@ export default class AnnouncementBanner extends Component {
         this.setState({
             editText: e.target.value
         })
+        console.log("edit text changed: ", e.target.value);
     }
 
     deleteRecent = (e) => {
@@ -55,32 +56,32 @@ export default class AnnouncementBanner extends Component {
                 <div className='container'>
                     {/* TODO: Announcements title here */}
                     <div className='announcements-list'>
+                        <p>Add a notification to advise on new feature updates, services, or maintenances in announcement.</p>
                         <div className='announcement'>
-                            {this.props.announcement 
+                            {this.props.announcement
                                 ? <Moment date={this.props.announcement.date} format="dddd, DD MMMM YYYY, H:mm A"/>
                                 : null}
-                            
+
                             {this.props.showAdmin
                             ? <div>
-                                {this.state.showEdit ? 
+                                {this.state.showEdit ?
                                     <div>
-                                        <Markdown source={this.state.editText} />  
-
-                                        <textarea name="editAnnouncement" 
-                                        id="editAnnouncementTextArea" 
-                                        cols="30" 
-                                        rows="10"
+                                        {/* Below markdown source will render the editText on the page*/}
+                                        {/*<Markdown source={this.state.editText} />*/}
+                                        <textarea name="editAnnouncement"
+                                        id="editAnnouncementTextArea"
                                         placeholder="You can use markdown here..."
                                         onChange={this.editTextChanged}/>
 
-                                        <button onClick={this.toggleEdit}>Cancel</button>
+                                        <Markdown source={this.state.editText} />
 
+                                        <button onClick={this.toggleEdit}>Cancel</button>
                                         <button onClick={this.submit}>Submit</button>
                                     </div>
 
                                     : <div>
                                         <Markdown source={this.props.announcement ? this.props.announcement.content : null} />
-                                        <button onClick={this.toggleEdit}>Edit</button>
+                                        <button onClick={this.toggleEdit}>Add</button>
                                         {this.props.announcement
                                         ? <button onClick={this.deleteRecent}>Delete</button>
                                         : null }
@@ -89,10 +90,10 @@ export default class AnnouncementBanner extends Component {
                                 : <Markdown source={this.props.announcement.content} />}
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         )
-        
+
     }
 }

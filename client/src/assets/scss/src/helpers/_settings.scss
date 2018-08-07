@@ -47,7 +47,8 @@ pre, code {
     border:0;
 }
 
-[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
+[type='url'], [type='color'], textarea {
     display: block;
     box-sizing: border-box;
     width: 100%;
@@ -66,6 +67,10 @@ pre, code {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
+}
+
+textarea {
+  height: 6rem;
 }
 
 [type='file'], [type='checkbox'], [type='radio'] {

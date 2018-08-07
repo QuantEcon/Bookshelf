@@ -13,14 +13,14 @@ $color-selection-border: #cacaca; // Selection box border
 $color-selection-background: #fefefe; // Selection box background
 
 //Breadcrumb styles
-$bc-color-slash: #cacaca;
-$bc-font-size: 0.85938rem;
+$bc-color-slash: #cacaca; // Breadcrumb slashes betwee links
+$bc-font-size: 0.85938rem; // Breadcrumb font size
 
 //Comments styles
-$com-label-size: 1.4rem;
+$com-label-size: 1.4rem; // Label right above the comment textbox
 
 //Header styles
-$hd-color-dark: #444;
+$hd-color-dark: #444; // Background of the header
 $hd-color-light: #fff;
 $hd-color-secondary: #e43;
 $hd-font-family: 'Exo', sans-serif;
