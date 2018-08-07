@@ -8,6 +8,8 @@ import ErrorIcon from 'react-icons/lib/md/error-outline'
 // import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
 
+import * as config from '../../_config'
+
 import HeadContainer from '../../containers/HeadContainer';
 
 // import Head from '../partials/Head';
@@ -99,12 +101,14 @@ class SignIn extends Component {
                                     icon={TwitterIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
-                            <li>
+                            {config.url.contains('development')
+                            ? null
+                            :<li>
                                 <OAuthSignInButton
                                     provider='Github'
                                     icon={GithubIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
-                            </li>
+                            </li>}
                             <li>
                                 <OAuthSignInButton
                                     provider='Google'
