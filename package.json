@@ -7,7 +7,7 @@
   "scripts": {
     "start": "cd ./server && node app.js",
     "start-client": "cd ./client && npm start",
-    "dev": "concurrently \"npm run start\" \"npm run start-client\"",
+    "dev": "concurrently \"npm run start\" \"npm run start-client\" \"cd ./client/src/assets/scss && gulp\"",
     "install-server": "cd ./server && npm install",
     "install-client": "cd ./client && npm install",
     "build-client": "cd ./client && npm run build",

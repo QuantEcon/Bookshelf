@@ -1,4 +1,4 @@
-'''Image Component requires from imageData.json file'''
+//Image Component requires from imageData.json file
 
 import React from 'react';
 

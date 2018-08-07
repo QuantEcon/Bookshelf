@@ -19,15 +19,15 @@ Ensure you have `npm v5+` and `node v8+` installed.
 1. Pull from repository using `git pull`.
 2. Cd into project root directory.
 3. Run `npm run install-all` to install all dependencies.
-4. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
 
 #### Running Commands
 If you are in development mode, you will need to have _both_ the webpack development server for the React client _and_ the node express server running. To do this, run these commands:
 
-1. `npm start` from the `/` directory
-2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
+1. Run `npm run dev` will compile current SCSS into CSS, and start server and client concurrently.
 
-You then will be able to connect to the website through the React client's port (default is 3000)
+Instead of of running `npm start` in both the client and server side with two terminals opened up, the project has set up `npm run dev` which uses **concurrently** to run both the client and server at the same time within one terminal.
+
+You then will be able to connect to the website through the React client's port (default is 3000).
 
 If you get a `Could not proxy request` error, then you are either not running the API backend, or the ports are not matching. Ensure the port that the API is running on matches the one declared in the config files.
 
@@ -59,7 +59,7 @@ Finally restart the instance:
 1. `npm run docker-daemon`
 
 #### How-To
-Inside the client directory, there is an extensive README.md on client-side.
+- Inside the client directory, there is an extensive README.md on client-side.
 
 **UPDATE AS OF 29 MAR 2018:**
 
@@ -163,7 +163,6 @@ There are some config files that are not on the repo because they contain sensit
 In addition to these files, you will need to spin up your own instance of a Mongo database.
 To install and start Mongo database on your respective Operating System go to https://docs.mongodb.com/manual/administration/install-community/
 
-Instead of of running `npm start` in both the client and server side, the project has set up `npm run dev` which uses **concurrently** to run both the client and server at the same time within one terminal.
 
 #### How-To
 Inside the client directory, there is an extensive README.md on client-side.

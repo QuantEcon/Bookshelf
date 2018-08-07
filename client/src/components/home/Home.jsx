@@ -28,7 +28,6 @@ class Home extends Component {
             searchParams: searchParams,
             reset: resetSearch
         }
-
     }
 
     getUrlVars = () => {
