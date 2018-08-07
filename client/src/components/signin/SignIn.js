@@ -101,7 +101,7 @@ class SignIn extends Component {
                                     icon={TwitterIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
-                            {config.url.contains('development')
+                            {config.url.includes('development')
                             ? null
                             :<li>
                                 <OAuthSignInButton
