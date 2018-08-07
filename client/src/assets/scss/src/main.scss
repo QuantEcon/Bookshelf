@@ -1,7 +1,7 @@
-
 //Liraries
 @import './libraries/normalize.scss';  //  normalize.css v7.0.0
 @import './libraries/html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
+@import './libraries/dropzone.scss';    // Dropzone file submission upload styles
 
 //Helpers
 @import './helpers/_variables.scss';	// Variables
@@ -13,17 +13,16 @@
 @import './components/comments.scss';    //  Submission commenting styles
 @import './components/modals.scss';  // Modal styles
 @import './components/pagination.scss';  //  Pagination styles
-@import './components/admin.scss';	// Admin area styles
 @import './components/breadcrumbs.scss'; //  Breadcrumb styles
 @import './components/forms.scss';   //  Submission and edit profile form styles
+//@import 'notebook-render.scss'; //  Notebook rendering styles
 
 //Layouts
+@import './layouts/admin.scss';	// Admin area styles
 @import './layouts/header.scss';  // Template header styles
 @import './layouts/footer.scss';  // Template footer styles
 @import './layouts/listing.scss'; // Submission listing styles
 @import './layouts/content-details.scss'; //  Layout styles for submission and user landing pages
-//@import 'notebook-render.scss'; //  Notebook rendering styles
-@import './layouts/dropzone.scss';    // Dropzone file submission upload styles
 
 //Miscs
-@import 'misc.scss';	// Miscellaneous styles
+// @import 'misc.scss';	// Miscellaneous styles

@@ -15,7 +15,8 @@
   }
   li {
     float: left;
-    font-size: 0.85938rem;
+    font-size: $bc-font-size;
+
     color: $color-light;
     cursor: default;
     &:not(:last-child)::after {
@@ -24,7 +25,7 @@
       margin: 0 0.75rem;
       opacity: 1;
       content: "/";
-      color: #cacaca;
+      color: $bc-color-slash;
     }
   }
   a {
@@ -34,7 +35,7 @@
     }
   }
   .disabled {
-    color: #cacaca;
+    color: $bc-color-slash;
     cursor: not-allowed;
   }
 }

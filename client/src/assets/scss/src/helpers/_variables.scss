@@ -1,3 +1,4 @@
+// Main
 $body-font-family: 'Raleway', sans-serif; // Font-family
 
 $color-dark: #444444; // Default font colour
@@ -9,4 +10,17 @@ $color-background: #f1f1f1;
 $color-primary-text: #0a0a0a; // Primary text colour
 $color-primary-form: #0a0a0a; // Labels in submission
 $color-selection-border: #cacaca; // Selection box border
-$color-selection-background: #fefefe // Selection box background
+$color-selection-background: #fefefe; // Selection box background
+
+//Breadcrumb styles
+$bc-color-slash: #cacaca;
+$bc-font-size: 0.85938rem;
+
+//Comments styles
+$com-label-size: 1.4rem;
+
+//Header styles
+$hd-color-dark: #444;
+$hd-color-light: #fff;
+$hd-color-secondary: #e43;
+$hd-font-family: 'Exo', sans-serif;

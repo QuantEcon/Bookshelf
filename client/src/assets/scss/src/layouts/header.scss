@@ -1,4 +1,3 @@
-// header.scss
 // Template header styles
 
 .submit-feedback {
@@ -6,9 +5,9 @@
     z-index:999;
     padding: 0.5rem 1rem;
     border-radius: 1rem;
-    border: 1px solid #e43;
-    color: #e43;
-    background: #fff;
+    border: 1px solid $hd-color-secondary;
+    color: $hd-color-secondary;
+    background: $hd-color-light;
     position: absolute;
     top: 133px;
     left: 15px;
@@ -16,22 +15,22 @@
     letter-spacing: 1px;
     box-shadow: 0 0 3px rgba(0,0,0,.3);
     &:hover {
-        background: #e43;
-        color: #fff;
+        background: $hd-color-secondary;
+        color: $hd-color-light;
     }
 }
 
 .header {
     //box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
-    background:#444;
-    color:#fff;
+    background:$hd-color-dark;
+    color: $hd-color-light;
     .header-container {
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding:1rem 0;
         .qe-logo {
-            font-family: 'Exo', sans-serif;
+            font-family: $hd-font-family;
             font-weight:200;
             font-size:2rem;
             margin:0 0 0 -40px;
@@ -48,7 +47,7 @@
             display: flex;
             align-items: center;
             .site-name {
-                font-family: Exo,sans-serif;
+                font-family: $hd-font-family;
                 font-weight: 200;
                 font-size: 1.3rem;
                 margin:0;
@@ -73,7 +72,7 @@
             }
             a {
                 display: block;
-                color: #fff;
+                color: $hd-color-light;
                 >span>div {
                     display: inline-block;
                 }
@@ -98,7 +97,7 @@
                     margin:0 0 0 2rem;
                     a {
                         font-weight:700;
-                        color:#fff;
+                        color: $hd-color-light;
                         &:hover {
                             //color: darken( #fff, 10% );
                             text-decoration: underline;
@@ -119,16 +118,16 @@
                 margin:0 0 0 1rem;
                 padding:0;
                 a {
-                    border:1px solid #fff;
+                    border:1px solid $hd-color-light;
                     border-radius: 5px;
                     padding:0.5rem 1rem;
                     line-height: 1;
                     display: block;
-                    color: #fff;
+                    color: $hd-color-light;
                     font-weight: bold;
                     &:hover {
-                        color: #444;
-                        background: #fff;
+                        color: $hd-color-dark;
+                        background: $hd-color-light;
                     }
                 }
             }
@@ -181,7 +180,7 @@
                     &:hover {
                         //color: $color-primary;
                         text-decoration: underline;
-                        color:#fff;
+                        color: $hd-color-light;
                         background:none;
                         .avatar {
                             img {
@@ -196,7 +195,7 @@
 }
 
 .landing-logos {
-    background:#fff;
+    background: $hd-color-light;
     //box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);
     border-bottom:1px solid #c3c3c3;
     ul {
@@ -224,7 +223,7 @@
     border-radius: 5px;
     padding:2rem;
     margin:2rem 0;
-    background:#fff;
+    background: $hd-color-light;
     .tile-header {
         //display: flex;
         border-bottom:1px solid #e5e5e5;
