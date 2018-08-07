@@ -1,14 +1,6 @@
 {
   "images": [
     {
-      "image": "mario.jpg",
-      "class_name": "mario"
-    },
-    {
-      "image": "gravity.jpg",
-      "class_name": "gravity-falls"
-    },
-    {
       "image":"landing-quantecon-logo.png",
       "class_name": "quantecon-logo"
     },
