@@ -141,6 +141,8 @@ class Submission extends Component {
     componentDidMount() {
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
+        if(this.props.submission !== undefined ){console.log(this.props.submission.lastUpdated, 'its there')}
+        else {console.log('not there')}
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
@@ -165,7 +167,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Notes"
+            document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
         }
         this.setState({
             flipper: !this.state.flipper
@@ -604,7 +606,7 @@ class Submission extends Component {
                                                             {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
                                                             <Time
                                                                 value={this.props.submission.data.notebook.published}
-                                                                format='d MMM YYYY'/>
+                                                                format='D MMM YYYY'/>
                                                         </div>
                                                     : <p>loading...</p>}
 
@@ -614,13 +616,13 @@ class Submission extends Component {
                                                 {!this.props.isLoading
                                                     ? <div>
                                                             {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
-                                                            {this.props.submission.data.notebook.lastUpdated
-                                                                ? <Time
-                                                                        value={this.props.submission.data.notebook.lastUpdated}
-                                                                        format='d MMM YYYY'/>
+                                                            {this.props.submission.lastUpdated !== undefined && this.props.submission.lastUpdated !== ' '
+                                                                ?  <Time
+                                                                      value={this.props.submission.lastUpdated}
+                                                                      format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}
-                                                                    format='d MMM YYYY'/>}
+                                                                    format='D MMM YYYY'/>}
                                                         </div>
                                                     : <p>loading...</p>}
 

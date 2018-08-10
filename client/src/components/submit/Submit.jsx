@@ -79,7 +79,7 @@ class Submit extends Component {
             notebookJSON: {},
             contentSaved: false
         }
-        
+
         this.onOpenClick = this
             .onOpenClick
             .bind(this);
@@ -219,7 +219,7 @@ class Submit extends Component {
         this.setState({contentSaved : true}, () => {
         console.log(this.state.contentSaved)
         if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit')
+            console.log('[EditSubmission] - submit edit', this.props)
             var file = this.state.accepted[0]
               ? this.state.accepted[0]
               : null
@@ -303,7 +303,7 @@ class Submit extends Component {
             }, () => this.validate());
         }
     }
-    
+
     onOpenClick = ()=> {
       this.refs.dropzoneref.open();
     }
