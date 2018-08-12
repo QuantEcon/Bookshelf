@@ -604,7 +604,7 @@ class Submission extends Component {
                                                             {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
                                                             <Time
                                                                 value={this.props.submission.data.notebook.published}
-                                                                format='d MMM YYYY'/>
+                                                                format='D MMM YYYY'/>
                                                         </div>
                                                     : <p>loading...</p>}
 
@@ -617,10 +617,10 @@ class Submission extends Component {
                                                             {this.props.submission.data.notebook.lastUpdated
                                                                 ? <Time
                                                                         value={this.props.submission.data.notebook.lastUpdated}
-                                                                        format='d MMM YYYY'/>
+                                                                        format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}
-                                                                    format='d MMM YYYY'/>}
+                                                                    format='D MMM YYYY'/>}
                                                         </div>
                                                     : <p>loading...</p>}
 
