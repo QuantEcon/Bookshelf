@@ -1,10 +1,8 @@
-// misc.scss
 // Miscellaneous styles
 
 .loading-spinner {
     margin: auto;
     display: block;
-
 }
 
 .loading-container {
@@ -47,12 +45,12 @@ ul.pagination li.active {
     border: 1px solid #d84d0a;
     background: transparent;
     color: #d84d0a !important;
-    font-weight: 700
+    font-weight: 700;
 }
 
 ul.pagination li.active a {
     color: #d84d0a !important;
-    font-weight: 700
+    font-weight: 700;
 }
 
 img.text-loading {
@@ -104,10 +102,6 @@ img.loading-avatar {
     color: #d84d0a;
     font-size: 1.5rem;
     font-weight: bold;
-}
-
-.answer {
-
 }
 
 .border-bottom {

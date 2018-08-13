@@ -22,7 +22,7 @@ var config = require('../../_config');
  * @apiVersion 1.0.0
  *
  * @apiDescription Queries the database for all submissions matching the parameters
- * 
+ *
  * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
  * This was to reduce the potential for false inflation of the `views` field.
  *
@@ -32,8 +32,8 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date). 
- *                                  
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ *
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
@@ -237,7 +237,7 @@ app.get('/userList', (req, res) => {
  */
 
 Array.prototype.unique = function() {
-    return this.filter(function (value, index, self) { 
+    return this.filter(function (value, index, self) {
       return self.indexOf(value) === index;
     });
   }
@@ -279,7 +279,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             // check initially if there exists an array, if current array is empty, then then create a new one
                             if(submission.viewers.length == 0){
                               //create an array to store all users who have viewed the submission
-                              console.log("Creating an emtpty submission.viewers array...");
+                              console.log("Creating an empty submission.viewers array...");
                               submission.viewers = [];
                             }
                             // check if current user is logged in
