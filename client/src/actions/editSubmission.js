@@ -58,6 +58,7 @@ export const buildSubmissionPreview = ({
         _id: submissionID,
         author: store.getState().auth.user
     };
+
     if (file) {
         //read and parse file
         var reader = new FileReader();

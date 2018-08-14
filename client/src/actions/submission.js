@@ -233,13 +233,14 @@ export const editSubmission = ({
     submissionID
 }, callback) => {
     return (dispatch) => {
-        console.log("[EditSubmssion Action] - file: ", file)
+        console.log("[EditSubmission Action] - file: ", file)
         var submission = {
             ...formData,
-            lastUpdated: 99999999,
+            lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
         };
+        console.log("[Submission] - ", submission.lastUpdateDate)
         if (file) {
             submission.fileName = file.name
             //read and parse file

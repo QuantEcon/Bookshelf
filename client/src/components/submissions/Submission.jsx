@@ -26,6 +26,7 @@ import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+import axios from 'axios'
 
 /* Custom styles for the modal */
 const customStyles = {
@@ -65,6 +66,7 @@ class Submission extends Component {
      * @prop {boolean}  isLoading       Flag to tell react if the data is still being loaded from the API
      * @prop {Object}   currentUser     Object containing the current user's information. If there is no user signed in, it will be `null`
      * @prop {Object}   history         Needed for navigation. Passed from the Submission Container
+
      */
     static propTypes = {
         actions: PropTypes.object.isRequired,
@@ -75,12 +77,20 @@ class Submission extends Component {
     }
     constructor(props) {
         super(props);
+
         this.state = {
             flipper: true,
             deleteModalOpen: false,
             flaggedReason: 'inappropriate',
             modalIsOpen: false,
+            testing: [],
         }
+
+        console.log('[Submission Information] - fetching about submission');
+
+        axios.get('/api/submit/edit-submission').then(resp =>{
+          console.log('[Submission Information] - returned resp: ', resp.body);
+        })
 
         if(window.location.href.indexOf("comment") > -1) {
           this.state.showNotebook = false
@@ -139,10 +149,12 @@ class Submission extends Component {
     }
 
     componentDidMount() {
+    
+        // console.log();
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
-        if(this.props.submission !== undefined ){console.log(this.props.submission.lastUpdated, 'its there')}
-        else {console.log('not there')}
+        console.log('[Submission] - props: ', this.props);
+
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
@@ -603,7 +615,6 @@ class Submission extends Component {
                                                 <span>Published:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
                                                             <Time
                                                                 value={this.props.submission.data.notebook.published}
                                                                 format='D MMM YYYY'/>
@@ -615,7 +626,6 @@ class Submission extends Component {
                                                 <span>Last update:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
                                                             {this.props.submission.lastUpdated !== undefined && this.props.submission.lastUpdated !== ' '
                                                                 ?  <Time
                                                                       value={this.props.submission.lastUpdated}

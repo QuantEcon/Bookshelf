@@ -26,7 +26,9 @@ class Submit extends Component {
      * @prop {Object} history Required for navigation.
      * @prop {func} save Method to call after successful form validation and when the user
      * clicks on save. This is used if this is an EditSubmission page
+
      */
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         submit: PropTypes.func,
@@ -122,7 +124,10 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : {}
+            : {},
+        lastUpdated: this.props.isEdit
+            ? this.props.submission.data.lastUpdated
+            : ''
     }
 
     errors = {
@@ -229,8 +234,9 @@ class Submit extends Component {
           this.formData.score = this.props.submission.data.notebook.score
           this.formData.views = this.props.submission.data.notebook.views
           this.formData.published = this.props.submission.data.notebook.published
+          this.formData.lastUpdateDate = Date(Date.now())
           this.props.save({formData: this.formData, file, notebookJSON})
-          console.log("[FormData Saved after Edit] - ", this.formData);
+          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
           ;
       } else {
           console.log('[EditSubmission] - not edit')
