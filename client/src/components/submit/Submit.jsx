@@ -229,9 +229,9 @@ class Submit extends Component {
           this.formData.score = this.props.submission.data.notebook.score
           this.formData.views = this.props.submission.data.notebook.views
           this.formData.published = this.props.submission.data.notebook.published
-          this
-              .props
-              .save({formData: this.formData, file, notebookJSON});
+          this.props.save({formData: this.formData, file, notebookJSON})
+          console.log("[FormData Saved after Edit] - ", this.formData);
+          ;
       } else {
           console.log('[EditSubmission] - not edit')
 

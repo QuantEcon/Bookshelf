@@ -1,7 +1,7 @@
 /**
  * @file Submission actions
  * @author Trevor Lyon
- * 
+ *
  * @module submissionActions
  */
 import axios from 'axios'
@@ -188,7 +188,7 @@ const editSubmissionAction = ({
 
 export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
 const flagSubmissionAction = ({
-    submissionID, 
+    submissionID,
     flaggedReason,
     error
 }) => {
@@ -218,7 +218,7 @@ const flagCommentAction = ({
  * @function editSubmission
  * @description Makes an API request to edit a submission. Will replace any data supplied
  * with the data in the database.
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {Object} param0.formData Data the user filled out in the submit form
  * @param {File} param0.file File the user uploaded. (Can be null if `notebookJSON` is provided)
  * @param {Object} param0.notebookJSON JSON object representing the ipynb file. (can by null if
@@ -236,7 +236,7 @@ export const editSubmission = ({
         console.log("[EditSubmssion Action] - file: ", file)
         var submission = {
             ...formData,
-            lastUpdated: Date.now(),
+            lastUpdated: 99999999,
             _id: submissionID,
             author: store.getState().auth.user,
         };
@@ -347,9 +347,9 @@ export const deleteSubmission = (submissionID, callback) => {
 
 /**
  * @function fetchNBInfo
- * @description Makes an API request to get all data for the submission specified by the 
+ * @description Makes an API request to get all data for the submission specified by the
  * notebookID
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {String} param0.notebookID ID of the notebook being requested
  * @param {bool} forced Flag to bypass the needToFetch check
  */
