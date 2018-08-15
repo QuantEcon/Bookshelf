@@ -66,7 +66,6 @@ app.post('/', passport.authenticate('jwt', {
             newSub.title = formData.title;
 
             newSub.topics = formData.topics;
-            newSub.lastUpdateDate = formData.lastUpdateDate;
 
             newSub.lang = formData.lang;
             newSub.summary = formData.summary;
@@ -213,7 +212,7 @@ app.post('/confirm', passport.authenticate('jwt', {
     newSub.views = 0;
 
     newSub.published = Date.now();
-    newSub.lastUpdated = 9999999;
+    newSub.lastUpdated = Date.now();
 
     newSub.deleted = false;
     newSub.flagged = false;
@@ -328,15 +327,13 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 submission.htmlFilePath = filePath;
                 submission.save();
             }
-            console.log("[req body submission data]", req.body.submissionData)
             // ============================================================================
             submission.title = req.body.submissionData.title;
             submission.coAuthors = req.body.submissionData.coAuthors;
             submission.summary = req.body.submissionData.summary;
-            submission.lang = req.body.submissionData.lang;
-            submission.lastUpdated = Date(req.body.submissionData.lastUpdateDate);
-            submission.topics = req.body.submissionData.topics;
-            console.log('Submission last updated date:', Date(submission.lastUpdated))
+            submission.lang = req.body.submissionData.lang
+            submission.lastUpdated = Date.now();
+            submission.topics = req.body.submissionData.topics
 
             if(req.body.submissionData.fileName) {
                 submission.fileName = req.body.submissionData.fileName
@@ -364,9 +361,9 @@ app.post('/edit-submission', passport.authenticate('jwt', {
                 submission.title = req.body.submissionData.title;
                 submission.coAuthors = req.body.submissionData.coAuthors;
                 submission.summary = req.body.submissionData.summary;
-                submission.lang = req.body.submissionData.lang;
-                submission.lastUpdated = req.body.submissionData.lastUpdateDate;
-                submission.topics = req.body.submissionData.topics;
+                submission.lang = req.body.submissionData.lang
+                submission.lastUpdated = Date.now();
+                submission.topics = req.body.submissionData.topics
                 if(req.body.submissionData.fileName) submission.fileName = req.body.submissionData.fileName
 
                 submission.save((err) => {
