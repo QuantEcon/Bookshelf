@@ -22,6 +22,9 @@ var config = require('../../_config');
  * @apiVersion 1.0.0
  *
  * @apiDescription Queries the database for all submissions matching the parameters
+ * 
+ * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
+ * This was to reduce the potential for false inflation of the `views` field.
  *
  * @apiParam {string}   lang        language of the notebook (Python, Julia, Other).
  * @apiParam {string}   topic       topic of the notebook. Given by the list of topics in the submission page.
@@ -29,7 +32,8 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Views, Trending, Date).
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date). 
+ *                                  
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
@@ -115,11 +119,11 @@ app.get('/all-submissions', function (req, res) {
                 };
                 break;
             case 'Trending':
+                console.log("Trending Algorithm");
                 break;
             case 'Views':
-                console.log("Sort by views")
                 options.sort = {
-                    'viewers': -1,
+                    'viewers_count': -1,
                     'published': -1
                 }
                 break;
@@ -231,7 +235,16 @@ app.get('/userList', (req, res) => {
  * @apiError (404) NotebookNotFound No notebook was found with matching id
  * @apiError (500) InternalServerError An error occurred searching the database for relevant data
  */
+
+Array.prototype.unique = function() {
+    return this.filter(function (value, index, self) { 
+      return self.indexOf(value) === index;
+    });
+  }
+
+
 app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
+
     // get nb info
     var notebook;
     var commentAuthorIDs;
@@ -262,8 +275,28 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             //Increment total number of views
                             submission.views++;
                             notebook.coAuthors = submission.coAuthors
-                            // TODO: This needs to be tested
-                            //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
+                            // TODO: Need to check for submission.viewers_count and test
+                            // check initially if there exists an array, if current array is empty, then then create a new one
+                            if(submission.viewers.length == 0){
+                              //create an array to store all users who have viewed the submission
+                              console.log("Creating an emtpty submission.viewers array...");
+                              submission.viewers = [];
+                            }
+                            // check if current user is logged in
+                            if(req.user) {
+                              // if the current user has not viewed the submission before and current user is not the same as author
+                              if(submission.viewers.indexOf(req.user._id) == -1 && JSON.stringify(submission.author) !== JSON.stringify(req.user._id)) {
+                                // push the current user into the submission.viewers
+                                submission.viewers.push(req.user._id);
+                                submission.viewers = submission.viewers.unique()
+                                submission.viewers_count = submission.viewers.length
+                              }
+                            }
+                            // just double checking when user is not logged in
+                            else {
+                              console.log("User is not logged in");
+                            }
+
                             var totalComments = submission.comments.length
                             console.log("comments.length: ", totalComments)
                             Comment.find({"_id": {"$in": submission.comments}}, (err, comments) => {
@@ -281,14 +314,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 }
                             })
 
-
-                            if(!submission.viewers){
-                                console.log("No viewers")
-                                submission.viewers = []
-                            }
-                            if (req.user && submission.viewers.indexOf(req.user._id) == -1) {
-                                submission.viewers.push(req.user._id)
-                            }
                             // Check if has been preRendered and we want to send the pre-rendered notebook
                             if (submission.preRendered && config.preRender) {
                                 // Get html from preRendered file
@@ -399,7 +424,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
         },
         //callback
         function (err, results) {
-            // console.log("[Search] results: ", results)
+            //console.log("[Search] results: ", results)
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);

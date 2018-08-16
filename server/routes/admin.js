@@ -219,7 +219,7 @@ app.get("/admin-users", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.submissionID     ID of the submission being deleted
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success Submisison was deleted
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission
  * @apiError (401) Unathourized
@@ -296,7 +296,7 @@ app.post("/delete-submission", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.submissionID     ID of the submission being deleted
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success Submission was removed
  * 
  * @apiError (500) InternalServerError An error occurred removing the submission/comments from the database
  * @apiError (401) Unauthorized
@@ -418,7 +418,7 @@ app.post("/remove-submission", passport.authenticate("adminjwt", {
  * @apiParam {Object} body
  * @apiParam {String} body.submissionID     ID of the submission being deleted
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success Submission was restored
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission
  * @apiError (401) Unauthorized
@@ -477,7 +477,7 @@ app.post("/restore-submission", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.userID    ID of the user to make an admin
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success User was made an admin
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the user
  * @apiError (401) Unauthorized
@@ -557,7 +557,7 @@ app.post("/make-admin", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.userID    ID of the user from which to remove the admin status
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success User was removed as an admin
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the user
  * @apiError (401) Unauthorized
@@ -621,7 +621,7 @@ app.post("/remove-admin", passport.authenticate("adminjwt", {
  * @apiParam {Object} body
  * @apiParam {String} body.commentID ID of the comment to set the deleted flag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success Comment was deleted
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
  * @apiError (401) Unauthorized
@@ -682,7 +682,7 @@ app.post("/delete-comment", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.commentID ID of the comment to remove
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
  * @apiError (401) Unauthorized
@@ -765,7 +765,7 @@ app.post("/remove-comment", passport.authenticate("adminjwt", {
  * @apiParam {Object} body
  * @apiParam {String} body.commentID ID of the comment to remove the deleted flag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
  * @apiError (401) Unauthorized
@@ -817,7 +817,7 @@ app.post("/restore-comment", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.commentID ID of the comment to set the deleted flag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment
  * @apiError (401) Unauthorized
@@ -870,7 +870,7 @@ app.post("/delete-reply", passport.authenticate('adminjwt', {
  * @apiParam {String} body.commentID    ID of the parent comment to the reply
  * @apiParam {String} body.replyID      ID of the reply to remove
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError  An error occurred removing the reply from the database
  * @apiError (401) Unauthorized
@@ -911,7 +911,7 @@ app.post("/remove-reply", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.replyID      ID of the reply to restore
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError  An error occurred finding/editing/saving the reply in the database
  * @apiError (401) Unauthorized
@@ -962,7 +962,7 @@ app.post("/restore-reply", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.userID      ID of the user to flag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError  An error occurred removing the reply from the database
  * @apiError (401) Unauthorized
@@ -1010,7 +1010,7 @@ app.post("/delete-user", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiParam {String} body.userID      ID of the user to flag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError  An error occurred removing the reply from the database
  * @apiError (401) Unauthorized
@@ -1171,7 +1171,7 @@ app.post("/search-users", passport.authenticate('adminjwt', {
  * @apiParam {Object} body
  * @apiparam {String} body.userID ID of the user to unflag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the user document in the database
  * @apiError (401) Unauthorized
@@ -1218,7 +1218,7 @@ app.post("/unflag-user", passport.authenticate("adminjwt", {
  * @apiParam {Object} body
  * @apiparam {String} body.submissionID ID of the submission to unflag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the submission document in the database
  * @apiError (401) Unauthorized
@@ -1263,7 +1263,7 @@ app.post("/unflag-submission", passport.authenticate("adminjwt", {
  * @apiParam {Object} body
  * @apiparam {String} body.commentID ID of the comment to unflag
  * 
- * @apiSuccess (200)
+ * @apiSuccess (200) Success
  * 
  * @apiError (500) InternalServerError An error occurred finding/editing/saving the comment document in the database
  * @apiError (401) Unauthorized

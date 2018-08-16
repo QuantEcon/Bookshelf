@@ -10,11 +10,12 @@ import Time from 'react-time';
 import ReplyList from './ReplyList';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import {Link} from 'react-router-dom'
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
  * all neccessary data down to this component.
- * 
+ *
  * Children: {@link ReplyList}
  */
 class Comment extends Component {
@@ -27,7 +28,7 @@ class Comment extends Component {
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
-     * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to 
+     * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to
      * this comment is disabled
      */
     static propTypes = {
@@ -51,6 +52,7 @@ class Comment extends Component {
             author: props.author ? props.author : props.currentUser,
             showInsertReply: false,
             showEditComment: false,
+            showError: false,
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply
@@ -81,6 +83,7 @@ class Comment extends Component {
             .deleteComment
             .bind(this);
         this.flagComment = this.flagComment.bind(this)
+
     }
 
     componentWillReceiveProps(props) {
@@ -90,6 +93,7 @@ class Comment extends Component {
             replies: props.replies,
             author: props.author,
             showInsertReply: false,
+            showError: false,
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply,
@@ -104,7 +108,7 @@ class Comment extends Component {
     }
 
     /**Called when the user clicks edit comment.
-     * 
+     *
      * @param {Object} e Event passed from the `onClick` listener
      * This method then calls the prop `editComment`
      */
@@ -131,18 +135,18 @@ class Comment extends Component {
 
     flagClick = () => {
         confirmAlert({
-            title: 'Are you sure you want to report this comment?',                       
-            confirmLabel: 'Yes',                          
-            cancelLabel: 'Cancel',                             
-            onConfirm: () => this.flagComment(),    
+            title: 'Are you sure you want to report this comment?',
+            confirmLabel: 'Yes',
+            cancelLabel: 'Cancel',
+            onConfirm: () => this.flagComment(),
          })
     }
-    
+
     /**
      * Method called when the user clicks submit reply.
-     * 
+     *
      * This method then calls the `postReply` method passed down as a prop.
-     * 
+     *
      * @param {Object} e Event object passed from the `onClick` listener
      */
     submitRepsonse(e) {
@@ -167,9 +171,18 @@ class Comment extends Component {
 
     /**Toggles the visibility of the reply text input field */
     toggleInsertReply() {
+      if(this.state.currentUser) {
         this.setState({
             showInsertReply: !this.state.showInsertReply
         })
+      }
+      else {
+        console.log('user not logged in')
+        this.setState({
+          showError: true
+        });
+      }
+
     }
 
     deleteComment() {
@@ -283,16 +296,19 @@ class Comment extends Component {
                         <ul className='options'>
                             {!this.state.isReply
                                 ? <div>{this.state.showInsertReply
-                                            ? <div>
-                                                    <li>
-                                                        <a onClick={this.toggleInsertReply}>Close</a>
-                                                    </li>
-                                                </div>
-                                            : <div>
-                                                <li>
-                                                    <a onClick={this.toggleInsertReply}>Reply</a>
-                                                </li>
-                                            </div>}
+                                      ? <div>
+                                              <li>
+                                                  <a onClick={this.toggleInsertReply}>Close</a>
+                                              </li>
+                                          </div>
+                                      :
+                                          <div>
+                                              <li>
+                                                  <a onClick={this.toggleInsertReply}>Reply</a>
+                                              </li>
+                                          </div>
+                                      }
+
                                     </div>
                                 : null}
 
@@ -308,8 +324,16 @@ class Comment extends Component {
                                     </div>
                                 : null}
                         </ul>
-                    </div>
 
+                    </div>
+                    {/*Display the sign in error message if user is not logged in*/}
+                    {this.state.showError && !this.state.currentUser
+                       ? <p className="error-help-text">
+                               You must
+                               {' '}<Link to='/signin'>sign in</Link>{' '}
+                               to reply
+                           </p>
+                       : null}
                     {this.state.showInsertReply && !this.state.isReply
                         ? <div className='comment-reply'>
                                 <form>

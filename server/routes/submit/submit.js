@@ -79,6 +79,7 @@ app.post('/', passport.authenticate('jwt', {
 
             newSub.score = 0;
             newSub.views = 0;
+            newSub.viewers_count = 0;
 
             newSub.published = Date.now();
             newSub.lastUpdated = Date.now();
@@ -88,7 +89,7 @@ app.post('/', passport.authenticate('jwt', {
 
             newSub.fileName = req.file.originalname;
             newSub.ipynbFile = req.file.path;
-
+            
             user.currentSubmission = newSub;
 
             user.save((err) => {
