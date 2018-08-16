@@ -192,6 +192,8 @@ app.post('/confirm', passport.authenticate('jwt', {
     var newSub = new Submission();
     console.log("[Submit] - confirm. req.body: \n", req.body)
     var coAuthors = req.body.submission.coAuthors
+    var updatedDate = req.body.submission.lastUpdated
+
     newSub.coAuthors = coAuthors
 
     newSub.title = req.body.submission.title;

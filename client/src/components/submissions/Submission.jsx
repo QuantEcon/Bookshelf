@@ -149,7 +149,7 @@ class Submission extends Component {
     }
 
     componentDidMount() {
-    
+
         // console.log();
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
@@ -626,9 +626,9 @@ class Submission extends Component {
                                                 <span>Last update:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {this.props.submission.lastUpdated !== undefined && this.props.submission.lastUpdated !== ' '
+                                                            {this.props.submission.data.notebook.lastUpdated !== undefined && this.props.submission.data.notebook.lastUpdated !== ' '
                                                                 ?  <Time
-                                                                      value={this.props.submission.lastUpdated}
+                                                                      value={this.props.submission.data.notebook.lastUpdated}
                                                                       format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}

@@ -251,7 +251,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
-    var updatedDate;
 
     var notebookID = req.params.nbid;
 
@@ -267,8 +266,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     console.log("[Search] error searching for submission by ID: ", err)
                     callback(err)
                   } else if (sub) {
-                    console.log('[Submission parameters found] - ', sub)
-                    console.log('Last Updated', sub.lastUpdated)
+                    // intializing updatedDate
                     updatedDate = sub.lastUpdated
                   }
                 });
@@ -282,12 +280,14 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             console.log("[Search] error searching for submission: ", err)
                             callback(err)
                         } else if (submission) {
+
                             notebook = submission
                             notebook.nbLength = submission.notebookJSONString.length
+                            notebook.lastUpdated = updatedDate
+
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
-                            console.log('Inside of the findOne along with others Updated', updatedDate)
                             submission.updateDate = updatedDate
 
                             notebook.coAuthors = submission.coAuthors
