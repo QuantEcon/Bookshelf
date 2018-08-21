@@ -22,7 +22,7 @@ var config = require('../../_config');
  * @apiVersion 1.0.0
  *
  * @apiDescription Queries the database for all submissions matching the parameters
- * 
+ *
  * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
  * This was to reduce the potential for false inflation of the `views` field.
  *
@@ -32,8 +32,8 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date). 
- *                                  
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ *
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
@@ -237,7 +237,7 @@ app.get('/userList', (req, res) => {
  */
 
 Array.prototype.unique = function() {
-    return this.filter(function (value, index, self) { 
+    return this.filter(function (value, index, self) {
       return self.indexOf(value) === index;
     });
   }
@@ -288,8 +288,8 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                               if(submission.viewers.indexOf(req.user._id) == -1 && JSON.stringify(submission.author) !== JSON.stringify(req.user._id)) {
                                 // push the current user into the submission.viewers
                                 submission.viewers.push(req.user._id);
-                                submission.viewers = submission.viewers.unique()
-                                submission.viewers_count = submission.viewers.length
+                                submission.viewers = submission.viewers.unique();
+                                submission.viewers_count = submission.viewers.length;
                               }
                             }
                             // just double checking when user is not logged in
