@@ -79,7 +79,7 @@ class Submit extends Component {
             notebookJSON: {},
             contentSaved: false
         }
-        
+
         this.onOpenClick = this
             .onOpenClick
             .bind(this);
@@ -303,7 +303,7 @@ class Submit extends Component {
             }, () => this.validate());
         }
     }
-    
+
     onOpenClick = ()=> {
       this.refs.dropzoneref.open();
     }
@@ -596,7 +596,6 @@ class Submit extends Component {
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
-                                        maxLength="240"
                                         id="summary"
                                         onChange={this.summaryChanged}
                                         defaultValue={this.formData.summary}></textarea>
