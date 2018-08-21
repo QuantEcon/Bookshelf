@@ -1,0 +1,41 @@
+//  Breadcrumb styles
+
+.breadcrumbs {
+  padding:2rem 0 0 0;
+  margin:0;
+  list-style: none;
+  &::before {
+    display: table;
+    content: ' ';
+  }
+  &::after {
+    display: table;
+    content: ' ';
+    clear: both;
+  }
+  li {
+    float: left;
+    font-size: $bc-font-size;
+
+    color: $color-light;
+    cursor: default;
+    &:not(:last-child)::after {
+      position: relative;
+      top: 1px;
+      margin: 0 0.75rem;
+      opacity: 1;
+      content: "/";
+      color: $bc-color-slash;
+    }
+  }
+  a {
+    font-weight:bold;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+  .disabled {
+    color: $bc-color-slash;
+    cursor: not-allowed;
+  }
+}

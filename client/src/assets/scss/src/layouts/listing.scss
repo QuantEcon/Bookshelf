@@ -1,0 +1,157 @@
+// Submission listing styles
+
+.filters {
+    position: relative;
+    display: flex;
+    .sort-inputs {
+        flex:1;
+    }
+    .filter-inputs {
+    }
+    .search-inputs {
+        display: flex;
+        .search-toggle {
+            a {
+                font-size: 1.5rem;
+                color: $color-dark;
+                line-height: 1.5;
+            }
+        }
+        .search-field {
+            display: block;
+            position: relative;
+            top:-5px;
+            .search-hide {
+            }
+            input {
+                display: inline-block;
+                width:233px;
+                margin:0 0 0 1rem;
+                height:2rem;
+                position: relative;
+                top:2px;
+                font-size: 1rem;
+            }
+            .search-submit {
+                color: $color-primary;
+                font-size: 1.5rem;
+                line-height: 1.5;
+                position: relative;
+                top:5px;
+                cursor: pointer;
+            }
+        }
+    }
+    label {
+        display: inline-block;
+        font-size: 1rem;
+        margin:0 1rem 0 0;
+        padding:0 0 0 0.5rem;
+        color: $color-light;
+    }
+    select {
+        width:auto;
+        height:auto;
+        margin:0;
+        font-size: 1rem;
+        padding: 0.3rem 1.875rem 0.3rem 0.2rem;
+        border:0;
+        color: $color-primary;
+        max-width: 100px;
+        &:focus {
+            border:0;
+            box-shadow: none;
+        }
+    }
+    .totals {
+        display: inline-block;
+        color: $color-light;
+    }
+}
+
+.search-message {
+    text-align: center;
+    a {
+        font-weight: bold;
+    }
+}
+
+
+.notebook-summary {
+    padding:1rem;
+    border-top:1px solid #e5e5e5;
+
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    align-items: center;
+
+    &:nth-child(even) {
+
+    }
+    .specs {
+        .title {
+            font-size:1.4rem;
+            margin:0 0 0.25rem 0;
+            word-break: break-all;
+            a {
+                &:hover {
+                }
+            }
+        }
+        .date {
+            margin:0 0 0.25rem 0;
+            color: $color-light;
+            a {
+            }
+        }
+        .short {
+            margin:0;
+            //word-break: break-all;
+            * {
+                font-size:1rem;
+                margin:0;
+                padding:0;
+                //display: inline;
+                font-weight: 400;
+            }
+        }
+    }
+    .avatar {
+        margin:0 25px;
+        flex-shrink: 0;
+        height:50px;
+        overflow: hidden;
+        border-radius: 5px;
+        border:1px solid $color-medium;
+        img {
+            width:50px;
+        }
+    }
+    .stats {
+        flex-shrink: 0;
+        text-align: center;
+        a {
+            color: $color-dark;
+            display: block;
+        }
+        ul {
+            display: flex;
+            list-style: none;
+            padding:0;
+            margin:0;
+        }
+        li {
+            margin:0;
+            padding:0;
+            font-size: 0.9rem;
+            width:60px;
+        }
+        .count {
+            color: $color-primary;
+            display: block;
+            font-size: 1.5rem;
+        }
+    }
+}

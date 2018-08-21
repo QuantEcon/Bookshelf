@@ -1,0 +1,237 @@
+//  Default element styles
+
+html {
+    box-sizing: border-box;
+    font-size: 80%;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: $color-background;
+    font-family: $body-font-family;
+    font-weight: normal;
+    line-height: 1.5;
+    font-size:1rem;
+    color: $color-primary-text;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-width: 1040px !important;
+}
+
+a {
+    line-height: inherit;
+    color: $color-primary;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+a:hover, a:focus {
+    color: darken( $color-primary, 10% );
+}
+
+a:active, a:hover {
+    outline-width: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $body-font-family;
+    font-style: normal;
+    font-weight: normal;
+    color: inherit;
+    text-rendering: optimizeLegibility;
+}
+
+pre, code {
+    white-space: pre-line;
+    border:0;
+}
+
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
+[type='url'], [type='color'], textarea {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 3.04688rem;
+    margin: 0 0 1.25rem;
+    padding: 0.625rem;
+    border: 1px solid #cacaca;
+    border-radius: 0;
+    background-color: #fefefe;
+    box-shadow: inset 0 1px 2px rgba(10, 10, 10, 0.1);
+    font-family: inherit;
+    font-size: 1.25rem;
+    font-weight: normal;
+    color: $color-primary-form;
+    transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+textarea {
+  height: 6rem;
+}
+
+[type='file'], [type='checkbox'], [type='radio'] {
+    margin: 0 0 1.25rem;
+}
+
+[type="checkbox"], [type="radio"] {
+    box-sizing: border-box;
+    padding: 0;
+}
+
+[type='checkbox'] + label[for], [type='radio'] + label[for] {
+    cursor: pointer;
+}
+
+[type='checkbox'] + label, [type='radio'] + label {
+    display: inline-block;
+    vertical-align: baseline;
+    margin-left: 0.625rem;
+    margin-right: 1.25rem;
+    margin-bottom: 0;
+}
+
+label {
+    display: block;
+    margin: 0;
+    font-size: 1.09375rem;
+    font-weight: normal;
+    line-height: 1.8;
+    color: $color-primary-form;
+}
+
+select {
+    width: 100%;
+    border-radius: 0;
+}
+
+select {
+    height: 3.04688rem;
+    margin: 0 0 1.25rem;
+    padding: 0.625rem;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 1px solid $color-selection-border;
+    border-radius: 0;
+    background-color: $color-selection-background;
+    font-family: inherit;
+    font-size: 1.25rem;
+    line-height: normal;
+    color: $color-primary-text;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100' fill='rgb%28138, 138, 138%29'><polygon points='0,0 100,0 50,50'/></svg>");
+    background-origin: content-box;
+    background-position: right -1.25rem center;
+    background-repeat: no-repeat;
+    background-size: 9px 6px;
+    padding-right: 1.875rem;
+    transition: box-shadow 0.5s, border-color 0.25s ease-in-out;
+}
+
+[data-whatinput='mouse'] button {
+    outline: 0;
+}
+
+button, html [type="button"], [type="reset"], [type="submit"] {
+    -webkit-appearance: button;
+}
+
+[type='submit'], [type='button'] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-radius: 0;
+}
+
+button {
+    padding: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    line-height: 1;
+}
+
+.container {
+    width: 1024px;
+    margin:0 auto;
+}
+
+@mixin small-button {
+    display: block;
+    border:1px solid $color-primary;
+    padding:0.1rem 0.5rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    margin:0 1rem 0 0;
+    &:hover, &.active {
+        background: $color-primary;
+        color: #fff;
+    }
+    &.alt {
+        color: $color-dark;
+        border-color: $color-dark;
+        &:hover, &.active {
+            background: $color-dark;
+            color: #fff;
+        }
+    }
+    span:nth-child(1) {
+        font-size:1.7rem;
+        vertical-align: middle;
+    }
+    span:nth-child(2) {
+        margin:0 0 0 0.3rem;
+    }
+}
+
+@mixin medium-button {
+    padding:5px 25px;
+    border: 1px solid $color-primary;
+    border-radius: 5px;
+    font-weight: bold;
+    &.active, &:hover {
+        background-color: $color-primary;
+        color:#fff;
+        cursor: pointer;
+    }
+    &.alt {
+        color: $color-dark;
+        border-color: $color-dark;
+        &:hover, &.active {
+            background: $color-dark;
+            color: #fff;
+        }
+    }
+}
+
+@mixin large-button {
+    font-family: $body-font-family;
+    font-size: 1.5rem;
+    cursor: pointer;
+    display: block;
+    padding: 0.5rem 1rem;
+    line-height: 1;
+    border: 1px solid $color-primary;
+    color: $color-primary;
+    border-radius: 5px;
+    font-weight: bold;
+    &:hover, &.active {
+        background: $color-primary;
+        color: #fff;
+    }
+    &.alt {
+        border-color: $color-dark;
+        color: $color-dark;
+        &:hover, &.active {
+            background: $color-dark;
+            color: #fff;
+        }
+    }
+}
