@@ -12,11 +12,31 @@ class SubmissionPreview extends Component {
         super(props);
         this.state = {
             submission: props.submission,
-            author: props.author
+            author: props.author,
+            limitSummary: '',
         }
-        console.log("THI IS:", this.state.submission);
         this.renderMathJax = this.renderMathJax.bind(this);
+    }
 
+    limitCharacter() {
+      const maxLength = 25;
+      // Create an array storage to store the long summary
+      const arr = []
+      if (this.props.submission !== undefined) {
+        // Push the summary into the array
+        arr.push(this.props.submission.summary)
+        // Splitting each word from the array
+        const eachWord = arr[0].split(' ');
+        // Retrieve the first 25 words
+        const maxString = eachWord.splice(0,maxLength).join(' ');
+        // If the length of the summary is greater than maxLength, then add ... at the end
+        if(arr[0].split(' ').length > maxLength) {
+          return maxString + ' ...'
+        }
+        else {
+          return maxString;
+        }
+      }
     }
 
     renderMathJax() {
@@ -32,7 +52,10 @@ class SubmissionPreview extends Component {
     componentDidMount() {
         setTimeout(() => {
             this.renderMathJax()
-        }, 500)
+        }, 500);
+
+        this.state.limitSummary = this.limitCharacter();
+
     }
 
     componentDidUpdate() {
@@ -74,7 +97,7 @@ class SubmissionPreview extends Component {
                     <MarkdownRender
                         disallowedTypes={['heading']}
                         source={this.state.submission.summary
-                        ? this.state.submission.summary
+                        ? this.state.limitSummary
                         : '*No summary*'}
                         className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
