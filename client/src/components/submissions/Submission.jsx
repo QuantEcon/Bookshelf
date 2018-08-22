@@ -630,6 +630,11 @@ class Submission extends Component {
                                                                 ?  <Time
                                                                       value={this.props.submission.data.notebook.lastUpdated}
                                                                       format='D MMM YYYY'/>
+                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
+                                                            {this.props.submission.data.notebook.lastUpdated
+                                                                ? <Time
+                                                                        value={this.props.submission.data.notebook.lastUpdated}
+                                                                        format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}
                                                                     format='D MMM YYYY'/>}

@@ -1,5 +1,18 @@
 // misc.scss
 // Miscellaneous styles
+.inviteAlert {
+  background-color: #F3D8DB;
+  border-radius: 4px;
+}
+
+.email-error {
+  text-align: center;
+  color: #721c24;
+}
+
+ .invite-label {
+  color: #d84d0a !important;
+}
 
 .loading-spinner {
     margin: auto;

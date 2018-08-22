@@ -21,10 +21,6 @@ const errorStyle = {
   color : 'green'
 };
 
-const checkStyle = {
-  marginLeft : '33%',
-  color : 'red'
-};
 
 var temp= [];
 
@@ -44,7 +40,12 @@ class Head extends Component {
             this.state = {
               value: '',
               visibility: false,
-              check : true};
+              check : true,
+              emailInvite: {
+                 sentValue: false,
+                 sentEmail: null,
+               }
+             };
 
             this.inviteClick = this
                 .inviteClick
@@ -127,6 +128,12 @@ class Head extends Component {
 
     }
 
+    handleSentSuccess = (inviteEmail) => {
+      this.setState({emailInvite: {sentValue: true, sentEmail: inviteEmail}}, () => {
+        this.props.emailSuccess(this.state.emailInvite);
+      });
+    }
+
     handleSubmit = (event) => {
       event.preventDefault();
 
@@ -140,6 +147,10 @@ class Head extends Component {
         }
 
       else if (inviteEmail.includes('@') && inviteEmail !== '') {
+        // Setting modal as false to close now that the invite is successful
+        this.setState({modalIsOpen: false});
+        this.handleSentSuccess(inviteEmail);
+
         //Send request to api endpoint /invite to send notification
         axios.post('/api/invite',{
         inviteEmail
@@ -240,7 +251,7 @@ class Head extends Component {
                                                   contentLabel="Example Modal"
                                                 >
 
-                                                  <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
+                                                  <h3 className='invite-label' ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h3>
 
 
                                                   <form onSubmit={this.handleSubmit}>
@@ -256,8 +267,10 @@ class Head extends Component {
                                                         <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
                                                       </li>
                                                     </ul>
-                                                    { this.state.visibility ? <h3 style={errorStyle} >This user is already part of QuantEcon Notes</h3> : null }
-                                                    { this.state.check ? null : <h3 style={checkStyle} >Please enter a valid email id</h3> }
+                                                    <div className='inviteAlert'>
+                                                      { this.state.visibility ? <h2 className='email-error' >This user is already part of QuantEcon Notes</h2> : null }
+                                                      { this.state.check ? null : <h3 className='email-error' >Please enter a valid email address</h3> }
+                                                    </div>
                                                   </form>
                                                 </Modal>
 
