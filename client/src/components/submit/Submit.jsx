@@ -92,7 +92,6 @@ class Submit extends Component {
             contentSaved: false,
             cancelSubmissionModal: false,
             redirect: false,
-            testing: false,
         }
 
         this.onOpenClick = this
@@ -397,8 +396,8 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
 
+              {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
@@ -406,14 +405,16 @@ class Submit extends Component {
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
 
+                {/* Modal window for cancel button in the edit notebook submission */}
                 <Modal isOpen={this.state.cancelSubmissionModal}
                       onRequestClose={this.toggleCancelSubmissionModal}
                       contentLabel="Cancel Submission"
-                      style={customStyles}>
+                      style={customStyles}
+                      shouldCloseOnOverlayClick={false} >
                       <h3>All the changes made will be lost, are you sure you want to leave?</h3>
                         <ul className="button-row">
                           <li>
-                            <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                            <button className='invite-modal-button alt' onClick={this.toggleCancelSubmissionModal}>Cancel</button>
                           </li>
                           <li>
                             {this.renderRedirect()}
