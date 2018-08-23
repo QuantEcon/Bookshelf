@@ -39,7 +39,6 @@
     "express-session": "^1.15.6",
     "fuzzy-time": "^1.0.7",
     "jsonwebtoken": "^8.x.x",
-    "mailcomposer": "^4.0.2",
     "mailgun-js": "^0.13.1",
     "mongodb": "^2.2.33",
     "mongoose": "^5.0.12",
