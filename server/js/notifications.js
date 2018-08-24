@@ -25,7 +25,7 @@ function sendEmail(to, from, message) {
 function sendInvite(to, from) {
     console.log("[Notifications] - sending invite to ", to)
 
-    const hostName = config.hostName + "/signin/"
+    const hostName = "http://" + config.hostName + "/signin/"
 
     data = {
         from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
@@ -43,10 +43,11 @@ function sendInvite(to, from) {
 
 
     mailgun.messages().send(data, (error, body) => {
+
         if (error) {
             console.error("[Mailgun] Error occured sending notification: ", error)
         } else {
-            console.log("[Mailgun] Success sending invite: ", body)
+            console.log("[Mailgun] Success sending invite: ", body, hostName)
         }
    })
 }
