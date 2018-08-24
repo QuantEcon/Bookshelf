@@ -25,7 +25,7 @@ function sendEmail(to, from, message) {
 function sendInvite(to, from) {
     console.log("[Notifications] - sending invite to ", to)
 
-    const hostName = "https://" + config.hostName + "/signin/"
+    const hostName = "http://" + config.hostName + "/signin/"
 
     data = {
         from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
