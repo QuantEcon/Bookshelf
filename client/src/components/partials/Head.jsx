@@ -115,7 +115,7 @@ class Head extends Component {
 
     afterOpenModal = () => {
       // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
+      // this.subtitle.style.color = '#f00';
     }
 
     closeModal = () => {
@@ -251,8 +251,6 @@ class Head extends Component {
                                                   contentLabel="Example Modal"
                                                 >
 
-                                                  <h3 className='invite-label' ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h3>
-
                                                   <form onSubmit={this.handleSubmit}>
 
                                                     <div className="modal">
@@ -272,10 +270,10 @@ class Head extends Component {
                                                         </label>
                                                         <ul className="options">
                                                           <li>
-                                                            <button className='alt' onClick={this.closeModal}>Cancel</button>
+                                                            <a className='alt' onClick={this.closeModal}>Cancel</a>
                                                           </li>
                                                           <li>
-                                                            <button onClick={this.handleSubmit}>Invite</button>
+                                                            <a onClick={this.handleSubmit}>Invite</a>
                                                           </li>
                                                         </ul>
                                                         <div className='inviteAlert'>
