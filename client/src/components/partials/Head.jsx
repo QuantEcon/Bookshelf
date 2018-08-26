@@ -251,20 +251,22 @@ class Head extends Component {
                                                   contentLabel="Example Modal"
                                                 >
 
-                                                  <div className="modal">
+                                                  <h3 className='invite-label' ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h3>
 
-                                                    <div className="modal-header">
+                                                  <form onSubmit={this.handleSubmit}>
 
-                                                      <h1 className='modal-title'>Invite User</h1>
+                                                    <div className="modal">
 
-                                                    </div>
+                                                      <div className="modal-header">
 
-                                                    <div className="modal-body">
+                                                        <h1 className='modal-title'>Invite User</h1>
 
-                                                      <p><strong>Enter the email address of the person you would like to invite</strong></p>
+                                                      </div>
 
+                                                      <div className="modal-body">
 
-                                                      <form onSubmit={this.handleSubmit}>
+                                                        <p><strong>Enter the email address of the person you would like to invite</strong></p>
+
                                                         <label>
                                                           <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                         </label>
@@ -277,16 +279,17 @@ class Head extends Component {
                                                           </li>
                                                         </ul>
                                                         <div className='inviteAlert'>
-                                                          { this.state.visibility ? <h2 className='email-error' >This user is already part of QuantEcon Notes</h2> : null }
-                                                          { this.state.check ? null : <h3 className='email-error' >Please enter a valid email address</h3> }
+                                                          { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
+                                                          { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
                                                         </div>
-                                                      </form>
+
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
+
+                                                      </div>
 
                                                     </div>
 
-                                                    <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
-
-                                                  </div>
+                                                  </form>
 
                                                 </Modal>
 
