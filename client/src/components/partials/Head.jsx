@@ -4,6 +4,7 @@ import notesLogo from '../../assets/img/notes-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
+import classnames from 'classnames';
 
 const customStyles = {
   content : {
@@ -26,7 +27,6 @@ const errorStyle = {
 
 var temp= [];
 
-
 class Head extends Component {
     constructor(props) {
             super(props)
@@ -36,17 +36,18 @@ class Head extends Component {
                 .bind(this)
 
             this.state = {
-                modalIsOpen: false
-            };
-
-            this.state = {
               value: '',
               visibility: false,
               check : true,
+              modalIsOpen: false,
               emailInvite: {
                  sentValue: false,
                  sentEmail: null,
-               }
+              },
+              errors: {
+                invalidEmail: '',
+                emailTruthValue: null,
+              }
              };
 
             this.inviteClick = this
@@ -72,6 +73,7 @@ class Head extends Component {
             this.handleSubmit = this
                 .handleSubmit
                 .bind(this);
+
 
     }
 
@@ -121,8 +123,7 @@ class Head extends Component {
     }
 
     closeModal = () => {
-      this.setState({modalIsOpen: false});
-      this.setState({value:''});
+      this.setState({modalIsOpen: false, value: '', errors: {invalidEmail: '', emailTruthValue: null}});
     }
 
     handleChange = (event) => {
@@ -130,30 +131,39 @@ class Head extends Component {
 
     }
 
-    handleSentSuccess = (inviteEmail) => {
-      this.setState({emailInvite: {sentValue: true, sentEmail: inviteEmail}}, () => {
+    handleSentSuccess = (response) => {
+      console.log("[HandleSentSuccess] - ", response);
+      this.setState({emailInvite: {sentValue: response.emailTruthValue, sentEmail: response.validEmail}}, () => {
         this.props.emailSuccess(this.state.emailInvite);
       });
+      // Setting modal as false to close now that the invite is successful
+      this.closeModal();
+    }
+
+    handleSentError = (error) => {
+      console.log("[HandleSentError] - ", error.response.data);
+      // Set check as in false to display the invalid error message in modal
+      this.setState({check: false});
+      this.setState({errors: {invalidEmail: error.response.data.emailError, emailTruthValue: error.response.data.emailTruthValue}});
     }
 
     handleSubmit = (event) => {
-      event.preventDefault();
+      event.preventDefault(); // Prevent the form from actually submitting
 
-      var inviteEmail = this.state.value;
-      this.setState({value:''}); //Reset state of modal
+      const inviteEmail = this.state.value;
 
+      this.setState({value:''}); //Reset email input state in modal
+
+      // Checking if the email already exists or has been sent previously
       if (temp.includes(inviteEmail) && inviteEmail !== '')
         {
         this.setState({visibility : true,
                       check : true})
         }
 
-      else if (inviteEmail.includes('@') && inviteEmail !== '') {
-        // Setting modal as false to close now that the invite is successful
-        this.setState({modalIsOpen: false});
-        this.handleSentSuccess(inviteEmail);
+      else if (inviteEmail !== '') {
 
-        //Send request to api endpoint /invite to send notification
+        //Send POST request to /api/invite
         axios.post('/api/invite',{
         inviteEmail
         }, {
@@ -161,11 +171,13 @@ class Head extends Component {
            'Authorization': 'JWT ' + store.getState().auth.token
         }
         }).then(response => {
+        this.handleSentSuccess(response.data);
         console.log(response);
         console.log('[InviteActions] - invite success: ');
         return true;
 
         }).catch(error => {
+        this.handleSentError(error);
         console.log('[SubmitActions] - error in invite submit: ', error);
         return false;
         })
@@ -178,6 +190,8 @@ class Head extends Component {
     }
 
     render() {
+        const {errors} = this.state;
+
         return (
             <div>
                 {/* <div className="corner-ribbon">Beta</div> */}
@@ -260,7 +274,7 @@ class Head extends Component {
                                                       <div className="modal-body">
                                                         <p><strong>Enter the email address of the person you would like to invite</strong></p>
                                                         <label>
-                                                          <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
+                                                          <input type="email" placeholder="Input the email" value={this.state.value} className={classnames('invite-email-input', {'is-invalid': errors.invalidEmail})} onChange={this.handleChange} required/>
                                                         </label>
                                                         <ul className="options">
                                                           <li>
