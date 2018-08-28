@@ -26,6 +26,7 @@ var submissionSchema = new Schema({
 
     published: Date,
     lastUpdated: Date,
+    lastUpdateDate: Date,
 
     flagged: Boolean,
     flaggedReason: String,

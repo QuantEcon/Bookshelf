@@ -1,7 +1,7 @@
 /**
  * @file Submission actions
  * @author Trevor Lyon
- * 
+ *
  * @module submissionActions
  */
 import axios from 'axios'
@@ -188,7 +188,7 @@ const editSubmissionAction = ({
 
 export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
 const flagSubmissionAction = ({
-    submissionID, 
+    submissionID,
     flaggedReason,
     error
 }) => {
@@ -218,7 +218,7 @@ const flagCommentAction = ({
  * @function editSubmission
  * @description Makes an API request to edit a submission. Will replace any data supplied
  * with the data in the database.
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {Object} param0.formData Data the user filled out in the submit form
  * @param {File} param0.file File the user uploaded. (Can be null if `notebookJSON` is provided)
  * @param {Object} param0.notebookJSON JSON object representing the ipynb file. (can by null if
@@ -233,13 +233,14 @@ export const editSubmission = ({
     submissionID
 }, callback) => {
     return (dispatch) => {
-        console.log("[EditSubmssion Action] - file: ", file)
+        console.log("[EditSubmission Action] - file: ", file)
         var submission = {
             ...formData,
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
         };
+
         if (file) {
             submission.fileName = file.name
             //read and parse file
@@ -272,6 +273,7 @@ export const editSubmission = ({
                 })
             }
         } else if (notebookJSON) {
+    
             submission.notebookJSON = notebookJSON
             axios.post('/api/submit/edit-submission', {
                 submissionData: submission
@@ -347,9 +349,9 @@ export const deleteSubmission = (submissionID, callback) => {
 
 /**
  * @function fetchNBInfo
- * @description Makes an API request to get all data for the submission specified by the 
+ * @description Makes an API request to get all data for the submission specified by the
  * notebookID
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {String} param0.notebookID ID of the notebook being requested
  * @param {bool} forced Flag to bypass the needToFetch check
  */
