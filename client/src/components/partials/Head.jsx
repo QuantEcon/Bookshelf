@@ -47,7 +47,8 @@ class Head extends Component {
               errors: {
                 invalidEmail: '',
                 emailTruthValue: null,
-              }
+              },
+              emailEmpty: '',
              };
 
             this.inviteClick = this
@@ -123,7 +124,7 @@ class Head extends Component {
     }
 
     closeModal = () => {
-      this.setState({modalIsOpen: false, value: '', errors: {invalidEmail: '', emailTruthValue: null}});
+      this.setState({modalIsOpen: false, value: '', emailEmpty: '', errors: {invalidEmail: '', emailTruthValue: null}});
     }
 
     handleChange = (event) => {
@@ -183,15 +184,16 @@ class Head extends Component {
         })
       }
 
-      else {
+      else { // if input is empty
         this.setState({check : false,
-                      visibility : false})
+                      visibility : false,
+                      emailEmpty: 'Empty'})
       }
     }
 
     render() {
         const {errors} = this.state;
-
+        const { emailEmpty } = this.state;
         return (
             <div>
                 {/* <div className="corner-ribbon">Beta</div> */}
@@ -274,7 +276,7 @@ class Head extends Component {
                                                       <div className="modal-body">
                                                         <p><strong>Enter the email address of the person you would like to invite</strong></p>
                                                         <label>
-                                                          <input type="email" placeholder="Input the email" value={this.state.value} className={classnames('invite-email-input', {'is-invalid': errors.invalidEmail})} onChange={this.handleChange} required/>
+                                                          <input type="email" placeholder="Input the email" value={this.state.value} className={classnames('invite-email-input', {'is-invalid':errors.invalidEmail}, {'is-invalid': emailEmpty})} onChange={this.handleChange} required/>
                                                         </label>
                                                         <ul className="options">
                                                           <li>
