@@ -16,6 +16,7 @@ class SubmissionPreview extends Component {
             limitSummary: '',
         }
         this.renderMathJax = this.renderMathJax.bind(this);
+        this.limitCharacter = this.limitCharacter.bind(this);
     }
 
     limitCharacter() {
@@ -53,8 +54,7 @@ class SubmissionPreview extends Component {
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
-
-        this.state.limitSummary = this.limitCharacter();
+        console.log(this.state.submission)
 
     }
 
@@ -69,6 +69,7 @@ class SubmissionPreview extends Component {
     }
 
     render() {
+        {this.state.limitSummary = this.limitCharacter()}
         return (
             <div className="notebook-summary">
 
