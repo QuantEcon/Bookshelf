@@ -20,7 +20,7 @@ class SubmissionPreview extends Component {
     }
 
     limitCharacter() {
-      const maxLength = 25;
+      const maxLength = 50;
       // Create an array storage to store the long summary
       const arr = []
       if (this.props.submission !== undefined) {
