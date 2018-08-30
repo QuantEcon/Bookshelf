@@ -1,7 +1,7 @@
 /**
  * @file Submit Actions
  * @author Trevor Lyon
- * 
+ *
  * @module submitActions
  */
 
@@ -58,11 +58,11 @@ export const confirmSubmit = ({
 /**
  * @function submit
  * @description Creates a `submission` object to be sent to the API to create a new
- * submission document. If there is a file uploaded, the file will be read and the JSON 
+ * submission document. If there is a file uploaded, the file will be read and the JSON
  * will be extracted.
- * 
+ *
  * The method will then call `confirm` passing the created `submission` object
- * 
+ *
  * @param {Object} formData Data filled out by the user in the submit form:
  * ```
  * {
@@ -85,7 +85,7 @@ export const submit = (formData, file) => {
             lastUpdated: Date.now(),
             published: Date.now(),
         }
-        if (file) {            
+        if (file) {
             var reader = new FileReader();
             reader.readAsText(file);
             submission.fileName = file.name;
@@ -105,11 +105,11 @@ export const submit = (formData, file) => {
  * @function confirm
  * @description Makes an API request to create a new submission document in the database.
  * Called by `submit`
- * 
- * If the submission is successful, the API will return the new submission docuement and 
+ *
+ * If the submission is successful, the API will return the new submission docuement and
  * it will be added to the redux store
- * 
- * @param {Object} param0 
+ *
+ * @param {Object} param0
  * @param {Object} param0.submission Contains all the data necessary to create a new submission
  * document
  */

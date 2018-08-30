@@ -71,13 +71,14 @@
             display: flex;
             align-items: flex-end;
             padding:2rem;
+            position: relative;
             .details-title {
                 flex: 1;
                 .title {
                     font-size: 2rem;
                     margin:0 0 1rem 0;
                     display: inline-block;
-                    word-break: break-all;
+                    //word-break: break-all;
                 }
                 .date {
                     margin:0;
@@ -128,7 +129,7 @@
             .details-primary {
                 flex: 1;
                 padding:0 2rem 0 0;
-                word-break: break-word;
+                //word-break: break-word;
             }
             .details-secondary {
                 flex: 1;
@@ -206,16 +207,36 @@
     }
     .details-options {
         list-style: none;
-        margin:0 0 0 1rem;
+        margin: 0;
         padding:0;
-        display: inline-block;
-        position: relative;
-        top:5px;
+        //position: absolute;
+        //top: 2rem;
+        //right: 2rem;
         li {
             float: left;
             a {
                 @include small-button;
                 line-height: 1;
+            }
+        }
+    }
+    .details-flag {
+        list-style: none;
+        margin: 0;
+        padding:0;
+        position: absolute;
+        top: -3rem;
+        right: 0rem;
+        li {
+            float: left;
+            a {
+                @include small-button;
+                line-height: 1;
+                border: 1px solid $color-light;
+                color: $color-light;
+                &:hover {
+                    background:$color-light;
+                }
             }
         }
     }

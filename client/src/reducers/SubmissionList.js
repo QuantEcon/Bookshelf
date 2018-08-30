@@ -36,7 +36,6 @@ const SubmissionList = (state = {
             });
 
         case RESET_SEARCH_PARAMS: 
-            console.log("[SubmissionListReducer] - reset search params")
             return Object.assign({}, state, {
                 searchParams: defaultSearchParams
             }) 

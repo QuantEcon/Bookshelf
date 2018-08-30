@@ -59,7 +59,8 @@ class SubmissionContainer extends Component {
                         showAdmin={this.props.isAdmin}
                         nbLoading={this.props.nbLoading}
                         dataReceived={this.props.dataReceived}
-                        totalData={this.props.totalData}/>
+                        totalData={this.props.totalData}
+                        isSignedIn={this.props.isSignedIn}/>
                 </div>
             )
         }
@@ -88,7 +89,8 @@ function mapStateToProps(state, props) {
         nbLoading,
         dataReceived,
         totalData,
-        isAdmin: state.auth.isAdmin
+        isAdmin: state.auth.isAdmin,
+        isSignedIn: state.auth.isSignedIn
     }
 }
 

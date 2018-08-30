@@ -30,11 +30,11 @@ class Searchbar extends Component {
     }
 
     topics = [
-        'All',
+        "All",
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",
@@ -200,10 +200,10 @@ class Searchbar extends Component {
                                     type='submit'
                                     onChange={this.sortByChanged}
                                     value={this.state.searchParams.sortBy}>
+                                    <option value="Comments">Comments</option>
                                     <option value="Date">Date</option>
                                     <option value="Trending">Trending</option>
-                                    <option value="Views">Views</option>
-                                    <option value="Comments">Comments</option>
+                                    <option value="Views">Viewers</option>
                                     <option value="Votes">Votes</option>
                                 </select>
                             </label>

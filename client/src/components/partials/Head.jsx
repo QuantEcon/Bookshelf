@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
+import notesLogo from '../../assets/img/notes-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
@@ -16,6 +16,14 @@ const customStyles = {
   }
 };
 
+const errorStyle = {
+  marginLeft : '23%',
+  color : 'green'
+};
+
+
+var temp= [];
+
 
 class Head extends Component {
     constructor(props) {
@@ -29,7 +37,15 @@ class Head extends Component {
                 modalIsOpen: false
             };
 
-            this.state = {value: ''};
+            this.state = {
+              value: '',
+              visibility: false,
+              check : true,
+              emailInvite: {
+                 sentValue: false,
+                 sentEmail: null,
+               }
+             };
 
             this.inviteClick = this
                 .inviteClick
@@ -69,8 +85,27 @@ class Head extends Component {
     }
 
     inviteClick = () => {
-      console.log('in inviteClick method');
-      this.openModal();
+        this.setState({
+        visibility : false,
+        check : true
+        })
+        var userID=this.props.user._id;
+        axios.get('/api/search/userList/?_id=' + userID).then(response => {
+          var p = response.data;
+          for (var key in p) {
+          if (p.hasOwnProperty(key)) {
+
+            temp.push(p[key].email);
+            }
+          }
+
+          return true;
+
+        }).catch(error => {
+          console.log('error in adding Co-Author: ', error);
+          return false;
+        })
+        this.openModal();
 
     }
 
@@ -93,31 +128,51 @@ class Head extends Component {
 
     }
 
+    handleSentSuccess = (inviteEmail) => {
+      this.setState({emailInvite: {sentValue: true, sentEmail: inviteEmail}}, () => {
+        this.props.emailSuccess(this.state.emailInvite);
+      });
+    }
+
     handleSubmit = (event) => {
-        event.preventDefault();
+      // event.preventDefault();
+
+      var inviteEmail = this.state.value;
+      this.setState({value:''}); //Reset state of modal
+
+      if (temp.includes(inviteEmail) && inviteEmail !== '')
+        {
+        this.setState({visibility : true,
+                      check : true})
+        }
+
+      else if (inviteEmail.includes('@') && inviteEmail !== '') {
+        // Setting modal as false to close now that the invite is successful
         this.setState({modalIsOpen: false});
-        var  inviteEmail = this.state.value;
-        console.log('Invite a friend initiated')
-        console.log(this.state.value)
+        this.handleSentSuccess(inviteEmail);
 
-        this.setState({value:''}); //Reset state of modal
-
-      //Send request to api endpoint /invite to send notification
+        //Send request to api endpoint /invite to send notification
         axios.post('/api/invite',{
-            inviteEmail
+        inviteEmail
         }, {
-            headers: {
-               'Authorization': 'JWT ' + store.getState().auth.token
-            }
+        headers: {
+           'Authorization': 'JWT ' + store.getState().auth.token
+        }
         }).then(response => {
-            console.log(response);
-            console.log('[InviteActions] - invite success: ');
-            return true;
+        console.log(response);
+        console.log('[InviteActions] - invite success: ');
+        return true;
 
         }).catch(error => {
-            console.log('[SubmitActions] - error in invite submit: ', error);
-            return false;
+        console.log('[SubmitActions] - error in invite submit: ', error);
+        return false;
         })
+      }
+
+      else {
+        this.setState({check : false,
+                      visibility : false})
+      }
     }
 
     render() {
@@ -129,7 +184,7 @@ class Head extends Component {
                     className="submit-feedback"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a> */}
+                    href="http://discourse.quantecon.org/c/notes-feedback">Submit Feedback</a> */}
 
                 <header className="header">
 
@@ -140,7 +195,7 @@ class Head extends Component {
                             <div className="site-title">
                                 <a onClick={this.redirectToHome}>
                                     <span>
-                                        <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                        <img src={notesLogo} alt="Notes Logo" className="notes-logo"/>
                                         <div>
                                             <h2 className="site-name">Quant<span>Econ</span>
                                                 <strong>Notes</strong>
@@ -196,22 +251,25 @@ class Head extends Component {
                                                   contentLabel="Example Modal"
                                                 >
 
-                                                  <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
+                                                  <h3 className='invite-label' ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h3>
 
 
                                                   <form onSubmit={this.handleSubmit}>
                                                     <label>
-
                                                       <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                     </label>
                                                     <ul className="button-row">
                                                       <li>
-                                                        <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                        <button type="button"className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
                                                       </li>
                                                       <li>
-                                                        <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
+                                                        <button type="submit" className='invite-modal-button' >Invite</button>
                                                       </li>
                                                     </ul>
+                                                    <div className='inviteAlert'>
+                                                      { this.state.visibility ? <h2 className='email-error' >This user is already part of QuantEcon Notes</h2> : null }
+                                                      { this.state.check ? null : <h3 className='email-error' >Please enter a valid email address</h3> }
+                                                    </div>
                                                   </form>
                                                 </Modal>
 

@@ -11,13 +11,14 @@ import {typesetMath} from 'mathjax-electron'
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
+import { Prompt } from 'react-router'
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
  */
 class Submit extends Component {
-    
+
     /**
      * @prop {Object} user Contains all the current user's data.
      * @prop {func} submit Method to call after successful form validation and when the user
@@ -25,7 +26,9 @@ class Submit extends Component {
      * @prop {Object} history Required for navigation.
      * @prop {func} save Method to call after successful form validation and when the user
      * clicks on save. This is used if this is an EditSubmission page
+
      */
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         submit: PropTypes.func,
@@ -34,11 +37,10 @@ class Submit extends Component {
     }
 
     topics = [
-        'All',
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",
@@ -76,8 +78,13 @@ class Submit extends Component {
             modalOpen: false,
             markdownRefereceModal: false,
             notebookDataReady: false,
-            notebookJSON: {}
+            notebookJSON: {},
+            contentSaved: false
         }
+
+        this.onOpenClick = this
+            .onOpenClick
+            .bind(this);
     }
 
     componentWillMount() {
@@ -86,9 +93,9 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Bookshelf'
+            document.title = 'Edit Submission - QuantEcon Notes'
         } else {
-            document.title = 'Submit - QuantEcon Bookshelf'
+            document.title = 'Submit - QuantEcon Notes'
         }
     }
 
@@ -117,7 +124,10 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : {}
+            : {},
+        lastUpdated: this.props.isEdit
+            ? this.props.submission.data.lastUpdated
+            : ''
     }
 
     errors = {
@@ -131,9 +141,9 @@ class Submit extends Component {
     }
 
     /**
-     * Validates the form to ensure all required fields are filled out correctly. 
-     * 
-     * If there is an error in a field, an error message will be displayed underneath the 
+     * Validates the form to ensure all required fields are filled out correctly.
+     *
+     * If there is an error in a field, an error message will be displayed underneath the
      * input.
      */
     validate = () => {
@@ -203,33 +213,39 @@ class Submit extends Component {
     }
 
     /**
-     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
     submit = (e) => {
-        e.preventDefault();
-        if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit')
-            var file = this.state.accepted[0]
-                ? this.state.accepted[0]
-                : null
-            var notebookJSON = this.state.accepted[0]
-                ? null
-                : this.props.submission.data.notebookJSON
-            this.formData.score = this.props.submission.data.notebook.score
-            this.formData.views = this.props.submission.data.notebook.views
-            this.formData.published = this.props.submission.data.notebook.published
-            this
-                .props
-                .save({formData: this.formData, file, notebookJSON});
-        } else {
-            console.log('[EditSubmission] - not edit')
-
-            this
-                .props
-                .submit(this.formData, this.state.accepted[0]);
+        if(e) {
+            e.preventDefault()
         }
+        this.setState({contentSaved : true}, () => {
+        console.log(this.state.contentSaved)
+        if (this.props.isEdit) {
+            console.log('[EditSubmission] - submit edit', this.props)
+            var file = this.state.accepted[0]
+              ? this.state.accepted[0]
+              : null
+            var notebookJSON = this.state.accepted[0]
+              ? null
+              : this.props.submission.data.notebookJSON
+          this.formData.score = this.props.submission.data.notebook.score
+          this.formData.views = this.props.submission.data.notebook.views
+          this.formData.published = this.props.submission.data.notebook.published
+          this.formData.lastUpdateDate = Date(Date.now())
+          this.props.save({formData: this.formData, file, notebookJSON})
+          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+          ;
+      } else {
+          console.log('[EditSubmission] - not edit')
+
+          this
+              .props
+              .submit(this.formData, this.state.accepted[0]);
+      }
+     });
     }
 
     langChanged = (event) => {
@@ -294,6 +310,10 @@ class Submit extends Component {
         }
     }
 
+    onOpenClick = ()=> {
+      this.refs.dropzoneref.open();
+    }
+
     /**
      * Opens the submission preview modal
      * @param {Object} e Event passed from the `onClick` listener
@@ -304,6 +324,10 @@ class Submit extends Component {
         this.setState({
             modalOpen: !this.state.modalOpen
         })
+    }
+
+    closeModal = () => {
+      this.setState({modalOpen: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -343,7 +367,10 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
+                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+                <Modal isOpen={this.state.modalOpen}
+                       onRequestClose={this.closeModal}
+                       contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
@@ -362,7 +389,7 @@ class Submit extends Component {
                                 <li>
                                     <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
                                 </li>
-                                <li>    
+                                <li>
                                     <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
@@ -395,7 +422,7 @@ class Submit extends Component {
                                     BSD-3 license.
                                 </li>
                                 <li>
-                                    5. Jupyter notebooks uploaded to this site are considered to be released under 
+                                    5. Jupyter notebooks uploaded to this site are considered to be released under
                                     a CC BY-ND 4.0 International license.
                                 </li>
                                 <li>
@@ -403,7 +430,7 @@ class Submit extends Component {
                                     these terms and conditions
                                 </li>
                                 <li>
-                                    6. If you choose to delete your account, your submissions and comments will 
+                                    6. If you choose to delete your account, your submissions and comments will
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>
@@ -425,6 +452,7 @@ class Submit extends Component {
                                 </p>
                                 <Dropzone
                                     multiple={false}
+                                    ref = 'dropzoneref'
                                     className='dropzone'
                                     maxSize={10000000}
                                     onDrop={this.onDrop}
@@ -460,6 +488,14 @@ class Submit extends Component {
                                 </Dropzone>
                                 <ul className='button-row'>
                                     <li>
+                                        <button type="button"
+                                              disabled = {!this.props.isEdit}
+                                              onClick={this.onOpenClick}>
+                                              Update Notebook
+                                        </button>
+
+                                    </li>
+                                    <li>
                                         <button
                                             disabled={!this.state.fileUploaded || !this.state.notebookDataReady}
                                             onClick={this.toggleOpenModal}>
@@ -480,7 +516,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
-                                        maxLength="60"
+                                        maxLength="120"
                                         defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
@@ -566,6 +602,7 @@ class Submit extends Component {
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
+                                        maxLength="240"
                                         id="summary"
                                         onChange={this.summaryChanged}
                                         defaultValue={this.formData.summary}></textarea>
@@ -607,7 +644,7 @@ class Submit extends Component {
                                     <br/>
                                     <br/>
                                     By submitting to
-                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
+                                    {' '}<span className='title'>QuantEcon Notes</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>
@@ -648,7 +685,7 @@ class Submit extends Component {
                                         </li>
                                     : null}
                                 <li>
-                                    <button disabled={!this.state.valid}>
+                                    <button disabled={!this.state.valid} onClick={this.submit}>
                                         Submit
                                     </button>
                                 </li>

@@ -14,8 +14,8 @@ class SubmissionPreview extends Component {
             submission: props.submission,
             author: props.author
         }
+        this.renderMathJax = this.renderMathJax.bind(this);
 
-        this.renderMathJax = this.renderMathJax.bind(this)
     }
 
     renderMathJax() {

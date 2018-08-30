@@ -11,14 +11,10 @@ import {
     UNFLAG_USER,
     UNFLAG_COMMENT,
     REMOVE_SUBMISSION,
-    DELETE_COMMENT,
-    DELETE_SUBMISSION,
-    DELETE_USER,
     REMOVE_COMMENT
 } from '../actions/admin'
 
 const AdminReducer = (state = {}, action) => {
-    console.log("[AdminReducer] - action: ", action)
     switch(action.type){
         case REQUEST_FLAGGED_CONTENT:
             return Object.assign({}, state, {
@@ -85,7 +81,7 @@ const AdminReducer = (state = {}, action) => {
                     users: state.adminUsers.users.concat(action.user)
                 }
             })
-        
+
         case REMOVE_ADMIN:
             const newUsers = state.adminUsers.users.filter((user) => user._id !== action.userID)
             return Object.assign({}, state, {
@@ -93,7 +89,7 @@ const AdminReducer = (state = {}, action) => {
                     users: newUsers
                 }
             })
-        
+
         case RESTORE_SUBMISSION:
             const newSubmissions = state.deletedSubmissions.filter((submission) => submission.data._id !== action.submissionID)
             return Object.assign({}, state, {
@@ -113,7 +109,9 @@ const AdminReducer = (state = {}, action) => {
             })
 
         case UNFLAG_COMMENT:
-            const newFlaggedComments = state.flaggedComments.filter((comment) => comment._id !== action.commentID)
+            const newFlaggedComments = state.flaggedComments.filter((comment) => comment.data._id !== action.commentID)
+            console.log("Flagged comments: ", state.flaggedComments)
+            console.log("new flagged comments: ", newFlaggedComments)
             return Object.assign({}, state, {
                 flaggedComments: newFlaggedComments
             })
@@ -132,8 +130,10 @@ const AdminReducer = (state = {}, action) => {
             })
         case REMOVE_COMMENT:
             const newFComments = state.flaggedComments.filter((comment) => {
+                console.log(comment.data._id, typeof comment.data._id);
                 return comment.data._id !== action.commentID
             })
+
             const newDComments = state.deletedComments.filter((comment) => {
                 return comment.data._id !== action.commentID
             })
@@ -142,30 +142,7 @@ const AdminReducer = (state = {}, action) => {
                 flaggedComments: newFComments,
                 deletedComments: newDComments
             })
-        case DELETE_COMMENT:
-            const newF1Comments = state.flaggedComments.filter((comment) => {
-                return comment.data._id !== action.commentID
-            })
 
-            return Object.assign({}, state, {
-                flaggedComments: newF1Comments,
-            })
-        case DELETE_SUBMISSION:
-            const newF1Submissions = state.flaggedSubmissions.filter((submission) => {
-                return submission.data._id !== action.submissionID
-            })
-        
-            return Object.assign({}, state, {
-                flaggedSubmissions: newF1Submissions,
-            })
-        case DELETE_USER:
-            const newF1Users = state.flaggedUsers.filter((user) => {
-                return user._id !== action.userID
-            })
-
-            return Object.assign({}, state, {
-                flaggedUsers: newF1Users,
-            })
         default:
             return state
     }

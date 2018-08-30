@@ -67,6 +67,7 @@ var userSchema = new Schema({
     currentProvider: String,
     // meta
     flagged: Boolean,
+    flaggedReason: String,
     deleted: Boolean,
     new: Boolean,
 });

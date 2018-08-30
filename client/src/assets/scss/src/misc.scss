@@ -1,5 +1,18 @@
 // misc.scss
 // Miscellaneous styles
+.inviteAlert {
+  background-color: #F3D8DB;
+  border-radius: 4px;
+}
+
+.email-error {
+  text-align: center;
+  color: #721c24;
+}
+
+ .invite-label {
+  color: #d84d0a !important;
+}
 
 .loading-spinner {
     margin: auto;
@@ -89,7 +102,7 @@ img.loading-avatar {
 }
 
 .question {
-    
+
 }
 
 .question::before {
@@ -107,7 +120,7 @@ img.loading-avatar {
 }
 
 .answer {
-    
+
 }
 
 .border-bottom {
@@ -115,22 +128,36 @@ img.loading-avatar {
     padding-bottom: 1rem;
 }
 
-.qa {
+.page-content {
     background: white;
-    padding: 2rem;
-    margin: 2rem;
+    padding: 2rem 4rem;
+    margin: 2rem 0;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .14), 0 3px 1px -2px rgba(0, 0, 0, .2), 0 1px 5px 0 rgba(0, 0, 0, .12);
 }
 
 .page-title {
-    padding: 0 2rem !important;
-    border-radius: 5px !important;
+  text-align: center;
+    //padding: 0;
+    //border-radius: 5px !important;
 }
 
 .title-name {
-    padding: 1rem;
-    font-size: 2rem;
+    padding: 1rem 0;
+    font-size: 2.3rem;
     border-bottom: 1px solid #cacaca;
     color: black;
 }
 
+/* Notebook rendering */
+
+.notebook-preview .cell .outputs code {
+    font-family: monospace !important;
+}
+
+.notebook-preview .cell .prompt {
+    width: 30px !important;
+}
+
+.notebook-preview .content-margin {
+    padding-left: 40px !important;
+}

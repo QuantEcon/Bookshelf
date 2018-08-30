@@ -18,19 +18,23 @@ var config = require('../../_config');
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
  * @apiname GetSubmissions
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Queries the database for all submissions matching the parameters
- * 
+ *
+ * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
+ * This was to reduce the potential for false inflation of the `views` field.
+ *
  * @apiParam {string}   lang        language of the notebook (Python, Julia, Other).
  * @apiParam {string}   topic       topic of the notebook. Given by the list of topics in the submission page.
  * @apiParam {id}       author      database id of the author.
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Views, Trending, Date).
- * 
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ *
+ *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
  * @apiSuccess (200) {Number}       totalSubmissions    the number of submissions found.
  * @apiSuccess (200) {Object[]}     authors             the author database objects for each submission.
@@ -115,11 +119,11 @@ app.get('/all-submissions', function (req, res) {
                 };
                 break;
             case 'Trending':
+                console.log("Trending Algorithm");
                 break;
             case 'Views':
-                console.log("Sort by views")
                 options.sort = {
-                    'viewers': -1,
+                    'viewers_count': -1,
                     'published': -1
                 }
                 break;
@@ -166,24 +170,53 @@ app.get('/all-submissions', function (req, res) {
     });
 });
 
+// endpoint to get a list of all the existing users
+app.get('/userList', (req, res) => {
+    var err = null;
+    var select = "_id avatar name fb.url github.url twitter.url email";
+    if (err) {
+        res.status(500);
+        res.send({
+            error: err
+        });
+    } else {
+        User.find({},select, function(err, users) {
+
+        var userMap = {};
+        console.log(req.query._id);
+
+        users.forEach(function(user) {
+            if (user._id != req.query._id ) {
+                userMap[user._id] = user;
+
+            }
+
+
+        });
+
+        res.send(userMap);
+      });
+    }
+});
+
 /**
  * @api {get} /api/search/notebook/:nbid Get Submission
  * @apiGroup Search
  * @apiName GetSubmission
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiParam {string} nbID the id of the submission being searched for.
- * 
+ *
  * @apiDescription If the nbid matches one of the objects in the database, and object will be sent
  * back
  *
- * Note: the authors' objects will only contain the necessary data to display a summary - 
+ * Note: the authors' objects will only contain the necessary data to display a summary -
  * avatar, name and author id
- * 
- * If there is a current user supplied in the req.currentUser, then a data.user object will be appended to 
+ *
+ * If there is a current user supplied in the req.currentUser, then a data.user object will be appended to
  * the reponse
- * 
+ *
  * @apiSuccess (200) {Object}   data                The data for the submission
  * @apiSuccess (200) {Object}   data.notebook       the notebook object from the database.
  * @apiSuccess (200) {String}   data.html           the pre-rendered notebook html (if pre-rendering was enabled).
@@ -198,11 +231,20 @@ app.get('/all-submissions', function (req, res) {
  * @apiSuccess (200) {ID}       data.user._id       ID of the current user
  * @apiSuccess (200) {ID[]}     data.user.upvotes   Array of object id's representing the user's upvotes
  * @apiSuccess (200) {ID[]}     data.user.downvotes Array of object id's representing the user's downvotes
- * 
+ *
  * @apiError (404) NotebookNotFound No notebook was found with matching id
  * @apiError (500) InternalServerError An error occurred searching the database for relevant data
  */
+
+Array.prototype.unique = function() {
+    return this.filter(function (value, index, self) {
+      return self.indexOf(value) === index;
+    });
+  }
+
+
 app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
+
     // get nb info
     var notebook;
     var commentAuthorIDs;
@@ -216,8 +258,19 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-
                 var select = "_id title author views comments score summary topics published lang fileName viewers views coAuthors notebookJSONString";
+
+                // to find the submission by ID
+                Submission.findById(notebookID, function(err, sub) {
+                  if(err) {
+                    console.log("[Search] error searching for submission by ID: ", err)
+                    callback(err)
+                  } else if (sub) {
+                    // intializing updatedDate
+                    updatedDate = sub.lastUpdated
+                  }
+                });
+
                 try {
                     Submission.findOne({
                         _id: mdb.ObjectId(notebookID),
@@ -227,14 +280,39 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             console.log("[Search] error searching for submission: ", err)
                             callback(err)
                         } else if (submission) {
+
                             notebook = submission
                             notebook.nbLength = submission.notebookJSONString.length
+                            notebook.lastUpdated = updatedDate
+
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
+                            submission.updateDate = updatedDate
+
                             notebook.coAuthors = submission.coAuthors
-                            // TODO: This needs to be tested
-                            //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
+                            // TODO: Need to check for submission.viewers_count and test
+                            // check initially if there exists an array, if current array is empty, then then create a new one
+                            if(submission.viewers.length == 0){
+                              //create an array to store all users who have viewed the submission
+                              console.log("Creating an empty submission.viewers array...");
+                              submission.viewers = [];
+                            }
+                            // check if current user is logged in
+                            if(req.user) {
+                              // if the current user has not viewed the submission before and current user is not the same as author
+                              if(submission.viewers.indexOf(req.user._id) == -1 && JSON.stringify(submission.author) !== JSON.stringify(req.user._id)) {
+                                // push the current user into the submission.viewers
+                                submission.viewers.push(req.user._id);
+                                submission.viewers = submission.viewers.unique()
+                                submission.viewers_count = submission.viewers.length
+                              }
+                            }
+                            // just double checking when user is not logged in
+                            else {
+                              console.log("User is not logged in");
+                            }
+
                             var totalComments = submission.comments.length
                             console.log("comments.length: ", totalComments)
                             Comment.find({"_id": {"$in": submission.comments}}, (err, comments) => {
@@ -249,17 +327,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                     console.log("total comments: ", totalComments)
                                     submission.totalComments = totalComments
                                     submission.save()
-                                } 
+                                }
                             })
-                           
 
-                            if(!submission.viewers){
-                                console.log("No viewers")
-                                submission.viewers = []
-                            }
-                            if (req.user && submission.viewers.indexOf(req.user._id) == -1) {
-                                submission.viewers.push(req.user._id)
-                            }
                             // Check if has been preRendered and we want to send the pre-rendered notebook
                             if (submission.preRendered && config.preRender) {
                                 // Get html from preRendered file
@@ -282,7 +352,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 console.log('[Search] - typeof notebookJSON: ', typeof (notebook.notebookJSON));
                                 callback(null, notebook);
                             })
-                            // notebook.notebookJSONString = null;                            
+                            // notebook.notebookJSONString = null;
                         } else {
                             console.log('submission not found');
                             callback('Not found', null);
@@ -370,7 +440,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
         },
         //callback
         function (err, results) {
-            // console.log("[Search] results: ", results)
+            //console.log("[Search] results: ", results)
             if (err) {
                 if (notebook) {
                     console.log("Server err: ", err);
@@ -384,6 +454,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
 
             var nb = JSON.parse(JSON.stringify(results.nb))
             nb.notebookJSONString = null
+            console.log('[RESULTS!!!!!!!!!]', results)
             var data = {
                 notebook: nb,
                 html: results.nb.html,
@@ -433,19 +504,19 @@ app.get('/notebook_json/:nbid', function(req, res) {
  * @api {get} /api/search/users Get Users
  * @apiGroup Search
  * @apiName GetUsers
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Queries the database for a user with the matching _id from req.query.
- * 
+ *
  * If no user is found with a matching id or if no id was supplied in the request,
  * a 404 will be returned.
- * 
+ *
  * If a user is found with a matching id, an object will be returned
- * 
- * @apiParam {string} _id Database id of the user being search for. 
- * 
- * @apiSuccess (200) {Object[]} users            Array of matching user objects. 
+ *
+ * @apiParam {string} _id Database id of the user being search for.
+ *
+ * @apiSuccess (200) {Object[]} users            Array of matching user objects.
  * @apiSuccess (200) {String} users._id          database id of the user.
  * @apiSuccess (200) {String} users.name         name of the user.
  * @apiSuccess (200) {String} users.avatar       url to user's avatar.
@@ -453,9 +524,9 @@ app.get('/notebook_json/:nbid', function(req, res) {
  * @apiSuccess (200) {String} users.joinDate     date the user joined Bookshelf.
  * @apiSuccess (200) {Boolean} users.oneSocial   boolean flag if the user as only authenticated one social account.
  * @apiSuccess (200) {ID[]} users.submissions    array of submission id's.
- * 
+ *
  * @apiError (404) UserNotFound No user was found with matching id
- * 
+ *
  * @apiError (500) InternalServerError an error occured querying the database
  */
 app.get('/users', function (req, res) {
