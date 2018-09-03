@@ -286,17 +286,16 @@ class Submit extends Component {
     }
 
     summaryChanged = (event) => {
-      const maxWords = 10;
+      const maxWords = 500;
       // Remove line breaks and extra white spaces
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
-      console.log(words.split(" "));
       // Restrict summary word limits
       if (words.split(" ").length > maxWords) {
         this.formData.summary = words;
         // Prevent users from typing beyond max summary word limits
         event.preventDefault();
         event.stopPropagation();
-        //TODO:  Display modal error to users
+        //Display modal error to users
         this.toggleSummaryModal();
       }
       this.forceUpdate();
@@ -400,7 +399,7 @@ class Submit extends Component {
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
-                
+
                 <Modal isOpen={this.state.summaryModal} style={customStyles} contentLabel="Summary">
                     <div className="modal">
                       <div className="modal-header">
