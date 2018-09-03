@@ -400,17 +400,16 @@ class Submit extends Component {
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
-
-
-                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="overlay">
-                    <div className='my-modal'>
-                    <CloseIcon onClick={this.toggleSummaryModal}/>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Summary Word Limits</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <p>The word limits for summary is 500 words.</p>
-                        </div>
+                
+                <Modal isOpen={this.state.summaryModal} style={customStyles} contentLabel="Summary">
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Summary Word Limits</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>The word limits for summary is 500 words.</strong></p>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
+                      </div>
                     </div>
                 </Modal>
 
