@@ -13,6 +13,19 @@ import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
 
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)',
+    padding               : '0',
+    width                 : '600px'
+  }
+};
+
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
@@ -75,9 +88,10 @@ class Submit extends Component {
             showSummaryPreview: false,
             modalOpen: false,
             markdownRefereceModal: false,
+            summaryModal: false,
             notebookDataReady: false,
             notebookJSON: {},
-            contentSaved: false
+            contentSaved: false,
         }
 
         this.onOpenClick = this
@@ -272,8 +286,20 @@ class Submit extends Component {
     }
 
     summaryChanged = (event) => {
-        this.formData.summary = event.target.value;
-        this.forceUpdate();
+      const maxWords = 500;
+      // Remove line breaks and extra white spaces
+      const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
+      console.log(words.split(" "));
+      // Restrict summary word limits
+      if (words.split(" ").length > maxWords) {
+        this.formData.summary = words;
+        // Prevent users from typing beyond max summary word limits
+        event.preventDefault();
+        event.stopPropagation();
+        //TODO:  Display modal error to users
+        this.toggleSummaryModal();
+      }
+      this.forceUpdate();
     }
 
     /**
@@ -354,6 +380,12 @@ class Submit extends Component {
         })
     }
 
+    toggleSummaryModal = (event) => {
+      this.setState({
+        summaryModal: !this.state.summaryModal
+      })
+    }
+
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
@@ -367,6 +399,18 @@ class Submit extends Component {
                        contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
+                </Modal>
+
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="overlay" style={customStyles}>
+                    <div className='modal'>
+                    <CloseIcon onClick={this.toggleSummaryModal}/>
+                        <div className='modal-header'>
+                            <h1 className='modal-title'>Summary Word Limits</h1>
+                        </div>
+                        <div className='modal-body'>
+                            <p>The word limits for summary is 500 words.</p>
+                        </div>
+                    </div>
                 </Modal>
 
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
@@ -597,7 +641,7 @@ class Submit extends Component {
                                     <textarea
                                         placeholder="Notebook summary"
                                         id="summary"
-                                        onChange={this.summaryChanged}
+                                        onKeyPress={this.summaryChanged}
                                         defaultValue={this.formData.summary}></textarea>
 
                                     {this.state.showSummaryPreview
