@@ -85,7 +85,7 @@ class SignIn extends Component {
 
                 {this.props.loading
                 ? "loading..."
-                :<div className='my-modal'>
+                :<div className='modal'>
                     <div className='modal-header'>
                         <h1 className='modal-title'>Sign In</h1>
                     </div>
