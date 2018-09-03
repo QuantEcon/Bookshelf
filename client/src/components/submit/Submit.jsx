@@ -286,7 +286,7 @@ class Submit extends Component {
     }
 
     summaryChanged = (event) => {
-      const maxWords = 500;
+      const maxWords = 10;
       // Remove line breaks and extra white spaces
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
       console.log(words.split(" "));
@@ -401,8 +401,9 @@ class Submit extends Component {
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
 
-                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="overlay" style={customStyles}>
-                    <div className='modal'>
+
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="overlay">
+                    <div className='my-modal'>
                     <CloseIcon onClick={this.toggleSummaryModal}/>
                         <div className='modal-header'>
                             <h1 className='modal-title'>Summary Word Limits</h1>
