@@ -10,7 +10,6 @@ import CheckmarkIcon from 'react-icons/lib/fa/check-circle-o'
 import ErrorIcon from 'react-icons/lib/md/error-outline'
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
-import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
 
@@ -95,7 +94,7 @@ class EditProfile extends Component {
     }
 
     componentDidMount() {
-        document.title = 'Edit Profile - QuantEcon Bookshelf'
+        document.title = 'Edit Profile - QuantEcon Notes'
         // this     .props     .router     .setRouteLeaveHook(this.props.route, () => {
         // if (this.dirtyFields.name ||             this.dirtyFields.email ||
         // this.dirtyFields.summary ||             this.dirtyFields.website) {
@@ -675,56 +674,6 @@ class EditProfile extends Component {
                                                             next={this.onAddSocialEnd}
                                                             isAdd={true}>
                                                             Add Github
-                                                        </OAuthSignInButton>
-                                                    </li>
-                                                </ul>
-                                            </div>}
-                                    </div>
-                                    <hr/>
-                                    <div>
-                                        {this.props.user.fb
-                                            ? <div>
-                                                    <label htmlFor="facebook" className='section-title'>
-                                                        Facebook Profile {this.props.user.fb.hidden
-                                                            ? '(hidden)'
-                                                            : null}
-                                                    </label>
-                                                    <br/>
-                                                    <div className='edit-profile-header'>
-                                                        <div className='avatar'>
-                                                            <a href={this.props.user.fb.url}>
-                                                                <img src={this.props.user.fb.avatarURL} alt="Github avatar"/>
-                                                            </a>
-                                                        </div>
-                                                        <span>
-                                                            <a href={this.props.user.fb.url}>
-                                                                {this.props.user.fb.displayName}
-                                                            </a>
-                                                        </span>
-                                                    </div>
-                                                    <p className='input-hint input-hint-after'>
-                                                        <a onClick={this.removeFacebook} disabled={this.props.user.oneSocial}>
-                                                            Remove
-                                                        </a>
-                                                        {' | '}{this.props.user.fb.hidden
-                                                            ? <a onClick={this.toggleFacebook}>Show</a>
-                                                            : <a onClick={this.toggleFacebook}>Hide</a>} {' | '}
-                                                        <a
-                                                            onClick={this.useFacebookPhoto}
-                                                            disabled={this.props.user.activeAvatar === 'fb'}>Use this photo</a>
-                                                    </p>
-                                                </div>
-                                            : <div>
-                                                <label htmlFor="facebook" className='section-title'>Facebook Profile</label>
-                                                <br/>
-                                                <ul className='button-row'>
-                                                    <li className='menu-submit'>
-                                                        <OAuthSignInButton
-                                                            provider='Facebook'
-                                                            icon={FacebookIcon()}
-                                                            next={this.onAddSocialEnd}
-                                                            isAdd={true}>
-                                                            Add Facebook
                                                         </OAuthSignInButton>
                                                     </li>
                                                 </ul>

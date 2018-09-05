@@ -1,4 +1,4 @@
-## Summary
+# Summary
 
 QuantEcon Notes is a public repository that hosts Jupyter notebooks related to
 all areas of economics and econometrics.
@@ -17,19 +17,20 @@ URLs to individual notebooks will be permanent and can be used in citations.
 QuantEcon Notes is a [QuantEcon](https://quantecon.org) project funded by
 the [Alfred P. Sloan Foundation](https://sloan.org/).
 
+- - -
 
-## Project Team
+# Project Team
 
 
-####  Lead Developer
+####  **Lead Developer**
 
 * Trevor Lyon
 
-####  Prototype and Front-end Design
+####  **Prototype and Front-end Design**
 
 * Andrij Stachurski
 
-####  Project Coordinators
+#### **Project Coordinators**
 
 * Chase Coleman
 
@@ -41,28 +42,27 @@ the [Alfred P. Sloan Foundation](https://sloan.org/).
 
 * Natasha Watkins
 
+- - -
 
+# FAQs
 
-## FAQs
+1. **Can you handle supporting files?**  
 
-Can you handle supporting files?
+  Not yet, but we're getting there.  
 
-Not yet, but we're getting there.  
+2. **Is this site only for economics?**  
 
-Is this site only for economics?
+  Yes, with room for some finance or operations research if it closely relates
+  to economics.  Please downvote or [alert us to] content that you think is off
+  topic.
 
-Yes, with room for some finance or operations research if it closely relates
-to economics.  Please downvote or [alert us to] content that you think is off
-topic.
+3. **What should I do if I find an issue with the website?**  
 
-What should I do if I find an issue with the website?
+  [Contact us]
 
-[Contact us]
+- - -
 
-
-
-
-## License and Disclaimer
+# License and Disclaimer
 
 THE SOFTWARE ON THIS SITE IS PROVIDED "AS IS" AND ANY EXPRESSED OR IMPLIED
 WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
@@ -76,13 +76,14 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
 EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 Software published on this site will be understood as having been released
-under the 3 Clause BSD license. 
+under the 3 Clause BSD license.
 
+- - -
 
-### Provided Jupyter Notebook and Content
+## Provided Jupyter Notebook and Content
 
 Jupyter notebooks uploaded to this site will be considered to be released as
 [CC BY-ND 4.0 International](https://creativecommons.org/licenses/by-nd/4.0/).
-Users may copy and redistribute the material so long as attribution is 
+Users may copy and redistribute the material so long as attribution is
 provided to the original author of the notebook, and users may not remix,
-transform, or build upon the material. 
+transform, or build upon the material.

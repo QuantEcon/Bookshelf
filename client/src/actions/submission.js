@@ -153,12 +153,14 @@ export function upvoteCom({
 export const POST_COMMENT = 'POST_COMMENT'
 export function postComment({
     submissionID,
-    comment
+    comment,
+    author
 }) {
     return {
         type: POST_COMMENT,
         submissionID,
-        comment
+        comment,
+        author
     }
 }
 
@@ -234,13 +236,14 @@ export const editSubmission = ({
     submissionID
 }, callback) => {
     return (dispatch) => {
-        console.log("[EditSubmssion Action] - file: ", file)
+        console.log("[EditSubmission Action] - file: ", file)
         var submission = {
             ...formData,
             lastUpdated: Date.now(),
             _id: submissionID,
             author: store.getState().auth.user,
         };
+
         if (file) {
             submission.fileName = file.name
             //read and parse file
@@ -273,6 +276,7 @@ export const editSubmission = ({
                 })
             }
         } else if (notebookJSON) {
+    
             submission.notebookJSON = notebookJSON
             axios.post('/api/submit/edit-submission', {
                 submissionData: submission
@@ -377,7 +381,6 @@ export const fetchNBInfo = ({
             axios.get('/api/search/notebook/' + notebookID).then(
                 resp => {
                     var sizeKB = sizeof(resp.data) / 1000;
-                    console.log('size of response in KB: ', sizeKB);
                     request.size = sizeKB
 
                     //Used for network analysis
@@ -409,14 +412,12 @@ export const fetchNBInfo = ({
 
             var nbJSONReqConfig = {
                 onDownloadProgress: function (progressEvent) {
-                    console.log("request progress: ", progressEvent)
                     dispatch(nbProgressAction(progressEvent.loaded, progressEvent.total, notebookID))
                 }
             }
 
             axios.get('/api/search/notebook_json/' + notebookID, nbJSONReqConfig).then(
                 resp => {
-                    console.log("resp: ", resp)
                     dispatch(receiveNBAction({
                         notebookID,
                         json: resp.data.json
@@ -448,6 +449,7 @@ export const flagSubmission = ({
         axios.post("/api/flag/submission", {
             submissionID,
             flaggedOption,
+
         }, {
             headers: {
                 "Authorization": "JWT " + store.getState().auth.token
@@ -455,7 +457,8 @@ export const flagSubmission = ({
         }).then(
             resp => {
                 dispatch(flagSubmissionAction({
-                    submissionID
+                    submissionID,
+                    flaggedReason
                 }))
             },
             err => {

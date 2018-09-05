@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# QuantEcon Bookshelf documentation build configuration file, created by
+# QuantEcon Notes documentation build configuration file, created by
 # sphinx-quickstart on Tue Oct 17 11:38:51 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -50,7 +50,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'QuantEcon Bookshelf'
+project = 'QuantEcon Notes'
 copyright = '2017, Trevor Lyon'
 author = 'Trevor Lyon'
 
@@ -119,7 +119,7 @@ html_sidebars = {
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'QuantEconBookshelfdoc'
+htmlhelp_basename = 'QuantEconNotesdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -146,7 +146,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'QuantEconBookshelf.tex', 'QuantEcon Bookshelf Documentation',
+    (master_doc, 'QuantEconNotes.tex', 'QuantEcon Notes Documentation',
      'Trevor Lyon', 'manual'),
 ]
 
@@ -156,7 +156,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'quanteconbookshelf', 'QuantEcon Bookshelf Documentation',
+    (master_doc, 'quanteconnotes', 'QuantEcon Notes Documentation',
      [author], 1)
 ]
 
@@ -167,8 +167,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'QuantEconBookshelf', 'QuantEcon Bookshelf Documentation',
-     author, 'QuantEconBookshelf', 'One line description of project.',
+    (master_doc, 'QuantEconNotes', 'QuantEcon Notes Documentation',
+     author, 'QuantEconNotes', 'One line description of project.',
      'Miscellaneous'),
 ]
 

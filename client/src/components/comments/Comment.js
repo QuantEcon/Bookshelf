@@ -8,6 +8,9 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+import {Link} from 'react-router-dom'
 
 
 const customStyles = {
@@ -34,7 +37,6 @@ class Comment extends Component {
      * @prop {Array} replies Array of comment objets representing the replies to this comment
      * @prop {Object} author Data for the author of the comment
      * @prop {Array} authors Data for all authors of the replies to this comment
-     * @prop {func} postReply Method called when the user clicks "Reply"
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
@@ -46,7 +48,6 @@ class Comment extends Component {
         replies: PropTypes.array,
         author: PropTypes.object.isRequired,
         authors: PropTypes.array,
-        postReply: PropTypes.func.isRequired,
         currentUser: PropTypes.object,
         editComment: PropTypes.func,
         isReply: PropTypes.bool
@@ -55,7 +56,7 @@ class Comment extends Component {
     constructor(props) {
         super(props);
 
-        console.log('[Comment] - props: ', props);
+        // console.log('[Comment] - props: ', props);
 
         this.state = {
             comment: props.comment,
@@ -63,6 +64,7 @@ class Comment extends Component {
             author: props.author ? props.author : props.currentUser,
             showInsertReply: false,
             showEditComment: false,
+            showError: false,
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply
@@ -93,6 +95,7 @@ class Comment extends Component {
             .deleteComment
             .bind(this);
         this.flagComment = this.flagComment.bind(this)
+
     }
 
     componentWillReceiveProps(props) {
@@ -102,6 +105,7 @@ class Comment extends Component {
             replies: props.replies,
             author: props.author,
             showInsertReply: false,
+            showError: false,
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply,
@@ -177,9 +181,18 @@ class Comment extends Component {
 
     /**Toggles the visibility of the reply text input field */
     toggleInsertReply() {
+      if(this.state.currentUser) {
         this.setState({
             showInsertReply: !this.state.showInsertReply
         })
+      }
+      else {
+        console.log('user not logged in')
+        this.setState({
+          showError: true
+        });
+      }
+
     }
 
     deleteComment() {
@@ -308,7 +321,7 @@ class Comment extends Component {
                             : <a onClick={this.flagComment}>
                                 <FlagIcon/>
                             </a>} */}
-                        <a onClick={this.flagComment}>
+                        <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>
                         <Modal
@@ -346,7 +359,7 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
-                        <Markdown disallowedTypes={['headings']} source={this.state.comment.content}/>
+                        <Markdown disallowedTypes={['heading']} source={this.state.comment.content}/>
                         <div>
                             {this.state.comment.edited
                                 ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
@@ -359,16 +372,19 @@ class Comment extends Component {
                         <ul className='options'>
                             {!this.state.isReply
                                 ? <div>{this.state.showInsertReply
-                                            ? <div>
-                                                    <li>
-                                                        <a onClick={this.toggleInsertReply}>Close</a>
-                                                    </li>
-                                                </div>
-                                            : <div>
-                                                <li>
-                                                    <a onClick={this.toggleInsertReply}>Reply</a>
-                                                </li>
-                                            </div>}
+                                      ? <div>
+                                              <li>
+                                                  <a onClick={this.toggleInsertReply}>Close</a>
+                                              </li>
+                                          </div>
+                                      :
+                                          <div>
+                                              <li>
+                                                  <a onClick={this.toggleInsertReply}>Reply</a>
+                                              </li>
+                                          </div>
+                                      }
+
                                     </div>
                                 : null}
 
@@ -384,8 +400,16 @@ class Comment extends Component {
                                     </div>
                                 : null}
                         </ul>
-                    </div>
 
+                    </div>
+                    {/*Display the sign in error message if user is not logged in*/}
+                    {this.state.showError && !this.state.currentUser
+                       ? <p className="error-help-text">
+                               You must
+                               {' '}<Link to='/signin'>sign in</Link>{' '}
+                               to reply
+                           </p>
+                       : null}
                     {this.state.showInsertReply && !this.state.isReply
                         ? <div className='comment-reply'>
                                 <form>

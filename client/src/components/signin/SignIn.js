@@ -3,11 +3,12 @@ import {connect} from 'react-redux'
 
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
-import FacebookIcon from 'react-icons/lib/fa/facebook-square'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import ErrorIcon from 'react-icons/lib/md/error-outline'
 // import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
+
+import * as config from '../../_config'
 
 import HeadContainer from '../../containers/HeadContainer';
 
@@ -27,7 +28,7 @@ class SignIn extends Component {
     }
 
     componentDidMount() {
-        document.title = 'Sign In - QuantEcon Bookshelf'
+        document.title = 'Sign In - QuantEcon Notes'
     }
 
     showErrorMessage = true;
@@ -100,18 +101,14 @@ class SignIn extends Component {
                                     icon={TwitterIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
-                            <li>
+                            {config.url.includes('development')
+                            ? null
+                            :<li>
                                 <OAuthSignInButton
                                     provider='Github'
                                     icon={GithubIcon()}
                                     next={this.onSignInEnd}></OAuthSignInButton>
-                            </li>
-                            <li>
-                                <OAuthSignInButton
-                                    provider='Facebook'
-                                    icon={FacebookIcon()}
-                                    next={this.onSignInEnd}></OAuthSignInButton>
-                            </li>
+                            </li>}
                             <li>
                                 <OAuthSignInButton
                                     provider='Google'
@@ -119,7 +116,7 @@ class SignIn extends Component {
                                     next={this.onSignInEnd}></OAuthSignInButton>
                             </li>
                         </ul>
-                        <p>Singing in allows you to
+                        <p>Signing in allows you to
                             <strong>{' '}Vote</strong>,
                             <strong>{' '}Comment{' '}</strong>
                             and

@@ -26,15 +26,18 @@ var submissionSchema = new Schema({
 
     published: Date,
     lastUpdated: Date,
+    lastUpdateDate: Date,
 
     flagged: Boolean,
+    flaggedReason: String,
     deleted: Boolean,
 
     deletedDate: Date,
 
     preRendered: Boolean,
     views: Number,
-    viewers: [ObjectId]
+    viewers: [ObjectId],
+    viewers_count: Number
 });
 
 submissionSchema.plugin(mongoosePaginate);

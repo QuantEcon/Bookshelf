@@ -6,12 +6,10 @@ import {
 export const LogReducer = (logs = {}, action) => {
     switch (action.type) {
         case LOG_REQUEST_SUBMISSION_START:
-            console.log('[LogReducer] - request submission start')
             return Object.assign({}, logs, {
                 [action.submissionID]: RequestReducer(logs[action.submissionID], action)
             })
         case LOG_REQUEST_SUBMISSION_END:
-            console.log('[LogReducer] - request submission end: ', action);
             return Object.assign({}, logs, {
                 [action.submissionID]: RequestReducer(logs[action.submissionID], action)
 

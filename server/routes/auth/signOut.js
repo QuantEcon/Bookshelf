@@ -9,6 +9,11 @@ var app = express.Router();
 
 app.get('/', jwtAuth.authenticate('jwt', {session:false}), (req, res) => {
     //TODO: invalidate token
+    console.log("user signed out!");
+    // destory the session
+    req.session.destroy();
+    // logout req.user
+    req.logout();
     res.sendStatus(200);
 });
 

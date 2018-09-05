@@ -34,7 +34,6 @@ class App extends Component {
   constructor(props){
     super(props);
 
-    console.log("props: ", props)
     props.actions.reauthenticate(window.location.href);
 
     this.showConfirm = this

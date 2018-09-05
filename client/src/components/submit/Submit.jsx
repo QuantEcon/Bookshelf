@@ -28,7 +28,9 @@ class Submit extends Component {
      * @prop {Object} history Required for navigation.
      * @prop {func} save Method to call after successful form validation and when the user
      * clicks on save. This is used if this is an EditSubmission page
+
      */
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         submit: PropTypes.func,
@@ -37,11 +39,10 @@ class Submit extends Component {
     }
 
     topics = [
-        'All',
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",
@@ -83,20 +84,8 @@ class Submit extends Component {
             contentSaved: false
         }
 
-        this.onDrop = this
-            .onDrop
-            .bind(this);
-        this.printState = this
-            .printState
-            .bind(this);
-        this.titleChanged = this
-            .titleChanged
-            .bind(this);
-        this.topicChanged = this
-            .topicChanged
-            .bind(this);
-        this.toggleTermsAndConditionsModal = this
-            .toggleTermsAndConditionsModal
+        this.onOpenClick = this
+            .onOpenClick
             .bind(this);
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
         this.submit = this.submit.bind(this);
@@ -107,13 +96,17 @@ class Submit extends Component {
 
     }
 
+    componentWillMount() {
+        Modal.setAppElement('body')
+    }
+
 
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Bookshelf'
+            document.title = 'Edit Submission - QuantEcon Notes'
         } else {
-            document.title = 'Submit - QuantEcon Bookshelf'
+            document.title = 'Submit - QuantEcon Notes'
         }
 
 
@@ -146,7 +139,10 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : {}
+            : {},
+        lastUpdated: this.props.isEdit
+            ? this.props.submission.data.lastUpdated
+            : ''
     }
 
     errors = {
@@ -165,7 +161,7 @@ class Submit extends Component {
      * If there is an error in a field, an error message will be displayed underneath the
      * input.
      */
-    validate () {
+    validate = () => {
         var valid = true;
 
         if (!this.formData.title) {
@@ -207,7 +203,7 @@ class Submit extends Component {
      * @param {String} topic Topic to remove from form data
      * @param {Array} array Array of topics
      */
-    removeTopic (topic, array) {
+    removeTopic = (topic, array) => {
         var index = array.indexOf(topic);
         if (index > -1) {
             array.splice(index, 1);
@@ -219,7 +215,7 @@ class Submit extends Component {
      * from the form data topic list
      * @param {Object} event Event passed from the `onChange` listener
      */
-    topicChanged(event) {
+    topicChanged = (event) => {
         //TODO: add/remove topic to/from topic list
         if (event.target.checked) {
             this
@@ -247,27 +243,28 @@ class Submit extends Component {
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
-    submit(e) {
 
-       this.setState({contentSaved : true}, () => {
-
-      e.preventDefault();
-
-      console.log(this.state.contentSaved)
-      if (this.props.isEdit) {
-          console.log('[EditSubmission] - submit edit')
-          var file = this.state.accepted[0]
+    submit = (e) => {
+        if(e) {
+            e.preventDefault()
+        }
+        this.setState({contentSaved : true}, () => {
+        console.log(this.state.contentSaved)
+        if (this.props.isEdit) {
+            console.log('[EditSubmission] - submit edit', this.props)
+            var file = this.state.accepted[0]
               ? this.state.accepted[0]
               : null
-          var notebookJSON = this.state.accepted[0]
+            var notebookJSON = this.state.accepted[0]
               ? null
               : this.props.submission.data.notebookJSON
           this.formData.score = this.props.submission.data.notebook.score
           this.formData.views = this.props.submission.data.notebook.views
           this.formData.published = this.props.submission.data.notebook.published
-          this
-              .props
-              .save({formData: this.formData, file, notebookJSON});
+          this.formData.lastUpdateDate = Date(Date.now())
+          this.props.save({formData: this.formData, file, notebookJSON})
+          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+          ;
       } else {
           console.log('[EditSubmission] - not edit')
 
@@ -277,14 +274,13 @@ class Submit extends Component {
       }
      });
 
-
     }
 
     langChanged = (event) => {
         this.formData.lang = event.target.value
     }
 
-    titleChanged(event) {
+    titleChanged = (event) => {
         this.dirtyFields.title = true;
         this.formData.title = event.target.value;
         this.validate();
@@ -326,7 +322,7 @@ class Submit extends Component {
      * @param {Array} accepted Array of accepeted files
      * @param {Array} rejected Array of rejected files
      */
-    onDrop(accepted, rejected) {
+    onDrop = (accepted, rejected) => {
         if (accepted.length) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});
@@ -371,7 +367,7 @@ class Submit extends Component {
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
-    readNotebookFile(){
+    readNotebookFile = () =>{
         if (!this.state.notebookDataReady) {
             var reader = new FileReader();
             this.setState({notebookDataReady: false});
@@ -386,21 +382,14 @@ class Submit extends Component {
         this.toggleOpenModal();
     }
 
-    printState() {
-        console.log("state: ", this.state);
-        console.log('errors: ', this.errors);
-        console.log('dirty fields: ', this.dirtyFields);
-        console.log('formdata: ', this.formData);
-    }
-
-    isTopicSelected(topic) {
+    isTopicSelected = (topic) => {
         return this
             .formData
             .topics
             .indexOf(topic) > -1;
     }
 
-    toggleMarkdownReferenceModal(e) {
+    toggleMarkdownReferenceModal = (e) => {
         e.preventDefault()
         this.setState({
             markdownRefereceModal: !this.state.markdownRefereceModal
@@ -417,15 +406,15 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Prompt key='block-nav' message='All the changes will be lost, are you sure you want to leave?' when={this.state.contentSaved!=true}/>
 
-                <Modal
-                  isOpen={this.state.modalOpen}
-                  onRequestClose={this.closeModal}
-                  contentLabel="Preview">
+                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+                <Modal isOpen={this.state.modalOpen}
+                       onRequestClose={this.closeModal}
+                       contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
+
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
                     <div className='my-modal'>
                     <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
@@ -435,20 +424,20 @@ class Submit extends Component {
                         <div className='modal-body'>
                             <ul>
                                 <li>
-                                    <MarkdownRender source="Use ticks (``) for code: \`code\` -> code`"/>
+                                    <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
                                 </li>
                                 <li>
-                                    <MarkdownRender source="Use * for italics: \*italics\* -> *italics*"/>
+                                    <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
                                 </li>
                                 <li>
-                                    <MarkdownRender source="Use ** for bold: \*\*bold\*\* -> **bold**"/>
+
+                                    <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
                         </div>
                     </div>
-                    <NotebookPreview
-                        notebook={this.state.notebookJSON}/>
                 </Modal>
+
                 <Modal isOpen={this.state.termsAndConditionsModalOpen} contentLabel="Preview">
                     <CloseIcon onClick={this.toggleTermsAndConditionsModal}/>
                     <div className='submit-footer'>
@@ -540,11 +529,12 @@ class Submit extends Component {
                                 </Dropzone>
                                 <ul className='button-row'>
                                     <li>
-                                    <button type="button"
-                                          disabled = {!this.props.isEdit}
-                                          onClick={this.onOpenClick}>
-                                        Upload Updated Notebook
-                                    </button>
+
+                                        <button type="button"
+                                              disabled = {!this.props.isEdit}
+                                              onClick={this.onOpenClick}>
+                                              Update Notebook
+                                        </button>
 
                                     </li>
                                     <li>
@@ -568,7 +558,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
-                                        maxLength="60"
+                                        maxLength="120"
                                         defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
@@ -650,6 +640,7 @@ class Submit extends Component {
                                         here.</p>
                                     <textarea
                                         placeholder="Notebook summary"
+                                        maxLength="240"
                                         id="summary"
                                         maxLength="100"
                                         onChange={this.summaryChanged}
@@ -692,7 +683,7 @@ class Submit extends Component {
                                     <br/>
                                     <br/>
                                     By submitting to
-                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
+                                    {' '}<span className='title'>QuantEcon Notes</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>
@@ -733,7 +724,7 @@ class Submit extends Component {
                                         </li>
                                     : null}
                                 <li>
-                                    <button disabled={!this.state.valid}>
+                                    <button disabled={!this.state.valid} onClick={this.submit}>
                                         Submit
                                     </button>
                                 </li>

@@ -27,48 +27,14 @@ class Searchbar extends Component {
             previousSearch: props.searchParams.keywords
         }
 
-        this.submit = this
-            .submit
-            .bind(this);
-        this.sortByChanged = this
-            .sortByChanged
-            .bind(this);
-        this.timeChanged = this
-            .timeChanged
-            .bind(this);
-        this.topicChanged = this
-            .topicChanged
-            .bind(this);
-        this.langChanged = this
-            .langChanged
-            .bind(this);
-        this.keywordsChanged = this
-            .keywordsChanged
-            .bind(this);
-
-        this.toggleSearchBar = this
-            .toggleSearchBar
-            .bind(this);
-        this.searchButtonClicked = this
-            .searchButtonClicked
-            .bind(this);
-        this.closeSearch = this
-            .closeSearch
-            .bind(this);
-        this.clearSearch = this
-            .clearSearch
-            .bind(this);
-        this.printState = this
-            .printState
-            .bind(this);
     }
 
     topics = [
-        'All',
+        "All",
         "Agricultural Economics",
         "Business Economics",
         "Computational Economics",
-        "Computational Techniques",
+        "Econometrics",
         "Economic Development",
         "Economic History",
         "Economics of Education",
@@ -95,7 +61,7 @@ class Searchbar extends Component {
     }
 
     /**Toggles visibility of the searchbar */
-    toggleSearchBar() {
+    toggleSearchBar = () => {
         if (this.state.showSearchBar) {
             this.setState({
                 showSearchBar: false
@@ -113,7 +79,7 @@ class Searchbar extends Component {
      * Method called when the user clicks the search button. If the search field is empty,
      * this method simply closes the searchbar. Else, it calls `submit`
      */
-    searchButtonClicked() {
+    searchButtonClicked = () =>{
         if (this.state.searchParams.keywords !== '') {
             this.submit();
         } else {
@@ -121,7 +87,7 @@ class Searchbar extends Component {
         }
     }
 
-    closeSearch() {
+    closeSearch = () => {
         this.setState({
             showSearchBar: false,
             searchParams: {
@@ -134,7 +100,7 @@ class Searchbar extends Component {
     /**
      * Resets the current search params to default and dispatches a search request
      */
-    clearSearch() {
+    clearSearch = () => {
         this.setState({
             hasCurrentSearch: false,
             previousSearch: '',
@@ -149,7 +115,7 @@ class Searchbar extends Component {
      * Listener for the search submit. Dispatches a search action.
      * @param {Object} e Event passed from the `onClick` listener
      */
-    submit(e) {
+    submit = (e) => {
         if(e){
             e.preventDefault();
         }
@@ -165,7 +131,7 @@ class Searchbar extends Component {
      * Listens for a change in the `Sort by` field then dispatches a new search.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    sortByChanged(e) {
+    sortByChanged = (e) => {
         this.setState({
             searchParams: {
                 ...this.state.searchParams,
@@ -177,7 +143,7 @@ class Searchbar extends Component {
      * Listens for a change in the `Time` field then dispatches a new search.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    timeChanged(e) {
+    timeChanged = (e) => {
         this.setState({
             searchParams: {
                 ...this.state.searchParams,
@@ -189,7 +155,7 @@ class Searchbar extends Component {
      * Listens for a change in the `Topic` field then dispatches a new search.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    topicChanged(e) {
+    topicChanged = (e) => {
         this.setState({
             searchParams: Object.assign({}, this.state.searchParams, {
                 topic: e.target.value
@@ -200,7 +166,7 @@ class Searchbar extends Component {
      * Listens for a change in the `Language` field then dispatches a new search.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    langChanged(e) {
+    langChanged = (e) => {
         this.setState({
             searchParams: {
                 ...this.state.searchParams,
@@ -213,16 +179,13 @@ class Searchbar extends Component {
      * Listens for a change in the `Keywords` text field.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    keywordsChanged(e) {
+    keywordsChanged = (e) => {
         this.setState({
             searchParams: {
                 ...this.state.searchParams,
                 keywords: e.target.value
             }
         });
-    }
-    printState() {
-        console.log('[Searchbar] - state: ', this.state);
     }
 
     render() {
@@ -237,10 +200,10 @@ class Searchbar extends Component {
                                     type='submit'
                                     onChange={this.sortByChanged}
                                     value={this.state.searchParams.sortBy}>
-                                    <option value="Trending">Trending</option>
-                                    <option value="Date">Date</option>
-                                    <option value="Views">Views</option>
                                     <option value="Comments">Comments</option>
+                                    <option value="Date">Date</option>
+                                    <option value="Trending">Trending</option>
+                                    <option value="Views">Viewers</option>
                                     <option value="Votes">Votes</option>
                                 </select>
                             </label>
