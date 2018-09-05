@@ -1,5 +1,6 @@
 import Axios from "axios";
 import store from '../store/store'
+import 'whatwg-fetch'; 
 
 export const REQUEST_ANNOUNCEMENTS = 'REQUEST_ANNOUNCEMENTS'
 export const requestAnnoucementsAction = () => {
@@ -14,7 +15,7 @@ export const receiveAnnouncementsAction = ({
     error
 }) => {
     return {
-        type: RECEIVE_ANNOUCEMENTS, 
+        type: RECEIVE_ANNOUCEMENTS,
         announcements,
         error
     }
@@ -22,7 +23,7 @@ export const receiveAnnouncementsAction = ({
 
 export const ADD_ANNOUNCEMENT = 'ADD_ANNOUNCEMENT'
 export const addAnnouncementAction = ({
-    error, 
+    error,
     announcement
 }) => {
     return {
@@ -184,6 +185,6 @@ export const editRecent = (content) => {
             dispatch(changeAnnouncementAction({
                 error: err,
             }))
-        }) 
+        })
     }
 }

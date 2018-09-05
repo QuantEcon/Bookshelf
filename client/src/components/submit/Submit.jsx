@@ -12,6 +12,8 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import CoAuthorInput from '../coAuthors/coAuthorInput'
+import { Prompt } from 'react-router'
+
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
@@ -77,7 +79,8 @@ class Submit extends Component {
             modalOpen: false,
             markdownRefereceModal: false,
             notebookDataReady: false,
-            notebookJSON: {}
+            notebookJSON: {},
+            contentSaved: false
         }
 
         this.onDrop = this
@@ -98,7 +101,13 @@ class Submit extends Component {
         this.toggleMarkdownReferenceModal = this.toggleMarkdownReferenceModal.bind(this)
         this.submit = this.submit.bind(this);
 
+        this.checkPrompt = this.checkPrompt.bind(this);
+
+        this.onOpenClick = this.onOpenClick.bind(this);
+
     }
+
+
 
     componentDidMount() {
         if (this.props.isEdit) {
@@ -106,6 +115,10 @@ class Submit extends Component {
         } else {
             document.title = 'Submit - QuantEcon Bookshelf'
         }
+
+
+    console.log(this.props)
+
     }
 
     /**
@@ -218,34 +231,53 @@ class Submit extends Component {
         }
     }
 
+    /**check the prompt and send callback to submit **/
+
+    checkPrompt(e)
+    {
+      console.log("inside the checkPrompt method")
+      setTimeout(() => {this.setState({contentSaved: true}, this.submit(e));
+      }, 10)
+
+
+    }
+
     /**
      * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
     submit(e) {
-        e.preventDefault();
-        if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit')
-            var file = this.state.accepted[0]
-                ? this.state.accepted[0]
-                : null
-            var notebookJSON = this.state.accepted[0]
-                ? null
-                : this.props.submission.data.notebookJSON
-            this.formData.score = this.props.submission.data.notebook.score
-            this.formData.views = this.props.submission.data.notebook.views
-            this.formData.published = this.props.submission.data.notebook.published
-            this
-                .props
-                .save({formData: this.formData, file, notebookJSON});
-        } else {
-            console.log('[EditSubmission] - not edit')
 
-            this
-                .props
-                .submit(this.formData, this.state.accepted[0]);
-        }
+       this.setState({contentSaved : true}, () => {
+
+      e.preventDefault();
+
+      console.log(this.state.contentSaved)
+      if (this.props.isEdit) {
+          console.log('[EditSubmission] - submit edit')
+          var file = this.state.accepted[0]
+              ? this.state.accepted[0]
+              : null
+          var notebookJSON = this.state.accepted[0]
+              ? null
+              : this.props.submission.data.notebookJSON
+          this.formData.score = this.props.submission.data.notebook.score
+          this.formData.views = this.props.submission.data.notebook.views
+          this.formData.published = this.props.submission.data.notebook.published
+          this
+              .props
+              .save({formData: this.formData, file, notebookJSON});
+      } else {
+          console.log('[EditSubmission] - not edit')
+
+          this
+              .props
+              .submit(this.formData, this.state.accepted[0]);
+      }
+     });
+
+
     }
 
     langChanged = (event) => {
@@ -317,6 +349,11 @@ class Submit extends Component {
         }
     }
 
+    onOpenClick = ()=> {
+      this.refs.dropzoneref.open();
+    }
+
+
     /**
      * Opens the submission preview modal
      * @param {Object} e Event passed from the `onClick` listener
@@ -327,6 +364,10 @@ class Submit extends Component {
         this.setState({
             modalOpen: !this.state.modalOpen
         })
+    }
+
+    closeModal = () => {
+      this.setState({modalOpen: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -369,11 +410,19 @@ class Submit extends Component {
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
+
+
         return (
+
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
+                <Prompt key='block-nav' message='All the changes will be lost, are you sure you want to leave?' when={this.state.contentSaved!=true}/>
+
+                <Modal
+                  isOpen={this.state.modalOpen}
+                  onRequestClose={this.closeModal}
+                  contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
@@ -455,6 +504,7 @@ class Submit extends Component {
                                 </p>
                                 <Dropzone
                                     multiple={false}
+                                    ref = 'dropzoneref'
                                     className='dropzone'
                                     maxSize={10000000}
                                     onDrop={this.onDrop}
@@ -489,6 +539,14 @@ class Submit extends Component {
                                     </div>
                                 </Dropzone>
                                 <ul className='button-row'>
+                                    <li>
+                                    <button type="button"
+                                          disabled = {!this.props.isEdit}
+                                          onClick={this.onOpenClick}>
+                                        Upload Updated Notebook
+                                    </button>
+
+                                    </li>
                                     <li>
                                         <button
                                             disabled={!this.state.fileUploaded || !this.state.notebookDataReady}
@@ -526,7 +584,7 @@ class Submit extends Component {
                                     <h2 className='section-title'>Co-Authors</h2>
                                     <p>An email will be sent to each co-author for acknowledgement.</p>
                                         <div className='coauthor-emails'>
-                                            <CoAuthorInput userId = {this.props.user._id} onSelectCoAuthor={this.coAuthorChanged}/>
+                                            <CoAuthorInput current = {this.formData.coAuthors} userId = {this.props.user._id} onSelectCoAuthor={this.coAuthorChanged}/>
                                         </div>
                                 </div>
 
@@ -593,6 +651,7 @@ class Submit extends Component {
                                     <textarea
                                         placeholder="Notebook summary"
                                         id="summary"
+                                        maxLength="100"
                                         onChange={this.summaryChanged}
                                         defaultValue={this.formData.summary}></textarea>
 

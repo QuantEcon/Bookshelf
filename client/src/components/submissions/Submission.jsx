@@ -19,6 +19,7 @@ import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
 import FlagIcon from 'react-icons/lib/md/flag'
 
+
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
@@ -27,10 +28,29 @@ import NotebookFromHTML from '../NotebookFromHTML';
 import { confirmAlert } from 'react-confirm-alert'; // Import
 import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 
-/** 
- * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
+
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const divStyle = {
+  paddingTop:'2.5px',
+  paddingBottom:'2.5px'
+};
+
+
+/**
+ * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves
  * the necessary data from Redux and passes it to this component
- * 
+ *
  * Children: {@link CommentsThread}
  */
 class Submission extends Component {
@@ -53,9 +73,12 @@ class Submission extends Component {
         super(props);
         this.state = {
             flipper: true,
-            deleteModalOpen: false
+            deleteModalOpen: false,
+            value: '',
+            modalIsOpen: false
         }
-        
+
+
         if(window.location.href.indexOf("comment") > -1)
         {
           this.state = {
@@ -66,7 +89,7 @@ class Submission extends Component {
         this.state = {
         showNotebook : true
         }
-        
+
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -98,15 +121,42 @@ class Submission extends Component {
             .deleteCallback
             .bind(this)
         this.renderMathJax = this.renderMathJax.bind(this)
+
+        this.openModal = this
+            .openModal
+            .bind(this);
+
+        this.afterOpenModal = this
+            .afterOpenModal
+            .bind(this);
+
+        this.closeModal = this
+            .closeModal
+            .bind(this);
+
+        this.handleChange = this
+            .handleChange
+            .bind(this);
+
+        this.handleSubmit = this
+            .handleSubmit
+            .bind(this);
+
     }
 
     componentDidMount() {
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
         setTimeout(() => {
-            this.renderMathJax()    
+            this.renderMathJax()
         }, 500);
-        
+
+        Modal.setAppElement('body');
+        console.log("here I will tell about the signed in status")
+        console.log(this.props)
+
+
+
     }
 
     renderMathJax(numTimes) {
@@ -127,6 +177,8 @@ class Submission extends Component {
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
             document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
+            console.log("I am here above")
+            console.log(this.props.submission.data.nbconvertJSON);
         }
         this.setState({
             flipper: !this.state.flipper
@@ -165,18 +217,14 @@ class Submission extends Component {
         //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
-    flagSubmission = () => {
+    flagSubmission = (flaggedReason) => {
         console.log("[Submission] - flag submission clicked")
-        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id, flaggedReason:flaggedReason})
     }
-    
+
     flagClick = () => {
-        confirmAlert({
-            title: 'Are you sure you want to report this content?',                       
-            confirmLabel: 'Yes',                          
-            cancelLabel: 'Cancel',                             
-            onConfirm: () => this.flagSubmission(),    
-         })
+        console.log('in inviteClick method');
+        this.openModal();
     }
 
     encounteredURI(uri) {
@@ -195,8 +243,8 @@ class Submission extends Component {
     }
 
     /**
-     * 
-     * @param {Object} param0 
+     *
+     * @param {Object} param0
      * @param {String} param0.reply Text of the reply entered in the form
      * @param {String} param0.commentID ID of the comment being replied to
      */
@@ -253,12 +301,48 @@ class Submission extends Component {
                 .props
                 .history
                 .replace("/")
-            
+
         } else { // display error message if unsuccessful
             console.error("Error deleting submission")
             this.setState({showDeletionError: true})
         }
     }
+
+
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal = () => {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
+    handleChange = (event) => {
+      this.setState({value: event.target.value});
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+        var  flaggedReason = this.state.value;
+        console.log('flag option initiated')
+        console.log(this.state.value)
+
+        this.setState({value:''}); //Reset state of modal
+
+        this.flagSubmission(flaggedReason)
+
+
+    }
+
+
 
     render() {
         return (
@@ -310,12 +394,22 @@ class Submission extends Component {
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
-                                        </a>
-                                    : <a title="This is a good submission" onClick={this.upvote}>
+                                          </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>
+                                      }
+                                      </div>
+                                    : <div>
+                                     {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>}
+                                        </div>
+                                        }
 
                                 {!this.props.isLoading
                                     ? <span className='score'>{this.props.submission.data.notebook.score}</span>
@@ -326,12 +420,21 @@ class Submission extends Component {
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
-                                            <ThumbsDown/>
-                                        </a>
-                                    : <a title="This submission could use some work" onClick={this.downvote}>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                            ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
+                                            <ThumbsDown/></a>
+                                            : <Link to='/signin'><ThumbsDown/></Link>}
+                                      </div>
+                                    : <div>{
+                                    this.props.isSignedIn
+                                        ?
+                                        <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsDown/></Link>}
+                                    </div>
+                                    }
                             </div>
 
                             {/*TODO: Admin options*/}
@@ -351,7 +454,7 @@ class Submission extends Component {
                                     {!this.props.isLoading && (this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id)
                                         ? <ul className='details-options'>
                                                 <li>
-                                                    <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                    <Link to={'/edit-submission/' + this.props.submissionID} style={divStyle}>Edit Notebook</Link>
                                                 </li>
                                                 <li>
                                                     <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>
@@ -363,6 +466,39 @@ class Submission extends Component {
                                             {!this.props.isLoading && this.props.submission.data.flagged
                                             ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
                                             :  <a onClick={this.flagClick}><FlagIcon/></a>}
+
+                                            <Modal
+                                              isOpen={this.state.modalIsOpen}
+                                              onAfterOpen={this.afterOpenModal}
+                                              onRequestClose={this.closeModal}
+                                              style={customStyles}
+                                              contentLabel="Example Modal">
+
+                                              <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+
+
+                                              <form onSubmit={this.handleSubmit}>
+                                                <label>
+
+
+                                                  <select value={this.state.value} onChange={this.handleChange}>
+                                                    <option value='1' disabled selected>Select a reason</option>
+                                                    <option value="spam" >Spam</option>
+                                                    <option value="inappropriate" >Inappropriate Content</option>
+                                                    <option value="copyright">Violates Copyright</option>
+                                                    <option value="other">Other</option>
+                                                  </select>
+                                                </label>
+                                                <ul className="button-row">
+                                                  <li>
+                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                  </li>
+                                                  <li>
+                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
+                                                  </li>
+                                                </ul>
+                                              </form>
+                                            </Modal>
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
@@ -447,23 +583,27 @@ class Submission extends Component {
                                                     : <p>loading...</p>}
 
                                             </li>
-                                            {/* <li>
+                                            { <li>
                                                 <div>
                                                 <span>Co-Authors:</span>
                                                 {!this.props.isLoading && this.props.submission.data.coAuthors.length
                                                     ? <div className="co-authors">
                                                         {this.props.submission.data.coAuthors.map((coAuthor) => {
-                                                            if(coAuthor._id){
+                                                          if(coAuthor._id){
                                                                 return <Link to={'/user/' + coAuthor._id}>{coAuthor.name}</Link>
-                                                            } else {
+                                                                }
+                                                          else if (coAuthor[0]._id) {
+                                                                return <Link to={'/user/' + coAuthor[0]._id}>{coAuthor[0].name}</Link>
+                                                          }
+                                                          /*  } else {
                                                                 return <a href={'mailto:' + coAuthor.email}>{coAuthor.email}</a>
-                                                            }
+                                                            } */
                                                         })}
                                                     </div>
                                                     : <div>None</div>}
                                                 </div>
-                                                
-                                            </li> */}
+
+                                            </li> }
                                             <li>
                                                 <span>Language:</span>
                                                 {/*TODO: Link to homepage with language search query*/}
@@ -511,7 +651,7 @@ class Submission extends Component {
                         </div>
                     </div>
 
-                    <div className='tile'>                           
+                    <div className='tile'>
                         {this.state.showNotebook
                         ? <div>
                             {this.props.nbLoading
@@ -531,7 +671,7 @@ class Submission extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                                
+
                                 <div>
                                     Loading... ({this.props.dataReceived} / {this.props.totalData})
                                     <br/>

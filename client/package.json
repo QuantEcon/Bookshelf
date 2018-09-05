@@ -24,11 +24,13 @@
     "react-mathjax": "git+https://github.com/wko27/react-mathjax.git",
     "react-modal": "^3.0.0",
     "react-moment": "^0.7.0",
+    "react-notifications": "^1.4.3",
     "react-paginate": "^5.0.0",
     "react-redux": "^5.0.5",
     "react-render-html": "^0.5.2",
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.2",
+    "react-router-navigation-prompt": "^1.6.3",
     "react-router-redux": "^4.0.8",
     "react-scripts": "^1.0.14",
     "react-select": "^1.2.1",
@@ -40,7 +42,8 @@
     "source-map-explorer": "^1.4.0",
     "styled-jsx": "^2.2.1",
     "typeface-source-code-pro": "0.0.35",
-    "typeface-source-sans-pro": "0.0.35"
+    "typeface-source-sans-pro": "0.0.35",
+    "whatwg-fetch": "^2.0.4"
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",

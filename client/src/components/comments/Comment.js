@@ -9,10 +9,22 @@ import Time from 'react-time';
 
 import ReplyList from './ReplyList';
 
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
  * all neccessary data down to this component.
- * 
+ *
  * Children: {@link ReplyList}
  */
 class Comment extends Component {
@@ -26,7 +38,7 @@ class Comment extends Component {
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
-     * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to 
+     * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to
      * this comment is disabled
      */
     static propTypes = {
@@ -104,7 +116,7 @@ class Comment extends Component {
     }
 
     /**Called when the user clicks edit comment.
-     * 
+     *
      * @param {Object} e Event passed from the `onClick` listener
      * This method then calls the prop `editComment`
      */
@@ -125,15 +137,22 @@ class Comment extends Component {
             .editComment({commentID: this.props.comment._id, newCommentText: newText})
     }
 
-    flagComment() {
-        this.props.actions.flagComment({commentID: this.props.comment._id})
+    flagComment(flaggedReason) {
+        console.log("Inside the flag comment method");
+        this.props.actions.flagComment({commentID: this.props.comment._id, flaggedReason : flaggedReason});
     }
-    
+
+
+    flagClick = () => {
+        console.log('in inviteClick method');
+        this.openModal();
+    }
+
     /**
      * Method called when the user clicks submit reply.
-     * 
+     *
      * This method then calls the `postReply` method passed down as a prop.
-     * 
+     *
      * @param {Object} e Event object passed from the `onClick` listener
      */
     submitRepsonse(e) {
@@ -177,6 +196,41 @@ class Comment extends Component {
         });
     }
 
+
+    /* Modal for plag reason */
+
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal = () => {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
+    handleChange = (event) => {
+      this.setState({value: event.target.value});
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+        var  flaggedReason = this.state.value;
+        console.log('flag option initiated')
+        console.log(this.state.value)
+
+        this.setState({value:''}); //Reset state of modal
+
+        this.flagComment(flaggedReason)
+
+
+    }
     render() {
         return (
             <div className='comment'>
@@ -257,6 +311,37 @@ class Comment extends Component {
                         <a onClick={this.flagComment}>
                             <FlagIcon/>
                         </a>
+                        <Modal
+                          isOpen={this.state.modalIsOpen}
+                          onAfterOpen={this.afterOpenModal}
+                          onRequestClose={this.closeModal}
+                          style={customStyles}
+                          contentLabel="Example Modal">
+
+                          <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+
+
+                          <form onSubmit={this.handleSubmit}>
+                            <label>
+
+
+                              <select value={this.state.value} onChange={this.handleChange} required>
+                                <option value="spam" >Spam</option>
+                                <option value="inappropriate" selected>Inappropriate Content</option>
+                                <option value="copyright">Violates Copyright</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </label>
+                            <ul className="button-row">
+                              <li>
+                                <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                              </li>
+                              <li>
+                                <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
+                              </li>
+                            </ul>
+                          </form>
+                        </Modal>
 
                     </div>
 

@@ -7,12 +7,18 @@ import NotebookPreview from '@nteract/notebook-preview';
 //import '@nteract/notebook-preview/styles/theme-light.css';
 //import 'codemirror/lib/codemirror.css';
 
+
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
 
 //Components
 import HeadContainer from '../../containers/HeadContainer';
+
+// import the html file
+// var __html = require('../../assets/regression_models.html');
+// var template = { __html: __html };
+
 class Preview extends Component {
     constructor(props) {
         super(props)
@@ -222,6 +228,7 @@ class Preview extends Component {
                                     <div>
                                         <NotebookPreview
                                             notebook={this.props.submission.notebookJSON}/>
+                                      
                                     </div>
                                 </div>}
                         </div>

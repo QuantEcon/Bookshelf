@@ -300,6 +300,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 console.log('File path: ', fileName);
                                 try {
                                     notebook.html = fs.readFileSync(fileName).toString();
+                                    console.log(notebook.html);
                                 } catch (ex) {
                                     console.warn('Error: ', ex, "\nDoes that file exist?")
                                 }

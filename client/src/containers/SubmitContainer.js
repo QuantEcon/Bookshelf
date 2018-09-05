@@ -6,7 +6,7 @@ import Submit from '../components/submit/Submit'
 import * as SubmitActions from '../actions/submit'
 
 /**
- * Parent container for {@link Submit}. Retrives the current user from the redux store, 
+ * Parent container for {@link Submit}. Retrives the current user from the redux store,
  * retrieves the Submit Actions and passes them to the child component
  */
 class SubmitContainer extends Component {
@@ -14,6 +14,8 @@ class SubmitContainer extends Component {
         super(props)
 
         this.onSubmit = this.onSubmit.bind(this)
+        console.log("In the container");
+        console.log(this.props);
     }
 
     /**

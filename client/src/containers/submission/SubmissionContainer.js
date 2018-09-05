@@ -19,9 +19,9 @@ const actions = {
 
 /**
  * Submission Container
- * 
+ *
  * Parent container for {@link Submission}. Retrieves all data from the Redux store
- * and passes it to the child Submission component. 
+ * and passes it to the child Submission component.
  */
 class SubmissionContainer extends Component {
     /**
@@ -59,11 +59,12 @@ class SubmissionContainer extends Component {
                         showAdmin={this.props.isAdmin}
                         nbLoading={this.props.nbLoading}
                         dataReceived={this.props.dataReceived}
-                        totalData={this.props.totalData}/>
+                        totalData={this.props.totalData}
+                        isSignedIn={this.props.isSignedIn}/>
                 </div>
             )
         }
-        
+
 
     }
 }
@@ -88,7 +89,8 @@ function mapStateToProps(state, props) {
         nbLoading,
         dataReceived,
         totalData,
-        isAdmin: state.auth.isAdmin
+        isAdmin: state.auth.isAdmin,
+        isSignedIn: state.auth.isSignedIn
     }
 }
 

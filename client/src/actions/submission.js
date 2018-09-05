@@ -1,7 +1,7 @@
 /**
  * @file Submission actions
  * @author Trevor Lyon
- * 
+ *
  * @module submissionActions
  */
 import axios from 'axios'
@@ -12,6 +12,7 @@ import {
 } from './utils'
 
 import sizeof from 'object-sizeof'
+import 'whatwg-fetch'; 
 
 export const DELETE_SUBMISSION = 'DELETE_SUBMISSION'
 const deleteSubmissionAction = ({
@@ -187,11 +188,13 @@ const editSubmissionAction = ({
 export const FLAG_SUBMISSION = 'FLAG_SUBMISSION'
 const flagSubmissionAction = ({
     submissionID,
+    flaggedReason,
     error
 }) => {
     return {
         type: FLAG_SUBMISSION,
         submissionID,
+        flaggedReason,
         error
     }
 }
@@ -199,11 +202,13 @@ const flagSubmissionAction = ({
 export const FLAG_COMMENT = "FLAG_COMMENT"
 const flagCommentAction = ({
     commentID,
+    flaggedReason,
     error
 }) => {
     return {
         type: FLAG_COMMENT,
         commentID,
+        flaggedReason,
         error
     }
 }
@@ -214,7 +219,7 @@ const flagCommentAction = ({
  * @function editSubmission
  * @description Makes an API request to edit a submission. Will replace any data supplied
  * with the data in the database.
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {Object} param0.formData Data the user filled out in the submit form
  * @param {File} param0.file File the user uploaded. (Can be null if `notebookJSON` is provided)
  * @param {Object} param0.notebookJSON JSON object representing the ipynb file. (can by null if
@@ -343,9 +348,9 @@ export const deleteSubmission = (submissionID, callback) => {
 
 /**
  * @function fetchNBInfo
- * @description Makes an API request to get all data for the submission specified by the 
+ * @description Makes an API request to get all data for the submission specified by the
  * notebookID
- * @param {Object} param0 
+ * @param {Object} param0
  * @param {String} param0.notebookID ID of the notebook being requested
  * @param {bool} forced Flag to bypass the needToFetch check
  */
@@ -435,12 +440,14 @@ export const fetchNBInfo = ({
 }
 
 export const flagSubmission = ({
-    submissionID
+    submissionID,
+    flaggedOption
 }) => {
-    console.log("[SubmissionActions] - flag submission: ", submissionID)
+    console.log("[SubmissionActions] - flag submission: ", submissionID, flaggedOption)
     return (dispatch) => {
         axios.post("/api/flag/submission", {
-            submissionID
+            submissionID,
+            flaggedOption,
         }, {
             headers: {
                 "Authorization": "JWT " + store.getState().auth.token
