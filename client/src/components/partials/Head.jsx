@@ -21,6 +21,10 @@ const errorStyle = {
   color : 'green'
 };
 
+const checkStyle = {
+  marginLeft : '33%',
+  color : 'red'
+};
 
 var temp= [];
 
@@ -38,6 +42,7 @@ class Head extends Component {
             };
 
             this.state = {
+
               value: '',
               visibility: false,
               check : true,
@@ -73,6 +78,8 @@ class Head extends Component {
 
     }
 
+
+
     redirectToHome = () => {
         console.log("redirect to home")
         //reset search params
@@ -85,12 +92,14 @@ class Head extends Component {
     }
 
     inviteClick = () => {
-        this.setState({
+      console.log('in inviteClick method');
+      this.setState({
         visibility : false,
         check : true
-        })
-        var userID=this.props.user._id;
-        axios.get('/api/search/userList/?_id=' + userID).then(response => {
+      })
+      var userID=this.props.user._id;
+      axios.get('/api/search/userList/?_id=' + userID).then(response => {
+
           var p = response.data;
           for (var key in p) {
           if (p.hasOwnProperty(key)) {
@@ -101,11 +110,13 @@ class Head extends Component {
 
           return true;
 
-        }).catch(error => {
+      }).catch(error => {
           console.log('error in adding Co-Author: ', error);
           return false;
-        })
-        this.openModal();
+      })
+      this.openModal();
+
+
 
     }
 
@@ -135,6 +146,7 @@ class Head extends Component {
     }
 
     handleSubmit = (event) => {
+
       // event.preventDefault();
 
       var inviteEmail = this.state.value;
@@ -151,7 +163,22 @@ class Head extends Component {
         this.setState({modalIsOpen: false});
         this.handleSentSuccess(inviteEmail);
 
-        //Send request to api endpoint /invite to send notification
+        ///// Check if email is in database ////
+
+
+        if (temp.includes(inviteEmail) && inviteEmail != '')
+        {
+          this.setState({visibility : true,
+                          check : true})
+        
+        }
+
+        ////////////////////////////////////////
+
+        else if (inviteEmail.includes('@') && inviteEmail != ''){
+        console.log ("In the else");
+      //Send request to api endpoint /invite to send notification
+
         axios.post('/api/invite',{
         inviteEmail
         }, {
@@ -171,9 +198,11 @@ class Head extends Component {
 
       else {
         this.setState({check : false,
+
                       visibility : false})
       }
     }
+
 
     render() {
         return (
@@ -256,6 +285,7 @@ class Head extends Component {
 
                                                   <form onSubmit={this.handleSubmit}>
                                                     <label>
+
                                                       <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                     </label>
                                                     <ul className="button-row">
@@ -266,10 +296,9 @@ class Head extends Component {
                                                         <button type="submit" className='invite-modal-button' >Invite</button>
                                                       </li>
                                                     </ul>
-                                                    <div className='inviteAlert'>
-                                                      { this.state.visibility ? <h2 className='email-error' >This user is already part of QuantEcon Notes</h2> : null }
-                                                      { this.state.check ? null : <h3 className='email-error' >Please enter a valid email address</h3> }
-                                                    </div>
+                                                    { this.state.visibility ? <h3 style={errorStyle} >This user is already part of QuantEcon Notes</h3> : null }
+                                                    { this.state.check ? null : <h3 style={checkStyle} >Please enter a valid email id</h3> }
+
                                                   </form>
                                                 </Modal>
 
@@ -297,5 +326,6 @@ class Head extends Component {
         );
     };
 }
+
 
 export default Head;

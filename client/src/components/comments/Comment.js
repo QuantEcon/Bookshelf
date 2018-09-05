@@ -12,6 +12,18 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import {Link} from 'react-router-dom'
 
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
  * all neccessary data down to this component.
@@ -129,17 +141,15 @@ class Comment extends Component {
             .editComment({commentID: this.props.comment._id, newCommentText: newText})
     }
 
-    flagComment() {
-        this.props.actions.flagComment({commentID: this.props.comment._id})
+    flagComment(flaggedReason) {
+        console.log("Inside the flag comment method");
+        this.props.actions.flagComment({commentID: this.props.comment._id, flaggedReason : flaggedReason});
     }
 
+
     flagClick = () => {
-        confirmAlert({
-            title: 'Are you sure you want to report this comment?',
-            confirmLabel: 'Yes',
-            cancelLabel: 'Cancel',
-            onConfirm: () => this.flagComment(),
-         })
+        console.log('in inviteClick method');
+        this.openModal();
     }
 
     /**
@@ -199,6 +209,41 @@ class Comment extends Component {
         });
     }
 
+
+    /* Modal for plag reason */
+
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+    }
+
+    afterOpenModal = () => {
+      // references are now sync'd and can be accessed.
+      this.subtitle.style.color = '#f00';
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
+    handleChange = (event) => {
+      this.setState({value: event.target.value});
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+        var  flaggedReason = this.state.value;
+        console.log('flag option initiated')
+        console.log(this.state.value)
+
+        this.setState({value:''}); //Reset state of modal
+
+        this.flagComment(flaggedReason)
+
+
+    }
     render() {
         return (
             <div className='comment'>
@@ -279,6 +324,37 @@ class Comment extends Component {
                         <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>
+                        <Modal
+                          isOpen={this.state.modalIsOpen}
+                          onAfterOpen={this.afterOpenModal}
+                          onRequestClose={this.closeModal}
+                          style={customStyles}
+                          contentLabel="Example Modal">
+
+                          <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+
+
+                          <form onSubmit={this.handleSubmit}>
+                            <label>
+
+
+                              <select value={this.state.value} onChange={this.handleChange} required>
+                                <option value="spam" >Spam</option>
+                                <option value="inappropriate" selected>Inappropriate Content</option>
+                                <option value="copyright">Violates Copyright</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </label>
+                            <ul className="button-row">
+                              <li>
+                                <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                              </li>
+                              <li>
+                                <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
+                              </li>
+                            </ul>
+                          </form>
+                        </Modal>
 
                     </div>
 

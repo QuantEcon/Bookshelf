@@ -1,5 +1,6 @@
 import axios from 'axios'
 import store from '../store/store'
+import 'whatwg-fetch'; 
 
 // Dispatch Objects ========================================
 
@@ -122,7 +123,7 @@ const deleteUserAction = ({
          error
      }
  }
- 
+
 export const SEARCH_USERS = "SEARCH_USERS"
 const searchUsersAction = ({
     keywords,
@@ -376,7 +377,7 @@ export const removeUser = ({userID}) => {
                         dispatch(removeUserAction({error: resp.data.message}))
                     } else {
                         dispatch(removeUserAction({userID}))
-                    }  
+                    }
                 },
                 err => {
                     dispatch(removeUserAction({error: err}))
@@ -451,7 +452,7 @@ export const deleteUser = ({userID}) => {
                         dispatch(deleteUserAction({error: resp.data.message}))
                     } else {
                         dispatch(deleteUserAction({userID}))
-                    }  
+                    }
                 },
                 err => {
                     dispatch(deleteUserAction({error: err}))
@@ -638,7 +639,7 @@ export const removeAdmin = ({userID}) => {
         }).then(
             resp => {
                 dispatch(removeAdminAction({userID}))
-            }, 
+            },
             err => {
                 dispatch(removeAdminAction({error: err}))
             }

@@ -12,6 +12,7 @@ import {
 } from './utils'
 
 import sizeof from 'object-sizeof'
+import 'whatwg-fetch'; 
 
 export const DELETE_SUBMISSION = 'DELETE_SUBMISSION'
 const deleteSubmissionAction = ({
@@ -203,11 +204,13 @@ const flagSubmissionAction = ({
 export const FLAG_COMMENT = "FLAG_COMMENT"
 const flagCommentAction = ({
     commentID,
+    flaggedReason,
     error
 }) => {
     return {
         type: FLAG_COMMENT,
         commentID,
+        flaggedReason,
         error
     }
 }
@@ -439,13 +442,14 @@ export const fetchNBInfo = ({
 
 export const flagSubmission = ({
     submissionID,
-    flaggedReason
+    flaggedOption
 }) => {
-    console.log("[SubmissionActions] - flag submission: ", submissionID, flaggedReason)
+    console.log("[SubmissionActions] - flag submission: ", submissionID, flaggedOption)
     return (dispatch) => {
         axios.post("/api/flag/submission", {
             submissionID,
-            flaggedReason
+            flaggedOption,
+
         }, {
             headers: {
                 "Authorization": "JWT " + store.getState().auth.token

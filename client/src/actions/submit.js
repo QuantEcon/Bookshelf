@@ -8,6 +8,7 @@
 import store from '../store/store'
 import axios from 'axios'
 import {fetchSubmissions} from './submissionList';
+import 'whatwg-fetch'; 
 
 export const BEGIN_SUBMIT = 'BEGIN_SUBMIT'
 export const beginSubmit = () => {

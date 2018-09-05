@@ -1,12 +1,13 @@
 /**
  * @file User actions
  * @author Trevor Lyon
- * 
+ *
  * @module userActions
  */
 
 import store from '../store/store';
 import axios from 'axios'
+import 'whatwg-fetch'; 
 
 export const REQUEST_USER_INFO = 'REQUEST_USER_INFO'
 export const requestUserInfo = (userID = null) => {

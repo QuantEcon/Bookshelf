@@ -19,6 +19,7 @@ import ThumbsDown from 'react-icons/lib/md/thumb-down'
 import DeleteIcon from 'react-icons/lib/md/delete';
 import FlagIcon from 'react-icons/lib/md/flag'
 
+
 //Components
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
@@ -52,6 +53,13 @@ const flaggedReasons = {
     'other': 'Other'
 }
 
+
+const divStyle = {
+  paddingTop:'2.5px',
+  paddingBottom:'2.5px'
+};
+
+
 /**
  * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves
  * the necessary data from Redux and passes it to this component
@@ -84,6 +92,7 @@ class Submission extends Component {
             flaggedReason: 'inappropriate',
             modalIsOpen: false,
             testing: [],
+
         }
 
         console.log('[Submission Information] - fetching about submission');
@@ -160,6 +169,10 @@ class Submission extends Component {
         }, 500);
 
         Modal.setAppElement('body');
+        console.log("here I will tell about the signed in status")
+        console.log(this.props)
+
+
     }
 
     renderMathJax(numTimes) {
@@ -179,6 +192,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
+
             document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
         }
         this.setState({
@@ -219,6 +233,7 @@ class Submission extends Component {
     }
 
     flagSubmission = (flaggedReason) => {
+
         console.log("[Submission] - flag submission clicked: ", flaggedReason)
         this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id, flaggedReason:flaggedReason})
     }
@@ -309,10 +324,12 @@ class Submission extends Component {
         }
     }
 
+
 /* modal for flagging Reason */
     openModal = () => {
       this.setState({modalIsOpen: true});
       console.log('state: ', this.state)
+
     }
 
     afterOpenModal = () => {
@@ -326,6 +343,7 @@ class Submission extends Component {
     }
 
     handleChange = (event) => {
+
         console.log("event: ", event.target.value)
         this.setState({flaggedReason: event.target.value});
 
@@ -334,6 +352,7 @@ class Submission extends Component {
     handleSubmit = (event) => {
         event.preventDefault();
         this.setState({modalIsOpen: false});
+
 
         console.log("flaggedReasons: ", flaggedReasons)
         console.log("reason: ", this.state.flaggedReason)
@@ -459,6 +478,7 @@ class Submission extends Component {
                                     {!this.props.isLoading && (this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id)
                                         ? <ul className='details-options'>
                                                 <li>
+
                                                     <Link to={'/edit-submission/' + this.props.submissionID} style={editStyle}>Edit</Link>
                                                 </li>
                                                 <li>
@@ -480,6 +500,7 @@ class Submission extends Component {
                                               contentLabel="Example Modal">
 
                                               <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+
                                               <form onSubmit={this.handleSubmit}>
                                                 <label>
                                                   <select value={this.state.flaggedReason} onChange={this.handleChange} required>
@@ -583,21 +604,26 @@ class Submission extends Component {
                                                     : <p>loading...</p>}
 
                                             </li>
-                                            {/* <li>
+                                            { <li>
                                                 <div>
                                                 <span>Co-Authors:</span>
                                                 {!this.props.isLoading && this.props.submission.data.coAuthors.length
                                                     ? <div className="co-authors">
                                                         {this.props.submission.data.coAuthors.map((coAuthor) => {
-                                                            if(coAuthor._id){
+                                                          if(coAuthor._id){
                                                                 return <Link to={'/user/' + coAuthor._id}>{coAuthor.name}</Link>
-                                                            } else {
+                                                                }
+                                                          else if (coAuthor[0]._id) {
+                                                                return <Link to={'/user/' + coAuthor[0]._id}>{coAuthor[0].name}</Link>
+                                                          }
+                                                          /*  } else {
                                                                 return <a href={'mailto:' + coAuthor.email}>{coAuthor.email}</a>
-                                                            }
+                                                            } */
                                                         })}
                                                     </div>
                                                     : <div>None</div>}
                                                 </div>
+
 
                                             </li> */}
                                             <li>

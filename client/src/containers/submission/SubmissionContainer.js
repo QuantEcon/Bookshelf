@@ -19,9 +19,9 @@ const actions = {
 
 /**
  * Submission Container
- * 
+ *
  * Parent container for {@link Submission}. Retrieves all data from the Redux store
- * and passes it to the child Submission component. 
+ * and passes it to the child Submission component.
  */
 class SubmissionContainer extends Component {
     /**
@@ -64,7 +64,7 @@ class SubmissionContainer extends Component {
                 </div>
             )
         }
-        
+
 
     }
 }

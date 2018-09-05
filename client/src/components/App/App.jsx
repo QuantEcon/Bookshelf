@@ -35,6 +35,14 @@ class App extends Component {
     super(props);
 
     props.actions.reauthenticate(window.location.href);
+
+    this.showConfirm = this
+        .showConfirm
+        .bind(this);
+  }
+
+  showConfirm(){
+    console.log("I am conforming the route")
   }
 
   render() {
@@ -50,7 +58,7 @@ class App extends Component {
                 <Route path='/submission/:id' component={SubmissionContainer}/>
                 <ProtectedRoute exact path='/edit-submission/:id' component={EditSubmissionContainer}/>
                 <ProtectedRoute exact path='/submit/preview' component={PreviewContainer}/>
-                <ProtectedRoute path='/submit' component={SubmitContainer}/>
+                <ProtectedRoute path='/submit' onLeave={ this.showConfirm } component={SubmitContainer}/>
                 <Route path='/signin' exact component={SignIn}/>
                 <ProtectedRoute exact path='/user/my-profile/edit' component={EditProfileContainer}/>
                 <ProtectedRoute exact path='/user/my-profile' component={MyProfileContainer}/>
@@ -60,7 +68,7 @@ class App extends Component {
                 <Route path='*' component={NotFound}/>
               </Switch>
             </div>
-          </BrowserRouter> 
+          </BrowserRouter>
       </div>
     );
   }

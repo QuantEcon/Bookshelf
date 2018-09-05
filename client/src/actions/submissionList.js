@@ -7,6 +7,7 @@
 
 import queryString from 'query-string';
 import store from '../store/store'
+import 'whatwg-fetch'; 
 
 export const REQUEST_SUBMISSION_PREVIEWS = 'REQUEST_SUBMISSION_PREVIEWS'
 export function requestSubmissionPreviews(searchParams = {

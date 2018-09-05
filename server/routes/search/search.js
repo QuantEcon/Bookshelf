@@ -23,6 +23,7 @@ var config = require('../../_config');
  *
  * @apiDescription Queries the database for all submissions matching the parameters
  *
+
  * NOTE: The `sortBy Viewers` option sorts by the number of unqiue, authenticated viewers that have viewed the post.
  * This was to reduce the potential for false inflation of the `views` field.
  *
@@ -32,6 +33,7 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
+
  * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
  *
  *
@@ -170,10 +172,14 @@ app.get('/all-submissions', function (req, res) {
     });
 });
 
-// endpoint to get a list of all the existing users
+
+
+/* get a list of users for co-Author list */
+
 app.get('/userList', (req, res) => {
     var err = null;
-    var select = "_id avatar name fb.url github.url twitter.url email";
+    var select = "_id avatar name fb.displayName github.username twitter.username google.displayName email";
+
     if (err) {
         res.status(500);
         res.send({
@@ -251,6 +257,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
+    var coAuthorIds;
 
     var notebookID = req.params.nbid;
 
@@ -288,6 +295,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
+                            coAuthorIds = submission.coAuthors
+                            // TODO: This needs to be tested
+                            //If there is a user, and he/she hasn't viewed this notebook before, add user._id to submission.viewers
                             submission.updateDate = updatedDate
 
                             notebook.coAuthors = submission.coAuthors
@@ -330,6 +340,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 }
                             })
 
+
                             // Check if has been preRendered and we want to send the pre-rendered notebook
                             if (submission.preRendered && config.preRender) {
                                 // Get html from preRendered file
@@ -337,6 +348,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 console.log('File path: ', fileName);
                                 try {
                                     notebook.html = fs.readFileSync(fileName).toString();
+                                    console.log(notebook.html);
                                 } catch (ex) {
                                     console.warn('Error: ', ex, "\nDoes that file exist?")
                                 }
@@ -436,7 +448,21 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         callback(null, commentAuthors);
                     }
                 });
-            }
+            },
+            coAuth: (callback) => {
+                var select = "_id avatar name";
+                User.find({
+                    _id: {
+                        $in: coAuthorIds
+                    },
+                    deleted: false
+                }, (err, coAuthors) => {
+                    if(err) callback(err)
+                    else {
+                        callback(null, coAuthors)
+                    }
+                })
+              }
         },
         //callback
         function (err, results) {
@@ -460,7 +486,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 html: results.nb.html,
                 fileName: results.nb.fileName,
                 author: results.auth,
-                coAuthors: results.nb.coAuthors,
+                coAuthors: results.coAuth,
                 comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth,
