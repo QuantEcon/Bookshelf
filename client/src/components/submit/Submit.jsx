@@ -290,8 +290,10 @@ class Submit extends Component {
       // Remove line breaks and extra white spaces
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
       // Restrict summary word limits
-      if (words.split(" ").length > maxWords) {
+      if (words.split(" ").length <= maxWords) {
         this.formData.summary = words;
+      }
+      else {
         // Prevent users from typing beyond max summary word limits
         event.preventDefault();
         event.stopPropagation();
