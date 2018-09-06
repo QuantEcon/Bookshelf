@@ -297,7 +297,7 @@ class Submit extends Component {
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
       // Restrict summary word limits
       if (words.split(" ").length <= maxWords) {
-        // Set form data summary
+        // Set form data summary by joining preserved words together
         this.formData.summary = preservedWords.join(" ");
       }
       else {
@@ -311,7 +311,7 @@ class Submit extends Component {
     }
 
     summaryChanged = (event) => {
-      console.log('[Summary Changed] - ', event.target.value)
+      // Call the summaryLimit function to restrict maximum words
       this.summaryLimit(event);
     }
 
