@@ -446,6 +446,9 @@ svg,
 video {
   vertical-align: middle; }
 
+svg {
+  margin: 0px 10px; }
+
 /*
  * Remove default fieldset styles.
  */
@@ -2078,6 +2081,8 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
+    .header .header-container .site-tag {
+      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2169,7 +2174,7 @@ button {
       .landing-logos ul li a {
         display: block; }
         .landing-logos ul li a img {
-          width: 100px; }
+          width: 60px; }
 
 .tile {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -3865,6 +3870,17 @@ div.my-modal {
     font-weight: 700; }
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
+
+.inviteAlert {
+  background-color: #F3D8DB;
+  border-radius: 4px; }
+
+.email-error {
+  text-align: center;
+  color: #721c24; }
+
+.invite-label {
+  color: #d84d0a !important; }
 
 .loading-spinner {
   margin: auto;

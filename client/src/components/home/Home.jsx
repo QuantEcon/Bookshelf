@@ -4,7 +4,7 @@ import React, {Component} from 'react';
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
-import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
+import quanteconLogo from '../../assets/img/qe-logo-100.svg'
 import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'
 import sloanLogo from '../../assets/img/landing-sloan-logo.png'
 
