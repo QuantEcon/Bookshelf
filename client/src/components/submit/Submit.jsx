@@ -23,6 +23,10 @@ const customStyles = {
     transform             : 'translate(-50%, -50%)',
     padding               : '0',
     width                 : '600px'
+  },
+
+  textWrap: {
+    whiteSpace: 'pre-line',
   }
 };
 
@@ -285,13 +289,16 @@ class Submit extends Component {
         typesetMath(this.rendered)
     }
 
-    summaryChanged = (event) => {
-      const maxWords = 500;
+    summaryLimit = (event) => {
+      const maxWords = 250;
+      // Preserve the escape characters
+      const preservedWords = event.target.value.split(" ")
       // Remove line breaks and extra white spaces
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
       // Restrict summary word limits
       if (words.split(" ").length <= maxWords) {
-        this.formData.summary = words;
+        // Set form data summary
+        this.formData.summary = preservedWords.join(" ");
       }
       else {
         // Prevent users from typing beyond max summary word limits
@@ -302,6 +309,12 @@ class Submit extends Component {
       }
       this.forceUpdate();
     }
+
+    summaryChanged = (event) => {
+      console.log('[Summary Changed] - ', event.target.value)
+      this.summaryLimit(event);
+    }
+
 
     /**
      * Listener for when a user drops files into the drop zone
@@ -408,7 +421,7 @@ class Submit extends Component {
                         <h1 className='modal-title'>Summary Word Limits</h1>
                       </div>
                       <div className="modal-body">
-                        <p><strong>The word limits for summary is 500 words.</strong></p>
+                        <p><strong>The word limits for summary is 250 words.</strong></p>
                         <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
                       </div>
                     </div>
@@ -642,7 +655,10 @@ class Submit extends Component {
                                     <textarea
                                         placeholder="Notebook summary"
                                         id="summary"
-                                        onKeyPress={this.summaryChanged}
+                                        type="text"
+                                        onChange={this.summaryChanged}
+                                        style={customStyles}
+                                        onKeyPress={this.summaryLimit}
                                         defaultValue={this.formData.summary}></textarea>
 
                                     {this.state.showSummaryPreview
