@@ -290,13 +290,13 @@ class Submit extends Component {
     }
 
     summaryLimit = (event) => {
-      const maxWords = 250;
+      const maxWords = 251;
       // Preserve the escape characters
       const preservedWords = event.target.value.split(" ")
       // Remove line breaks and extra white spaces
       const words = event.target.value.replace(/\n/gi,"").replace(/\s{2,}/g, " ");
       // Restrict summary word limits
-      if (words.split(" ").length <= maxWords) {
+      if (words.split(" ").length < maxWords) {
         // Set form data summary by joining preserved words together
         this.formData.summary = preservedWords.join(" ");
       }
