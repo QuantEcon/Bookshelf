@@ -51,5 +51,9 @@
   "devDependencies": {
     "concurrently": "^3.5.1",
     "jsdoc-jsx": "^0.1.0"
+  },
+  "dependencies": {
+    "ramda": "^0.25.0",
+    "react-tabs": "^2.3.0"
   }
 }

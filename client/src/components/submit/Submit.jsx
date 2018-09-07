@@ -12,6 +12,8 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import { compose } from 'ramda';
 
 const customStyles = {
   content : {
@@ -23,13 +25,10 @@ const customStyles = {
     transform             : 'translate(-50%, -50%)',
     padding               : '0',
     width                 : '600px'
-  },
-
-  textWrap: {
-    whiteSpace: 'pre-line',
   }
 };
 
+const maxWords = 5
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
@@ -96,6 +95,9 @@ class Submit extends Component {
             notebookDataReady: false,
             notebookJSON: {},
             contentSaved: false,
+            count: 0,
+            pasteValue: false,
+            textareaValue: 0,
         }
 
         this.onOpenClick = this
@@ -113,6 +115,7 @@ class Submit extends Component {
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
+        this.setState({count: this.formData.summary === '' ? 0 : this.formData.summary.split(" ").length})
     }
 
     /**
@@ -290,18 +293,20 @@ class Submit extends Component {
     }
 
     summaryLimit = (event) => {
-      const maxWords = 250;
       // Preserve the escape characters
-      const preservedWords = event.target.value.split(" ")
-      // Remove line breaks and extra white spaces
-      const words = event.target.value.replace(/\n/gi,"").replace(/\s{1,}/g, " ");
+      const summary = event.target.value.split(" ")
       // Restrict summary word limits
-      if (words.split(" ").length <= maxWords) {
-        // Set form data summary by joining preserved words together
-        this.formData.summary = preservedWords.join(" ");
+      if (this.state.count < maxWords && this.state.count > -1) {
+        // Set form data summary if conditions are met
+        this.formData.summary = summary.join(" ");
+        this.setState({pasteValue: false})
       }
-      else {
-        // Prevent users from typing beyond max summary word limits
+      else if (this.state.count > maxWords) {
+        console.log(this.state.count)
+        // Remove all the extra spaces
+        const c = summary.filter(item => item.trim() !== '').splice(0, maxWords)
+        this.setState({pasteValue: true, textareaValue: c.length})
+        this.formData.summary = c.join(' ')
         event.preventDefault();
         event.stopPropagation();
         //Display modal error to users
@@ -311,8 +316,19 @@ class Submit extends Component {
     }
 
     summaryChanged = (event) => {
-      // Call the summaryLimit function to restrict maximum words
-      this.summaryLimit(event);
+      console.log(event.target.value.split(' '))
+
+      // if (event.target.value.split(' ').length >= maxWords){
+      //   this.setState({pasteValue: true})
+      //   console.log(event.target.value.split(' ').splice(0, maxWords))
+      //
+      // }
+      // if (this.state.textareaValue < maxWords) {
+      //   this.setState({pasteValue: false})
+      //   this.setCounts(event.target.value)
+      // }
+      // // Call the summaryLimit function to restrict maximum words
+      // this.summaryLimit(event);
     }
 
 
@@ -399,6 +415,29 @@ class Submit extends Component {
         summaryModal: !this.state.summaryModal
       })
     }
+
+    removeEmptyElements = (arr) => {
+      const index = arr.findIndex(el => el.trim() === '');
+      if (index === -1)
+        return arr;
+      arr.splice(index, 1);
+      return this.removeEmptyElements(arr)
+    };
+
+    setCounts = (value) => {
+      const trimmedValue = value.trim();
+      const words = this.removeEmptyElements(trimmedValue.split(' '));
+      this.setState({
+        count: value === '' ? 0 : words.length
+      });
+    }
+
+    pasting = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+
 
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
@@ -648,41 +687,37 @@ class Submit extends Component {
 
                                     <hr/>
 
+
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">You can use{' '}
                                         <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
                                         here.</p>
-                                    <textarea
-                                        placeholder="Notebook summary"
-                                        id="summary"
-                                        type="text"
-                                        onChange={this.summaryChanged}
-                                        style={customStyles}
-                                        onKeyPress={this.summaryLimit}
-                                        defaultValue={this.formData.summary}></textarea>
-
-                                    {this.state.showSummaryPreview
-                                        ? <div>
-                                                <MarkdownRender
-                                                    disallowedTypes={['heading']}
-                                                    source={this.formData.summary
-                                                    ? this.formData.summary
-                                                    : '*No summary*'}/>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
-                                                </p>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.renderMath}>Render Math</a>
-                                                </p>
-                                            </div>
-                                        : <p className="input-hint input-hint-after">
-
-                                            <a onClick={this.toggleSummaryPreview}>
-                                                Preview
-                                            </a>
-                                        </p>}
+                                    <Tabs>
+                                      <TabList>
+                                        <Tab>Write</Tab>
+                                        <Tab>Preview</Tab>
+                                        <p className="word-count"><span className="words">{this.state.count}</span> words</p>
+                                      </TabList>
+                                      <TabPanel>
+                                        <textarea
+                                            placeholder="Notebook summary"
+                                            id="summary"
+                                            type="text"
+                                            onChange={this.summaryChanged}
+                                            style={customStyles}
+                                            onPaste={this.state.pasteValue ? this.pasting : null}
+                                            onKeyPress={this.summaryLimit}
+                                            defaultValue={this.formData.summary}></textarea>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <MarkdownRender
+                                            disallowedTypes={['heading']}
+                                            source={this.formData.summary
+                                            ? this.formData.summary
+                                            : '*No summary*'}/>
+                                      </TabPanel>
+                                    </Tabs>
                                 </div>
-
                             </div>
 
                             <div className='submit-footer'>
@@ -727,7 +762,6 @@ class Submit extends Component {
                                             Agreement is required
                                         </p>
                                     : null}
-
                             </div>
 
                             <ul className='button-row'>
