@@ -251,22 +251,16 @@ class Head extends Component {
                                                   onRequestClose={this.closeModal}
                                                   style={customStyles}
                                                   contentLabel="Example Modal"
+                                                  shouldCloseOnOverlayClick={false}
                                                 >
-
                                                   <form onSubmit={this.handleSubmit}>
-
                                                     <div className="modal">
-
                                                       <div className="modal-header">
-
                                                         <h1 className='modal-title'>Invite User</h1>
-
                                                       </div>
 
                                                       <div className="modal-body">
-
                                                         <p><strong>Enter the email address of the person you would like to invite</strong></p>
-
                                                         <label>
                                                           <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                         </label>
@@ -282,15 +276,10 @@ class Head extends Component {
                                                           { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
                                                           { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
                                                         </div>
-
-                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
-
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
                                                       </div>
-
                                                     </div>
-
                                                   </form>
-
                                                 </Modal>
 
                                             </li>

@@ -35,7 +35,9 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    padding               : '0',
+    width                 : '600px'
   }
 };
 
@@ -123,9 +125,6 @@ class Submission extends Component {
             .bind(this)
         this.openModal = this
             .openModal
-            .bind(this);
-        this.afterOpenModal = this
-            .afterOpenModal
             .bind(this);
         this.closeModal = this
             .closeModal
@@ -295,15 +294,10 @@ class Submission extends Component {
         }
     }
 
-/* modal for flagging Reason */
+    /* modal for flagging Reason */
     openModal = () => {
       this.setState({modalIsOpen: true});
       console.log('state: ', this.state)
-    }
-
-    afterOpenModal = () => {
-      // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
     }
 
     closeModal = () => {
@@ -342,24 +336,26 @@ class Submission extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
-                    className='overlay'>
-                    <div className='my-modal'>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Delete Submission</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <p className='text-center'>Are you sure you want to delete this submission?</p>
-                            <ul className='button-row'>
-                                <li>
-                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
-                                </li>
-                                <li>
-                                    <button onClick={this.deleteSubmission}>Delete</button>
-                                </li>
-                            </ul>
-                        </div>
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                    shouldCloseOnOverlayClick={false}>
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Delete Submission</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>Are you sure you want to delete this submission?</strong></p>
+                        <ul className="options">
+                          <li>
+                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                          </li>
+                          <li>
+                            <a onClick={this.deleteSubmission}>Delete</a>
+                          </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                      </div>
                     </div>
-
                 </Modal>
                 {this.props.isLoading
                     ? null
@@ -460,29 +456,36 @@ class Submission extends Component {
 
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
-                                              onAfterOpen={this.afterOpenModal}
                                               onRequestClose={this.closeModal}
                                               style={customStyles}
-                                              contentLabel="Example Modal">
-
-                                              <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+                                              contentLabel="Example Modal"
+                                              shouldCloseOnOverlayClick={false}>
                                               <form onSubmit={this.handleSubmit}>
-                                                <label>
-                                                  <select value={this.state.flaggedReason} onChange={this.handleChange} required>
-                                                    <option value="inappropriate" selected>Inappropriate Content</option>
-                                                    <option value="spam" >Spam</option>
-                                                    <option value="copyright">Violates Copyright</option>
-                                                    <option value="other">Other</option>
-                                                  </select>
-                                                </label>
-                                                <ul className="button-row">
-                                                  <li>
-                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
-                                                  </li>
-                                                  <li>
-                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
-                                                  </li>
-                                                </ul>
+                                                <div className="modal">
+                                                  <div className="modal-header">
+                                                    <h1 className='modal-title'>Report the Content</h1>
+                                                  </div>
+                                                  <div className="modal-body">
+                                                    <p><strong>Why would you like to report the content ?</strong></p>
+                                                    <label>
+                                                      <select value={this.state.flaggedReason} onChange={this.handleChange} required>
+                                                        <option value="inappropriate" selected>Inappropriate Content</option>
+                                                        <option value="spam" >Spam</option>
+                                                        <option value="copyright">Violates Copyright</option>
+                                                        <option value="other">Other</option>
+                                                      </select>
+                                                    </label>
+                                                    <ul className="options">
+                                                      <li>
+                                                        <a className='alt' onClick={this.closeModal}>Cancel</a>
+                                                      </li>
+                                                      <li>
+                                                        <a onClick={this.handleSubmit}>Report</a>
+                                                      </li>
+                                                    </ul>
+                                                    <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                                                  </div>
+                                                </div>
                                               </form>
                                             </Modal>
                                         </li>
