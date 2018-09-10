@@ -27,7 +27,7 @@ const customStyles = {
   }
 };
 
-const maxWords = 11
+const maxWords = 251
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
