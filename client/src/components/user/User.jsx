@@ -91,7 +91,7 @@ class User extends Component {
                                     </ul>
                                     <p className='date'>
                                         Joined {!this.props.isLoading
-                                            ? <Time value={this.props.data.joinDate} format='d MMM YYYY'/>
+                                            ? <Time value={this.props.data.joinDate} format='D MMM YYYY'/>
                                             : null}
                                     </p>
                                 </div>
