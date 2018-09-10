@@ -3,7 +3,7 @@ import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import UserPreview from '../user/UserPreview'
 import SubmissionPreview from '../submissions/submissionPreview'
-import Comment from '../comments/Reply' 
+import Comment from '../comments/Reply'
 import * as config from '../../_config'
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
 
@@ -20,7 +20,7 @@ class AdminPage extends Component {
             addAdminModalOpen: false,
         }
     }
-    
+
     removeSubmission = (submissionID) => {
         console.log("Remove submission clicked: ", submissionID)
         this.props.showRemoveModal(submissionID)
@@ -113,7 +113,7 @@ class AdminPage extends Component {
             showDeletedComments: !this.state.showDeletedComments
         })
     }
-    
+
     foldFlaggedContent = () => {
         this.setState({
             showFlaggedContent: !this.state.showFlaggedContent
@@ -136,6 +136,7 @@ class AdminPage extends Component {
                         <h2 className='title-name'>
                             Admin
                         </h2>
+                        <p class="admin-tag">Add a notification to advise on new feature updates, services, or maintenances in announcement.</p>
                         <AnnouncementsContainer showAdmin={true}/>
                     </div>
                     <div className="page-content">
@@ -143,7 +144,7 @@ class AdminPage extends Component {
                             {this.props.isLoading
                                 ? <h3>Loading...</h3>
                                 :<div>
-   
+
                                     {/* Admin Users */}
                                     <div className="admin-content">
                                         <span className="section-header">
@@ -164,13 +165,13 @@ class AdminPage extends Component {
                                                 })}
                                              </div>
                                             : null}
-                                            
-                                           
+
+
                                         </div>
                                         <hr/>
                                         <ul className="admin-button-row">
                                             <li>
-                                                <button onClick={this.props.showAdminModal} disabled={this.props.adminUsers.users.length >= config.maxNumAdmins}>Add Admin</button>  
+                                                <button onClick={this.props.showAdminModal} disabled={this.props.adminUsers.users.length >= config.maxNumAdmins}>Add Admin</button>
                                             </li>
                                         </ul>
                                     </div>
@@ -199,7 +200,7 @@ class AdminPage extends Component {
                                                         Show
                                                     </button>
                                                     }
-                                                    
+
                                                 </span>
                                                 {this.state.showFlaggedUsers
                                                 ?
@@ -268,7 +269,7 @@ class AdminPage extends Component {
                                                 </div>
                                                 :null}
                                         </div>
-                                        
+
                                         {/* Flagged Comments */}
                                         <div className="admin-content">
                                             <span className="section-header">
@@ -283,8 +284,8 @@ class AdminPage extends Component {
                                                     {this.props.flaggedComments.map((comment, index) => {
                                                         console.log("comment: " ,comment)
                                                         return <div key={index}>
-                                                            <Comment 
-                                                                reply={comment.data} 
+                                                            <Comment
+                                                                reply={comment.data}
                                                                 author={comment.author}/>
                                                             <ul className="admin-button-row">
                                                                 <li>
@@ -311,7 +312,7 @@ class AdminPage extends Component {
                                         </div>
                                         </div>
                                         : null}
-                                        
+
                                     </div>
 
                                     <div className="admin-content">
@@ -337,7 +338,7 @@ class AdminPage extends Component {
                                                         Show
                                                     </button>
                                                     }
-                                                    
+
                                                 </span>
                                                 {this.state.showDeletedUsers
                                                 ?
@@ -390,7 +391,7 @@ class AdminPage extends Component {
                                                                             Restore
                                                                         </button>
                                                                     </li>
-                                                                                                                        
+
                                                                 </ul>
                                                             </div>
                                                         })
@@ -398,7 +399,7 @@ class AdminPage extends Component {
                                                 </div>
                                                 : null}
                                             </div>
-                                            
+
                                             {/* Deleted Comments */}
                                             <div className="admin-content">
                                                 <span className="section-header">
@@ -413,8 +414,8 @@ class AdminPage extends Component {
                                                         {this.props.deletedComments.map((comment, index) => {
                                                             console.log("DELETED COMMENT: " ,comment)
                                                             return <div key={index}>
-                                                                <Comment 
-                                                                    reply={comment.data} 
+                                                                <Comment
+                                                                    reply={comment.data}
                                                                     author={comment.author}/>
                                                                 <ul className="admin-button-row">
                                                                     <li>
@@ -430,15 +431,15 @@ class AdminPage extends Component {
                                                                 </ul>
                                                             </div>
                                                         })}
-                                                    </div>        
+                                                    </div>
                                                 </div>
                                                 : null}
                                             </div>
                                         </div>
                                         : null}
                                     </div>
-                                                
-                                    
+
+
                                 </div>
                             }
                         </div>
