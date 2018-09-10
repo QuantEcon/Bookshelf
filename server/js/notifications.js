@@ -18,11 +18,13 @@ const fs = require("fs")
 var template = fs.readFileSync(__dirname + "/../assets/email-template.html").toString();
 var inviteBody = fs.readFileSync(__dirname + "/../assets/invite-template.html").toString();
 
+
 function sendEmail(to, from, message) {
 
 }
 
 function sendInvite(to, from) {
+
     console.log("[Notifications] - sending invite to ", to)
 
     const hostName = "http://" + config.hostName + "/signin/"
