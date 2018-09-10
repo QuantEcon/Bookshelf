@@ -12,6 +12,18 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
+import { Route, Redirect } from 'react-router-dom'
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
@@ -77,9 +89,11 @@ class Submit extends Component {
             markdownRefereceModal: false,
             notebookDataReady: false,
             notebookJSON: {},
-            contentSaved: false
+            contentSaved: false,
+            cancelSubmissionModal: false,
+            redirect: false,
         }
-        
+
         this.onOpenClick = this
             .onOpenClick
             .bind(this);
@@ -217,7 +231,7 @@ class Submit extends Component {
             e.preventDefault()
         }
         this.setState({contentSaved : true}, () => {
-        console.log(this.state.contentSaved)
+
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit')
             var file = this.state.accepted[0]
@@ -303,7 +317,7 @@ class Submit extends Component {
             }, () => this.validate());
         }
     }
-    
+
     onOpenClick = ()=> {
       this.refs.dropzoneref.open();
     }
@@ -313,7 +327,6 @@ class Submit extends Component {
      * @param {Object} e Event passed from the `onClick` listener
      */
     toggleOpenModal = (e) => {
-        console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
             modalOpen: !this.state.modalOpen
@@ -321,7 +334,7 @@ class Submit extends Component {
     }
 
     closeModal = () => {
-      this.setState({modalOpen: false});
+      this.setState({modalOpen: false, cancelSubmissionModal: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -354,19 +367,60 @@ class Submit extends Component {
         })
     }
 
-    // TODO: stlying for accept is not being applied correctly. Doesn't recognize
+    toggleCancelSubmissionModal = (e) => {
+        e.preventDefault()
+        this.setState({
+            cancelSubmissionModal: !this.state.cancelSubmissionModal
+        })
+    }
+
+    // Using redirect to redirect users when 'yes' is clicked back to home page.
+    setRedirect = () => {
+      this.setState({
+        redirect: true
+      })
+    }
+
+    renderRedirect = () => {
+      if (this.state.redirect) {
+        return <Redirect to='/' />
+      }
+    }
+
+
+
+    // TODO: styling for accept is not being applied correctly. Doesn't recognize
     // .ipynb as valid accept parameter The file will still be accepted, however
     render() {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+
+              {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
+                </Modal>
+
+                {/* Modal window for cancel button in the edit notebook submission */}
+                <Modal isOpen={this.state.cancelSubmissionModal}
+                      onRequestClose={this.toggleCancelSubmissionModal}
+                      contentLabel="Cancel Submission"
+                      style={customStyles}
+                      shouldCloseOnOverlayClick={false} >
+                      <h3>All the changes made will be lost, are you sure you want to leave?</h3>
+                        <ul className="button-row">
+                          <li>
+                            <button className='invite-modal-button alt' onClick={this.toggleCancelSubmissionModal}>Cancel</button>
+                          </li>
+                          <li>
+                            {this.renderRedirect()}
+                            <button className='invite-modal-button' onClick={this.setRedirect}>Yes</button>
+                          </li>
+                        </ul>
                 </Modal>
 
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
@@ -673,9 +727,9 @@ class Submit extends Component {
                             <ul className='button-row'>
                                 {this.props.isEdit
                                     ? <li>
-                                            <Link to={'/submission/' + this.props.submission.data.notebook._id}>
-                                                Cancel
-                                            </Link>
+                                          <button onClick={this.toggleCancelSubmissionModal}>
+                                              Cancel
+                                          </button>
                                         </li>
                                     : null}
                                 <li>
