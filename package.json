@@ -49,15 +49,8 @@
     ]
   },
   "devDependencies": {
-    "concurrently": "^3.6.1",
-    "gulp-autoprefixer": "^6.0.0",
-    "gulp-header": "^2.0.5",
+    "concurrently": "^3.5.1",
     "jsdoc-jsx": "^0.1.0"
-  },
-  "dependencies": {
-    "email-validator": "^2.0.4",
-    "gulp": "^3.9.1",
-    "gulp-sass": "^4.0.1"
   }
 
 }

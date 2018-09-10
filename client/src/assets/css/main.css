@@ -6,25 +6,6 @@
  * 2. Prevent adjustments of font size after orientation changes in
  *    IE on Windows Phone and in iOS.
  */
-
-input.invite-email-input.is-invalid:focus {
-  box-shadow: 0 0 5px #e60000;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #e60000;
-}
-
-input.invite-email-input.is-invalid {
-  -webkit-transition: all 0.30s ease-in-out;
-  -moz-transition: all 0.30s ease-in-out;
-  -ms-transition: all 0.30s ease-in-out;
-  -o-transition: all 0.30s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #e60000;
-}
-
 html {
   line-height: 1.15;
   /* 1 */
@@ -482,7 +463,6 @@ fieldset {
 textarea {
   resize: vertical; }
 
-
 /* ==========================================================================
    Helper classes
    ========================================================================== */
@@ -622,7 +602,7 @@ textarea {
   h3 {
     page-break-after: avoid; } }
 
-/*
+/* 
  * Foundation Icons v 3.0
  * Made by ZURB 2013 http://zurb.com/playground/foundation-icon-fonts-3
  * MIT License

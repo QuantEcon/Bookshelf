@@ -1,9 +1,5 @@
 // misc.scss
 // Miscellaneous styles
-.is-invalid {
-  background-color: green;
-}
-
 .inviteAlert {
   background-color: #F3D8DB;
   border-radius: 4px;
@@ -11,7 +7,7 @@
 
 .email-error {
   text-align: center;
-  color: #e60000;
+  color: #721c24;
 }
 
  .invite-label {
@@ -164,22 +160,4 @@ img.loading-avatar {
 
 .notebook-preview .content-margin {
     padding-left: 40px !important;
-}
-
-input.invite-email-input.is-invalid:focus {
-  box-shadow: 0 0 5px #e60000;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #e60000;
-}
-
-input.invite-email-input.is-invalid {
-  -webkit-transition: all 0.30s ease-in-out;
-  -moz-transition: all 0.30s ease-in-out;
-  -ms-transition: all 0.30s ease-in-out;
-  -o-transition: all 0.30s ease-in-out;
-  outline: none;
-  padding: 3px 0px 3px 3px;
-  margin: 5px 1px 3px 0px;
-  border: 1px solid #e60000;
 }

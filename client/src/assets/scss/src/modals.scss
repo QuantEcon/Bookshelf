@@ -177,7 +177,7 @@ html.is-reveal-open {
         border-bottom:1px solid $color-medium;
         padding:2rem 0 1rem 0;
         .modal-title {
-            //text-align: center;
+            text-align: center;
             font-size:1.8rem;
             line-height: 1;
             padding:0;
@@ -187,13 +187,7 @@ html.is-reveal-open {
     }
     .modal-body {
         padding:2rem 0;
-        //text-align: center;
-        input[type="text"], input[type="email"] {
-          border-radius: 5px;
-        }
-        p {
-          margin:0 0 1rem 0;
-        }
+        text-align: center;
     }
     .social-login {
         list-style: none;
@@ -246,6 +240,11 @@ html.is-reveal-open {
     .close-button {
         color: $color-primary;
     }
+}
+
+.modal-body p {
+    text-align: center !important;
+    font-size: larger;
 }
 
 .overlay {
@@ -341,8 +340,4 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
     padding-left: 1rem;
-}
-
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.75) !important;
 }
