@@ -13,7 +13,6 @@ import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-import { compose } from 'ramda';
 
 const customStyles = {
   content : {
@@ -28,7 +27,7 @@ const customStyles = {
   }
 };
 
-const maxWords = 5
+const maxWords = 11
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
@@ -98,6 +97,8 @@ class Submit extends Component {
             count: 0,
             pasteValue: false,
             textareaValue: 0,
+            triggerOnKeyPress: false,
+            summary: this.props.submission.data.notebook.summary
         }
 
         this.onOpenClick = this
@@ -115,7 +116,9 @@ class Submit extends Component {
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
-        this.setState({count: this.formData.summary === '' ? 0 : this.formData.summary.split(" ").length})
+        const wordCount = this.formData.summary.split(' ').length;
+        this.formData.summary.split(' ')[0] !== '' ? this.setState({count: wordCount}) : this.setState({count: this.state.count})
+
     }
 
     /**
@@ -293,42 +296,26 @@ class Submit extends Component {
     }
 
     summaryLimit = (event) => {
-      // Preserve the escape characters
-      const summary = event.target.value.split(" ")
-      // Restrict summary word limits
-      if (this.state.count < maxWords && this.state.count > -1) {
-        // Set form data summary if conditions are met
-        this.formData.summary = summary.join(" ");
-        this.setState({pasteValue: false})
-      }
-      else if (this.state.count > maxWords) {
-        console.log(this.state.count)
-        // Remove all the extra spaces
-        const c = summary.filter(item => item.trim() !== '').splice(0, maxWords)
-        this.setState({pasteValue: true, textareaValue: c.length})
-        this.formData.summary = c.join(' ')
-        event.preventDefault();
-        event.stopPropagation();
-        //Display modal error to users
-        this.toggleSummaryModal();
-      }
+      event.preventDefault();
+      //Display modal error to users
+      this.toggleSummaryModal();
       this.forceUpdate();
     }
 
     summaryChanged = (event) => {
-      console.log(event.target.value.split(' '))
-
-      // if (event.target.value.split(' ').length >= maxWords){
-      //   this.setState({pasteValue: true})
-      //   console.log(event.target.value.split(' ').splice(0, maxWords))
-      //
-      // }
-      // if (this.state.textareaValue < maxWords) {
-      //   this.setState({pasteValue: false})
-      //   this.setCounts(event.target.value)
-      // }
-      // // Call the summaryLimit function to restrict maximum words
-      // this.summaryLimit(event);
+      this.setCounts(event.target.value)
+      this.setState({summary: event.target.value})
+      if (event.target.value.split(' ').length < maxWords) {
+        this.formData.summary = event.target.value;
+        this.setState({triggerOnKeyPress: false, pasteValue: false})
+      }
+      if (event.target.value.split(' ').length >= maxWords) {
+        this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
+        this.setState({summary: this.formData.summary})
+        this.setCounts(this.formData.summary)
+        this.setState({triggerOnKeyPress: true, pasteValue: true})
+      }
+      this.forceUpdate();
     }
 
 
@@ -372,7 +359,7 @@ class Submit extends Component {
         console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
-            modalOpen: !this.state.modalOpen
+            modalOpen: !this.state.modalOpen,
         })
     }
 
@@ -417,6 +404,7 @@ class Submit extends Component {
     }
 
     removeEmptyElements = (arr) => {
+      console.log(arr)
       const index = arr.findIndex(el => el.trim() === '');
       if (index === -1)
         return arr;
@@ -425,6 +413,7 @@ class Submit extends Component {
     };
 
     setCounts = (value) => {
+      console.log('value:', value)
       const trimmedValue = value.trim();
       const words = this.removeEmptyElements(trimmedValue.split(' '));
       this.setState({
@@ -436,7 +425,6 @@ class Submit extends Component {
       event.preventDefault();
       event.stopPropagation();
     }
-
 
 
     // TODO: stlying for accept is not being applied correctly. Doesn't recognize
@@ -704,10 +692,10 @@ class Submit extends Component {
                                             id="summary"
                                             type="text"
                                             onChange={this.summaryChanged}
+                                            onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
                                             style={customStyles}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
-                                            onKeyPress={this.summaryLimit}
-                                            defaultValue={this.formData.summary}></textarea>
+                                            value = {this.state.summary}></textarea>
                                       </TabPanel>
                                       <TabPanel>
                                         <MarkdownRender
