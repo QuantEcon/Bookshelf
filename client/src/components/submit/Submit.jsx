@@ -98,7 +98,7 @@ class Submit extends Component {
             pasteValue: false,
             textareaValue: 0,
             triggerOnKeyPress: false,
-            summary: this.props.submission.data.notebook.summary
+            summary: ''
         }
 
         this.onOpenClick = this
@@ -112,12 +112,16 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Notes'
+            document.title = 'Edit Submission - QuantEcon Notes';
+            if (this.props.submission.data.notebook.summary.split(' ').length == 1 && this.props.submission.data.notebook.summary.split(' ')[0] == '') {
+              this.setState({summary: '', count: 0})
+            }
+            else {
+              this.setState({summary: this.props.submission.data.notebook.summary, count: this.props.submission.data.notebook.summary.split(' ').length})
+            }
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
-        const wordCount = this.formData.summary.split(' ').length;
-        this.formData.summary.split(' ')[0] !== '' ? this.setState({count: wordCount}) : this.setState({count: this.state.count})
 
     }
 
@@ -305,14 +309,14 @@ class Submit extends Component {
     summaryChanged = (event) => {
       this.setCounts(event.target.value)
       this.setState({summary: event.target.value})
-      if (event.target.value.split(' ').length < maxWords) {
+
+      if (this.state.count < maxWords) {
         this.formData.summary = event.target.value;
         this.setState({triggerOnKeyPress: false, pasteValue: false})
       }
-      if (event.target.value.split(' ').length >= maxWords) {
+      if (this.state.count >= maxWords || event.target.value.split(' ').length >= maxWords) {
         this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
-        this.setState({summary: this.formData.summary})
-        this.setCounts(this.formData.summary)
+        this.setState({summary: this.formData.summary, count: this.formData.summary.split(' ').length })
         this.setState({triggerOnKeyPress: true, pasteValue: true})
       }
       this.forceUpdate();
@@ -404,7 +408,6 @@ class Submit extends Component {
     }
 
     removeEmptyElements = (arr) => {
-      console.log(arr)
       const index = arr.findIndex(el => el.trim() === '');
       if (index === -1)
         return arr;
@@ -413,7 +416,6 @@ class Submit extends Component {
     };
 
     setCounts = (value) => {
-      console.log('value:', value)
       const trimmedValue = value.trim();
       const words = this.removeEmptyElements(trimmedValue.split(' '));
       this.setState({
