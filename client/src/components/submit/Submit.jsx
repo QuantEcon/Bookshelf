@@ -21,7 +21,9 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    padding               : '0',
+    width                 : '600px'
   }
 };
 
@@ -417,16 +419,24 @@ class Submit extends Component {
                       contentLabel="Cancel Submission"
                       style={customStyles}
                       shouldCloseOnOverlayClick={false} >
-                      <h3>All the changes made will be lost, are you sure you want to leave?</h3>
-                        <ul className="button-row">
-                          <li>
-                            <button className='invite-modal-button alt' onClick={this.toggleCancelSubmissionModal}>Cancel</button>
-                          </li>
-                          <li>
-                            {this.renderRedirect()}
-                            <button className='invite-modal-button' onClick={this.setRedirect}>Yes</button>
-                          </li>
-                        </ul>
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Cancel Changes</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p><strong>All the changes made will be lost, are you sure you want to leave?</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.toggleCancelSubmissionModal}>Cancel</a>
+                        </li>
+                        <li>
+                          {this.renderRedirect()}
+                          <a onClick={this.setRedirect}>Yes</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
                 </Modal>
 
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">

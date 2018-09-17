@@ -177,7 +177,6 @@ html.is-reveal-open {
         border-bottom:1px solid $color-medium;
         padding:2rem 0 1rem 0;
         .modal-title {
-            text-align: center;
             font-size:1.8rem;
             line-height: 1;
             padding:0;
@@ -187,7 +186,12 @@ html.is-reveal-open {
     }
     .modal-body {
         padding:2rem 0;
-        text-align: center;
+        input[type="text"], input[type="email"] {
+          border-radius: 5px;
+        }
+        p {
+          margin:0 0 1rem 0;
+        }
     }
     .social-login {
         list-style: none;
@@ -294,7 +298,6 @@ div.my-modal {
 
 .my-modal .modal-body {
     padding: 2rem 0;
-    text-align: center
 }
 
 .reveal {

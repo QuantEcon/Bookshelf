@@ -3245,15 +3245,17 @@ html.is-reveal-open {
     border-bottom: 1px solid #cacaca;
     padding: 2rem 0 1rem 0; }
     .modal .modal-header .modal-title {
-      text-align: center;
       font-size: 1.8rem;
       line-height: 1;
       padding: 0;
       margin: 0;
       color: #d84d0a; }
   .modal .modal-body {
-    padding: 2rem 0;
-    text-align: center; }
+    padding: 2rem 0; }
+    .modal .modal-body input[type="text"], .modal .modal-body input[type="email"] {
+      border-radius: 5px; }
+    .modal .modal-body p {
+      margin: 0 0 1rem 0; }
   .modal .social-login {
     list-style: none;
     margin: 2rem auto;
@@ -3313,10 +3315,6 @@ html.is-reveal-open {
   .modal .close-button {
     color: #d84d0a; }
 
-.modal-body p {
-  text-align: center !important;
-  font-size: larger; }
-
 .overlay {
   position: fixed;
   top: 0;
@@ -3358,8 +3356,7 @@ div.my-modal {
   padding-bottom: 2rem; }
 
 .my-modal .modal-body {
-  padding: 2rem 0;
-  text-align: center; }
+  padding: 2rem 0; }
 
 .reveal {
   z-index: 1006;
@@ -3400,6 +3397,9 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
   padding-left: 1rem; }
+
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important; }
 
 /*
  * The MIT License
