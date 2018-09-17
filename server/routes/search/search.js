@@ -258,8 +258,19 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     series({
             //get notebook
             nb: function (callback) {
-
                 var select = "_id title author views comments score summary topics published lang fileName viewers views coAuthors notebookJSONString";
+
+                // to find the submission by ID
+                Submission.findById(notebookID, function(err, sub) {
+                  if(err) {
+                    console.log("[Search] error searching for submission by ID: ", err)
+                    callback(err)
+                  } else if (sub) {
+                    // intializing updatedDate
+                    updatedDate = sub.lastUpdated
+                  }
+                });
+
                 try {
                     Submission.findOne({
                         _id: mdb.ObjectId(notebookID),
@@ -269,17 +280,22 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                             console.log("[Search] error searching for submission: ", err)
                             callback(err)
                         } else if (submission) {
+
                             notebook = submission
                             notebook.nbLength = submission.notebookJSONString.length
+                            notebook.lastUpdated = updatedDate
+
                             //TODO: This needs to be tested
                             //Increment total number of views
                             submission.views++;
+                            submission.updateDate = updatedDate
+
                             notebook.coAuthors = submission.coAuthors
                             // TODO: Need to check for submission.viewers_count and test
                             // check initially if there exists an array, if current array is empty, then then create a new one
                             if(submission.viewers.length == 0){
                               //create an array to store all users who have viewed the submission
-                              console.log("Creating an emtpty submission.viewers array...");
+                              console.log("Creating an empty submission.viewers array...");
                               submission.viewers = [];
                             }
                             // check if current user is logged in
@@ -438,6 +454,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
 
             var nb = JSON.parse(JSON.stringify(results.nb))
             nb.notebookJSONString = null
+            console.log('[RESULTS!!!!!!!!!]', results)
             var data = {
                 notebook: nb,
                 html: results.nb.html,

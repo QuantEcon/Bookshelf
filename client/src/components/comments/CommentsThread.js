@@ -1,6 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
+import MarkdownRender from '@nteract/markdown'
+import {typesetMath} from 'mathjax-electron'
+import Modal from 'react-modal';
+import CloseIcon from 'react-icons/lib/fa/close'
 
 
 import CommentContainer from "../../containers/comment/CommentContainer"
@@ -44,7 +48,10 @@ class CommentsThread extends Component {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
             replies: props.replies,
-            submitDisabled: true
+            submitDisabled: true,
+            showSummaryPreview: false,
+            newCommentText: '',
+            markdownRefereceModal: false,
         };
     }
 
@@ -57,7 +64,9 @@ class CommentsThread extends Component {
      * @param {Object} e Event passed from the `onChange` listener
      */
     newCommentTextChange = (e) => {
+
         if(e){
+            this.setState({newCommentText: e.target.value});
             e.preventDefault();
         }
 
@@ -74,8 +83,6 @@ class CommentsThread extends Component {
         this.newCommentText = e.target.value
         // this.forceUpdate();
     }
-
-    newCommentText = "";
 
     /**Dispatches a postComment action  */
     submitNewComment() {
@@ -105,6 +112,23 @@ class CommentsThread extends Component {
         this
             .props
             .postReply({reply, commentID});
+    }
+
+
+    toggleSummaryPreview = () => {
+        this.setState({
+            showSummaryPreview: !this.state.showSummaryPreview
+        });
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 20);
+    }
+
+    toggleMarkdownReferenceModal = (e) => {
+        e.preventDefault()
+        this.setState({
+            markdownRefereceModal: !this.state.markdownRefereceModal
+        })
     }
 
     render() {
@@ -142,13 +166,60 @@ class CommentsThread extends Component {
                                     editComment={this.props.editComment}/>
                             })}
                     </div>
+                    <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
+                        <div className='my-modal'>
+                        <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
+                            <div className='modal-header'>
+                                <h1 className='modal-title'>Markdown Reference</h1>
+                            </div>
+                            <div className='modal-body'>
+                                <ul>
+                                    <li>
+                                        <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
+                                    </li>
+                                    <li>
+                                        <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
+                                    </li>
+                                    <li>
+                                        <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </Modal>
+
                     <div className='comments-post'>
                         <label>Post a comment</label>
+                        <p className="input-hint">You can use{' '}
+                          <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}here.
+                        </p>
                         <textarea
                             name="newCommentContent"
                             id='newCommentTextArea'
                             placeholder='You can use markdown here...'
+                            defaultValue={this.newCommentText}
                             onChange={this.newCommentTextChange}></textarea>
+                            {this.state.showSummaryPreview
+                              ? <div>
+                                      <MarkdownRender
+                                          disallowedTypes={['heading']}
+                                          source={this.newCommentText
+                                          ? this.newCommentText
+                                          : '*No comment*'}/>
+                                      <p className="input-hint-after input-hint">
+                                          <a onClick={this.toggleSummaryPreview}><b>Close Preview</b></a>
+                                      </p>
+                                      <p className="input-hint-after input-hint">
+                                          <a onClick={this.renderMath}><b>Render Math</b></a>
+                                      </p>
+                                  </div>
+                              : <p className="input-hint input-hint-after">
+                                  <a onClick={this.toggleSummaryPreview}>
+                                      <b>Preview</b>
+                                  </a>
+                              </p>
+                            }
+
                         <div className='submit-comment'>
                             <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
                         </div>

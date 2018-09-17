@@ -82,7 +82,7 @@ class SignIn extends Component {
                             </div>
                         </div>
                     : null}
-
+          
                 {this.props.loading
                 ? "loading..."
                 :<div className='modal'>

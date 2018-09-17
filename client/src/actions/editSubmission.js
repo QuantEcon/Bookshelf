@@ -1,7 +1,7 @@
 /**
  * @file Actions for editing a submission
  * @author Trevor Lyon
- * 
+ *
  * @module editSubmissionActions
  */
 
@@ -20,14 +20,14 @@ const saveSubmissionAction = ({
 /**
  * @function
  * @name buildSubmissionPreview
- * 
- * @description Builds a submission JSON object that is used for rendering in the modal that is displayed when the user clicks on the 
+ *
+ * @description Builds a submission JSON object that is used for rendering in the modal that is displayed when the user clicks on the
  * Preview button.
- * 
+ *
  * Note: only one of the parameters `file` and `notebookJSON` should be used. The other should be `null`. If the user supplies
- * a new file, then `file` will be used and `notebookJSON` should be `null`. If no new file is supplied, then the existing 
+ * a new file, then `file` will be used and `notebookJSON` should be `null`. If no new file is supplied, then the existing
  * `notebookJSON` is used and `file` should be `null`
- * 
+ *
  * @param {Object} data
  * @param {Object} data.formData - A JSON Object of the data filled out by the form. This object should contain the following:
  * ```
@@ -42,8 +42,8 @@ const saveSubmissionAction = ({
  * @param {File} data.file - The file of the notebook. This should be a file with an .ipynb file extension
  * @param {Object} data.notebookJSON - The JSON of the notebook
  * @param {String} data.submissionID - The ID of the submission being edited
- * 
- * @returns {Object} The submission object that contains all data necessary to render a submission page                           
+ *
+ * @returns {Object} The submission object that contains all data necessary to render a submission page
  */
 export const buildSubmissionPreview = ({
     formData,
@@ -54,10 +54,11 @@ export const buildSubmissionPreview = ({
 
     var submission = {
         ...formData,
-        lastUpdated: Date.now(),
+        lastUpdated: 9999999,
         _id: submissionID,
         author: store.getState().auth.user
     };
+
     if (file) {
         //read and parse file
         var reader = new FileReader();
@@ -80,7 +81,7 @@ export const buildSubmissionPreview = ({
 /**
  * @function buildAndSave
  * @description REDUX ACTION: Builds the submission object and dispatches an action to save the changes
- * 
+ *
  * @param {Object} data - Data used to build the submission preview. Contains `formData`, `file`, `notebookJSON`, `submissionID`
  * @param {Object} data.formData - A JSON Object of the data filled out by the form. This object should contain the following:
  * ```

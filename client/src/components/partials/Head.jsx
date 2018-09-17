@@ -135,7 +135,7 @@ class Head extends Component {
     }
 
     handleSubmit = (event) => {
-      event.preventDefault();
+      // event.preventDefault();
 
       var inviteEmail = this.state.value;
       this.setState({value:''}); //Reset state of modal
@@ -256,15 +256,14 @@ class Head extends Component {
 
                                                   <form onSubmit={this.handleSubmit}>
                                                     <label>
-
                                                       <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
                                                     </label>
                                                     <ul className="button-row">
                                                       <li>
-                                                        <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
+                                                        <button type="button"className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
                                                       </li>
                                                       <li>
-                                                        <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
+                                                        <button type="submit" className='invite-modal-button' >Invite</button>
                                                       </li>
                                                     </ul>
                                                     <div className='inviteAlert'>
