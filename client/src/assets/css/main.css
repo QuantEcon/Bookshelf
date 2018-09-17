@@ -2174,7 +2174,7 @@ button {
       .landing-logos ul li a {
         display: block; }
         .landing-logos ul li a img {
-          width: 60px; }
+          width: 70px; }
 
 .tile {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -2324,6 +2324,8 @@ button {
       margin: 0;
       padding: 0;
       font-weight: 400; }
+    .notebook-summary .specs .short a {
+      word-break: break-all; }
   .notebook-summary .avatar {
     margin: 0 25px;
     -ms-flex-negative: 0;
@@ -2489,6 +2491,8 @@ button {
         -ms-flex: 1;
             flex: 1;
         padding: 0 2rem 0 0; }
+        .details .details-main .details-body .details-primary a {
+          word-break: break-all; }
       .details .details-main .details-body .details-secondary {
         -ms-flex: 1;
             flex: 1;
@@ -3238,6 +3242,23 @@ html.is-reveal-open {
     font-size: 2em;
     line-height: 1; }
 
+.modal-alert {
+  position: absolute;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+  width: 600px;
+  padding: 0px;
+  border: 1px solid #cccccc;
+  border-radius: 5px !important; }
+
+.modal-alert:focus {
+  outline: none; }
+
 .modal {
   padding: 0 2rem !important;
   border-radius: 5px !important; }
@@ -3314,6 +3335,10 @@ html.is-reveal-open {
             color: #fff; }
   .modal .close-button {
     color: #d84d0a; }
+
+.modal-body p {
+  text-align: center !important;
+  font-size: larger; }
 
 .overlay {
   position: fixed;
@@ -3397,9 +3422,6 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
   padding-left: 1rem; }
-
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.75) !important; }
 
 /*
  * The MIT License

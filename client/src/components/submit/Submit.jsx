@@ -14,19 +14,6 @@ import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
 import { Route, Redirect } from 'react-router-dom'
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
-
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
@@ -417,7 +404,7 @@ class Submit extends Component {
                 <Modal isOpen={this.state.cancelSubmissionModal}
                       onRequestClose={this.toggleCancelSubmissionModal}
                       contentLabel="Cancel Submission"
-                      style={customStyles}
+                      className="modal-alert"
                       shouldCloseOnOverlayClick={false} >
                   <div className="modal">
                     <div className="modal-header">
