@@ -2696,6 +2696,8 @@ button {
   margin: 2rem 0; }
   .submit-form input, .submit-form textarea, .submit-form select {
     border-radius: 5px; }
+  .submit-form p.textarea-hint {
+    color: #d84d0a; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {

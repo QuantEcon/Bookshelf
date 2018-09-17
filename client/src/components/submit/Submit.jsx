@@ -699,6 +699,7 @@ class Submit extends Component {
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
                                       </TabPanel>
+                                      <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
                                       <TabPanel>
                                         <MarkdownRender
                                             disallowedTypes={['heading']}
