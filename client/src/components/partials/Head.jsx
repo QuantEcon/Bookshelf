@@ -12,7 +12,9 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    padding               : '0',
+    width                 : '600px'
   }
 };
 
@@ -115,7 +117,7 @@ class Head extends Component {
 
     afterOpenModal = () => {
       // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
+      // this.subtitle.style.color = '#f00';
     }
 
     closeModal = () => {
@@ -135,7 +137,7 @@ class Head extends Component {
     }
 
     handleSubmit = (event) => {
-      // event.preventDefault();
+      event.preventDefault();
 
       var inviteEmail = this.state.value;
       this.setState({value:''}); //Reset state of modal
@@ -249,26 +251,33 @@ class Head extends Component {
                                                   onRequestClose={this.closeModal}
                                                   style={customStyles}
                                                   contentLabel="Example Modal"
+                                                  shouldCloseOnOverlayClick={false}
                                                 >
-
-                                                  <h3 className='invite-label' ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h3>
-
-
                                                   <form onSubmit={this.handleSubmit}>
-                                                    <label>
-                                                      <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
-                                                    </label>
-                                                    <ul className="button-row">
-                                                      <li>
-                                                        <button type="button"className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
-                                                      </li>
-                                                      <li>
-                                                        <button type="submit" className='invite-modal-button' >Invite</button>
-                                                      </li>
-                                                    </ul>
-                                                    <div className='inviteAlert'>
-                                                      { this.state.visibility ? <h2 className='email-error' >This user is already part of QuantEcon Notes</h2> : null }
-                                                      { this.state.check ? null : <h3 className='email-error' >Please enter a valid email address</h3> }
+                                                    <div className="modal">
+                                                      <div className="modal-header">
+                                                        <h1 className='modal-title'>Invite User</h1>
+                                                      </div>
+
+                                                      <div className="modal-body">
+                                                        <p><strong>Enter the email address of the person you would like to invite</strong></p>
+                                                        <label>
+                                                          <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
+                                                        </label>
+                                                        <ul className="options">
+                                                          <li>
+                                                            <a className='alt' onClick={this.closeModal}>Cancel</a>
+                                                          </li>
+                                                          <li>
+                                                            <a onClick={this.handleSubmit}>Invite</a>
+                                                          </li>
+                                                        </ul>
+                                                        <div className='inviteAlert'>
+                                                          { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
+                                                          { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
+                                                        </div>
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                                                      </div>
                                                     </div>
                                                   </form>
                                                 </Modal>
