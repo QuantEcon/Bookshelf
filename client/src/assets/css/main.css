@@ -2082,6 +2082,8 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
+    .header .header-container .site-tag {
+      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2172,7 +2174,7 @@ button {
       .landing-logos ul li a {
         display: block; }
         .landing-logos ul li a img {
-          width: 100px;
+          width: 70px;
           margin: 0 4rem; }
 
 .tile {
@@ -2891,7 +2893,6 @@ button {
 
 .callout {
   position: relative;
-  margin: 0 0 1rem;
   padding: 1rem 0;
   border: 1px solid #cacaca;
   background-color: #ddeed8;
@@ -3315,6 +3316,10 @@ html.is-reveal-open {
   .modal .close-button {
     color: #d84d0a; }
 
+.modal-body p {
+  text-align: center !important;
+  font-size: larger; }
+
 .overlay {
   position: fixed;
   top: 0;
@@ -3397,9 +3402,6 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
   padding-left: 1rem; }
-
-.ReactModal__Overlay {
-  background-color: rgba(0, 0, 0, 0.75) !important; }
 
 /*
  * The MIT License
@@ -3878,7 +3880,8 @@ div.my-modal {
 
 .email-error {
   text-align: center;
-  color: #721c24; }
+  color: #721c24;
+  margin-top: 1em; }
 
 .invite-label {
   color: #d84d0a !important; }
