@@ -5,7 +5,7 @@ Code for the QuantEcon Notes Project
 ### Contributing
 Please work in branches and make PR's
 
-To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!), 
+To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!),
 then test to make sure your code is still working as intended. This way, all merge conflicts will already be resolved in the PR.
 
 ### Building Documentation
@@ -15,11 +15,11 @@ then test to make sure your code is still working as intended. This way, all mer
 ### Setup
 ##### Prerequisites
 1. **npm 5+** : `node install -g npm`
-2. **node v8+** 
+2. **node v8+**
 3. **reactjs v16+** : `npm install -g create-react-app`
 
-#### Installation Commands 
-Ensure you have `npm v5+` and `node v8+` installed. 
+#### Installation Commands
+Ensure you have `npm v5+` and `node v8+` installed.
 1. Pull from repository using `git pull`.
 2. Cd into project root directory.
 3. Run `npm run install-all` to install all dependencies.
@@ -31,7 +31,10 @@ If you are in development mode, you will need to have _both_ the webpack develop
 1. `npm start` from the `/` directory
 2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
 
-You then will be able to connect to the website through the React client's port (default is 3000)
+You then will be able to connect to the website through the React client's port (default is 3000).
+
+Instead of of running `npm start` in both the client and server side with two terminals opened up, the project has set up `npm run dev` which uses **concurrently** to run both the client and server at the same time within one terminal.
+ You then will be able to connect to the website through the React client's port (default is 3000).
 
 If you get a `Could not proxy request` error, then you are either not running the API backend, or the ports are not matching. Ensure the port that the API is running on matches the one declared in the config files.
 
@@ -62,8 +65,8 @@ Then you'll need to update the docker image:
 Finally restart the instance:
 1. `npm run docker-daemon`
 
-#### How-To 
-Inside the client directory, there is an extensive README.md on client-side. 
+#### How-To
+Inside the client directory, there is an extensive README.md on client-side.
 
 **UPDATE AS OF 29 MAR 2018:**
 

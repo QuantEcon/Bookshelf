@@ -446,9 +446,6 @@ svg,
 video {
   vertical-align: middle; }
 
-svg {
-  margin: 0px 10px; }
-
 /*
  * Remove default fieldset styles.
  */
@@ -1793,7 +1790,7 @@ textarea {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Raleway", sans-serif;
   font-size: 12px;
   display: -ms-flexbox;
   display: flex;
@@ -1915,7 +1912,8 @@ pre, code {
   white-space: pre-line;
   border: 0; }
 
-[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
+[type='url'], [type='color'], textarea {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -1934,6 +1932,9 @@ pre, code {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none; }
+
+textarea {
+  height: 6rem; }
 
 [type='file'], [type='checkbox'], [type='radio'] {
   margin: 0 0 1.25rem; }
@@ -2042,7 +2043,7 @@ button {
         justify-content: space-between;
     padding: 1rem 0; }
     .header .header-container .qe-logo {
-      font-family: 'Exo', sans-serif;
+      font-family: "Exo", sans-serif;
       font-weight: 200;
       font-size: 2rem;
       margin: 0 0 0 -40px;
@@ -2057,7 +2058,7 @@ button {
       -ms-flex-align: center;
           align-items: center; }
       .header .header-container .site-title .site-name {
-        font-family: Exo,sans-serif;
+        font-family: "Exo", sans-serif;
         font-weight: 200;
         font-size: 1.3rem;
         margin: 0;
@@ -2081,8 +2082,6 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
-    .header .header-container .site-tag {
-      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2169,12 +2168,12 @@ button {
     -ms-flex-align: center;
         align-items: center; }
     .landing-logos ul li {
-      margin: 0 4rem;
       padding: 0; }
       .landing-logos ul li a {
         display: block; }
         .landing-logos ul li a img {
-          width: 60px; }
+          width: 100px;
+          margin: 0 4rem; }
 
 .tile {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -2892,6 +2891,7 @@ button {
 
 .callout {
   position: relative;
+  margin: 0 0 1rem;
   padding: 1rem 0;
   border: 1px solid #cacaca;
   background-color: #ddeed8;
@@ -3860,6 +3860,7 @@ div.my-modal {
       color: #fff; }
 
 .announcements-list {
+  text-align: left;
   border: 1px solid #c3c3c3;
   background: #dee7db;
   padding: 1rem 2rem;
