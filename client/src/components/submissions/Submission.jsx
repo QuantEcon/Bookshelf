@@ -442,11 +442,8 @@ class Submission extends Component {
 
                         </div>
                         <div className='details-main'>
-
                             <div className='details-header'>
-
                                 <div className='details-title'>
-
                                     {!this.props.isLoading
                                         ? <h1 className='title'>{this.props.submission.data.notebook.title}</h1>
                                         : <p>loading...</p>}

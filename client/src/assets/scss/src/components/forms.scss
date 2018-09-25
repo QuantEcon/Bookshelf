@@ -37,6 +37,7 @@
             margin-top:0.5rem;
         }
     }
+
     .edit-profile-header {
         display: flex;
         align-items: center;
@@ -82,6 +83,9 @@
     //div {border:2px solid red;}
     input, textarea, select {
         border-radius: 5px;
+    }
+    p.textarea-hint {
+      color: #d84d0a;
     }
     .form-error {
         margin:0.5rem 0;

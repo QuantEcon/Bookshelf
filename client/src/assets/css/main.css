@@ -446,6 +446,9 @@ svg,
 video {
   vertical-align: middle; }
 
+svg {
+  margin: 0px 10px; }
+
 /*
  * Remove default fieldset styles.
  */
@@ -599,7 +602,7 @@ textarea {
   h3 {
     page-break-after: avoid; } }
 
-/* 
+/*
  * Foundation Icons v 3.0
  * Made by ZURB 2013 http://zurb.com/playground/foundation-icon-fonts-3
  * MIT License
@@ -2699,6 +2702,8 @@ button {
   margin: 2rem 0; }
   .submit-form input, .submit-form textarea, .submit-form select {
     border-radius: 5px; }
+  .submit-form p.textarea-hint {
+    color: #d84d0a; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {
@@ -3316,10 +3321,6 @@ html.is-reveal-open {
   .modal .close-button {
     color: #d84d0a; }
 
-.modal-body p {
-  text-align: center !important;
-  font-size: larger; }
-
 .overlay {
   position: fixed;
   top: 0;
@@ -3402,6 +3403,9 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
   padding-left: 1rem; }
+
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important; }
 
 /*
  * The MIT License
@@ -3900,6 +3904,14 @@ div.my-modal {
   position: fixed;
   left: 0;
   top: 0; }
+
+p.word-count {
+  display: inline-block;
+  margin-left: 250px; }
+
+span.words {
+  font-weight: bold;
+  color: #d84d0a; }
 
 ul.links {
   list-style-type: none; }
