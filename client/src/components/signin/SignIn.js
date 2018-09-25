@@ -72,21 +72,7 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-<<<<<<< HEAD
-                <HeadContainer history={this.props.history}/> {this.state.showErrorMessage
-                    ? <div className="warning callout">
-                            <div className="container">
-                                <p className="callout-message">
-                                    <ErrorIcon/>
-                                    An error occurred while trying to login
-                                </p>
-                            </div>
-                        </div>
-                    : null}
-
-=======
                 <HeadContainer history={this.props.history}/>
->>>>>>> 14454baed642e425a3636228fc79f36a86a51d81
                 {this.props.loading
                 ? "loading..."
                 :<div className='modal'>
