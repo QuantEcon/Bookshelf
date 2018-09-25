@@ -26,6 +26,7 @@ import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+import axios from 'axios'
 
 /* Custom styles for the modal */
 const customStyles = {
@@ -35,7 +36,9 @@ const customStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
+    transform             : 'translate(-50%, -50%)',
+    padding               : '0',
+    width                 : '600px'
   }
 };
 
@@ -65,6 +68,7 @@ class Submission extends Component {
      * @prop {boolean}  isLoading       Flag to tell react if the data is still being loaded from the API
      * @prop {Object}   currentUser     Object containing the current user's information. If there is no user signed in, it will be `null`
      * @prop {Object}   history         Needed for navigation. Passed from the Submission Container
+
      */
     static propTypes = {
         actions: PropTypes.object.isRequired,
@@ -75,12 +79,20 @@ class Submission extends Component {
     }
     constructor(props) {
         super(props);
+
         this.state = {
             flipper: true,
             deleteModalOpen: false,
             flaggedReason: 'inappropriate',
             modalIsOpen: false,
+            testing: [],
         }
+
+        console.log('[Submission Information] - fetching about submission');
+
+        axios.get('/api/submit/edit-submission').then(resp =>{
+          console.log('[Submission Information] - returned resp: ', resp.body);
+        })
 
         if(window.location.href.indexOf("comment") > -1) {
           this.state.showNotebook = false
@@ -124,9 +136,6 @@ class Submission extends Component {
         this.openModal = this
             .openModal
             .bind(this);
-        this.afterOpenModal = this
-            .afterOpenModal
-            .bind(this);
         this.closeModal = this
             .closeModal
             .bind(this);
@@ -139,8 +148,12 @@ class Submission extends Component {
     }
 
     componentDidMount() {
+
+        // console.log();
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
+        console.log('[Submission] - props: ', this.props);
+
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
@@ -165,7 +178,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Notes"
+            document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
         }
         this.setState({
             flipper: !this.state.flipper
@@ -295,15 +308,10 @@ class Submission extends Component {
         }
     }
 
-/* modal for flagging Reason */
+    /* modal for flagging Reason */
     openModal = () => {
       this.setState({modalIsOpen: true});
       console.log('state: ', this.state)
-    }
-
-    afterOpenModal = () => {
-      // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
     }
 
     closeModal = () => {
@@ -342,24 +350,26 @@ class Submission extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
-                    className='overlay'>
-                    <div className='my-modal'>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Delete Submission</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <p className='text-center'>Are you sure you want to delete this submission?</p>
-                            <ul className='button-row'>
-                                <li>
-                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
-                                </li>
-                                <li>
-                                    <button onClick={this.deleteSubmission}>Delete</button>
-                                </li>
-                            </ul>
-                        </div>
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                    shouldCloseOnOverlayClick={false}>
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Delete Submission</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>Are you sure you want to delete this submission?</strong></p>
+                        <ul className="options">
+                          <li>
+                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                          </li>
+                          <li>
+                            <a onClick={this.deleteSubmission}>Delete</a>
+                          </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                      </div>
                     </div>
-
                 </Modal>
                 {this.props.isLoading
                     ? null
@@ -457,29 +467,36 @@ class Submission extends Component {
 
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
-                                              onAfterOpen={this.afterOpenModal}
                                               onRequestClose={this.closeModal}
                                               style={customStyles}
-                                              contentLabel="Example Modal">
-
-                                              <h2 ref={subtitle => this.subtitle = subtitle}>Why would you like to report the content ?</h2>
+                                              contentLabel="Example Modal"
+                                              shouldCloseOnOverlayClick={false}>
                                               <form onSubmit={this.handleSubmit}>
-                                                <label>
-                                                  <select value={this.state.flaggedReason} onChange={this.handleChange} required>
-                                                    <option value="inappropriate" selected>Inappropriate Content</option>
-                                                    <option value="spam" >Spam</option>
-                                                    <option value="copyright">Violates Copyright</option>
-                                                    <option value="other">Other</option>
-                                                  </select>
-                                                </label>
-                                                <ul className="button-row">
-                                                  <li>
-                                                    <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
-                                                  </li>
-                                                  <li>
-                                                    <button className='invite-modal-button' onClick={this.handleSubmit}>Report</button>
-                                                  </li>
-                                                </ul>
+                                                <div className="modal">
+                                                  <div className="modal-header">
+                                                    <h1 className='modal-title'>Report the Content</h1>
+                                                  </div>
+                                                  <div className="modal-body">
+                                                    <p><strong>Why would you like to report the content ?</strong></p>
+                                                    <label>
+                                                      <select value={this.state.flaggedReason} onChange={this.handleChange} required>
+                                                        <option value="inappropriate" selected>Inappropriate Content</option>
+                                                        <option value="spam" >Spam</option>
+                                                        <option value="copyright">Violates Copyright</option>
+                                                        <option value="other">Other</option>
+                                                      </select>
+                                                    </label>
+                                                    <ul className="options">
+                                                      <li>
+                                                        <a className='alt' onClick={this.closeModal}>Cancel</a>
+                                                      </li>
+                                                      <li>
+                                                        <a onClick={this.handleSubmit}>Report</a>
+                                                      </li>
+                                                    </ul>
+                                                    <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                                                  </div>
+                                                </div>
                                               </form>
                                             </Modal>
                                         </li>
@@ -598,7 +615,6 @@ class Submission extends Component {
                                                 <span>Published:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
                                                             <Time
                                                                 value={this.props.submission.data.notebook.published}
                                                                 format='D MMM YYYY'/>
@@ -610,11 +626,10 @@ class Submission extends Component {
                                                 <span>Last update:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
-                                                            {this.props.submission.data.notebook.lastUpdated
-                                                                ? <Time
-                                                                        value={this.props.submission.data.notebook.lastUpdated}
-                                                                        format='D MMM YYYY'/>
+                                                            {this.props.submission.data.notebook.lastUpdated !== undefined && this.props.submission.data.notebook.lastUpdated !== ' '
+                                                                ?  <Time
+                                                                      value={this.props.submission.data.notebook.lastUpdated}
+                                                                      format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}
                                                                     format='D MMM YYYY'/>}

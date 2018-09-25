@@ -12,7 +12,10 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
+
+import { Route, Redirect } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
 
 const customStyles = {
   content : {
@@ -41,7 +44,9 @@ class Submit extends Component {
      * @prop {Object} history Required for navigation.
      * @prop {func} save Method to call after successful form validation and when the user
      * clicks on save. This is used if this is an EditSubmission page
+
      */
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         submit: PropTypes.func,
@@ -94,6 +99,8 @@ class Submit extends Component {
             notebookDataReady: false,
             notebookJSON: {},
             contentSaved: false,
+            cancelSubmissionModal: false,
+            redirect: false,
             count: 0,
             pasteValue: false,
             textareaValue: 0,
@@ -150,7 +157,10 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : {}
+            : {},
+        lastUpdated: this.props.isEdit
+            ? this.props.submission.data.lastUpdated
+            : ''
     }
 
     errors = {
@@ -245,9 +255,9 @@ class Submit extends Component {
             e.preventDefault()
         }
         this.setState({contentSaved : true}, () => {
-        console.log(this.state.contentSaved)
+
         if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit')
+            console.log('[EditSubmission] - submit edit', this.props)
             var file = this.state.accepted[0]
               ? this.state.accepted[0]
               : null
@@ -257,9 +267,10 @@ class Submit extends Component {
           this.formData.score = this.props.submission.data.notebook.score
           this.formData.views = this.props.submission.data.notebook.views
           this.formData.published = this.props.submission.data.notebook.published
-          this
-              .props
-              .save({formData: this.formData, file, notebookJSON});
+          this.formData.lastUpdateDate = Date(Date.now())
+          this.props.save({formData: this.formData, file, notebookJSON})
+          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+          ;
       } else {
           console.log('[EditSubmission] - not edit')
 
@@ -360,7 +371,6 @@ class Submit extends Component {
      * @param {Object} e Event passed from the `onClick` listener
      */
     toggleOpenModal = (e) => {
-        console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
             modalOpen: !this.state.modalOpen,
@@ -368,7 +378,7 @@ class Submit extends Component {
     }
 
     closeModal = () => {
-      this.setState({modalOpen: false});
+      this.setState({modalOpen: false, cancelSubmissionModal: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -399,6 +409,26 @@ class Submit extends Component {
         this.setState({
             markdownRefereceModal: !this.state.markdownRefereceModal
         })
+    }
+
+    toggleCancelSubmissionModal = (e) => {
+        e.preventDefault()
+        this.setState({
+            cancelSubmissionModal: !this.state.cancelSubmissionModal
+        })
+    }
+
+    // Using redirect to redirect users when 'yes' is clicked back to home page.
+    setRedirect = () => {
+      this.setState({
+        redirect: true
+      })
+    }
+
+    renderRedirect = () => {
+      if (this.state.redirect) {
+        return <Redirect to='/' />
+      }
     }
 
     toggleSummaryModal = (event) => {
@@ -436,7 +466,8 @@ class Submit extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+
+              {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
@@ -698,8 +729,8 @@ class Submit extends Component {
                                             style={customStyles}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
-                                      </TabPanel>
                                       <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      </TabPanel>
                                       <TabPanel>
                                         <MarkdownRender
                                             disallowedTypes={['heading']}
@@ -758,9 +789,9 @@ class Submit extends Component {
                             <ul className='button-row'>
                                 {this.props.isEdit
                                     ? <li>
-                                            <Link to={'/submission/' + this.props.submission.data.notebook._id}>
-                                                Cancel
-                                            </Link>
+                                          <button onClick={this.toggleCancelSubmissionModal}>
+                                              Cancel
+                                          </button>
                                         </li>
                                     : null}
                                 <li>

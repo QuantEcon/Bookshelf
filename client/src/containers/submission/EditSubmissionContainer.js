@@ -34,18 +34,18 @@ class EditSubmissionContainer extends Component {
 
     /**
      * Dispatches a save action. Once the action completes, `saveCallback` will be called.
-     * 
-     * Note: Either the `file` or `notebookJSON` will be null. If the user uploaded a new file, 
+     *
+     * Note: Either the `file` or `notebookJSON` will be null. If the user uploaded a new file,
      * `notebookJSON` will be null. If no new file was uploaded, `file` will be null and `notebookJSON`
      * will be populated with the original contents of the ipynb file.
-     * 
+     *
      * @param {Object} param0
      * @param {Object} param0.formData Contains all the information the user entered in the form
      * @param {File} param0.file Reference to the file the user uploaded.
      * @param {Object} param0.notebookJSON JSON representing the ipynb file
      */
     save ({formData, file, notebookJSON}) {
-        
+
         this
             .props
             .actions

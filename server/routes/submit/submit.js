@@ -192,6 +192,8 @@ app.post('/confirm', passport.authenticate('jwt', {
     var newSub = new Submission();
     console.log("[Submit] - confirm. req.body: \n", req.body)
     var coAuthors = req.body.submission.coAuthors
+    var updatedDate = req.body.submission.lastUpdated
+
     newSub.coAuthors = coAuthors
 
     newSub.title = req.body.submission.title;
@@ -334,6 +336,7 @@ app.post('/edit-submission', passport.authenticate('jwt', {
             submission.lang = req.body.submissionData.lang
             submission.lastUpdated = Date.now();
             submission.topics = req.body.submissionData.topics
+
             if(req.body.submissionData.fileName) {
                 submission.fileName = req.body.submissionData.fileName
             }
