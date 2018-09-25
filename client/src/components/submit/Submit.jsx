@@ -12,6 +12,7 @@ import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import { Prompt } from 'react-router'
+import { Route, Redirect } from 'react-router-dom'
 
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -751,8 +752,8 @@ class Submit extends Component {
                                             style={customStyles}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
-                                      </TabPanel>
                                       <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      </TabPanel>
                                       <TabPanel>
                                         <MarkdownRender
                                             disallowedTypes={['heading']}
