@@ -78,7 +78,7 @@ class Head extends Component {
     }
 
     redirectToHome = () => {
-        console.log("redirect to home")
+        console.log("Redirect to home")
         //reset search params
         this.props.resetSearchParams()
         if(this.props.history){

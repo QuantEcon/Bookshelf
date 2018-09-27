@@ -1,14 +1,18 @@
 // misc.scss
 // Miscellaneous styles
 
-.inviteAlert {
-  background-color: #F3D8DB;
-  border-radius: 4px;
+// .inviteAlert {
+//   background-color: #F3D8DB;
+//   border-radius: 4px;
+// }
+
+.success-checkmark {
+  margin: 0rem 1rem;
 }
 
 .email-error {
   text-align: center;
-  color: #721c24;
+  color: #C95627;
   margin-top: 1em;
 }
 
@@ -148,16 +152,16 @@ img.loading-avatar {
 }
 
 .page-title {
-  text-align: center;
+  // text-align: center;
     //padding: 0;
     //border-radius: 5px !important;
 }
 
 .title-name {
-    padding: 1rem 0;
-    font-size: 2.3rem;
-    border-bottom: 1px solid #cacaca;
-    color: black;
+  font-size: 2.6em;
+  border-bottom: 1px solid #cacaca;
+  color: #C95627;
+  padding: 0.5rem 1.5rem;
 }
 
 /* Notebook rendering */

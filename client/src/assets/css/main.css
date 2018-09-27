@@ -3875,13 +3875,12 @@ div.my-modal {
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
 
-.inviteAlert {
-  background-color: #F3D8DB;
-  border-radius: 4px; }
+.success-checkmark {
+  margin: 0rem 1rem; }
 
 .email-error {
   text-align: center;
-  color: #721c24;
+  color: #C95627;
   margin-top: 1em; }
 
 .invite-label {
@@ -3989,14 +3988,11 @@ img.loading-avatar {
   margin: 2rem 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
 
-.page-title {
-  text-align: center; }
-
 .title-name {
-  padding: 1rem 0;
-  font-size: 2.3rem;
+  font-size: 2.6em;
   border-bottom: 1px solid #cacaca;
-  color: black; }
+  color: #C95627;
+  padding: 0.5rem 1.5rem; }
 
 /* Notebook rendering */
 .notebook-preview .cell .outputs code {
