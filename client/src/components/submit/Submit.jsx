@@ -478,10 +478,10 @@ class Submit extends Component {
                 <Modal isOpen={this.state.summaryModal} style={customStyles} contentLabel="Summary">
                     <div className="modal">
                       <div className="modal-header">
-                        <h1 className='modal-title'>Summary Word Limits</h1>
+                        <h1 className='modal-title'>Word Limit Reached</h1>
                       </div>
                       <div className="modal-body">
-                        <p><strong>The word limits for summary is 250 words.</strong></p>
+                        <p><strong>The Notebook summary is limited to 250 words.</strong></p>
                         <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
                       </div>
                     </div>
