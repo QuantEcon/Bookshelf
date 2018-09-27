@@ -446,9 +446,6 @@ svg,
 video {
   vertical-align: middle; }
 
-svg {
-  margin: 0px 10px; }
-
 /*
  * Remove default fieldset styles.
  */
@@ -602,7 +599,7 @@ textarea {
   h3 {
     page-break-after: avoid; } }
 
-/*
+/* 
  * Foundation Icons v 3.0
  * Made by ZURB 2013 http://zurb.com/playground/foundation-icon-fonts-3
  * MIT License
