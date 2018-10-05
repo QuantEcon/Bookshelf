@@ -53,10 +53,6 @@
     "jsdoc-jsx": "^0.1.0"
   },
   "dependencies": {
-<<<<<<< HEAD
-=======
-
->>>>>>> 1192d087afd0bd15141d452bf13f4b847c1ebc7d
     "email-validator": "^2.0.4",
     "react-tabs": "^2.3.0"
   }
