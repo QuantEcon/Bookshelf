@@ -3,15 +3,13 @@ import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import {Link} from 'react-router-dom'
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
