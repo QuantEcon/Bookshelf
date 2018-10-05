@@ -482,7 +482,7 @@ class Submit extends Component {
                     </div>
                   </div>
                 </Modal>
-                <Modal isOpen={this.state.summaryModal} contentLabel="Summary">
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="modal-alert">
                     <div className="modal">
                       <div className="modal-header">
                         <h1 className='modal-title'>Word Limit Reached</h1>

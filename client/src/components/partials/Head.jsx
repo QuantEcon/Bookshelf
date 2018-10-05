@@ -240,7 +240,7 @@ class Head extends Component {
                                             </li>
                                             <li className='menu-submit invite-button'>
                                                 <a onClick={() => {this.inviteClick()}}> + Invite</a>
-                                                <Modal
+                                              <Modal
                                                   isOpen={this.state.modalIsOpen}
                                                   onAfterOpen={this.afterOpenModal}
                                                   onRequestClose={this.closeModal}
