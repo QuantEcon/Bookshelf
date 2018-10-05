@@ -1,0 +1,19 @@
+{
+  "images": [
+    {
+      "image":"qe-logo-100.svg",
+      "class_name": "quantecon-logo",
+      "image_url": "https://quantecon.org/"
+    },
+    {
+      "image":"landing-jupyter-logo.png",
+      "class_name": "jupyter-logo",
+      "image_url": "https://jupyter.org/"
+    },
+    {
+      "image":"landing-sloan-logo.png",
+      "class_name": "sloan-logo",
+      "image_url": "https://sloan.org/"
+    }
+  ]
+}
