@@ -19,6 +19,20 @@ import {Link} from 'react-router-dom'
  *
  * Children: {@link ReplyList}
  */
+
+const customStyles = {
+   content : {
+     top                   : '50%',
+     left                  : '50%',
+     right                 : 'auto',
+     bottom                : 'auto',
+     marginRight           : '-50%',
+     transform             : 'translate(-50%, -50%)',
+     padding               : '0',
+     width                 : '600px'
+   }
+};
+
 class Comment extends Component {
 
     /**
@@ -44,9 +58,6 @@ class Comment extends Component {
 
     constructor(props) {
         super(props);
-
-        // console.log('[Comment] - props: ', props);
-
         this.state = {
             comment: props.comment,
             replies: props.replies,
@@ -56,7 +67,8 @@ class Comment extends Component {
             showError: false,
             authors: props.authors,
             currentUser: props.currentUser,
-            isReply: props.isReply
+            isReply: props.isReply,
+            modalIsOpen: false,
         }
 
         this.toggleInsertReply = this
@@ -83,7 +95,18 @@ class Comment extends Component {
         this.deleteComment = this
             .deleteComment
             .bind(this);
-        this.flagComment = this.flagComment.bind(this)
+        this.flagComment = this
+            .flagComment
+            .bind(this);
+        this.handleSubmit = this
+            .handleSubmit
+            .bind(this);
+        this.openModal = this
+            .openModal
+            .bind(this);
+        this.closeModal = this
+            .closeModal
+            .bind(this);
 
     }
 
@@ -130,17 +153,31 @@ class Comment extends Component {
             .editComment({commentID: this.props.comment._id, newCommentText: newText})
     }
 
+    /* modal for flagging comments */
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+      console.log('state: ', this.state)
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
     flagComment() {
+        console.log('[Comment] - flag comment clicked')
         this.props.actions.flagComment({commentID: this.props.comment._id})
     }
 
     flagClick = () => {
-        confirmAlert({
-            title: 'Are you sure you want to report this comment?',
-            confirmLabel: 'Yes',
-            cancelLabel: 'Cancel',
-            onConfirm: () => this.flagComment(),
-         })
+        console.log('in flagged comment method');
+        this.openModal();
+    }
+
+    handleSubmit = (event) => {
+      event.preventDefault();
+      this.setState({modalIsOpen: false});
+      this.flagComment();
     }
 
     /**
@@ -223,7 +260,6 @@ class Comment extends Component {
                             </ul>
                         </div>
                     </div>
-
                 </Modal>
                 <div className='comment-side'>
                     <div className='comment-avatar'>
@@ -233,7 +269,6 @@ class Comment extends Component {
                     </div>
 
                     {/* <div className='comment-score'>{this.state.comment.score}</div>
-
                     <ul className='comment-vote'>
                         <li>
                             {this.props.currentUser && this
@@ -265,6 +300,32 @@ class Comment extends Component {
                 </div>
 
                 <div className='comment-main'>
+                    <Modal
+                     isOpen={this.state.modalIsOpen}
+                     onRequestClose={this.closeModal}
+                     style={customStyles}
+                     contentLabel="Example Modal"
+                     shouldCloseOnOverlayClick={false}>
+                     <form onSubmit={this.handleSubmit}>
+                       <div className="modal">
+                         <div className="modal-header">
+                           <h1 className='modal-title'>Report the Comment</h1>
+                         </div>
+                         <div className="modal-body">
+                           <p><strong>Are you sure you want to report the comment ?</strong></p>
+                           <ul className="options">
+                             <li>
+                               <a className='alt' onClick={this.closeModal}>Cancel</a>
+                             </li>
+                             <li>
+                               <a onClick={this.handleSubmit}>Yes</a>
+                             </li>
+                           </ul>
+                           <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                         </div>
+                       </div>
+                     </form>
+                   </Modal>
                     <div className='comment-header'>
                         <a href={'/user/' + this.state.author._id}>
                             {this.state.author.name}
@@ -280,7 +341,6 @@ class Comment extends Component {
                         <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>
-
                     </div>
 
                     <div className='comment-body'>
@@ -310,7 +370,6 @@ class Comment extends Component {
                                               </li>
                                           </div>
                                       }
-
                                     </div>
                                 : null}
 

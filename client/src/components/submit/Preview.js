@@ -60,7 +60,7 @@ class Preview extends Component {
                                     {/*TODO:Loading spinners?*/}
 
                                     <a>
-                                        <ThumbsUp/>
+                                      <ThumbsUp/>
                                     </a>
 
                                     {!this.props.isLoading
