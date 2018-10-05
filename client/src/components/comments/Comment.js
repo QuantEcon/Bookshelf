@@ -3,15 +3,13 @@ import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
-import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
-import { confirmAlert } from 'react-confirm-alert';
-import 'react-confirm-alert/src/react-confirm-alert.css';
 import {Link} from 'react-router-dom'
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
@@ -19,19 +17,6 @@ import {Link} from 'react-router-dom'
  *
  * Children: {@link ReplyList}
  */
-
-const customStyles = {
-   content : {
-     top                   : '50%',
-     left                  : '50%',
-     right                 : 'auto',
-     bottom                : 'auto',
-     marginRight           : '-50%',
-     transform             : 'translate(-50%, -50%)',
-     padding               : '0',
-     width                 : '600px'
-   }
-};
 
 class Comment extends Component {
 
@@ -303,7 +288,7 @@ class Comment extends Component {
                     <Modal
                      isOpen={this.state.modalIsOpen}
                      onRequestClose={this.closeModal}
-                     style={customStyles}
+                     className="modal-alert"
                      contentLabel="Example Modal"
                      shouldCloseOnOverlayClick={false}>
                      <form onSubmit={this.handleSubmit}>

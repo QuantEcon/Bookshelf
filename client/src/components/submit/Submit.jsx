@@ -11,24 +11,8 @@ import {typesetMath} from 'mathjax-electron'
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
-import { Prompt } from 'react-router'
-import { Route, Redirect } from 'react-router-dom'
-
+import { Redirect } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
-
-
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
 
 const maxWords = 251
 
@@ -121,7 +105,7 @@ class Submit extends Component {
     componentDidMount() {
         if (this.props.isEdit) {
             document.title = 'Edit Submission - QuantEcon Notes';
-            if (this.props.submission.data.notebook.summary.split(' ').length == 1 && this.props.submission.data.notebook.summary.split(' ')[0] == '') {
+            if (this.props.submission.data.notebook.summary.split(' ').length === 1 && this.props.submission.data.notebook.summary.split(' ')[0] === '') {
               this.setState({summary: '', count: 0})
             }
             else {
@@ -477,7 +461,7 @@ class Submit extends Component {
                 <Modal isOpen={this.state.cancelSubmissionModal}
                       onRequestClose={this.toggleCancelSubmissionModal}
                       contentLabel="Cancel Submission"
-                      style={customStyles}
+                      className="modal-alert"
                       shouldCloseOnOverlayClick={false} >
                   <div className="modal">
                     <div className="modal-header">
@@ -498,7 +482,7 @@ class Submit extends Component {
                     </div>
                   </div>
                 </Modal>
-                <Modal isOpen={this.state.summaryModal} style={customStyles} contentLabel="Summary">
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary">
                     <div className="modal">
                       <div className="modal-header">
                         <h1 className='modal-title'>Word Limit Reached</h1>
@@ -749,7 +733,6 @@ class Submit extends Component {
                                             type="text"
                                             onChange={this.summaryChanged}
                                             onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
-                                            style={customStyles}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
                                       <p class="textarea-hint">The maximum word count for summary is 250 words.</p>

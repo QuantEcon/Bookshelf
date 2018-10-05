@@ -6,25 +6,6 @@ import axios from 'axios';
 import store from '../../store/store';
 import classnames from 'classnames';
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
-
-const errorStyle = {
-  marginLeft : '23%',
-  color : 'green'
-};
-
-
 var temp= [];
 
 class Head extends Component {
@@ -263,7 +244,7 @@ class Head extends Component {
                                                   isOpen={this.state.modalIsOpen}
                                                   onAfterOpen={this.afterOpenModal}
                                                   onRequestClose={this.closeModal}
-                                                  style={customStyles}
+                                                  className="modal-alert"
                                                   contentLabel="Example Modal"
                                                 >
                                                   <form onSubmit={this.handleSubmit}>

@@ -28,20 +28,6 @@ import NotebookFromHTML from '../NotebookFromHTML';
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import axios from 'axios'
 
-/* Custom styles for the modal */
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
-
 const editStyle = {
   paddingTop:'2.5px',
   paddingBottom:'2.5px'
@@ -350,7 +336,7 @@ class Submission extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
-                    style={customStyles}
+                    className='modal-alert'
                     contentLabel="Example Modal"
                     shouldCloseOnOverlayClick={false}>
                     <div className="modal">
@@ -468,7 +454,7 @@ class Submission extends Component {
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onRequestClose={this.closeModal}
-                                              style={customStyles}
+                                              className='modal-alert'
                                               contentLabel="Example Modal"
                                               shouldCloseOnOverlayClick={false}>
                                               <form onSubmit={this.handleSubmit}>
