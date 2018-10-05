@@ -111,8 +111,8 @@ class SubmissionPreview extends Component {
                 <div className="stats">
                     <ul>
                         <li className="views">
-                            <span className="count">{this.state.submission.viewers
-                                    ? this.state.submission.viewers.length
+                            <span className="count">{this.state.submission.views
+                                    ? this.state.submission.views
                                     : 0}</span>
                             Viewers</li>
                         <li className="comments">
