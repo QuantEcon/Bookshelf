@@ -446,9 +446,6 @@ svg,
 video {
   vertical-align: middle; }
 
-svg {
-  margin: 0px 10px; }
-
 /*
  * Remove default fieldset styles.
  */
@@ -602,7 +599,7 @@ textarea {
   h3 {
     page-break-after: avoid; } }
 
-/* 
+/*
  * Foundation Icons v 3.0
  * Made by ZURB 2013 http://zurb.com/playground/foundation-icon-fonts-3
  * MIT License
@@ -1793,7 +1790,7 @@ textarea {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Raleway", sans-serif;
   font-size: 12px;
   display: -ms-flexbox;
   display: flex;
@@ -1915,7 +1912,8 @@ pre, code {
   white-space: pre-line;
   border: 0; }
 
-[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
+[type='url'], [type='color'], textarea {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -1934,6 +1932,9 @@ pre, code {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none; }
+
+textarea {
+  height: 6rem; }
 
 [type='file'], [type='checkbox'], [type='radio'] {
   margin: 0 0 1.25rem; }
@@ -2042,7 +2043,7 @@ button {
         justify-content: space-between;
     padding: 1rem 0; }
     .header .header-container .qe-logo {
-      font-family: 'Exo', sans-serif;
+      font-family: "Exo", sans-serif;
       font-weight: 200;
       font-size: 2rem;
       margin: 0 0 0 -40px;
@@ -2057,7 +2058,7 @@ button {
       -ms-flex-align: center;
           align-items: center; }
       .header .header-container .site-title .site-name {
-        font-family: Exo,sans-serif;
+        font-family: "Exo", sans-serif;
         font-weight: 200;
         font-size: 1.3rem;
         margin: 0;
@@ -2169,7 +2170,6 @@ button {
     -ms-flex-align: center;
         align-items: center; }
     .landing-logos ul li {
-      margin: 0 4rem;
       padding: 0; }
       .landing-logos ul li a {
         display: block; }
@@ -2702,6 +2702,8 @@ button {
   margin: 2rem 0; }
   .submit-form input, .submit-form textarea, .submit-form select {
     border-radius: 5px; }
+  .submit-form p.textarea-hint {
+    color: #d84d0a; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {
@@ -3882,6 +3884,7 @@ div.my-modal {
       color: #fff; }
 
 .announcements-list {
+  text-align: left;
   border: 1px solid #c3c3c3;
   background: #dee7db;
   padding: 1rem 2rem;
@@ -3893,13 +3896,13 @@ div.my-modal {
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
 
-.inviteAlert {
-  background-color: #F3D8DB;
-  border-radius: 4px; }
+.success-checkmark {
+  margin: 0rem 1rem; }
 
 .email-error {
   text-align: center;
-  color: #721c24; }
+  color: #C95627;
+  margin-top: 1em; }
 
 .invite-label {
   color: #d84d0a !important; }
@@ -3918,6 +3921,14 @@ div.my-modal {
   position: fixed;
   left: 0;
   top: 0; }
+
+p.word-count {
+  display: inline-block;
+  margin-left: 250px; }
+
+span.words {
+  font-weight: bold;
+  color: #d84d0a; }
 
 ul.links {
   list-style-type: none; }
@@ -3998,14 +4009,11 @@ img.loading-avatar {
   margin: 2rem 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
 
-.page-title {
-  text-align: center; }
-
 .title-name {
-  padding: 1rem 0;
-  font-size: 2.3rem;
+  font-size: 2.6em;
   border-bottom: 1px solid #cacaca;
-  color: black; }
+  color: #C95627;
+  padding: 0.5rem 1.5rem; }
 
 /* Notebook rendering */
 .notebook-preview .cell .outputs code {

@@ -4,6 +4,7 @@ import HeadContainer from '../../containers/HeadContainer';
 import Markdown from 'react-markdown';
 import {withRouter} from 'react-router'
 import Modal from 'react-modal'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton'
 import CheckmarkIcon from 'react-icons/lib/fa/check-circle-o'
@@ -532,12 +533,27 @@ class EditProfile extends Component {
                                         <Link to="http://commonmark.org/help/">markdown</Link>
                                         {' '}here.
                                     </p>
-                                    <textarea
-                                        id="position"
-                                        name='position'
-                                        defaultValue={this.formData.summary}
-                                        placeholder='Position/Job Description'
-                                        onChange={this.summaryChanged}></textarea>
+                                    <Tabs>
+                                      <TabList>
+                                        <Tab>Write</Tab>
+                                        <Tab>Preview</Tab>
+                                      </TabList>
+
+                                      <TabPanel>
+                                        <textarea
+                                            id="position"
+                                            name='position'
+                                            defaultValue={this.formData.summary}
+                                            placeholder='Position/Job Description'
+                                            onChange={this.summaryChanged}></textarea>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <Markdown
+                                            source={this.formData.summary
+                                            ? this.formData.summary
+                                            : '*No description*'}/>
+                                      </TabPanel>
+                                    </Tabs>
 
                                     {/* {this.showPositionPreview
                                         ? <div>
@@ -556,10 +572,7 @@ class EditProfile extends Component {
                                                 Preview
                                             </a>
                                         </p>} */}
-                                    <Markdown
-                                        source={this.formData.summary
-                                        ? this.formData.summary
-                                        : '*No description*'}/>
+
                                     <hr/>
 
                                     <label className='section-title' htmlFor="website">

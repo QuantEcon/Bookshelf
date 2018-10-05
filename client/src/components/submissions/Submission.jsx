@@ -428,11 +428,8 @@ class Submission extends Component {
 
                         </div>
                         <div className='details-main'>
-
                             <div className='details-header'>
-
                                 <div className='details-title'>
-
                                     {!this.props.isLoading
                                         ? <h1 className='title'>{this.props.submission.data.notebook.title}</h1>
                                         : <p>loading...</p>}
@@ -516,7 +513,7 @@ class Submission extends Component {
                                             <li className='views'>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            <span className='count'>{this.props.submission.data.notebook.viewers.length + ' '}</span>
+                                                            <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
                                                             Viewers
                                                         </div>
                                                     : <p>Loading...</p>}

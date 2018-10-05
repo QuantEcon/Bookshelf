@@ -72,8 +72,7 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-                <HeadContainer history={this.props.history}/> 
-
+                <HeadContainer history={this.props.history}/>
                 {this.props.loading
                 ? "loading..."
                 :<div className='modal'>

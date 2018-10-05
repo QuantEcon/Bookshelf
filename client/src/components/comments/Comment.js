@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import Markdown from 'react-markdown';
 import Time from 'react-time';
@@ -348,6 +349,7 @@ class Comment extends Component {
                                                   <a onClick={this.toggleInsertReply}>Close</a>
                                               </li>
                                           </div>
+
                                       :
                                           <div>
                                               <li>
@@ -380,6 +382,7 @@ class Comment extends Component {
                                to reply
                            </p>
                        : null}
+
                     {this.state.showInsertReply && !this.state.isReply
                         ? <div className='comment-reply'>
                                 <form>
@@ -395,6 +398,8 @@ class Comment extends Component {
                                 </form>
                             </div>
                         : null}
+
+
                     {this.state.showEditComment
                         ? <div className='comment-reply'>
                                 <form>

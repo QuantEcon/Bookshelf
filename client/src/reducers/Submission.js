@@ -115,7 +115,7 @@ const RepliesReducer = (replies = [], action) => {
 const DataReducer = (data = {}, action) => {
     switch (action.type) {
         case POST_COMMENT:
-            
+
             var authorExits = false
             for(var i=0; i<data.commentAuthors.length; i++){
                 if(data.commentAuthors[i]._id === action.author._id){
@@ -144,7 +144,7 @@ const DataReducer = (data = {}, action) => {
                 })
             }
 
-           
+
         case POST_REPLY:
             console.log('[SubmissionDataReducer] - old state: ', data);
 
@@ -200,7 +200,7 @@ const SubmissionReducer = (state = {}, action) => {
                     })
                 })
             } else {
-              
+
                 return Object.assign({}, state, {
                     isFetching: false,
                     [action.notebookID]: Object.assign({}, state[action.notebookID], {
@@ -224,22 +224,22 @@ const SubmissionReducer = (state = {}, action) => {
             action.json.cells.forEach(cell => {
                 if(cell.cell_type === "markdown"){
                     var joinedSource = (typeof(cell.source) === "string") ? cell.source : cell.source.join("")
-                    
+
                     var processSource = processEnv(joinedSource);
 
                     if(processSource.error){
                         console.log("processEnv returned and error!")
                         console.log("processedSource: ", processSource)
                     } else {
-                        cell.source = processSource                    
+                        cell.source = processSource
                     }
 
 
                 }
             });
-            
+
             return Object.assign({}, state, {
-                
+
                 [action.notebookID]: Object.assign({}, state[action.notebookID], {
                     isFetchingNB: false,
                     data: Object.assign({}, state[action.notebookID].data, {
@@ -254,7 +254,7 @@ const SubmissionReducer = (state = {}, action) => {
                     dataReceived: action.dataReceived,
                 })
             })
-            
+
         case POST_COMMENT:
             console.log('[SubmissionActions] - post comment action: ', action);
             return Object.assign({}, state, {

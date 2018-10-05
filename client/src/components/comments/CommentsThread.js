@@ -5,7 +5,7 @@ import MarkdownRender from '@nteract/markdown'
 import {typesetMath} from 'mathjax-electron'
 import Modal from 'react-modal';
 import CloseIcon from 'react-icons/lib/fa/close'
-
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import CommentContainer from "../../containers/comment/CommentContainer"
 
@@ -193,32 +193,27 @@ class CommentsThread extends Component {
                         <p className="input-hint">You can use{' '}
                           <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}here.
                         </p>
-                        <textarea
-                            name="newCommentContent"
-                            id='newCommentTextArea'
-                            placeholder='You can use markdown here...'
-                            defaultValue={this.newCommentText}
-                            onChange={this.newCommentTextChange}></textarea>
-                            {this.state.showSummaryPreview
-                              ? <div>
-                                      <MarkdownRender
-                                          disallowedTypes={['heading']}
-                                          source={this.newCommentText
-                                          ? this.newCommentText
-                                          : '*No comment*'}/>
-                                      <p className="input-hint-after input-hint">
-                                          <a onClick={this.toggleSummaryPreview}><b>Close Preview</b></a>
-                                      </p>
-                                      <p className="input-hint-after input-hint">
-                                          <a onClick={this.renderMath}><b>Render Math</b></a>
-                                      </p>
-                                  </div>
-                              : <p className="input-hint input-hint-after">
-                                  <a onClick={this.toggleSummaryPreview}>
-                                      <b>Preview</b>
-                                  </a>
-                              </p>
-                            }
+                        <Tabs>
+                          <TabList>
+                            <Tab>Write</Tab>
+                            <Tab>Preview</Tab>
+                          </TabList>
+                          <TabPanel>
+                            <textarea
+                                name="newCommentContent"
+                                id='newCommentTextArea'
+                                placeholder='You can use markdown here...'
+                                defaultValue={this.newCommentText}
+                                onChange={this.newCommentTextChange}></textarea>
+                          </TabPanel>
+                          <TabPanel>
+                            <MarkdownRender
+                                disallowedTypes={['heading']}
+                                source={this.newCommentText
+                                ? this.newCommentText
+                                : '*No comment*'}/>
+                          </TabPanel>
+                        </Tabs>
 
                         <div className='submit-comment'>
                             <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
