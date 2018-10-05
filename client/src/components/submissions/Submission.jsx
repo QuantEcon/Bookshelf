@@ -337,7 +337,6 @@ class Submission extends Component {
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
                     className='modal-alert'
-                    contentLabel="Example Modal"
                     shouldCloseOnOverlayClick={false}>
                     <div className="modal">
                       <div className="modal-header">
