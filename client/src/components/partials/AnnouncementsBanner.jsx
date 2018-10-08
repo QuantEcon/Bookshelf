@@ -56,6 +56,7 @@ export default class AnnouncementBanner extends Component {
                 <div className='container'>
                     {/* TODO: Announcements title here */}
                     <div className='announcements-list'>
+                        <p>Add a notification to advise on new feature updates, services, or maintenances in announcement.</p>
                         <div className='announcement'>
                             {this.props.announcement
                                 ? <Moment date={this.props.announcement.date} format="dddd, DD MMMM YYYY, H:mm A"/>
