@@ -2241,7 +2241,8 @@ button {
 .filters {
   position: relative;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  padding: 0 1rem 1rem 1rem; }
   .filters .sort-inputs {
     -ms-flex: 1;
         flex: 1; }
@@ -2291,7 +2292,8 @@ button {
       box-shadow: none; }
   .filters .totals {
     display: inline-block;
-    color: #888888; }
+    color: #888888;
+    margin: 0; }
 
 .search-message {
   text-align: center; }
@@ -3866,7 +3868,7 @@ div.my-modal {
   display: inline-block;
   background: #fff;
   color: #d84d0a;
-  margin: 0 1rem 0 0;
+  margin: 1rem 1rem 0 0;
   cursor: pointer; }
   .announcements button.active, .announcements button:hover {
     background-color: #d84d0a;
@@ -3885,12 +3887,17 @@ div.my-modal {
   background: #dee7db;
   padding: 1rem 2rem;
   border-radius: 5px;
-  margin: 2rem 0; }
+  margin: 1rem 0; }
   .announcements-list .announcement {
     border-bottom: 1px solid #c3c3c3;
     font-weight: 700; }
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
+
+.admin-tag {
+  text-align: left;
+  margin: 10px;
+  padding: 0rem 1.5rem; }
 
 .success-checkmark {
   margin: 0rem 1rem; }
