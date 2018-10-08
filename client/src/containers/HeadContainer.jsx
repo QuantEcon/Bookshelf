@@ -40,7 +40,7 @@ class HeadContainer extends Component {
                     <div className="success callout">
                         <div className="container">
                             <p className="callout-message">
-                                <CheckmarkIcon/>
+                                <CheckmarkIcon className="success-checkmark"/>
                               Email was successfully sent to <b>{this.state.sentSuccess.sentEmail}</b>
                             </p>
                         </div>

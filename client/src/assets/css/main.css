@@ -1790,7 +1790,7 @@ textarea {
   list-style: none;
   padding: 0;
   margin: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Raleway", sans-serif;
   font-size: 12px;
   display: -ms-flexbox;
   display: flex;
@@ -1912,7 +1912,8 @@ pre, code {
   white-space: pre-line;
   border: 0; }
 
-[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'], [type='url'], [type='color'], textarea {
+[type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
+[type='url'], [type='color'], textarea {
   display: block;
   box-sizing: border-box;
   width: 100%;
@@ -1931,6 +1932,9 @@ pre, code {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none; }
+
+textarea {
+  height: 6rem; }
 
 [type='file'], [type='checkbox'], [type='radio'] {
   margin: 0 0 1.25rem; }
@@ -2039,7 +2043,7 @@ button {
         justify-content: space-between;
     padding: 1rem 0; }
     .header .header-container .qe-logo {
-      font-family: 'Exo', sans-serif;
+      font-family: "Exo", sans-serif;
       font-weight: 200;
       font-size: 2rem;
       margin: 0 0 0 -40px;
@@ -2054,7 +2058,7 @@ button {
       -ms-flex-align: center;
           align-items: center; }
       .header .header-container .site-title .site-name {
-        font-family: Exo,sans-serif;
+        font-family: "Exo", sans-serif;
         font-weight: 200;
         font-size: 1.3rem;
         margin: 0;
@@ -2078,6 +2082,8 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
+    .header .header-container .site-tag {
+      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2164,12 +2170,12 @@ button {
     -ms-flex-align: center;
         align-items: center; }
     .landing-logos ul li {
-      margin: 0 4rem;
       padding: 0; }
       .landing-logos ul li a {
         display: block; }
         .landing-logos ul li a img {
-          width: 100px; }
+          width: 70px;
+          margin: 0 4rem; }
 
 .tile {
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
@@ -2693,6 +2699,8 @@ button {
   margin: 2rem 0; }
   .submit-form input, .submit-form textarea, .submit-form select {
     border-radius: 5px; }
+  .submit-form p.textarea-hint {
+    color: #d84d0a; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {
@@ -3233,6 +3241,23 @@ html.is-reveal-open {
     font-size: 2em;
     line-height: 1; }
 
+.modal-alert {
+  position: absolute;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+  width: 600px;
+  padding: 0px;
+  border: 1px solid #cccccc;
+  border-radius: 5px !important; }
+
+.modal-alert:focus {
+  outline: none; }
+
 .modal {
   padding: 0 2rem !important;
   border-radius: 5px !important; }
@@ -3240,15 +3265,17 @@ html.is-reveal-open {
     border-bottom: 1px solid #cacaca;
     padding: 2rem 0 1rem 0; }
     .modal .modal-header .modal-title {
-      text-align: center;
       font-size: 1.8rem;
       line-height: 1;
       padding: 0;
       margin: 0;
       color: #d84d0a; }
   .modal .modal-body {
-    padding: 2rem 0;
-    text-align: center; }
+    padding: 2rem 0; }
+    .modal .modal-body input[type="text"], .modal .modal-body input[type="email"] {
+      border-radius: 5px; }
+    .modal .modal-body p {
+      margin: 0 0 1rem 0; }
   .modal .social-login {
     list-style: none;
     margin: 2rem auto;
@@ -3308,10 +3335,6 @@ html.is-reveal-open {
   .modal .close-button {
     color: #d84d0a; }
 
-.modal-body p {
-  text-align: center !important;
-  font-size: larger; }
-
 .overlay {
   position: fixed;
   top: 0;
@@ -3353,8 +3376,7 @@ div.my-modal {
   padding-bottom: 2rem; }
 
 .my-modal .modal-body {
-  padding: 2rem 0;
-  text-align: center; }
+  padding: 2rem 0; }
 
 .reveal {
   z-index: 1006;
@@ -3395,6 +3417,9 @@ div.my-modal {
 
 .my-modal div.edit-profile-header span {
   padding-left: 1rem; }
+
+.ReactModal__Overlay {
+  background-color: rgba(0, 0, 0, 0.75) !important; }
 
 /*
  * The MIT License
@@ -3855,6 +3880,7 @@ div.my-modal {
       color: #fff; }
 
 .announcements-list {
+  text-align: left;
   border: 1px solid #c3c3c3;
   background: #dee7db;
   padding: 1rem 2rem;
@@ -3865,6 +3891,17 @@ div.my-modal {
     font-weight: 700; }
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
+
+.success-checkmark {
+  margin: 0rem 1rem; }
+
+.email-error {
+  text-align: center;
+  color: #C95627;
+  margin-top: 1em; }
+
+.invite-label {
+  color: #d84d0a !important; }
 
 .loading-spinner {
   margin: auto;
@@ -3880,6 +3917,14 @@ div.my-modal {
   position: fixed;
   left: 0;
   top: 0; }
+
+p.word-count {
+  display: inline-block;
+  margin-left: 250px; }
+
+span.words {
+  font-weight: bold;
+  color: #d84d0a; }
 
 ul.links {
   list-style-type: none; }
@@ -3960,14 +4005,11 @@ img.loading-avatar {
   margin: 2rem 0;
   box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
 
-.page-title {
-  text-align: center; }
-
 .title-name {
-  padding: 1rem 0;
-  font-size: 2.3rem;
+  font-size: 2.6em;
   border-bottom: 1px solid #cacaca;
-  color: black; }
+  color: #C95627;
+  padding: 0.5rem 1.5rem; }
 
 /* Notebook rendering */
 .notebook-preview .cell .outputs code {
