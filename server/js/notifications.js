@@ -30,7 +30,7 @@ function sendInvite(to, from) {
     data = {
         from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
         to: to,
-        subject: from + " Invited you to Join Notes",
+        subject: from + " Invited You To Join Notes",
         // TODO: Include and HTML rendering of the comment here
         text: from + " sent you an invite to join Notes, \n\n" +
             "To join Notes click [here](" + config.hostName + "/signin/" +
@@ -136,7 +136,7 @@ function sendNotification(notification) {
                   data = {
                   from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                   to: notification.recipient.email,
-                  subject: notification.sender + " Invited you to Join Notes",
+                  subject: notification.sender + " Invited You To Join Notes",
                   // TODO: Include and HTML rendering of the comment here
                   text: notification.sender + " sent you an invite to join Notes, \n\n" +
                       "To join Notes click [here](" + config.hostName + "/signin/" +
@@ -154,7 +154,7 @@ function sendNotification(notification) {
              data = {
                  from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                  to: notification.recipient.email,
-                 subject: "Content Flagged on QuantEcon Notes",
+                 subject: "Content Flagged On QuantEcon Notes",
                  html: "A " + notification.contentType + " has been flagged as \"" + notification.flaggedReason +
                  "\". Please review this content on the admin page: notes.quantecon.org/admin"
              }
