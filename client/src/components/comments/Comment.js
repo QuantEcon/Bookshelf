@@ -3,12 +3,9 @@ import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
-
 import Markdown from 'react-markdown';
 import Time from 'react-time';
-
 import ReplyList from './ReplyList';
-
 import {Link} from 'react-router-dom'
 
 /**
@@ -17,6 +14,12 @@ import {Link} from 'react-router-dom'
  *
  * Children: {@link ReplyList}
  */
+ const flaggedReasons = {
+     'inappropriate': 'Inappropriate Content',
+     'spam': 'Spam',
+     'copyright': 'Copyright Issue',
+     'other': 'Other'
+ }
 
 class Comment extends Component {
 
@@ -92,6 +95,9 @@ class Comment extends Component {
         this.closeModal = this
             .closeModal
             .bind(this);
+        this.handleChange = this
+            .handleChange
+            .bind(this);
 
     }
 
@@ -149,9 +155,9 @@ class Comment extends Component {
       this.setState({value:''});
     }
 
-    flagComment() {
-        console.log('[Comment] - flag comment clicked')
-        this.props.actions.flagComment({commentID: this.props.comment._id})
+    flagComment(flaggedReason) {
+        console.log('[Comment] - flag comment clicked: ', flaggedReason);
+        this.props.actions.flagComment({commentID: this.props.comment._id, flaggedReason: flaggedReason});
     }
 
     flagClick = () => {
@@ -162,7 +168,12 @@ class Comment extends Component {
     handleSubmit = (event) => {
       event.preventDefault();
       this.setState({modalIsOpen: false});
-      this.flagComment();
+      var flaggedReason = flaggedReasons[this.state.flaggedReason]
+      this.flagComment(flaggedReason);
+    }
+
+    handleChange = (event) => {
+      this.setState({flaggedReason: event.target.value});
     }
 
     /**
@@ -297,7 +308,15 @@ class Comment extends Component {
                            <h1 className='modal-title'>Report the Comment</h1>
                          </div>
                          <div className="modal-body">
-                           <p><strong>Are you sure you want to report the comment ?</strong></p>
+                           <p><strong>Why would you like to report the content ?</strong></p>
+                            <label>
+                              <select value={this.state.flaggedReason} onChange={this.handleChange} required>
+                                <option value="inappropriate" selected>Inappropriate Content</option>
+                                <option value="spam" >Spam</option>
+                                <option value="copyright">Violates Copyright</option>
+                                <option value="other">Other</option>
+                              </select>
+                            </label>
                            <ul className="options">
                              <li>
                                <a className='alt' onClick={this.closeModal}>Cancel</a>
@@ -318,11 +337,6 @@ class Comment extends Component {
                         <span className='time'>
                             <Time value={this.state.comment.timestamp} relative/>
                         </span>
-                        {/* {this.state.comment.flagged
-                            ? <FlagIcon/>
-                            : <a onClick={this.flagComment}>
-                                <FlagIcon/>
-                            </a>} */}
                         <a onClick={this.flagClick}>
                             <FlagIcon/>
                         </a>

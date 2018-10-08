@@ -203,11 +203,13 @@ const flagSubmissionAction = ({
 export const FLAG_COMMENT = "FLAG_COMMENT"
 const flagCommentAction = ({
     commentID,
+    flaggedReason,
     error
 }) => {
     return {
         type: FLAG_COMMENT,
         commentID,
+        flaggedReason,
         error
     }
 }
@@ -273,7 +275,7 @@ export const editSubmission = ({
                 })
             }
         } else if (notebookJSON) {
-    
+
             submission.notebookJSON = notebookJSON
             axios.post('/api/submit/edit-submission', {
                 submissionData: submission
@@ -467,15 +469,19 @@ export const flagSubmission = ({
 }
 
 export const flagComment = ({
-    commentID
+    commentID,
+    flaggedReason
 }) => {
+    console.log("[CommentActions] - flag comment: ", commentID, flaggedReason)
     return (dispatch) => {
         axios.post("/api/flag/comment", {
-            commentID
+            commentID,
+            flaggedReason
         }).then(
             resp => {
                 dispatch(flagCommentAction({
-                    commentID
+                    commentID,
+                    flaggedReason
                 }))
             },
             err => {
