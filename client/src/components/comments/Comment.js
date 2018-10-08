@@ -8,12 +8,8 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 
 import ReplyList from './ReplyList';
-<<<<<<< HEAD
-import { confirmAlert } from 'react-confirm-alert';
-=======
+
 import {Link} from 'react-router-dom'
->>>>>>> master
-import 'react-confirm-alert/src/react-confirm-alert.css';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
