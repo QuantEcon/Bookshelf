@@ -335,6 +335,7 @@ class Submission extends Component {
                 <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
+                    onRequestClose={this.toggleDeleteModal}
                     contentLabel='Delete Submission'
                     className='modal-alert'
                     shouldCloseOnOverlayClick={false}>
@@ -352,7 +353,7 @@ class Submission extends Component {
                             <a onClick={this.deleteSubmission}>Delete</a>
                           </li>
                         </ul>
-                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleDeleteModal}><span aria-hidden="true">×</span></button>
                       </div>
                     </div>
                 </Modal>
