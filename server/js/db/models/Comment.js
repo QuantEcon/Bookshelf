@@ -24,6 +24,7 @@ var commentSchema = new Schema({
     replies: [ObjectId],
 
     flagged: Boolean,
+    flaggedReason: String,
     deleted: Boolean,
 
     isReply: Boolean,

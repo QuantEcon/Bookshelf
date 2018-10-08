@@ -392,6 +392,8 @@ export const deleteSubmission = ({submissionID}) => {
     return (dispatch) => {
         if(submissionID){
             axios.post("/api/admin/delete-submission", {
+                submissionID
+            }, {
                 headers: {
                     "Authorization": "JWT " + store.getState().auth.token
                 }
@@ -413,10 +415,13 @@ export const deleteSubmission = ({submissionID}) => {
     }
 }
 
-export const deleteComment = ({commentID}) => {
+export const deleteComment = ({commentID, submissionID}) => {
     return (dispatch) => {
         if(commentID){
             axios.post("/api/admin/delete-comment", {
+                commentID,
+                submissionID
+            }, {
                 headers: {
                     "Authorization" : "JWT " + store.getState().auth.token
                 }
@@ -442,6 +447,8 @@ export const deleteUser = ({userID}) => {
     return (dispatch) => {
         if(userID){
             axios.post("/api/admin/delete-user", {
+                userID
+            }, {
                 headers: {
                     "Authorization" : "JWT " + store.getState().auth.token
                 }

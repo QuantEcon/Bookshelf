@@ -4,9 +4,11 @@ import React, {Component} from 'react';
 import SubmissionListContainer from '../../containers/submission/SubmissionListContainer';
 import HeadContainer from '../../containers/HeadContainer';
 import AnnouncementsContainer from '../../containers/AnnouncementsContainer'
-import quanteconLogo from '../../assets/img/landing-quantecon-logo.png'
-import jupyterLogo from '../../assets/img/landing-jupyter-logo.png'
-import sloanLogo from '../../assets/img/landing-sloan-logo.png'
+
+// import Image component and json of image data details
+import Image from '../Image.jsx';
+import data from '../../imageData.json';
+import uuid from 'uuid';
 
 class Home extends Component {
     constructor(props){
@@ -21,12 +23,11 @@ class Home extends Component {
             searchParams.topic = decodeURIComponent(searchParams.topic);
         }
         console.log('[Home] - url search params: ', searchParams);
-        
+
         this.state = {
             searchParams: searchParams,
             reset: resetSearch
         }
-
     }
 
     getUrlVars = () => {
@@ -40,28 +41,46 @@ class Home extends Component {
         return vars;
     }
 
+    createImage = (image) => {
+      // Temporarily using uuid() for now as unique keys
+      return <Image source={image}  key={ uuid() }/>;
+    }
+
+    createImages = (images) => {
+      return images.map(this.createImage);
+    }
+
     render() {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
+
                 <div className='landing-logos'>
-                    <div className='container'>
-                        <ul>
-                            <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
-                            <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
-                            <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
-                        </ul>
-                    </div>
+                      <div className='container'>
+                          <ul>
+                            {this.createImages(data.images)}
+                          </ul>
+                      </div>
                 </div>
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
+                {/* <footer className='landing-logos'>
+                      <div className='container'>
+                          <ul>
+                              <li><a href="https://quantecon.org/"><img src={quanteconLogo} alt="QuantEcon Logo" className="quantecon-logo"/></a></li>
+                              <li><a href="http://jupyter.org/"><img src={jupyterLogo} alt="Jupyter Logo" className="jupyter-logo"/></a></li>
+                              <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
+                          </ul>
+                      </div>
+
+                </footer> */}
             </div>
 
         );
     }
     componentDidMount(){
-        document.title = 'Bookshelf'
+        document.title = 'QuantEcon - Notes'
     }
 }
 

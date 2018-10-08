@@ -11,13 +11,17 @@ import {typesetMath} from 'mathjax-electron'
 import CloseIcon from 'react-icons/lib/fa/close'
 import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
+import { Redirect } from 'react-router-dom'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
+const maxWords = 251
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
  * passes the `submit` function as a prop.
  */
 class Submit extends Component {
-    
+
     /**
      * @prop {Object} user Contains all the current user's data.
      * @prop {func} submit Method to call after successful form validation and when the user
@@ -25,7 +29,9 @@ class Submit extends Component {
      * @prop {Object} history Required for navigation.
      * @prop {func} save Method to call after successful form validation and when the user
      * clicks on save. This is used if this is an EditSubmission page
+
      */
+
     static propTypes = {
         user: PropTypes.object.isRequired,
         submit: PropTypes.func,
@@ -74,9 +80,22 @@ class Submit extends Component {
             showSummaryPreview: false,
             modalOpen: false,
             markdownRefereceModal: false,
+            summaryModal: false,
             notebookDataReady: false,
-            notebookJSON: {}
+            notebookJSON: {},
+            contentSaved: false,
+            cancelSubmissionModal: false,
+            redirect: false,
+            count: 0,
+            pasteValue: false,
+            textareaValue: 0,
+            triggerOnKeyPress: false,
+            summary: ''
         }
+
+        this.onOpenClick = this
+            .onOpenClick
+            .bind(this);
     }
 
     componentWillMount() {
@@ -85,10 +104,17 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Bookshelf'
+            document.title = 'Edit Submission - QuantEcon Notes';
+            if (this.props.submission.data.notebook.summary.split(' ').length === 1 && this.props.submission.data.notebook.summary.split(' ')[0] === '') {
+              this.setState({summary: '', count: 0})
+            }
+            else {
+              this.setState({summary: this.props.submission.data.notebook.summary, count: this.props.submission.data.notebook.summary.split(' ').length})
+            }
         } else {
-            document.title = 'Submit - QuantEcon Bookshelf'
+            document.title = 'Submit - QuantEcon Notes'
         }
+
     }
 
     /**
@@ -116,7 +142,10 @@ class Submit extends Component {
             : [],
         coAuthors: this.props.isEdit
             ? this.props.submission.data.coAuthors
-            : {}
+            : {},
+        lastUpdated: this.props.isEdit
+            ? this.props.submission.data.lastUpdated
+            : ''
     }
 
     errors = {
@@ -130,9 +159,9 @@ class Submit extends Component {
     }
 
     /**
-     * Validates the form to ensure all required fields are filled out correctly. 
-     * 
-     * If there is an error in a field, an error message will be displayed underneath the 
+     * Validates the form to ensure all required fields are filled out correctly.
+     *
+     * If there is an error in a field, an error message will be displayed underneath the
      * input.
      */
     validate = () => {
@@ -202,33 +231,39 @@ class Submit extends Component {
     }
 
     /**
-     * Calls the prop action `submit` if this is a new submission or the prop action `save` if 
+     * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
      * @param {Object} e Event passed from the `submit` listener
      */
     submit = (e) => {
-        e.preventDefault();
-        if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit')
-            var file = this.state.accepted[0]
-                ? this.state.accepted[0]
-                : null
-            var notebookJSON = this.state.accepted[0]
-                ? null
-                : this.props.submission.data.notebookJSON
-            this.formData.score = this.props.submission.data.notebook.score
-            this.formData.views = this.props.submission.data.notebook.views
-            this.formData.published = this.props.submission.data.notebook.published
-            this
-                .props
-                .save({formData: this.formData, file, notebookJSON});
-        } else {
-            console.log('[EditSubmission] - not edit')
-
-            this
-                .props
-                .submit(this.formData, this.state.accepted[0]);
+        if(e) {
+            e.preventDefault()
         }
+        this.setState({contentSaved : true}, () => {
+
+        if (this.props.isEdit) {
+            console.log('[EditSubmission] - submit edit', this.props)
+            var file = this.state.accepted[0]
+              ? this.state.accepted[0]
+              : null
+            var notebookJSON = this.state.accepted[0]
+              ? null
+              : this.props.submission.data.notebookJSON
+          this.formData.score = this.props.submission.data.notebook.score
+          this.formData.views = this.props.submission.data.notebook.views
+          this.formData.published = this.props.submission.data.notebook.published
+          this.formData.lastUpdateDate = Date(Date.now())
+          this.props.save({formData: this.formData, file, notebookJSON})
+          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+          ;
+      } else {
+          console.log('[EditSubmission] - not edit')
+
+          this
+              .props
+              .submit(this.formData, this.state.accepted[0]);
+      }
+     });
     }
 
     langChanged = (event) => {
@@ -260,10 +295,29 @@ class Submit extends Component {
         typesetMath(this.rendered)
     }
 
-    summaryChanged = (event) => {
-        this.formData.summary = event.target.value;
-        this.forceUpdate();
+    summaryLimit = (event) => {
+      event.preventDefault();
+      //Display modal error to users
+      this.toggleSummaryModal();
+      this.forceUpdate();
     }
+
+    summaryChanged = (event) => {
+      this.setCounts(event.target.value)
+      this.setState({summary: event.target.value})
+
+      if (this.state.count < maxWords) {
+        this.formData.summary = event.target.value;
+        this.setState({triggerOnKeyPress: false, pasteValue: false})
+      }
+      if (this.state.count >= maxWords || event.target.value.split(' ').length >= maxWords) {
+        this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
+        this.setState({summary: this.formData.summary, count: this.formData.summary.split(' ').length })
+        this.setState({triggerOnKeyPress: true, pasteValue: true})
+      }
+      this.forceUpdate();
+    }
+
 
     /**
      * Listener for when a user drops files into the drop zone
@@ -293,16 +347,23 @@ class Submit extends Component {
         }
     }
 
+    onOpenClick = ()=> {
+      this.refs.dropzoneref.open();
+    }
+
     /**
      * Opens the submission preview modal
      * @param {Object} e Event passed from the `onClick` listener
      */
     toggleOpenModal = (e) => {
-        console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
-            modalOpen: !this.state.modalOpen
+            modalOpen: !this.state.modalOpen,
         })
+    }
+
+    closeModal = () => {
+      this.setState({modalOpen: false, cancelSubmissionModal: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -335,16 +396,102 @@ class Submit extends Component {
         })
     }
 
-    // TODO: stlying for accept is not being applied correctly. Doesn't recognize
-    // .ipynb as valid accept parameter The file will still be accepted, however
+    toggleCancelSubmissionModal = (e) => {
+        e.preventDefault()
+        this.setState({
+            cancelSubmissionModal: !this.state.cancelSubmissionModal
+        })
+    }
+
+    // Using redirect to redirect users when 'yes' is clicked back to home page.
+    setRedirect = () => {
+      this.setState({
+        redirect: true
+      })
+    }
+
+    renderRedirect = () => {
+      if (this.state.redirect) {
+        return <Redirect to='/' />
+      }
+    }
+
+    toggleSummaryModal = (event) => {
+      this.setState({
+        summaryModal: !this.state.summaryModal
+      })
+    }
+
+    removeEmptyElements = (arr) => {
+      const index = arr.findIndex(el => el.trim() === '');
+      if (index === -1)
+        return arr;
+      arr.splice(index, 1);
+      return this.removeEmptyElements(arr)
+    };
+
+    setCounts = (value) => {
+      const trimmedValue = value.trim();
+      const words = this.removeEmptyElements(trimmedValue.split(' '));
+      this.setState({
+        count: value === '' ? 0 : words.length
+      });
+    }
+
+    pasting = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     render() {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
                 <Breadcrumbs title='Submit'/>
-                <Modal isOpen={this.state.modalOpen} contentLabel="Preview">
+
+              {/* Modal window for preview button in the edit notebook submission */}
+                <Modal isOpen={this.state.modalOpen}
+                       onRequestClose={this.closeModal}
+                       contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
+                </Modal>
+
+                {/* Modal window for cancel button in the edit notebook submission */}
+                <Modal isOpen={this.state.cancelSubmissionModal}
+                      onRequestClose={this.toggleCancelSubmissionModal}
+                      contentLabel="Cancel Submission"
+                      className="modal-alert"
+                      shouldCloseOnOverlayClick={false} >
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Cancel Changes</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p><strong>All the changes made will be lost, are you sure you want to leave?</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.toggleCancelSubmissionModal}>Cancel</a>
+                        </li>
+                        <li>
+                          {this.renderRedirect()}
+                          <a onClick={this.setRedirect}>Yes</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+                </Modal>
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="modal-alert">
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Word Limit Reached</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>The Notebook summary is limited to 250 words.</strong></p>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
+                      </div>
+                    </div>
                 </Modal>
 
                 <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
@@ -361,7 +508,7 @@ class Submit extends Component {
                                 <li>
                                     <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
                                 </li>
-                                <li>    
+                                <li>
                                     <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
                                 </li>
                             </ul>
@@ -394,7 +541,7 @@ class Submit extends Component {
                                     BSD-3 license.
                                 </li>
                                 <li>
-                                    5. Jupyter notebooks uploaded to this site are considered to be released under 
+                                    5. Jupyter notebooks uploaded to this site are considered to be released under
                                     a CC BY-ND 4.0 International license.
                                 </li>
                                 <li>
@@ -402,7 +549,7 @@ class Submit extends Component {
                                     these terms and conditions
                                 </li>
                                 <li>
-                                    6. If you choose to delete your account, your submissions and comments will 
+                                    6. If you choose to delete your account, your submissions and comments will
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>
@@ -424,6 +571,7 @@ class Submit extends Component {
                                 </p>
                                 <Dropzone
                                     multiple={false}
+                                    ref = 'dropzoneref'
                                     className='dropzone'
                                     maxSize={10000000}
                                     onDrop={this.onDrop}
@@ -459,6 +607,14 @@ class Submit extends Component {
                                 </Dropzone>
                                 <ul className='button-row'>
                                     <li>
+                                        <button type="button"
+                                              disabled = {!this.props.isEdit}
+                                              onClick={this.onOpenClick}>
+                                              Update Notebook
+                                        </button>
+
+                                    </li>
+                                    <li>
                                         <button
                                             disabled={!this.state.fileUploaded || !this.state.notebookDataReady}
                                             onClick={this.toggleOpenModal}>
@@ -479,7 +635,7 @@ class Submit extends Component {
                                         type="text"
                                         placeholder='Notebook Title'
                                         required='required'
-                                        maxLength="60"
+                                        maxLength="120"
                                         defaultValue={this.formData.title}
                                         onChange={this.titleChanged}/> {this.errors.title
                                         ? <p className="error-help-text">
@@ -559,38 +715,37 @@ class Submit extends Component {
 
                                     <hr/>
 
+
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">You can use{' '}
                                         <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
                                         here.</p>
-                                    <textarea
-                                        placeholder="Notebook summary"
-                                        id="summary"
-                                        onChange={this.summaryChanged}
-                                        defaultValue={this.formData.summary}></textarea>
-
-                                    {this.state.showSummaryPreview
-                                        ? <div>
-                                                <MarkdownRender
-                                                    disallowedTypes={['heading']}
-                                                    source={this.formData.summary
-                                                    ? this.formData.summary
-                                                    : '*No summary*'}/>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
-                                                </p>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.renderMath}>Render Math</a>
-                                                </p>
-                                            </div>
-                                        : <p className="input-hint input-hint-after">
-
-                                            <a onClick={this.toggleSummaryPreview}>
-                                                Preview
-                                            </a>
-                                        </p>}
+                                    <Tabs>
+                                      <TabList>
+                                        <Tab>Write</Tab>
+                                        <Tab>Preview</Tab>
+                                        <p className="word-count"><span className="words">{this.state.count}</span> words</p>
+                                      </TabList>
+                                      <TabPanel>
+                                        <textarea
+                                            placeholder="Notebook summary"
+                                            id="summary"
+                                            type="text"
+                                            onChange={this.summaryChanged}
+                                            onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
+                                            onPaste={this.state.pasteValue ? this.pasting : null}
+                                            value = {this.state.summary}></textarea>
+                                      <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <MarkdownRender
+                                            disallowedTypes={['heading']}
+                                            source={this.formData.summary
+                                            ? this.formData.summary
+                                            : '*No summary*'}/>
+                                      </TabPanel>
+                                    </Tabs>
                                 </div>
-
                             </div>
 
                             <div className='submit-footer'>
@@ -606,7 +761,7 @@ class Submit extends Component {
                                     <br/>
                                     <br/>
                                     By submitting to
-                                    {' '}<span className='title'>QuantEcon Bookshelf</span>{' '}
+                                    {' '}<span className='title'>QuantEcon Notes</span>{' '}
                                     you acknowledge:
                                     <ol className='terms-and-conditions'>
                                         <li>
@@ -635,19 +790,18 @@ class Submit extends Component {
                                             Agreement is required
                                         </p>
                                     : null}
-
                             </div>
 
                             <ul className='button-row'>
                                 {this.props.isEdit
                                     ? <li>
-                                            <Link to={'/submission/' + this.props.submission.data.notebook._id}>
-                                                Cancel
-                                            </Link>
+                                          <button onClick={this.toggleCancelSubmissionModal}>
+                                              Cancel
+                                          </button>
                                         </li>
                                     : null}
                                 <li>
-                                    <button disabled={!this.state.valid}>
+                                    <button disabled={!this.state.valid} onClick={this.submit}>
                                         Submit
                                     </button>
                                 </li>

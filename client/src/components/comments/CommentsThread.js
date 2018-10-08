@@ -1,13 +1,17 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
-
+import MarkdownRender from '@nteract/markdown'
+import {typesetMath} from 'mathjax-electron'
+import Modal from 'react-modal';
+import CloseIcon from 'react-icons/lib/fa/close'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import CommentContainer from "../../containers/comment/CommentContainer"
 
 /**
  * Contains and renders all comments for the submission
- * 
+ *
  * Children: {@link Comment}
  */
 class CommentsThread extends Component {
@@ -43,7 +47,11 @@ class CommentsThread extends Component {
         this.state = {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
-            replies: props.replies
+            replies: props.replies,
+            submitDisabled: true,
+            showSummaryPreview: false,
+            newCommentText: '',
+            markdownRefereceModal: false,
         };
     }
 
@@ -55,21 +63,38 @@ class CommentsThread extends Component {
      * Listens for changes in the new comment text field.
      * @param {Object} e Event passed from the `onChange` listener
      */
-    newCommentTextChange(e) {
-        this.newCommentText = e.target.value
-        this.forceUpdate();
-    }
+    newCommentTextChange = (e) => {
 
-    newCommentText = "";
+        if(e){
+            this.setState({newCommentText: e.target.value});
+            e.preventDefault();
+        }
+
+        if(e.target.value && this.state.submitDisabled){
+            this.setState({
+                submitDisabled: false
+            })
+        } else if(!e.target.value && !this.state.submitDisabled){
+            this.setState({
+                submitDisabled: true
+            })
+        }
+
+        this.newCommentText = e.target.value
+        // this.forceUpdate();
+    }
 
     /**Dispatches a postComment action  */
     submitNewComment() {
+        console.log("Inside of Props:", this.props);
+        // if currentUser is null or do not exists, then display error message
         if(!this.props.currentUser){
+
             this.setState({
                 submitError: true
             })
         }
-        console.log('submit new comment: ', this.state.newCommentText);
+        console.log('submit new comment: ', this.newCommentText);
         this
             .props
             .postComment(this.newCommentText);
@@ -79,7 +104,7 @@ class CommentsThread extends Component {
 
     /**
      * Dispatches a postReply action
-     * @param {Object} param0 
+     * @param {Object} param0
      * @param {String} param0.reply Content of the reply
      * @param {String} param0.commentID ID of the comment being replied to
      */
@@ -87,6 +112,23 @@ class CommentsThread extends Component {
         this
             .props
             .postReply({reply, commentID});
+    }
+
+
+    toggleSummaryPreview = () => {
+        this.setState({
+            showSummaryPreview: !this.state.showSummaryPreview
+        });
+        setTimeout(() => {
+            typesetMath(this.rendered)
+        }, 20);
+    }
+
+    toggleMarkdownReferenceModal = (e) => {
+        e.preventDefault()
+        this.setState({
+            markdownRefereceModal: !this.state.markdownRefereceModal
+        })
     }
 
     render() {
@@ -124,15 +166,57 @@ class CommentsThread extends Component {
                                     editComment={this.props.editComment}/>
                             })}
                     </div>
+                    <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
+                        <div className='my-modal'>
+                        <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
+                            <div className='modal-header'>
+                                <h1 className='modal-title'>Markdown Reference</h1>
+                            </div>
+                            <div className='modal-body'>
+                                <ul>
+                                    <li>
+                                        <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
+                                    </li>
+                                    <li>
+                                        <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
+                                    </li>
+                                    <li>
+                                        <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </Modal>
+
                     <div className='comments-post'>
                         <label>Post a comment</label>
-                        <textarea
-                            name="newCommentContent"
-                            id='newCommentTextArea'
-                            placeholder='You can use markdown here...'
-                            onChange={this.newCommentTextChange}></textarea>
+                        <p className="input-hint">You can use{' '}
+                          <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}here.
+                        </p>
+                        <Tabs>
+                          <TabList>
+                            <Tab>Write</Tab>
+                            <Tab>Preview</Tab>
+                          </TabList>
+                          <TabPanel>
+                            <textarea
+                                name="newCommentContent"
+                                id='newCommentTextArea'
+                                placeholder='You can use markdown here...'
+                                defaultValue={this.newCommentText}
+                                onChange={this.newCommentTextChange}></textarea>
+                          </TabPanel>
+                          <TabPanel>
+                            <MarkdownRender
+                                disallowedTypes={['heading']}
+                                source={this.newCommentText
+                                ? this.newCommentText
+                                : '*No comment*'}/>
+                          </TabPanel>
+                        </Tabs>
+
                         <div className='submit-comment'>
-                            <button onClick={this.submitNewComment} disabled={!this.newCommentText}>Submit</button>
+                            <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
                         </div>
                         {this.state.submitError && !this.props.currentUser
                                     ? <p className="error-help-text">

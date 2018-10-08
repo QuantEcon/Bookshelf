@@ -15,7 +15,7 @@ import FileSaver from 'file-saver'
 //Icons
 import ThumbsUp from 'react-icons/lib/md/thumb-up'
 import ThumbsDown from 'react-icons/lib/md/thumb-down'
-import GearIcon from 'react-icons/lib/fa/cog'
+// import GearIcon from 'react-icons/lib/fa/cog'
 import DeleteIcon from 'react-icons/lib/md/delete';
 import FlagIcon from 'react-icons/lib/md/flag'
 
@@ -24,13 +24,26 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
-import { confirmAlert } from 'react-confirm-alert'; // Import
-import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+// import { confirmAlert } from 'react-confirm-alert'; // Import
+// import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
+import axios from 'axios'
 
-/** 
- * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves 
+const editStyle = {
+  paddingTop:'2.5px',
+  paddingBottom:'2.5px'
+};
+
+const flaggedReasons = {
+    'inappropriate': 'Inappropriate Content',
+    'spam': 'Spam',
+    'copyright': 'Copyright Issue',
+    'other': 'Other'
+}
+
+/**
+ * Renders all data for the specified submission. The parent container ({@link SubmissionContainer}) retrieves
  * the necessary data from Redux and passes it to this component
- * 
+ *
  * Children: {@link CommentsThread}
  */
 class Submission extends Component {
@@ -41,6 +54,7 @@ class Submission extends Component {
      * @prop {boolean}  isLoading       Flag to tell react if the data is still being loaded from the API
      * @prop {Object}   currentUser     Object containing the current user's information. If there is no user signed in, it will be `null`
      * @prop {Object}   history         Needed for navigation. Passed from the Submission Container
+
      */
     static propTypes = {
         actions: PropTypes.object.isRequired,
@@ -51,22 +65,27 @@ class Submission extends Component {
     }
     constructor(props) {
         super(props);
+
         this.state = {
             flipper: true,
-            deleteModalOpen: false
+            deleteModalOpen: false,
+            flaggedReason: 'inappropriate',
+            modalIsOpen: false,
+            testing: [],
         }
-        
-        if(window.location.href.indexOf("comment") > -1)
-        {
-          this.state = {
-          showNotebook : false
-          }
+
+        console.log('[Submission Information] - fetching about submission');
+
+        axios.get('/api/submit/edit-submission').then(resp =>{
+          console.log('[Submission Information] - returned resp: ', resp.body);
+        })
+
+        if(window.location.href.indexOf("comment") > -1) {
+          this.state.showNotebook = false
+        } else {
+            this.state.showNotebook = true
         }
-        else
-        this.state = {
-        showNotebook : true
-        }
-        
+
         this.toggleView = this
             .toggleView
             .bind(this);
@@ -97,16 +116,35 @@ class Submission extends Component {
         this.deleteCallback = this
             .deleteCallback
             .bind(this)
-        this.renderMathJax = this.renderMathJax.bind(this)
+        this.renderMathJax = this
+            .renderMathJax
+            .bind(this)
+        this.openModal = this
+            .openModal
+            .bind(this);
+        this.closeModal = this
+            .closeModal
+            .bind(this);
+        this.handleChange = this
+            .handleChange
+            .bind(this);
+        this.handleSubmit = this
+            .handleSubmit
+            .bind(this);
     }
 
     componentDidMount() {
+
+        // console.log();
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
+        console.log('[Submission] - props: ', this.props);
+
         setTimeout(() => {
-            this.renderMathJax()    
+            this.renderMathJax()
         }, 500);
-        
+
+        Modal.setAppElement('body');
     }
 
     renderMathJax(numTimes) {
@@ -126,7 +164,7 @@ class Submission extends Component {
 
     componentWillReceiveProps(props) {
         if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Bookshelf"
+            document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
         }
         this.setState({
             flipper: !this.state.flipper
@@ -165,18 +203,14 @@ class Submission extends Component {
         //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
-    flagSubmission = () => {
-        console.log("[Submission] - flag submission clicked")
-        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id})
+    flagSubmission = (flaggedReason) => {
+        console.log("[Submission] - flag submission clicked: ", flaggedReason)
+        this.props.actions.flagSubmission({submissionID: this.props.submission.data.notebook._id, flaggedReason:flaggedReason})
     }
-    
+
     flagClick = () => {
-        confirmAlert({
-            title: 'Are you sure you want to report this content?',                       
-            confirmLabel: 'Yes',                          
-            cancelLabel: 'Cancel',                             
-            onConfirm: () => this.flagSubmission(),    
-         })
+        console.log('in inviteClick method');
+        this.openModal();
     }
 
     encounteredURI(uri) {
@@ -195,8 +229,8 @@ class Submission extends Component {
     }
 
     /**
-     * 
-     * @param {Object} param0 
+     *
+     * @param {Object} param0
      * @param {String} param0.reply Text of the reply entered in the form
      * @param {String} param0.commentID ID of the comment being replied to
      */
@@ -253,11 +287,46 @@ class Submission extends Component {
                 .props
                 .history
                 .replace("/")
-            
+
         } else { // display error message if unsuccessful
             console.error("Error deleting submission")
             this.setState({showDeletionError: true})
         }
+    }
+
+    /* modal for flagging Reason */
+    openModal = () => {
+      this.setState({modalIsOpen: true});
+      console.log('state: ', this.state)
+    }
+
+    closeModal = () => {
+      this.setState({modalIsOpen: false});
+      this.setState({value:''});
+    }
+
+    handleChange = (event) => {
+        console.log("event: ", event.target.value)
+        this.setState({flaggedReason: event.target.value});
+
+    }
+
+    handleSubmit = (event) => {
+        event.preventDefault();
+        this.setState({modalIsOpen: false});
+
+        console.log("flaggedReasons: ", flaggedReasons)
+        console.log("reason: ", this.state.flaggedReason)
+        var flaggedReason = flaggedReasons[this.state.flaggedReason]
+
+        console.log('flag option initiated: ', flaggedReason)
+        console.log(this.state.value)
+
+        this.setState({value:''}); //Reset state of modal
+
+        this.flagSubmission(flaggedReason)
+
+
     }
 
     render() {
@@ -267,24 +336,25 @@ class Submission extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Submission'
-                    className='overlay'>
-                    <div className='my-modal'>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Delete Submission</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <p className='text-center'>Are you sure you want to delete this submission?</p>
-                            <ul className='button-row'>
-                                <li>
-                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
-                                </li>
-                                <li>
-                                    <button onClick={this.deleteSubmission}>Delete</button>
-                                </li>
-                            </ul>
-                        </div>
+                    className='modal-alert'
+                    shouldCloseOnOverlayClick={false}>
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Delete Submission</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>Are you sure you want to delete this submission?</strong></p>
+                        <ul className="options">
+                          <li>
+                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                          </li>
+                          <li>
+                            <a onClick={this.deleteSubmission}>Delete</a>
+                          </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                      </div>
                     </div>
-
                 </Modal>
                 {this.props.isLoading
                     ? null
@@ -305,44 +375,60 @@ class Submission extends Component {
                             <div className="vote">
                                 {/*TODO:Loading spinners?*/}
 
-                                {this.props.currentUser && this
+                               {this.props.currentUser && this
                                     .props
                                     .currentUser
                                     .upvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This is a good submission" onClick={this.upvote} className='active'>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote} className='active'>
                                             <ThumbsUp/>
-                                        </a>
-                                    : <a title="This is a good submission" onClick={this.upvote}>
+                                          </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>
+                                      }
+                                      </div>
+                                    : <div>
+                                     {this.props.isSignedIn
+                                        ? <a title="This is a good submission" onClick={this.upvote}>
                                         <ThumbsUp/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsUp/></Link>}
+                                        </div>
+                                        }
 
                                 {!this.props.isLoading
                                     ? <span className='score'>{this.props.submission.data.notebook.score}</span>
                                     : <p>loading</p>}
 
-                                {this.props.currentUser && this
+                               {this.props.currentUser && this
                                     .props
                                     .currentUser
                                     .downvotes
                                     .indexOf(this.props.submissionID) > -1
-                                    ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
-                                            <ThumbsDown/>
-                                        </a>
-                                    : <a title="This submission could use some work" onClick={this.downvote}>
+                                    ? <div>
+                                    {this.props.isSignedIn
+                                            ? <a title="This submission could use some work" onClick={this.downvote} className='active'>
+                                            <ThumbsDown/></a>
+                                            : <Link to='/signin'><ThumbsDown/></Link>}
+                                      </div>
+                                    : <div>{
+                                    this.props.isSignedIn
+                                        ?
+                                        <a title="This submission could use some work" onClick={this.downvote}>
                                         <ThumbsDown/>
-                                    </a>}
+                                        </a>
+                                        :<Link to='/signin'><ThumbsDown/></Link>}
+                                    </div>
+                                    }
                             </div>
 
                             {/*TODO: Admin options*/}
 
                         </div>
                         <div className='details-main'>
-
                             <div className='details-header'>
-
                                 <div className='details-title'>
-
                                     {!this.props.isLoading
                                         ? <h1 className='title'>{this.props.submission.data.notebook.title}</h1>
                                         : <p>loading...</p>}
@@ -351,7 +437,7 @@ class Submission extends Component {
                                     {!this.props.isLoading && (this.props.currentUser && this.props.currentUser._id === this.props.submission.data.author._id)
                                         ? <ul className='details-options'>
                                                 <li>
-                                                    <Link to={'/edit-submission/' + this.props.submissionID}><GearIcon/></Link>
+                                                    <Link to={'/edit-submission/' + this.props.submissionID} style={editStyle}>Edit</Link>
                                                 </li>
                                                 <li>
                                                     <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>
@@ -361,8 +447,43 @@ class Submission extends Component {
                                     <ul className='details-flag'>
                                         <li>
                                             {!this.props.isLoading && this.props.submission.data.flagged
-                                            ?  <a title='Flag as inappropriate' onClick={this.flagClick} className="active"><FlagIcon/></a>
-                                            :  <a title='Flag as inappropriate' onClick={this.flagClick}><FlagIcon/></a>}
+                                            ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
+                                            :  <a onClick={this.flagClick}><FlagIcon/></a>}
+
+                                             <Modal
+                                              isOpen={this.state.modalIsOpen}
+                                              onRequestClose={this.closeModal}
+                                              className='modal-alert'
+                                              contentLabel="Example Modal"
+                                              shouldCloseOnOverlayClick={false}>
+                                              <form onSubmit={this.handleSubmit}>
+                                                <div className="modal">
+                                                  <div className="modal-header">
+                                                    <h1 className='modal-title'>Report the Content</h1>
+                                                  </div>
+                                                  <div className="modal-body">
+                                                    <p><strong>Why would you like to report the content ?</strong></p>
+                                                    <label>
+                                                      <select value={this.state.flaggedReason} onChange={this.handleChange} required>
+                                                        <option value="inappropriate" selected>Inappropriate Content</option>
+                                                        <option value="spam" >Spam</option>
+                                                        <option value="copyright">Violates Copyright</option>
+                                                        <option value="other">Other</option>
+                                                      </select>
+                                                    </label>
+                                                    <ul className="options">
+                                                      <li>
+                                                        <a className='alt' onClick={this.closeModal}>Cancel</a>
+                                                      </li>
+                                                      <li>
+                                                        <a onClick={this.handleSubmit}>Report</a>
+                                                      </li>
+                                                    </ul>
+                                                    <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                                                  </div>
+                                                </div>
+                                              </form>
+                                            </Modal>
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
@@ -391,7 +512,7 @@ class Submission extends Component {
                                             <li className='views'>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            <span className='count'>{this.props.submission.data.notebook.viewers.length + ' '}</span>
+                                                            <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
                                                             Viewers
                                                         </div>
                                                     : <p>Loading...</p>}
@@ -462,7 +583,7 @@ class Submission extends Component {
                                                     </div>
                                                     : <div>None</div>}
                                                 </div>
-                                                
+
                                             </li> */}
                                             <li>
                                                 <span>Language:</span>
@@ -479,10 +600,9 @@ class Submission extends Component {
                                                 <span>Published:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.published} format='date'/> */}
                                                             <Time
                                                                 value={this.props.submission.data.notebook.published}
-                                                                format='d MMM YYYY'/>
+                                                                format='D MMM YYYY'/>
                                                         </div>
                                                     : <p>loading...</p>}
 
@@ -491,14 +611,13 @@ class Submission extends Component {
                                                 <span>Last update:</span>
                                                 {!this.props.isLoading
                                                     ? <div>
-                                                            {/* {' '}<Timestamp time={this.props.submission.data.notebook.lastUpdated} format='date'/> */}
-                                                            {this.props.submission.data.notebook.lastUpdated
-                                                                ? <Time
-                                                                        value={this.props.submission.data.notebook.lastUpdated}
-                                                                        format='d MMM YYYY'/>
+                                                            {this.props.submission.data.notebook.lastUpdated !== undefined && this.props.submission.data.notebook.lastUpdated !== ' '
+                                                                ?  <Time
+                                                                      value={this.props.submission.data.notebook.lastUpdated}
+                                                                      format='D MMM YYYY'/>
                                                                 : <Time
                                                                     value={this.props.submission.data.notebook.published}
-                                                                    format='d MMM YYYY'/>}
+                                                                    format='D MMM YYYY'/>}
                                                         </div>
                                                     : <p>loading...</p>}
 
@@ -511,7 +630,7 @@ class Submission extends Component {
                         </div>
                     </div>
 
-                    <div className='tile'>                           
+                    <div className='tile'>
                         {this.state.showNotebook
                         ? <div>
                             {this.props.nbLoading
@@ -530,7 +649,7 @@ class Submission extends Component {
                                         </li>
                                     </ul>
                                 </div>
-                                
+
                                 <div>
                                     Loading... ({this.props.dataReceived} / {this.props.totalData})
                                     <br/>

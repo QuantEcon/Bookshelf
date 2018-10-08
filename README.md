@@ -5,7 +5,7 @@ Code for the QuantEcon Notes Project
 ### Contributing
 Please work in branches and make PR's
 
-To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!), 
+To make PR's cleaner and quicker, please merge the master branch into your branch (not the other way around!!!),
 then test to make sure your code is still working as intended. This way, all merge conflicts will already be resolved in the PR.
 
 ### Building Documentation
@@ -13,14 +13,17 @@ then test to make sure your code is still working as intended. This way, all mer
 * Client Docs: run `npm run client-docs` to build the client documentation. Output will be in `/client/docs/`
 
 ### Setup
+##### Prerequisites
+1. **npm 5+** : `node install -g npm`
+2. **node v8+**
+3. **reactjs v16+** : `npm install -g create-react-app`
 
-#### Installation Commands 
-Ensure you have `npm v5+` and `node v8+` installed. I am currently using `npm 5.6.0` and `node v9.5.0`
-1. Pull from repository using `git pull`
-2. Update npm using the command `node install -g npm`
-3. Run `npm install -g create-react-app`
-4. Run `npm run install-all` to install all dependencies.
-5. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
+#### Installation Commands
+Ensure you have `npm v5+` and `node v8+` installed.
+1. Pull from repository using `git pull`.
+2. Cd into project root directory.
+3. Run `npm run install-all` to install all dependencies.
+4. Follow instructions in `client/src/assets/sccss/README.md` to set up the css
 
 #### Running Commands
 If you are in development mode, you will need to have _both_ the webpack development server for the React client _and_ the node express server running. To do this, run these commands:
@@ -28,7 +31,10 @@ If you are in development mode, you will need to have _both_ the webpack develop
 1. `npm start` from the `/` directory
 2. `npm start-client` **_OR_** `cd client && npm start` from the `/` directory
 
-You then will be able to connect to the website through the React client's port (default is 3000)
+You then will be able to connect to the website through the React client's port (default is 3000).
+
+Instead of of running `npm start` in both the client and server side with two terminals opened up, the project has set up `npm run dev` which uses **concurrently** to run both the client and server at the same time within one terminal.
+ You then will be able to connect to the website through the React client's port (default is 3000).
 
 If you get a `Could not proxy request` error, then you are either not running the API backend, or the ports are not matching. Ensure the port that the API is running on matches the one declared in the config files.
 
@@ -38,6 +44,29 @@ If you would like to test a production build, run `npm run build` from inside th
 2. Run `npm start` to start the server
 
 If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
+
+#### Updating the Instance
+NOTE: Paths are relative to the root of the project
+
+First stop the instance:
+1. `npm run stop-docker`
+
+Then pull the latest code:
+1. `git pull`
+
+Then you'll need to rebuild the client application:
+1. `cd /client`
+2. `npm run build`
+
+Then you'll need to update the docker image:
+1. `cd /`
+2. `npm run build-docker-server`
+
+Finally restart the instance:
+1. `npm run docker-daemon`
+
+#### How-To
+Inside the client directory, there is an extensive README.md on client-side.
 
 **UPDATE AS OF 29 MAR 2018:**
 

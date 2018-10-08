@@ -48,6 +48,7 @@ class RemoveSubmissionModal extends Component {
 
                     <div className="modal-body">
                         <p>Are you sure you want to remove this submission?</p>
+                        <p>WARNING: THIS IS IRREVERSIBLE. THIS WILL REMOVE THE CONTENT FROM THE DATABASE</p>
                         <SubmissionPreview submission={this.props.submission.data} author={this.props.submission.author}/>
                         <p>Enter the name of the submission to continue:</p>
                         <form name="deleteForm" onSubmit={this.delete}>

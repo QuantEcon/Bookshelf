@@ -3,7 +3,8 @@ const notificationTypes = {
     NEW_COMMENT: 'NEW_COMMENT',
     NEW_REPLY: 'NEW_REPLY',
     SUBMISSION: 'SUBMISSION',
-    INVITE_SENT : 'INVITE_SENT'
+    INVITE_SENT : 'INVITE_SENT',
+    CONTENT_FLAGGED: 'CONTENT_FLAGGED'
     // TODO other notification types here...
 }
 const config = require("../_config")
@@ -14,23 +15,8 @@ const mailgun = require("mailgun-js")({
 })
 
 const fs = require("fs")
-var template = fs.readFileSync(__dirname + "/../assets/email-template.html").toString()
-/*
-var data = {
-    from: 'QuantEcon Bookshelf <postmaster@mg.quantecon.org>',
-    to: "trevor.lyon@icloud.com",
-    subject: "Test Notification",
-    text: "Hello world. This came from QuantEcon's mailgun"
-}
-
-mailgun.messages().send(data, (error, body) =>{
-    console.log("Error: ", error)
-    console.log("Body: " ,body)
-    res.send({
-        error, body
-    })
-})
-*/
+var template = fs.readFileSync(__dirname + "/../assets/email-template.html").toString();
+var inviteBody = fs.readFileSync(__dirname + "/../assets/invite-template.html").toString();
 
 function sendEmail(to, from, message) {
 
@@ -38,20 +24,30 @@ function sendEmail(to, from, message) {
 
 function sendInvite(to, from) {
     console.log("[Notifications] - sending invite to ", to)
+
+    const hostName = "http://" + config.hostName + "/signin/"
+
     data = {
-        from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+        from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
         to: to,
-        subject: from + " Invited you to Join Bookshelf",
+        subject: from + " Invited you to Join Notes",
         // TODO: Include and HTML rendering of the comment here
-        text: from + " sent you an invite to join Bookshelf, \n\n" +
-            "To join Bookshelf click [here](" + config.hostName + "/signin/" +
-            ")\n\nThank you!"
+        text: from + " sent you an invite to join Notes, \n\n" +
+            "To join Notes click [here](" + config.hostName + "/signin/" +
+            ")\n\nThank you!",
+
+        html: from + " sent you an invite to join Notes, <br />" +
+            "<b>To join Notes click </b>" + "<a href=" + hostName + ">here</a>"
+            + "<br />Thank you!",
     }
+
+
     mailgun.messages().send(data, (error, body) => {
+
         if (error) {
             console.error("[Mailgun] Error occured sending notification: ", error)
         } else {
-            console.log("[Mailgun] Success sending invite: ", body)
+            console.log("[Mailgun] Success sending invite: ", body, hostName)
         }
    })
 }
@@ -62,7 +58,7 @@ function addNotifcation(to, notification) {
 }
 
 /**
- * 
+ *
  * @param {String} to - The email to send the notification
  * @param {Object} notification - Object containing the notification data
  */
@@ -78,12 +74,12 @@ function sendNotification(notification) {
             })
 
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Comment On Your Submission",
                 html: output
             }
-            
+
             mailgun.messages().send(data, (error, body) => {
                 if (error) {
                     console.error("[Mailgun] Error occured sending notification: ", error)
@@ -95,9 +91,9 @@ function sendNotification(notification) {
             break
 
         case notificationTypes.NEW_REPLY:
-            
+
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "New Reply To Your Comment",
                 // TODO: Include and HTML rendering of the comment here
@@ -118,7 +114,7 @@ function sendNotification(notification) {
             break
         case notificationTypes.SUBMISSION:
             data = {
-                from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
                 subject: "Successfuly Submitted new Notebook",
                 html: mustache.render(template, {
@@ -135,15 +131,15 @@ function sendNotification(notification) {
                 }
             })
             break
-            
+
         case notificationTypes.INVITE_SENT:
                   data = {
-                  from: "QuantEcon Bookshelf <postmaster@mg.quantecon.org>",
+                  from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                   to: notification.recipient.email,
-                  subject: notification.sender + " Invited you to Join Bookshelf",
+                  subject: notification.sender + " Invited you to Join Notes",
                   // TODO: Include and HTML rendering of the comment here
-                  text: notification.sender + " sent you an invite to join Bookshelf, \n\n" +
-                      "To join Bookshelf click [here](" + config.hostName + "/signin/" +
+                  text: notification.sender + " sent you an invite to join Notes, \n\n" +
+                      "To join Notes click [here](" + config.hostName + "/signin/" +
                       ")\n\nThank you!"
               }
               mailgun.messages().send(data, (error, body) => {
@@ -154,6 +150,22 @@ function sendNotification(notification) {
                   }
              })
              break
+        case notificationTypes.CONTENT_FLAGGED:
+             data = {
+                 from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
+                 to: notification.recipient.email,
+                 subject: "Content Flagged on QuantEcon Notes",
+                 html: "A " + notification.contentType + " has been flagged as \"" + notification.flaggedReason +
+                 "\". Please review this content on the admin page: notes.quantecon.org/admin"
+             }
+
+            mailgun.messages().send(data, (error, body) => {
+                if (error) {
+                    console.error("[Mailgun] Error occured sending notification: ", error)
+                } else {
+                    console.log("[Mailgun] Success sending notification: ", body)
+                }
+           })
     }
 }
 

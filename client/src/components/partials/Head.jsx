@@ -1,21 +1,12 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import bookshelfLogo from '../../assets/img/bookshelf-logo.png'
+import notesLogo from '../../assets/img/notes-logo.png'
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
+import classnames from 'classnames';
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
-
+var temp= [];
 
 class Head extends Component {
     constructor(props) {
@@ -26,10 +17,19 @@ class Head extends Component {
                 .bind(this)
 
             this.state = {
-                modalIsOpen: false
-            };
-
-            this.state = {value: ''};
+              value: '',
+              visibility: false,
+              check : true,
+              modalIsOpen: false,
+              emailInvite: {
+                 sentValue: false,
+                 sentEmail: null,
+              },
+              errors: {
+                invalidEmail: '',
+                emailTruthValue: null,
+              }
+             };
 
             this.inviteClick = this
                 .inviteClick
@@ -55,10 +55,11 @@ class Head extends Component {
                 .handleSubmit
                 .bind(this);
 
+
     }
 
     redirectToHome = () => {
-        console.log("redirect to home")
+        console.log("Redirect to home")
         //reset search params
         this.props.resetSearchParams()
         if(this.props.history){
@@ -69,8 +70,27 @@ class Head extends Component {
     }
 
     inviteClick = () => {
-      console.log('in inviteClick method');
-      this.openModal();
+        this.setState({
+        visibility : false,
+        check : true
+        })
+        var userID=this.props.user._id;
+        axios.get('/api/search/userList/?_id=' + userID).then(response => {
+          var p = response.data;
+          for (var key in p) {
+          if (p.hasOwnProperty(key)) {
+
+            temp.push(p[key].email);
+            }
+          }
+
+          return true;
+
+        }).catch(error => {
+          console.log('error in adding Co-Author: ', error);
+          return false;
+        })
+        this.openModal();
 
     }
 
@@ -80,12 +100,11 @@ class Head extends Component {
 
     afterOpenModal = () => {
       // references are now sync'd and can be accessed.
-      this.subtitle.style.color = '#f00';
+      // this.subtitle.style.color = '#f00';
     }
 
     closeModal = () => {
-      this.setState({modalIsOpen: false});
-      this.setState({value:''});
+      this.setState({modalIsOpen: false, value: '', errors: {invalidEmail: '', emailTruthValue: null}});
     }
 
     handleChange = (event) => {
@@ -93,34 +112,67 @@ class Head extends Component {
 
     }
 
+    handleSentSuccess = (response) => {
+      console.log("[HandleSentSuccess] - ", response);
+      this.setState({emailInvite: {sentValue: response.emailTruthValue, sentEmail: response.validEmail}}, () => {
+        this.props.emailSuccess(this.state.emailInvite);
+      });
+      // Setting modal as false to close now that the invite is successful
+      this.closeModal();
+    }
+
+    handleSentError = (error) => {
+      console.log("[HandleSentError] - ", error.response.data);
+      // Set check as in false to display the invalid error message in modal
+      this.setState({check: false});
+      this.setState({errors: {invalidEmail: error.response.data.emailError, emailTruthValue: error.response.data.emailTruthValue}});
+    }
+
     handleSubmit = (event) => {
-        event.preventDefault();
-        this.setState({modalIsOpen: false});
-        var  inviteEmail = this.state.value;
-        console.log('Invite a friend initiated')
-        console.log(this.state.value)
+      event.preventDefault(); // Prevent the form from actually submitting
 
-        this.setState({value:''}); //Reset state of modal
+      const inviteEmail = this.state.value;
 
-      //Send request to api endpoint /invite to send notification
+      this.setState({value:''}); //Reset email input state in modal
+
+      // Checking if the email already exists or has been sent previously
+      if (temp.includes(inviteEmail) && inviteEmail !== '')
+        {
+        this.setState({visibility : true,
+                      check : true})
+        }
+
+      else if (inviteEmail !== '') {
+
+        //Send POST request to /api/invite
         axios.post('/api/invite',{
-            inviteEmail
+        inviteEmail
         }, {
-            headers: {
-               'Authorization': 'JWT ' + store.getState().auth.token
-            }
+        headers: {
+           'Authorization': 'JWT ' + store.getState().auth.token
+        }
         }).then(response => {
-            console.log(response);
-            console.log('[InviteActions] - invite success: ');
-            return true;
+        this.handleSentSuccess(response.data);
+        console.log(response);
+        console.log('[InviteActions] - invite success: ');
+        return true;
 
         }).catch(error => {
-            console.log('[SubmitActions] - error in invite submit: ', error);
-            return false;
+        this.handleSentError(error);
+        console.log('[SubmitActions] - error in invite submit: ', error);
+        return false;
         })
+      }
+
+      else {
+        this.setState({check : false,
+                      visibility : false})
+      }
     }
 
     render() {
+        const {errors} = this.state;
+
         return (
             <div>
                 {/* <div className="corner-ribbon">Beta</div> */}
@@ -129,7 +181,7 @@ class Head extends Component {
                     className="submit-feedback"
                     target="_blank"
                     rel="noopener noreferrer"
-                    href="http://discourse.quantecon.org/c/bookshelf-feedback">Submit Feedback</a> */}
+                    href="http://discourse.quantecon.org/c/notes-feedback">Submit Feedback</a> */}
 
                 <header className="header">
 
@@ -140,7 +192,7 @@ class Head extends Component {
                             <div className="site-title">
                                 <a onClick={this.redirectToHome}>
                                     <span>
-                                        <img src={bookshelfLogo} alt="Bookshelf Logo" className="bookshelf-logo"/>
+                                        <img src={notesLogo} alt="Notes Logo" className="notes-logo"/>
                                         <div>
                                             <h2 className="site-name">Quant<span>Econ</span>
                                                 <strong>Notes</strong>
@@ -192,29 +244,36 @@ class Head extends Component {
                                                   isOpen={this.state.modalIsOpen}
                                                   onAfterOpen={this.afterOpenModal}
                                                   onRequestClose={this.closeModal}
-                                                  style={customStyles}
+                                                  className="modal-alert"
                                                   contentLabel="Example Modal"
                                                 >
-
-                                                  <h2 ref={subtitle => this.subtitle = subtitle}>Please enter the email of the person you would like to invite</h2>
-
-
                                                   <form onSubmit={this.handleSubmit}>
-                                                    <label>
-
-                                                      <input type="email" placeholder="Input the email" value={this.state.value} onChange={this.handleChange} required/>
-                                                    </label>
-                                                    <ul className="button-row">
-                                                      <li>
-                                                        <button className='invite-modal-button alt' onClick={this.closeModal}>Cancel</button>
-                                                      </li>
-                                                      <li>
-                                                        <button className='invite-modal-button' onClick={this.handleSubmit}>Invite</button>
-                                                      </li>
-                                                    </ul>
+                                                    <div className="modal">
+                                                      <div className="modal-header">
+                                                        <h1 className='modal-title'>Invite User</h1>
+                                                      </div>
+                                                      <div className="modal-body">
+                                                        <p><strong>Enter the email address of the person you would like to invite</strong></p>
+                                                        <label>
+                                                          <input type="email" placeholder="Input the email" value={this.state.value} className={classnames('invite-email-input', {'is-invalid': errors.invalidEmail})} onChange={this.handleChange} required/>
+                                                        </label>
+                                                        <ul className="options">
+                                                          <li>
+                                                            <a className='alt' onClick={this.closeModal}>Cancel</a>
+                                                          </li>
+                                                          <li>
+                                                            <a onClick={this.handleSubmit}>Invite</a>
+                                                          </li>
+                                                        </ul>
+                                                        <div className='inviteAlert'>
+                                                          { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
+                                                          { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
+                                                        </div>
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
+                                                      </div>
+                                                    </div>
                                                   </form>
                                                 </Modal>
-
                                             </li>
                                         </ul>
                                     : <ul className='site-menu'>

@@ -25,16 +25,16 @@ class User extends Component {
 
     compoentDidMount() {
         if (this.props.isMyProfile) {
-            document.title = 'My Profile - QuantEcon Bookshelf'
+            document.title = 'My Profile - QuantEcon Notes'
         }
     }
 
     componentWillReceiveProps(props) {
         if (props.data) {
             if (props.isMyProfile) {
-                document.title = 'My Profile - QuantEcon Bookshelf'
+                document.title = 'My Profile - QuantEcon Notes'
             } else {
-                document.title = props.data.name + " - QuantEcon Bookshelf"
+                document.title = props.data.name + " - QuantEcon Notes"
             }
         }
     }
@@ -91,7 +91,7 @@ class User extends Component {
                                     </ul>
                                     <p className='date'>
                                         Joined {!this.props.isLoading
-                                            ? <Time value={this.props.data.joinDate} format='d MMM YYYY'/>
+                                            ? <Time value={this.props.data.joinDate} format='D MMM YYYY'/>
                                             : null}
                                     </p>
                                 </div>

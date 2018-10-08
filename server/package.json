@@ -1,7 +1,7 @@
 {
-  "name": "bookshelf-server",
+  "name": "notes-server",
   "version": "1.0.0",
-  "description": "Code for QuantEcon's Bookshelf API",
+  "description": "Code for QuantEcon's Notes API",
   "private": true,
   "main": "./app.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "compression": "^1.7.2",
     "connect-multiparty": "^2.0.0",
     "cors": "^2.8.4",
+    "email-validator": "^2.0.4",
     "express": "^4.16.2",
     "express-handlebars": "^3.0.0",
     "express-passport-logout": "^0.1.0",
@@ -61,9 +62,9 @@
     "tmp": "0.0.33"
   },
   "apidoc": {
-    "title": "Bookshelf-Documentation",
-    "description": "API documentation for Bookshelf site",
-    "url": "http://bookshelf.quantecon.org",
+    "title": "Notes-Documentation",
+    "description": "API documentation for Notes site",
+    "url": "http://notes.quantecon.org",
     "order": [
       "Information",
       "Search",
