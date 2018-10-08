@@ -116,7 +116,7 @@ function sendNotification(notification) {
             data = {
                 from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,
-                subject: "Successfuly Submitted new Notebook",
+                subject: "Successfuly Submitted New Notebook",
                 html: mustache.render(template, {
                     name: notification.recipient.name,
                     subject: "Your notebook submission was successful!",
