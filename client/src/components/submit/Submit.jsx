@@ -291,10 +291,6 @@ class Submit extends Component {
         }, 20);
     }
 
-    renderMath = () => {
-        typesetMath(this.rendered)
-    }
-
     summaryLimit = (event) => {
       event.preventDefault();
       //Display modal error to users
