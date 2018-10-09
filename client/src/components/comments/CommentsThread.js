@@ -50,8 +50,7 @@ class CommentsThread extends Component {
             replies: props.replies,
             submitDisabled: true,
             showSummaryPreview: false,
-            newCommentText: '',
-            markdownRefereceModal: false,
+            newCommentText: ''
         };
     }
 
@@ -124,13 +123,6 @@ class CommentsThread extends Component {
         }, 20);
     }
 
-    toggleMarkdownReferenceModal = (e) => {
-        e.preventDefault()
-        this.setState({
-            markdownRefereceModal: !this.state.markdownRefereceModal
-        })
-    }
-
     render() {
         return (
             <div className='comments'>
@@ -166,32 +158,11 @@ class CommentsThread extends Component {
                                     editComment={this.props.editComment}/>
                             })}
                     </div>
-                    <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
-                        <div className='my-modal'>
-                        <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
-                            <div className='modal-header'>
-                                <h1 className='modal-title'>Markdown Reference</h1>
-                            </div>
-                            <div className='modal-body'>
-                                <ul>
-                                    <li>
-                                        <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
-                                    </li>
-                                    <li>
-                                        <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
-                                    </li>
-                                    <li>
-                                        <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </Modal>
-
                     <div className='comments-post'>
                         <label>Post a comment</label>
-                        <p className="input-hint">You can use{' '}
-                          <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}here.
+                        <p className="input-hint">
+                            You can use{' '}
+                            <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
                         </p>
                         <Tabs>
                           <TabList>
