@@ -530,8 +530,7 @@ class EditProfile extends Component {
                                     </label>
                                     <p className="input-hint">
                                         You can use{' '}
-                                        <Link to="http://commonmark.org/help/">markdown</Link>
-                                        {' '}here.
+                                        <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
                                     </p>
                                     <Tabs>
                                       <TabList>

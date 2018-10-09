@@ -79,7 +79,6 @@ class Submit extends Component {
             uploadError: false,
             showSummaryPreview: false,
             modalOpen: false,
-            markdownRefereceModal: false,
             summaryModal: false,
             notebookDataReady: false,
             notebookJSON: {},
@@ -389,13 +388,6 @@ class Submit extends Component {
             .indexOf(topic) > -1;
     }
 
-    toggleMarkdownReferenceModal = (e) => {
-        e.preventDefault()
-        this.setState({
-            markdownRefereceModal: !this.state.markdownRefereceModal
-        })
-    }
-
     toggleCancelSubmissionModal = (e) => {
         e.preventDefault()
         this.setState({
@@ -491,28 +483,6 @@ class Submit extends Component {
                         <p><strong>The Notebook summary is limited to 250 words.</strong></p>
                         <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
                       </div>
-                    </div>
-                </Modal>
-
-                <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
-                    <div className='my-modal'>
-                    <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Markdown Reference</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <ul>
-                                <li>
-                                    <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
-                                </li>
-                                <li>
-                                    <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
-                                </li>
-                                <li>
-                                    <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
-                                </li>
-                            </ul>
-                        </div>
                     </div>
                 </Modal>
 
@@ -717,9 +687,10 @@ class Submit extends Component {
 
 
                                     <label htmlFor='summary' className='section-title'>Summary</label>
-                                    <p className="input-hint">You can use{' '}
-                                        <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
-                                        here.</p>
+                                    <p className="input-hint">
+                                        You can use{' '}
+                                        <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
+                                    </p>
                                     <Tabs>
                                       <TabList>
                                         <Tab>Write</Tab>
