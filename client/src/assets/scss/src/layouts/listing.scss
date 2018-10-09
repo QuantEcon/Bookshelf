@@ -118,6 +118,9 @@
                 //display: inline;
                 font-weight: 400;
             }
+            a {
+                word-break: break-all;
+            }
         }
     }
     .avatar {
