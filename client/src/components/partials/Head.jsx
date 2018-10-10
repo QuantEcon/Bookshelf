@@ -269,7 +269,7 @@ class Head extends Component {
                                                           { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
                                                           { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
                                                         </div>
-                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
                                                       </div>
                                                     </div>
                                                   </form>
