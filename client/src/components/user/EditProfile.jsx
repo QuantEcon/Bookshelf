@@ -1,9 +1,8 @@
 import React, {Component} from 'react';
-import {Link} from 'react-router-dom'
 import HeadContainer from '../../containers/HeadContainer';
-import Markdown from 'react-markdown';
-import {withRouter} from 'react-router'
-import Modal from 'react-modal'
+import MarkdownRender from '@nteract/markdown'
+import {withRouter} from 'react-router';
+import Modal from 'react-modal';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton'
@@ -547,7 +546,8 @@ class EditProfile extends Component {
                                             onChange={this.summaryChanged}></textarea>
                                       </TabPanel>
                                       <TabPanel>
-                                        <Markdown
+                                        <MarkdownRender
+                                            disallowedTypes={['heading']}
                                             source={this.formData.summary
                                             ? this.formData.summary
                                             : '*No description*'}/>
