@@ -2327,6 +2327,8 @@ button {
       margin: 0;
       padding: 0;
       font-weight: 400; }
+    .notebook-summary .specs .short a {
+      word-break: break-all; }
   .notebook-summary .avatar {
     margin: 0 25px;
     -ms-flex-negative: 0;
@@ -2492,6 +2494,8 @@ button {
         -ms-flex: 1;
             flex: 1;
         padding: 0 2rem 0 0; }
+        .details .details-main .details-body .details-primary a {
+          word-break: break-all; }
       .details .details-main .details-body .details-secondary {
         -ms-flex: 1;
             flex: 1;
