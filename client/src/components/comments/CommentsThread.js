@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import MarkdownRender from '@nteract/markdown'
 import {typesetMath} from 'mathjax-electron'
-import Modal from 'react-modal';
 import CloseIcon from 'react-icons/lib/fa/close'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 

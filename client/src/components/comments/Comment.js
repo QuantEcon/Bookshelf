@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
 import Modal from 'react-modal'
-import Markdown from 'react-markdown';
+import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import ReplyList from './ReplyList';
 import {Link} from 'react-router-dom'
@@ -343,13 +343,16 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
-                        <Markdown disallowedTypes={['heading']} source={this.state.comment.content}/>
+                        <MarkdownRender
+                          disallowedTypes={['heading']}
+                          source={this.state.comment.content
+                          ? this.state.comment.content
+                          : '*No comment*'}/>
                         <div>
                             {this.state.comment.edited
                                 ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
                                 : null}
                         </div>
-
                     </div>
 
                     <div className='comment-footer'>
