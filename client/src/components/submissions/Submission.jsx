@@ -528,7 +528,7 @@ class Submission extends Component {
                                                 {!this.props.isLoading
                                                     ? <div>
                                                             <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
-                                                            Viewers
+                                                            Views
                                                         </div>
                                                     : <p>Loading...</p>}
                                             </li>

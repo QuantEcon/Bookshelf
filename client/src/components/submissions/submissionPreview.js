@@ -114,7 +114,7 @@ class SubmissionPreview extends Component {
                             <span className="count">{this.state.submission.views
                                     ? this.state.submission.views
                                     : 0}</span>
-                            Viewers</li>
+                                  Views</li>
                         <li className="comments">
                             <span className="count">{this.state.submission.totalComments}</span>
                             Comments
