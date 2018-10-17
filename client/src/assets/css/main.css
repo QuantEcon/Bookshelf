@@ -2361,6 +2361,10 @@ button {
       color: #d84d0a;
       display: block;
       font-size: 1.5rem; }
+  .notebook-summary .stats.display {
+    margin-top: 0px;
+    color: #0a0a0a;
+    font-size: 0.65em; }
 
 .details {
   display: -ms-flexbox;
@@ -2434,37 +2438,42 @@ button {
         .details .details-main .details-header .details-title .title {
           font-size: 2rem;
           margin: 0 0 1rem 0;
-          display: inline-block; }
+          display: inline-block;
+          line-height: 1; }
         .details .details-main .details-header .details-title .date {
           margin: 0; }
         .details .details-main .details-header .details-title .topics {
           list-style: none;
-          margin: 0;
+          margin: -0.5rem 0 0 0;
           padding: 0;
           display: -ms-flexbox;
-          display: flex; }
-          .details .details-main .details-header .details-title .topics li a {
-            display: block;
-            border: 1px solid #d84d0a;
-            padding: 0.1rem 0.5rem;
-            font-weight: bold;
-            font-size: 0.9rem;
-            border-radius: 5px;
-            margin: 0 1rem 0 0; }
-            .details .details-main .details-header .details-title .topics li a:hover, .details .details-main .details-header .details-title .topics li a.active {
-              background: #d84d0a;
-              color: #fff; }
-            .details .details-main .details-header .details-title .topics li a.alt {
-              color: #444444;
-              border-color: #444444; }
-              .details .details-main .details-header .details-title .topics li a.alt:hover, .details .details-main .details-header .details-title .topics li a.alt.active {
-                background: #444444;
+          display: flex;
+          -ms-flex-wrap: wrap;
+              flex-wrap: wrap; }
+          .details .details-main .details-header .details-title .topics li {
+            margin: 0.5rem 0 0 0; }
+            .details .details-main .details-header .details-title .topics li a {
+              display: block;
+              border: 1px solid #d84d0a;
+              padding: 0.1rem 0.5rem;
+              font-weight: bold;
+              font-size: 0.9rem;
+              border-radius: 5px;
+              margin: 0 1rem 0 0; }
+              .details .details-main .details-header .details-title .topics li a:hover, .details .details-main .details-header .details-title .topics li a.active {
+                background: #d84d0a;
                 color: #fff; }
-            .details .details-main .details-header .details-title .topics li a span:nth-child(1) {
-              font-size: 1.7rem;
-              vertical-align: middle; }
-            .details .details-main .details-header .details-title .topics li a span:nth-child(2) {
-              margin: 0 0 0 0.3rem; }
+              .details .details-main .details-header .details-title .topics li a.alt {
+                color: #444444;
+                border-color: #444444; }
+                .details .details-main .details-header .details-title .topics li a.alt:hover, .details .details-main .details-header .details-title .topics li a.alt.active {
+                  background: #444444;
+                  color: #fff; }
+              .details .details-main .details-header .details-title .topics li a span:nth-child(1) {
+                font-size: 1.7rem;
+                vertical-align: middle; }
+              .details .details-main .details-header .details-title .topics li a span:nth-child(2) {
+                margin: 0 0 0 0.3rem; }
       .details .details-main .details-header .details-counts .counts {
         text-align: center; }
         .details .details-main .details-header .details-counts .counts a {
@@ -2493,7 +2502,8 @@ button {
       .details .details-main .details-body .details-primary {
         -ms-flex: 1;
             flex: 1;
-        padding: 0 2rem 0 0; }
+        padding: 0 2rem 0 0;
+        font-size: 1.1rem; }
         .details .details-main .details-body .details-primary a {
           word-break: break-all; }
       .details .details-main .details-body .details-secondary {
@@ -3655,7 +3665,8 @@ div.my-modal {
         border-bottom: 6px solid #be2626; }
 
 .comments {
-  padding: 0 2rem; }
+  padding: 0 5rem;
+  font-size: 1.1rem; }
   .comments .comments-post {
     margin: 2rem 0; }
     .comments .comments-post label {
@@ -4013,7 +4024,8 @@ img.loading-avatar {
   background: white;
   padding: 2rem 4rem;
   margin: 2rem 0;
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+  font-size: 1.2rem; }
 
 .title-name {
   font-size: 2.6em;
