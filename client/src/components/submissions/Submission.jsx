@@ -28,20 +28,6 @@ import NotebookFromHTML from '../NotebookFromHTML';
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import axios from 'axios'
 
-/* Custom styles for the modal */
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
-
 const editStyle = {
   paddingTop:'2.5px',
   paddingBottom:'2.5px'
@@ -349,9 +335,9 @@ class Submission extends Component {
                 <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
+                    onRequestClose={this.toggleDeleteModal}
                     contentLabel='Delete Submission'
-                    style={customStyles}
-                    contentLabel="Example Modal"
+                    className='modal-alert'
                     shouldCloseOnOverlayClick={false}>
                     <div className="modal">
                       <div className="modal-header">
@@ -367,7 +353,7 @@ class Submission extends Component {
                             <a onClick={this.deleteSubmission}>Delete</a>
                           </li>
                         </ul>
-                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleDeleteModal}><span aria-hidden="true">×</span></button>
                       </div>
                     </div>
                 </Modal>
@@ -468,7 +454,7 @@ class Submission extends Component {
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onRequestClose={this.closeModal}
-                                              style={customStyles}
+                                              className='modal-alert'
                                               contentLabel="Example Modal"
                                               shouldCloseOnOverlayClick={false}>
                                               <form onSubmit={this.handleSubmit}>

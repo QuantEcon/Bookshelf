@@ -2241,7 +2241,8 @@ button {
 .filters {
   position: relative;
   display: -ms-flexbox;
-  display: flex; }
+  display: flex;
+  padding: 0 1rem 1rem 1rem; }
   .filters .sort-inputs {
     -ms-flex: 1;
         flex: 1; }
@@ -2291,7 +2292,8 @@ button {
       box-shadow: none; }
   .filters .totals {
     display: inline-block;
-    color: #888888; }
+    color: #888888;
+    margin: 0; }
 
 .search-message {
   text-align: center; }
@@ -2325,6 +2327,8 @@ button {
       margin: 0;
       padding: 0;
       font-weight: 400; }
+    .notebook-summary .specs .short a {
+      word-break: break-all; }
   .notebook-summary .avatar {
     margin: 0 25px;
     -ms-flex-negative: 0;
@@ -2490,6 +2494,8 @@ button {
         -ms-flex: 1;
             flex: 1;
         padding: 0 2rem 0 0; }
+        .details .details-main .details-body .details-primary a {
+          word-break: break-all; }
       .details .details-main .details-body .details-secondary {
         -ms-flex: 1;
             flex: 1;
@@ -3241,6 +3247,23 @@ html.is-reveal-open {
     font-size: 2em;
     line-height: 1; }
 
+.modal-alert {
+  position: absolute;
+  background-color: white;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  -ms-transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%);
+  width: 600px;
+  padding: 0px;
+  border: 1px solid #cccccc;
+  border-radius: 5px !important; }
+
+.modal-alert:focus {
+  outline: none; }
+
 .modal {
   padding: 0 2rem !important;
   border-radius: 5px !important; }
@@ -3849,7 +3872,7 @@ div.my-modal {
   display: inline-block;
   background: #fff;
   color: #d84d0a;
-  margin: 0 1rem 0 0;
+  margin: 1rem 1rem 0 0;
   cursor: pointer; }
   .announcements button.active, .announcements button:hover {
     background-color: #d84d0a;
@@ -3868,12 +3891,16 @@ div.my-modal {
   background: #dee7db;
   padding: 1rem 2rem;
   border-radius: 5px;
-  margin: 2rem 0; }
+  margin: 1rem 0; }
   .announcements-list .announcement {
     border-bottom: 1px solid #c3c3c3;
     font-weight: 700; }
     .announcements-list .announcement:last-child {
       border-bottom: 0; }
+
+.admin-tag {
+  text-align: left;
+  margin: 10px; }
 
 .success-checkmark {
   margin: 0rem 1rem; }

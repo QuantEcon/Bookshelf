@@ -3,9 +3,8 @@ import PropTypes from 'prop-types'
 import {Link} from 'react-router-dom'
 import MarkdownRender from '@nteract/markdown'
 import {typesetMath} from 'mathjax-electron'
-import Modal from 'react-modal';
 import CloseIcon from 'react-icons/lib/fa/close'
-
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 import CommentContainer from "../../containers/comment/CommentContainer"
 
@@ -50,8 +49,7 @@ class CommentsThread extends Component {
             replies: props.replies,
             submitDisabled: true,
             showSummaryPreview: false,
-            newCommentText: '',
-            markdownRefereceModal: false,
+            newCommentText: ''
         };
     }
 
@@ -124,13 +122,6 @@ class CommentsThread extends Component {
         }, 20);
     }
 
-    toggleMarkdownReferenceModal = (e) => {
-        e.preventDefault()
-        this.setState({
-            markdownRefereceModal: !this.state.markdownRefereceModal
-        })
-    }
-
     render() {
         return (
             <div className='comments'>
@@ -166,59 +157,33 @@ class CommentsThread extends Component {
                                     editComment={this.props.editComment}/>
                             })}
                     </div>
-                    <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
-                        <div className='my-modal'>
-                        <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
-                            <div className='modal-header'>
-                                <h1 className='modal-title'>Markdown Reference</h1>
-                            </div>
-                            <div className='modal-body'>
-                                <ul>
-                                    <li>
-                                        <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
-                                    </li>
-                                    <li>
-                                        <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
-                                    </li>
-                                    <li>
-                                        <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </Modal>
-
                     <div className='comments-post'>
                         <label>Post a comment</label>
-                        <p className="input-hint">You can use{' '}
-                          <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}here.
+                        <p className="input-hint">
+                            You can use{' '}
+                            <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
                         </p>
-                        <textarea
-                            name="newCommentContent"
-                            id='newCommentTextArea'
-                            placeholder='You can use markdown here...'
-                            defaultValue={this.newCommentText}
-                            onChange={this.newCommentTextChange}></textarea>
-                            {this.state.showSummaryPreview
-                              ? <div>
-                                      <MarkdownRender
-                                          disallowedTypes={['heading']}
-                                          source={this.newCommentText
-                                          ? this.newCommentText
-                                          : '*No comment*'}/>
-                                      <p className="input-hint-after input-hint">
-                                          <a onClick={this.toggleSummaryPreview}><b>Close Preview</b></a>
-                                      </p>
-                                      <p className="input-hint-after input-hint">
-                                          <a onClick={this.renderMath}><b>Render Math</b></a>
-                                      </p>
-                                  </div>
-                              : <p className="input-hint input-hint-after">
-                                  <a onClick={this.toggleSummaryPreview}>
-                                      <b>Preview</b>
-                                  </a>
-                              </p>
-                            }
+                        <Tabs>
+                          <TabList>
+                            <Tab>Write</Tab>
+                            <Tab>Preview</Tab>
+                          </TabList>
+                          <TabPanel>
+                            <textarea
+                                name="newCommentContent"
+                                id='newCommentTextArea'
+                                placeholder='You can use markdown here...'
+                                defaultValue={this.newCommentText}
+                                onChange={this.newCommentTextChange}></textarea>
+                          </TabPanel>
+                          <TabPanel>
+                            <MarkdownRender
+                                disallowedTypes={['heading']}
+                                source={this.newCommentText
+                                ? this.newCommentText
+                                : '*No comment*'}/>
+                          </TabPanel>
+                        </Tabs>
 
                         <div className='submit-comment'>
                             <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>

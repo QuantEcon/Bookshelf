@@ -6,25 +6,6 @@ import axios from 'axios';
 import store from '../../store/store';
 import classnames from 'classnames';
 
-const customStyles = {
-  content : {
-    top                   : '50%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    transform             : 'translate(-50%, -50%)',
-    padding               : '0',
-    width                 : '600px'
-  }
-};
-
-const errorStyle = {
-  marginLeft : '23%',
-  color : 'green'
-};
-
-
 var temp= [];
 
 class Head extends Component {
@@ -263,7 +244,7 @@ class Head extends Component {
                                                   isOpen={this.state.modalIsOpen}
                                                   onAfterOpen={this.afterOpenModal}
                                                   onRequestClose={this.closeModal}
-                                                  style={customStyles}
+                                                  className="modal-alert"
                                                   contentLabel="Example Modal"
                                                 >
                                                   <form onSubmit={this.handleSubmit}>
@@ -288,7 +269,7 @@ class Head extends Component {
                                                           { this.state.visibility ? <p className='email-error' >This user is already part of QuantEcon Notes</p> : null }
                                                           { this.state.check ? null : <p className='email-error' >Please enter a valid email address</p> }
                                                         </div>
-                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button"><span aria-hidden="true">×</span></button>
+                                                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
                                                       </div>
                                                     </div>
                                                   </form>
