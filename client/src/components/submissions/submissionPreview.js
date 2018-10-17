@@ -111,19 +111,19 @@ class SubmissionPreview extends Component {
                 <div className="stats">
                     <ul>
                         <li className="views">
-                            {this.state.submission.views > 1 ?
+                            {this.state.submission.views > 1 || this.state.submission.views == 0?
                               <span className="count">{this.state.submission.views}<p className="stats display">Views</p></span> :
                               <span className="count">{this.state.submission.views}<p className="stats display">View</p></span>
                             }
                         </li>
                         <li className="comments">
-                            {this.state.submission.totalComments > 1 ?
+                            {this.state.submission.totalComments > 1 || this.state.submission.totalComments == 0 ?
                               <span className="count">{this.state.submission.totalComments}<p className="stats display">Comments</p></span> :
                               <span className="count">{this.state.submission.totalComments}<p className="stats display">Comment</p></span>
                             }
                         </li>
                         <li className="votes">
-                          {this.state.submission.score > 1 ?
+                          {this.state.submission.score > 1 || this.state.submission.score == 0?
                             <span className="count">{this.state.submission.score}<p className="stats display">Votes</p></span> :
                             <span className="count">{this.state.submission.score}<p className="stats display">Vote</p></span>
                           }

@@ -512,7 +512,7 @@ class Submission extends Component {
                                         <ul>
                                             <li className='views'>
                                                 {!this.props.isLoading
-                                                    ? this.props.submission.data.notebook.views > 1
+                                                    ? this.props.submission.data.notebook.views > 1 || this.props.submission.data.notebook.views == 0
                                                       ? <div>
                                                             <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
                                                             Views
@@ -525,7 +525,7 @@ class Submission extends Component {
                                             </li>
                                             <li className='comments'>
                                                 {!this.props.isLoading
-                                                    ? this.props.submission.data.comments.length + this.props.submission.data.replies.length > 1
+                                                    ? this.props.submission.data.comments.length + this.props.submission.data.replies.length > 1 || this.props.submission.data.comments.length + this.props.submission.data.replies.length == 0
                                                       ? <div>
                                                             <span className='count'>{this.props.submission.data.comments.length + this.props.submission.data.replies.length}{' '}</span>
                                                             Comments
@@ -538,7 +538,7 @@ class Submission extends Component {
                                             </li>
                                             <li className='votes'>
                                                 {!this.props.isLoading
-                                                    ? this.props.submission.data.notebook.score > 1
+                                                    ? this.props.submission.data.notebook.score > 1 || this.props.submission.data.notebook.score === 0
                                                       ? <div>
                                                           <span className='count'>{this.props.submission.data.notebook.score}{' '}</span>
                                                             Votes
