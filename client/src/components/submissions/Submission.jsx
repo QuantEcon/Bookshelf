@@ -512,27 +512,42 @@ class Submission extends Component {
                                         <ul>
                                             <li className='views'>
                                                 {!this.props.isLoading
-                                                    ? <div>
+                                                    ? this.props.submission.data.notebook.views > 1 || this.props.submission.data.notebook.views == 0
+                                                      ? <div>
                                                             <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
-                                                            Viewers
+                                                            Views
+                                                        </div>
+                                                      : <div>
+                                                            <span className='count'>{this.props.submission.data.notebook.views + ' '}</span>
+                                                            View
                                                         </div>
                                                     : <p>Loading...</p>}
                                             </li>
                                             <li className='comments'>
                                                 {!this.props.isLoading
-                                                    ? <div>
+                                                    ? this.props.submission.data.comments.length + this.props.submission.data.replies.length > 1 || this.props.submission.data.comments.length + this.props.submission.data.replies.length == 0
+                                                      ? <div>
                                                             <span className='count'>{this.props.submission.data.comments.length + this.props.submission.data.replies.length}{' '}</span>
                                                             Comments
+                                                        </div>
+                                                      :<div>
+                                                            <span className='count'>{this.props.submission.data.comments.length + this.props.submission.data.replies.length}{' '}</span>
+                                                            Comment
                                                         </div>
                                                     : <p>loading...</p>}
                                             </li>
                                             <li className='votes'>
                                                 {!this.props.isLoading
-                                                    ? <div>
-                                                            <span className='count'>{this.props.submission.data.notebook.score}{' '}</span>
+                                                    ? this.props.submission.data.notebook.score > 1 || this.props.submission.data.notebook.score === 0
+                                                      ? <div>
+                                                          <span className='count'>{this.props.submission.data.notebook.score}{' '}</span>
                                                             Votes
-                                                        </div>
-                                                    : <p>loading...</p>}
+                                                          </div> :
+                                                          <div>
+                                                            <span className='count'>{this.props.submission.data.notebook.score}{' '}</span>
+                                                              Vote
+                                                          </div>
+                                                  : <p>loading...</p>}
                                             </li>
                                         </ul>
                                     </div>

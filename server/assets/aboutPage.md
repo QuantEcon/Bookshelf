@@ -58,7 +58,12 @@ the [Alfred P. Sloan Foundation](https://sloan.org/).
 
 3. **What should I do if I find an issue with the website?**  
 
-  [Contact us]
+  [Contact us](mailto:contact@quantecon.org)
+
+4. **How do I include an image in my Jupyter notebook?**
+
+  Currently we don't support including additional files. If you'd like to link an image in a Markdown cell, you will need to host the image somewhere (refer [here](https://commonmark.org/help/) for Markdown syntax).
+  If you would like to include an image without hosting, we recommend using `from IPython.display import Image`.
 
 - - -
 

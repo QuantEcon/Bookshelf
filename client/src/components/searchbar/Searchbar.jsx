@@ -203,7 +203,7 @@ class Searchbar extends Component {
                                     <option value="Comments">Comments</option>
                                     <option value="Date">Date</option>
                                     <option value="Trending">Trending</option>
-                                    <option value="Views">Viewers</option>
+                                    <option value="Views">Views</option>
                                     <option value="Votes" selected>Votes</option>
                                 </select>
                             </label>
