@@ -12,13 +12,15 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
+import { Redirect } from 'react-router-dom'
 
 class EditProfile extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showMergeModal: false
+            showMergeModal: false,
+            redirect: false
         }
         this.websiteChanged = this
             .websiteChanged
@@ -89,6 +91,9 @@ class EditProfile extends Component {
             .bind(this)
         this.submissionSettingChanged = this
             .submissionSettingChanged
+            .bind(this)
+        this.setRedirect = this
+            .setRedirect
             .bind(this)
 
     }
@@ -382,6 +387,13 @@ class EditProfile extends Component {
         this
             .props
             .cancel();
+    }
+
+    setRedirect = () => {
+      // setting redirect to true
+      this.setState({
+        redirect: true
+      })
     }
 
     render() {
@@ -796,23 +808,19 @@ class EditProfile extends Component {
                             </div>
                             {/*edit-profile-primary*/}
                         </div>
-
                         <ul className="button-row">
-
                             <li>
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>
                             <li>
-
-                                <button name="submit" type="submit" disabled={this.hasError}>
+                                <button name="submit" type="submit" disabled={this.hasError} onClick={this.setRedirect}>
                                     Save Profile
                                 </button>
+                                {this.state.redirect ? <Redirect to ="/" />: null}
                             </li>
                         </ul>
-
                     </div>
                 </form>
-
             </div>
         )
     }
