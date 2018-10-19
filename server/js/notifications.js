@@ -91,7 +91,7 @@ function sendNotification(notification) {
             break
 
         case notificationTypes.NEW_REPLY:
-
+            console.log("notification.reply.content", notification.reply.content)
             data = {
                 from: "QuantEcon Notes <postmaster@mg.quantecon.org>",
                 to: notification.recipient.email,

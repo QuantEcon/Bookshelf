@@ -677,6 +677,7 @@ app.post('/reply', passport.authenticate('jwt', {
                                                 });
                                             } else {
                                                 console.log("Successfully submitted reply");
+                                                console.log('REPLY CONTENT', reply.content)
                                                 // Notify author of comment
                                                 User.findById(comment.author, (err, author) => {
                                                     if (err) {
