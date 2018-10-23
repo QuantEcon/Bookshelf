@@ -123,7 +123,7 @@ app.get('/all-submissions', function (req, res) {
                 break;
             case 'Views':
                 options.sort = {
-                    'viewers_count': -1,
+                    'views': -1,
                     'published': -1
                 }
                 break;
