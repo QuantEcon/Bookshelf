@@ -172,6 +172,19 @@ To install and start Mongo database on your respective Operating System go to ht
 
 Once you have done this, you can use the commands to get the server up and running.
 
+### Database
+
+#### [Dump & Restore MongoDB](http://www.chovy.com/nosql/backing-up-and-restoring-a-mongodb-to-a-different-database/) 
+To transfer the database from the main site to development or local, follow the below steps: 
+1. `mongodump --db Database_Name`. 
+2. `tar czf ./dump.tgz ./dump`.
+3. Run `scp -r remote_machine:database_backups/db_file ~/local_machine`
+4. In your local machine or development machine, `tar xzf ./dump.tgz` file.
+5. `cd ./dump`.
+6. `mongorestore --db Database_Name ./New_Dumped_Database`.
+
+
+
 ### Testing
 Please review existing issues before submitting a new one. If no related issue exists, feel free to create a new one.
 #### Bug/Error reporting:
