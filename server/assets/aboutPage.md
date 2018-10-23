@@ -53,7 +53,7 @@ the [Alfred P. Sloan Foundation](https://sloan.org/).
 2. **Is this site only for economics?**  
 
   Yes, with room for some finance or operations research if it closely relates
-  to economics.  Please downvote or [alert us to] content that you think is off
+  to economics. Please downvote or [alert us to](mailto:contact@quantecon.org) content that you think is off
   topic.
 
 3. **What should I do if I find an issue with the website?**  
