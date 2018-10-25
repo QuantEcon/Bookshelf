@@ -37,6 +37,9 @@ class EditProfile extends Component {
         this.validate = this
             .validate
             .bind(this);
+        this.deleteProfile = this
+            .validate
+            .bind(this);
 
         this.removeFacebook = this
             .removeFacebook
@@ -383,10 +386,12 @@ class EditProfile extends Component {
         this.hasSaved = true;
     }
 
+    delete = () => {
+      console.log('[Delete]', - this.props);
+    }
+
     cancel = () => {
-        this
-            .props
-            .cancel();
+        this.props.cancel();
     }
 
     setRedirect = () => {
@@ -809,6 +814,9 @@ class EditProfile extends Component {
                             {/*edit-profile-primary*/}
                         </div>
                         <ul className="button-row">
+                            <li>
+                              <a className="delete-profile" onClick={this.delete}>Delete</a>
+                            </li>
                             <li>
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>

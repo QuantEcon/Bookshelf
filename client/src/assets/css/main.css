@@ -2857,6 +2857,8 @@ button {
       .submit-form .submit-secondary .submit-secondary-group2 textarea {
         height: 200px;
         margin: 0; }
+      .submit-form .submit-secondary .submit-secondary-group2 a {
+        word-break: break-all; }
   .submit-form .submit-footer {
     padding: 2rem;
     width: 70%;
@@ -2907,6 +2909,12 @@ button {
         color: #444444; }
         .button-row li a.alt:hover, .button-row li a.alt.active, .button-row li button.alt:hover, .button-row li button.alt.active, .button-row li input.alt:hover, .button-row li input.alt.active {
           background: #444444;
+          color: #fff; }
+      .button-row li a.delete-profile, .button-row li button.delete-profile, .button-row li input.delete-profile {
+        border-color: #BE2C27;
+        color: #BE2C27; }
+        .button-row li a.delete-profile:hover, .button-row li a.delete-profile.active, .button-row li button.delete-profile:hover, .button-row li button.delete-profile.active, .button-row li input.delete-profile:hover, .button-row li input.delete-profile.active {
+          background: #BE2C27;
           color: #fff; }
 
 .callout {
