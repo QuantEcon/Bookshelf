@@ -13,6 +13,10 @@ import HeadContainer from '../../containers/HeadContainer';
 import Breadcrumbs from '../partials/Breadcrumbs'
 import CoAuthorInput from '../coAuthors/coAuthorInput'
 import { Prompt } from 'react-router'
+import { Redirect } from 'react-router-dom'
+import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+
+const maxWords = 251
 
 
 /**
@@ -78,10 +82,17 @@ class Submit extends Component {
             uploadError: false,
             showSummaryPreview: false,
             modalOpen: false,
-            markdownRefereceModal: false,
+            summaryModal: false,
             notebookDataReady: false,
             notebookJSON: {},
-            contentSaved: false
+            contentSaved: false,
+            cancelSubmissionModal: false,
+            redirect: false,
+            count: 0,
+            pasteValue: false,
+            textareaValue: 0,
+            triggerOnKeyPress: false,
+            summary: ''
         }
 
         this.onOpenClick = this
@@ -104,7 +115,13 @@ class Submit extends Component {
 
     componentDidMount() {
         if (this.props.isEdit) {
-            document.title = 'Edit Submission - QuantEcon Notes'
+            document.title = 'Edit Submission - QuantEcon Notes';
+            if (this.props.submission.data.notebook.summary.split(' ').length === 1 && this.props.submission.data.notebook.summary.split(' ')[0] === '') {
+              this.setState({summary: '', count: 0})
+            }
+            else {
+              this.setState({summary: this.props.submission.data.notebook.summary, count: this.props.submission.data.notebook.summary.split(' ').length})
+            }
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
@@ -249,7 +266,7 @@ class Submit extends Component {
             e.preventDefault()
         }
         this.setState({contentSaved : true}, () => {
-        console.log(this.state.contentSaved)
+
         if (this.props.isEdit) {
             console.log('[EditSubmission] - submit edit', this.props)
             var file = this.state.accepted[0]
@@ -308,14 +325,29 @@ class Submit extends Component {
         }, 20);
     }
 
-    renderMath = () => {
-        typesetMath(this.rendered)
+    summaryLimit = (event) => {
+      event.preventDefault();
+      //Display modal error to users
+      this.toggleSummaryModal();
+      this.forceUpdate();
     }
 
     summaryChanged = (event) => {
+      this.setCounts(event.target.value)
+      this.setState({summary: event.target.value})
+
+      if (this.state.count < maxWords) {
         this.formData.summary = event.target.value;
-        this.forceUpdate();
+        this.setState({triggerOnKeyPress: false, pasteValue: false})
+      }
+      if (this.state.count >= maxWords || event.target.value.split(' ').length >= maxWords) {
+        this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
+        this.setState({summary: this.formData.summary, count: this.formData.summary.split(' ').length })
+        this.setState({triggerOnKeyPress: true, pasteValue: true})
+      }
+      this.forceUpdate();
     }
+
 
     /**
      * Listener for when a user drops files into the drop zone
@@ -355,15 +387,14 @@ class Submit extends Component {
      * @param {Object} e Event passed from the `onClick` listener
      */
     toggleOpenModal = (e) => {
-        console.log("Clicked preview: ", e)
         e.preventDefault()
         this.setState({
-            modalOpen: !this.state.modalOpen
+            modalOpen: !this.state.modalOpen,
         })
     }
 
     closeModal = () => {
-      this.setState({modalOpen: false});
+      this.setState({modalOpen: false, cancelSubmissionModal: false});
     }
 
     /**Reads the contents of the file submitted to prepare the notebookJSON for submission */
@@ -389,15 +420,53 @@ class Submit extends Component {
             .indexOf(topic) > -1;
     }
 
-    toggleMarkdownReferenceModal = (e) => {
+    toggleCancelSubmissionModal = (e) => {
         e.preventDefault()
         this.setState({
-            markdownRefereceModal: !this.state.markdownRefereceModal
+            cancelSubmissionModal: !this.state.cancelSubmissionModal
         })
     }
 
-    // TODO: stlying for accept is not being applied correctly. Doesn't recognize
-    // .ipynb as valid accept parameter The file will still be accepted, however
+    // Using redirect to redirect users when 'yes' is clicked back to home page.
+    setRedirect = () => {
+      this.setState({
+        redirect: true
+      })
+    }
+
+    renderRedirect = () => {
+      if (this.state.redirect) {
+        return <Redirect to='/' />
+      }
+    }
+
+    toggleSummaryModal = (event) => {
+      this.setState({
+        summaryModal: !this.state.summaryModal
+      })
+    }
+
+    removeEmptyElements = (arr) => {
+      const index = arr.findIndex(el => el.trim() === '');
+      if (index === -1)
+        return arr;
+      arr.splice(index, 1);
+      return this.removeEmptyElements(arr)
+    };
+
+    setCounts = (value) => {
+      const trimmedValue = value.trim();
+      const words = this.removeEmptyElements(trimmedValue.split(' '));
+      this.setState({
+        count: value === '' ? 0 : words.length
+      });
+    }
+
+    pasting = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
     render() {
 
 
@@ -408,6 +477,7 @@ class Submit extends Component {
                 <Breadcrumbs title='Submit'/>
 
                 <Prompt key='block-nav' message='All the changes made will be lost, are you sure you want to leave?' when={this.state.contentSaved!==true}/>
+              {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
@@ -415,26 +485,41 @@ class Submit extends Component {
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
 
-                <Modal isOpen={this.state.markdownRefereceModal} contentLabel="Markdown Referece" className="overlay">
-                    <div className='my-modal'>
-                    <CloseIcon onClick={this.toggleMarkdownReferenceModal}/>
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Markdown Reference</h1>
-                        </div>
-                        <div className='modal-body'>
-                            <ul>
-                                <li>
-                                    <MarkdownRender source="Use ticks (\`\`) for code: \`hello world\` -> `hello world`"/>
-                                </li>
-                                <li>
-                                    <MarkdownRender source="Use \* for italics: \*italics\* -> *italics*"/>
-                                </li>
-                                <li>
 
-                                    <MarkdownRender source="Use \*\* for bold: \*\*bold\*\* -> **bold**"/>
-                                </li>
-                            </ul>
-                        </div>
+                {/* Modal window for cancel button in the edit notebook submission */}
+                <Modal isOpen={this.state.cancelSubmissionModal}
+                      onRequestClose={this.toggleCancelSubmissionModal}
+                      contentLabel="Cancel Submission"
+                      className="modal-alert"
+                      shouldCloseOnOverlayClick={false} >
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Cancel Changes</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p><strong>All the changes made will be lost, are you sure you want to leave?</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.toggleCancelSubmissionModal}>Cancel</a>
+                        </li>
+                        <li>
+                          {this.renderRedirect()}
+                          <a onClick={this.setRedirect}>Yes</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+                </Modal>
+                <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="modal-alert">
+                    <div className="modal">
+                      <div className="modal-header">
+                        <h1 className='modal-title'>Word Limit Reached</h1>
+                      </div>
+                      <div className="modal-body">
+                        <p><strong>The Notebook summary is limited to 250 words.</strong></p>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleSummaryModal}><span aria-hidden="true">×</span></button>
+                      </div>
                     </div>
                 </Modal>
 
@@ -634,40 +719,38 @@ class Submit extends Component {
 
                                     <hr/>
 
+
                                     <label htmlFor='summary' className='section-title'>Summary</label>
-                                    <p className="input-hint">You can use{' '}
-                                        <a onClick={this.toggleMarkdownReferenceModal}>markdown</a>{' '}
-                                        here.</p>
-                                    <textarea
-                                        placeholder="Notebook summary"
-                                        maxLength="240"
-                                        id="summary"
-                                        maxLength="100"
-                                        onChange={this.summaryChanged}
-                                        defaultValue={this.formData.summary}></textarea>
-
-                                    {this.state.showSummaryPreview
-                                        ? <div>
-                                                <MarkdownRender
-                                                    disallowedTypes={['heading']}
-                                                    source={this.formData.summary
-                                                    ? this.formData.summary
-                                                    : '*No summary*'}/>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.toggleSummaryPreview}>Close Preview</a>
-                                                </p>
-                                                <p className="input-hint-after input-hint">
-                                                    <a onClick={this.renderMath}>Render Math</a>
-                                                </p>
-                                            </div>
-                                        : <p className="input-hint input-hint-after">
-
-                                            <a onClick={this.toggleSummaryPreview}>
-                                                Preview
-                                            </a>
-                                        </p>}
+                                    <p className="input-hint">
+                                        You can use{' '}
+                                        <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
+                                    </p>
+                                    <Tabs>
+                                      <TabList>
+                                        <Tab>Write</Tab>
+                                        <Tab>Preview</Tab>
+                                        <p className="word-count"><span className="words">{this.state.count}</span> words</p>
+                                      </TabList>
+                                      <TabPanel>
+                                        <textarea
+                                            placeholder="Notebook summary"
+                                            id="summary"
+                                            type="text"
+                                            onChange={this.summaryChanged}
+                                            onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
+                                            onPaste={this.state.pasteValue ? this.pasting : null}
+                                            value = {this.state.summary}></textarea>
+                                      <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      </TabPanel>
+                                      <TabPanel>
+                                        <MarkdownRender
+                                            disallowedTypes={['heading']}
+                                            source={this.formData.summary
+                                            ? this.formData.summary
+                                            : '*No summary*'}/>
+                                      </TabPanel>
+                                    </Tabs>
                                 </div>
-
                             </div>
 
                             <div className='submit-footer'>
@@ -712,15 +795,14 @@ class Submit extends Component {
                                             Agreement is required
                                         </p>
                                     : null}
-
                             </div>
 
                             <ul className='button-row'>
                                 {this.props.isEdit
                                     ? <li>
-                                            <Link to={'/submission/' + this.props.submission.data.notebook._id}>
-                                                Cancel
-                                            </Link>
+                                          <button onClick={this.toggleCancelSubmissionModal}>
+                                              Cancel
+                                          </button>
                                         </li>
                                     : null}
                                 <li>

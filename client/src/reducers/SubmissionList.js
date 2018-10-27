@@ -12,7 +12,7 @@ const defaultSearchParams = {
     author: '',
     keywords: '',
     page: 1,
-    sortBy: 'Trending'
+    sortBy: 'Votes'
 }
 
 const SubmissionList = (state = {
@@ -35,10 +35,10 @@ const SubmissionList = (state = {
                 didInvalidate: false
             });
 
-        case RESET_SEARCH_PARAMS: 
+        case RESET_SEARCH_PARAMS:
             return Object.assign({}, state, {
                 searchParams: defaultSearchParams
-            }) 
+            })
         case RECEIVE_SUBMISSION_PREVIEWS:
             // console.log('[Middleware] - State: ', state);
             return Object.assign({}, state, {

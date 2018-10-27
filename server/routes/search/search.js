@@ -314,8 +314,8 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                               if(submission.viewers.indexOf(req.user._id) == -1 && JSON.stringify(submission.author) !== JSON.stringify(req.user._id)) {
                                 // push the current user into the submission.viewers
                                 submission.viewers.push(req.user._id);
-                                submission.viewers = submission.viewers.unique()
-                                submission.viewers_count = submission.viewers.length
+                                submission.viewers = submission.viewers.unique();
+                                submission.viewers_count = submission.viewers.length;
                               }
                             }
                             // just double checking when user is not logged in

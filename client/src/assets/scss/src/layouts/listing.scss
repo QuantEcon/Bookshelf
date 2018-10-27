@@ -1,9 +1,9 @@
-// listing.scss
 // Submission listing styles
 
 .filters {
     position: relative;
     display: flex;
+    padding: 0 1rem 1rem 1rem;
     .sort-inputs {
         flex:1;
     }
@@ -67,6 +67,7 @@
     .totals {
         display: inline-block;
         color: $color-light;
+        margin: 0;
     }
 }
 

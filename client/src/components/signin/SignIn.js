@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import GoogleIcon from 'react-icons/lib/fa/google'
-import ErrorIcon from 'react-icons/lib/md/error-outline'
 // import {OAuthSignInButton} from 'redux-auth/bootstrap-theme'
 import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
 
@@ -72,17 +71,7 @@ class SignIn extends Component {
     render() {
         return (
             <div>
-                <HeadContainer history={this.props.history}/> {this.state.showErrorMessage
-                    ? <div className="warning callout">
-                            <div className="container">
-                                <p className="callout-message">
-                                    <ErrorIcon/>
-                                    An error occurred while trying to login
-                                </p>
-                            </div>
-                        </div>
-                    : null}
-                
+                <HeadContainer history={this.props.history}/>
                 {this.props.loading
                 ? "loading..."
                 :<div className='modal'>

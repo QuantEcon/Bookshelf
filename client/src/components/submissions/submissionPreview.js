@@ -12,10 +12,32 @@ class SubmissionPreview extends Component {
         super(props);
         this.state = {
             submission: props.submission,
-            author: props.author
+            author: props.author,
+            limitSummary: '',
         }
         this.renderMathJax = this.renderMathJax.bind(this);
+        this.limitCharacter = this.limitCharacter.bind(this);
+    }
 
+    limitCharacter() {
+      const maxLength = 50;
+      // Create an array storage to store the long summary
+      const arr = []
+      if (this.props.submission !== undefined) {
+        // Push the summary into the array
+        arr.push(this.props.submission.summary)
+        // Splitting each word from the array
+        const eachWord = arr[0].split(' ');
+        // Retrieve the first 25 words
+        const maxString = eachWord.splice(0,maxLength).join(' ');
+        // If the length of the summary is greater than maxLength, then add ... at the end
+        if(arr[0].split(' ').length > maxLength) {
+          return maxString + ' ...'
+        }
+        else {
+          return maxString;
+        }
+      }
     }
 
     renderMathJax() {
@@ -31,7 +53,9 @@ class SubmissionPreview extends Component {
     componentDidMount() {
         setTimeout(() => {
             this.renderMathJax()
-        }, 500)
+        }, 500);
+        console.log(this.state.submission)
+
     }
 
     componentDidUpdate() {
@@ -45,6 +69,7 @@ class SubmissionPreview extends Component {
     }
 
     render() {
+        {this.state.limitSummary = this.limitCharacter()}
         return (
             <div className="notebook-summary">
 
@@ -73,7 +98,7 @@ class SubmissionPreview extends Component {
                     <MarkdownRender
                         disallowedTypes={['heading']}
                         source={this.state.submission.summary
-                        ? this.state.submission.summary
+                        ? this.state.limitSummary
                         : '*No summary*'}
                         className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
@@ -86,8 +111,8 @@ class SubmissionPreview extends Component {
                 <div className="stats">
                     <ul>
                         <li className="views">
-                            <span className="count">{this.state.submission.viewers
-                                    ? this.state.submission.viewers.length
+                            <span className="count">{this.state.submission.views
+                                    ? this.state.submission.views
                                     : 0}</span>
                             Viewers</li>
                         <li className="comments">
