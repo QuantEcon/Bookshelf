@@ -1,7 +1,7 @@
 /**
  * @file Actions that require authorization
  * @author Trevor Lyon
- * 
+ *
  * @module authActions
  */
 
@@ -111,10 +111,10 @@ const removeSocial = ({
 
 /**
  * @function removeSocialAccount
- * 
+ *
  * @description REDUX ACTION: Makes an API request call to remove the given social account from the user's account.
  * Then dispatches an action to modify the local changes in the redux store
- * 
+ *
  * @param {Object} data
  * @param {String} data.social - The name of the social account to remove. This can be "fb", "google", "github", or "twitter"
  */
@@ -150,12 +150,12 @@ export const removeSocialAccount = ({
 
 /**
  * @function setActiveAvatar
- * 
- * @description REDUX ACTION: Makes an API call to set the user's avatar picture to the provided social account's profile picture. A `SET_AVATAR_PICTURE` 
+ *
+ * @description REDUX ACTION: Makes an API call to set the user's avatar picture to the provided social account's profile picture. A `SET_AVATAR_PICTURE`
  * action is then dispatched to update the redux data
- * 
+ *
  * @param {Object} data
- * @param {Object} data.social - The name of the social account. This can be "fb", "google", "github", or "twitter". 
+ * @param {Object} data.social - The name of the social account. This can be "fb", "google", "github", or "twitter".
  */
 
 export const setActiveAvatar = ({
@@ -190,10 +190,10 @@ export const setActiveAvatar = ({
 
 /**
  * @function toggleSocial
- * 
+ *
  * @description REDUX ACTION: Toggles the visibility to others of a user's social account. Makes an API call to toggle the visibility.
  * Then dispatches a `TOGGLE_SOCIAL` action to update the local redux data.
- * 
+ *
  * @param {Object} data
  * @param {String} data.social - The name of the social account to hide. This can be "fb", "google", "github", or "twitter".
  */
@@ -231,16 +231,16 @@ export const toggleSocial = ({
 
 /**
  * @function editProfile
- * 
- * @description REDUX ACTION: Dispatches a `BEGIN_EDIT_PROFILE` action to let redux know to wait for a response from the API. Then makes an API 
+ *
+ * @description REDUX ACTION: Dispatches a `BEGIN_EDIT_PROFILE` action to let redux know to wait for a response from the API. Then makes an API
  * call to update the user's database document with the provided `data`. The API will return the updated information for the user
  * and an `END_EDIT_PROFILE` action is dispatched to update the local redux data.
- * 
+ *
  * @param {Object} data - The data to update the user's information.
  * @param {String} data.email - The user's email
  * @param {String} data.name - The user's name
  * @param {String} data.summary - The user's summary
- * @param {String} data.website - The url to the user's website. This is not the link to the user's page on Bookshelf. 
+ * @param {String} data.website - The url to the user's website. This is not the link to the user's page on Bookshelf.
  * It is the user's own website they want to display a link to.
  */
 
@@ -308,19 +308,19 @@ export const editProfile = ({
 
 /**
  * @function submitComment
- * 
- * @description This method takes in a SubmissionID and a Comment object and makes a POST request to the API. 
- * 
+ *
+ * @description This method takes in a SubmissionID and a Comment object and makes a POST request to the API.
+ *
  * The request must have an Authorization header with the user's JWT in order for the request to be valid.
- * 
- * On success, the API will return the Comment object and the SubmissionID, and an action is dispatched with 
+ *
+ * On success, the API will return the Comment object and the SubmissionID, and an action is dispatched with
  * SubmissionID and Comment to updat the local redux data
- * 
- * On failure, the API will return an Error object with a message describing what went wrong, and no action is 
+ *
+ * On failure, the API will return an Error object with a message describing what went wrong, and no action is
  * dispatched.
- * 
+ *
  * @param {Sting} submissionID - The ID of the submission being commented on
- * @param {Object} comment 
+ * @param {Object} comment
  */
 export const submitComment = (submissionID, comment) => {
     return function (dispatch) {
@@ -336,12 +336,12 @@ export const submitComment = (submissionID, comment) => {
             }
         }).then(response => {
             var state = store.getState()
-            
+
             if (response.data.error) {
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
 
-            
+
 
             dispatch(SubmissionActions.postComment({
                 submissionID: response.data.submissionID,
@@ -359,11 +359,11 @@ export const submitComment = (submissionID, comment) => {
 }
 /**
  * @function editComment
- * 
+ *
  * @description  Makes an API call to edit the commit in the database with the matching ID,
  *  then dispatches an action to redux
- * 
- * @param {Object} data 
+ *
+ * @param {Object} data
  * @param {String} data.commentID ID of the comment being edited
  * @param {String} data.newCommentText New content of the comment
  */
@@ -383,7 +383,7 @@ export const editComment =({
         }).then(resp => {
             console.log('[AuthActions] - edit comment returned: ', resp);
         }).catch(err => {
-    
+
         })
     }
 }
@@ -395,7 +395,7 @@ export const editComment =({
  * @param {Object} data
  * @param {string} data.submissionID ID of the submission the reply belongs to
  * @param {string} data.commentID ID of the comment the reply belongs to
- * @param {string} data.reply Content of the reply  
+ * @param {string} data.reply Content of the reply
  */
 export const submitReply = ({
     submissionID,

@@ -19,8 +19,7 @@ class EditProfile extends Component {
         super(props);
 
         this.state = {
-            showMergeModal: false,
-            redirect: false
+            showMergeModal: false
         }
         this.websiteChanged = this
             .websiteChanged
@@ -91,9 +90,6 @@ class EditProfile extends Component {
             .bind(this)
         this.submissionSettingChanged = this
             .submissionSettingChanged
-            .bind(this)
-        this.setRedirect = this
-            .setRedirect
             .bind(this)
 
     }
@@ -387,13 +383,6 @@ class EditProfile extends Component {
         this
             .props
             .cancel();
-    }
-
-    setRedirect = () => {
-      // setting redirect to true
-      this.setState({
-        redirect: true
-      })
     }
 
     render() {
@@ -813,10 +802,9 @@ class EditProfile extends Component {
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>
                             <li>
-                                <button name="submit" type="submit" disabled={this.hasError} onClick={this.setRedirect}>
+                                <button name="submit" type="submit" disabled={this.hasError}>
                                     Save Profile
                                 </button>
-                                {this.state.redirect ? <Redirect to ="/" />: null}
                             </li>
                         </ul>
                     </div>
