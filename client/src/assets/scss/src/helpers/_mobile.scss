@@ -8,6 +8,10 @@
 		width: auto;
 	}
 
+	.landing-logos {
+		display: none;
+	}
+
 	.tile {
 		box-shadow: none;
 		border-radius: 0;
@@ -190,6 +194,7 @@
 
 	.tile .tile-header .tile-options li a {
 		display: block;
+		padding: 5px 5px;
 	}
 
 	.submit-form .submit-primary {
