@@ -389,12 +389,7 @@ class EditProfile extends Component {
 
       if(store.getState().auth.isSignedIn) {
         axios.post('/api/edit-profile/delete-account', {
-          headers: {
-            'Authorization' : 'jwt ' + store.getState().auth.token
-          },
-          body: {
-            'Stuff': 'STUFF!!'
-          }
+          'userId': this.formData.id
         }).then(response => {
           console.log('SUCCESS', response);
           return true;

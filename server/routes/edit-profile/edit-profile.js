@@ -563,19 +563,37 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
  * @apiGroup Delete Profile
  * @apiName DeleteAccount
  */
- app.post('/delete-account', passport.authenticate('jwt', {
-   session: false
- }), (req, res) => {
-   res.json({
-     message: 'YAPIEEE!'
-   });
- });
-// app.post('/delete-account', passport.authenticate('jwt', {
-//   session: false
-// }), (req, res) => {
-//
-//   res.json({message: 'WELCOME TO DELETE_ACCOUNT'})
-// });
+app.post('/delete-account', (req, res) => {
+  console.log('userid', req.body.userId, typeof req.body.userId);
+  Comment.remove({
+    author: req.body.userId
+  }, function(err, comment) {
+    if(err) {
+      res.status(500);
+      res.send({
+        error: true,
+        message: err
+      })
+    } else {
+      console.log(comment, 'REMOVED')
+    }
+  }); // end of removing all comments for the user
+
+
+  User.findOne({
+      _id: req.body.userId
+  }, function(err, user) {
+    if(err) {
+      res.status(500);
+      res.send({
+        error: true,
+        message: err
+      })
+    } else {
+      console.log(user)
+    }
+  }); // end of finding User document
+});
 
 
 // Helper methods ==================================================
