@@ -4,9 +4,9 @@ const bodyParser = require('body-parser');
 const passport = require('../../js/auth/jwt');
 const sprintf = require('sprintf')
 
-
-var User = require('../../js/db/models/User');
-const Submission = require('../../js/db/models/Submission')
+const User = require('../../js/db/models/User');
+const Submission = require('../../js/db/models/Submission');
+const Comment = require('../../js/db/models/Comment');
 
 var app = express.Router();
 
@@ -42,22 +42,22 @@ app.use(function (req, res, next) {
  * @api {post} /api/edit-profile Edit Profile
  * @apiGroup Edit Profile
  * @apiName EditProfile
- * 
+ *
  * @apiVersion 1.0.0
- * 
- * @apiDescription Updates the user's database document with the supplied data. 
- * 
- * NOTE: While each of the social account objects are optional, at least one must 
+ *
+ * @apiDescription Updates the user's database document with the supplied data.
+ *
+ * NOTE: While each of the social account objects are optional, at least one must
  * be provided.
- * 
+ *
  * @apiUse AuthorizationHeader
- * 
+ *
  * @apiParam {Object}   body
  * @apiParam {String}   body.email              User's email address
  * @apiParam {String}   body.name               User's name
  * @apiParam {String}   body.summary            User's summary
  * @apiParam {URL}      body.website            User's website URL
- * 
+ *
  * @apiParam {Object}   body.fb                 (OPTIONAL) User's Facebook profile details and OAuth credentials
  * @apiParam {String}   body.fb.id              User's Facebook OAuth ID
  * @apiParam {String}   body.fb.access_token    User's Facebook OAuth access token
@@ -65,7 +65,7 @@ app.use(function (req, res, next) {
  * @apiParam {URL}      body.fb.url             URL to user's Facebook page
  * @apiParam {Boolean}  body.fb.hidden          Boolean flag to show the user's Facebook link publicly on their profile page
  * @apiParam {URL}      body.fb.avatarURL       URL to the user's Facebook profile picture
- * 
+ *
  * @apiParam {Object}   body.twitter                 (OPTIONAL) User's Twitter profile details and OAuth credentials
  * @apiParam {String}   body.twitter.id              User's Twitter OAuth ID
  * @apiParam {String}   body.twitter.access_token    User's Twitter OAuth access token
@@ -73,7 +73,7 @@ app.use(function (req, res, next) {
  * @apiParam {URL}      body.twitter.url             URL to user's Twitter page
  * @apiParam {Boolean}  body.twitter.hidden          Boolean flag to show the user's Twitter link publicly on their profile page
  * @apiParam {URL}      body.twitter.avatarURL       URL to the user's Twitter profile picture
- * 
+ *
  * @apiParam {Object}   body.github                 (OPTIONAL) User's Github profile details and OAuth credentials
  * @apiParam {String}   body.github.id              User's Github OAuth ID
  * @apiParam {String}   body.github.access_token    User's Github OAuth access token
@@ -81,22 +81,22 @@ app.use(function (req, res, next) {
  * @apiParam {URL}      body.github.url             URL to user's Github page
  * @apiParam {Boolean}  body.github.hidden          Boolean flag to show the user's Github link publicly on their profile page
  * @apiParam {URL}      body.github.avatarURL       URL to the user's Github profile picture
- * 
+ *
  * @apiParam {Object}   body.google                 (OPTIONAL) User's Google profile details and OAuth credentials
  * @apiParam {String}   body.google.id              User's Google OAuth ID
  * @apiParam {String}   body.google.access_token    User's Google OAuth access token
  * @apiParam {String}   body.google.displayName     User's Google display name
  * @apiParam {Boolean}  body.google.hidden          Boolean flag to show the user's Google link publicly on their profile page
  * @apiParam {URL}      body.google.avatarURL       URL to the user's Google profile picture
- * 
+ *
  * @apiParam {Object}   body.emailSettings              User's notification preferences
  * @apiParam {Boolean}  body.emailSettings.newComment   Boolean flag to notify a user when a new comment is posted on his/her submission
  * @apiParam {Boolean}  body.emailSettings.newReply     Boolean flag to notify a user when a new reply is posted to his/her comment
  * @apiParam {Boolean}  body.emailSettings.submission   Boolean flag to notify a user when a notebook submission is successful
- * 
+ *
  * @apiSuccess (200) {Object} data
  * @apiSuccess (200) {Object} data.user Updated user object from database
- * 
+ *
  * @apiError (500) InternalServerError An error occured finding, updating, or saving the user document.
  * @apiUse AuthorizationError
  */
@@ -176,16 +176,16 @@ app.post('/', passport.authenticate('jwt', {
  * @api {post} /api/edit-profile/remove-social
  * @apiGroup Edit Profile
  * @apiName RemoveSocial
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Removes the supplied social account from the user's profile
- * 
+ *
  * @apiUse AuthorizationHeader
- * 
+ *
  * @apiParam {Object} body
  * @apiParam {String} body.social The social account to remove (github, twitter, fb, google)
- * 
+ *
  * @apiError (500) InternalServerError An error occurred finding, updating, or saving the user document.
  * @apiError (400) BadRequest Either no user was found, or the user's final social account was trying to be removed.
  * @apiUse AuthorizationError
@@ -227,7 +227,7 @@ app.post('/remove-social', passport.authenticate('jwt', {
                     } else if (type === 'google') {
                         user.google = {};
                     }
-                    
+
                     if (oneSocial(user)) {
                         console.log("[RemoveSocial] - Now only have one social");
                         user.oneSocial = true;
@@ -263,16 +263,16 @@ app.post('/remove-social', passport.authenticate('jwt', {
  * @api {post} /api/edit-profile/toggle-social Toggle Social
  * @apiGroup Edit Profile
  * @apiName ToggleSocial
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Toggles the visibility of the social account on the user's public profile page
- * 
+ *
  * @apiUse AuthorizationHeader
- * 
+ *
  * @apiParam {Object} body
  * @apiParam {String} body.social Social account to toggle (github, fb, twitter, google)
- * 
+ *
  * @apiError (400) BadRequest A social account was not provided
  * @apiError (500) InternalServerError An error occurred finding, updating, or saving the user's database document
  * @apiUse AuthorizationError
@@ -343,16 +343,16 @@ app.post('/toggle-social', passport.authenticate('jwt', {
  * @api {post} /api/edit-profile/set-avatar Set Avatar
  * @apiGroup Edit Profile
  * @apiName SetAvatar
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Set's the user's avatar to the given social avatar.
- * 
+ *
  * @apiUse AuthorizationHeader
- * 
+ *
  * @apiParam {Object} body
  * @apiParam {String} social Social avatar to use (google, fb, twitter, github)
- * 
+ *
  * @apiError (500) InternalServerError An error ocurred finding, updating, or saving the user database document
  * @apiError (400) BadRequest A valid social account wasn't provided (github, facebook, twitter, google)
  * @apiUse AuthorizationError
@@ -417,18 +417,18 @@ app.post('/set-avatar', passport.authenticate('jwt', {
  * @api {post} /api/edit-profile/merge-accounts Merge Accounts
  * @apiGroup Edit Profile
  * @apiName MergeAccounts
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription Merges two accounts into the one making the request. All submissions, votes, comments
  * and replies from the second will be added to the first account
- * 
+ *
  * @apiUse AuthorizationHeader
- * 
+ *
  * @apiParam {Object} body
  * @apiParam {String} body.accountToMerge   Social account that is being merged (github, fb, twitter, google)
  * @apiParam {String} body.socialID         OAuth ID of the social account that is being merged
- * 
+ *
  * @apiSuccess (200) {Object} data
  * @apiSuccess (200) {Object} data.profile  The profile that was merged and removed from the database
  * @apiUse AuthorizationError
@@ -557,6 +557,26 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
         }
     });
 })
+
+/**
+ * @api {post} /api/edit-profile/delete-account
+ * @apiGroup Delete Profile
+ * @apiName DeleteAccount
+ */
+ app.post('/delete-account', passport.authenticate('jwt', {
+   session: false
+ }), (req, res) => {
+   res.json({
+     message: 'YAPIEEE!'
+   });
+ });
+// app.post('/delete-account', passport.authenticate('jwt', {
+//   session: false
+// }), (req, res) => {
+//
+//   res.json({message: 'WELCOME TO DELETE_ACCOUNT'})
+// });
+
 
 // Helper methods ==================================================
 const oneSocial = (user) => {

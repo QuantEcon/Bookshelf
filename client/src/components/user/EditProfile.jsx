@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import HeadContainer from '../../containers/HeadContainer';
-import MarkdownRender from '@nteract/markdown'
-import {withRouter} from 'react-router';
+import MarkdownRender from '@nteract/markdown';
 import Modal from 'react-modal';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -12,7 +11,9 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
-import { Redirect } from 'react-router-dom'
+
+import axios from 'axios'
+import store from '../../store/store'
 
 class EditProfile extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class EditProfile extends Component {
 
         this.state = {
             showMergeModal: false,
-            redirect: false
+            customers: []
         }
         this.websiteChanged = this
             .websiteChanged
@@ -95,10 +96,6 @@ class EditProfile extends Component {
         this.submissionSettingChanged = this
             .submissionSettingChanged
             .bind(this)
-        this.setRedirect = this
-            .setRedirect
-            .bind(this)
-
     }
 
     componentDidMount() {
@@ -116,6 +113,7 @@ class EditProfile extends Component {
     }
 
     formData = {
+        id: this.props.user._id,
         name: this.props.user.name,
         summary: this.props.user.summary,
         email: this.props.user.email,
@@ -387,18 +385,29 @@ class EditProfile extends Component {
     }
 
     delete = () => {
-      console.log('[Delete]', - this.props);
+      console.log('id:' , this.formData.id,  'JWT TOKEN', store.getState().auth.token);
+
+      if(store.getState().auth.isSignedIn) {
+        axios.post('/api/edit-profile/delete-account', {
+          headers: {
+            'Authorization' : 'jwt ' + store.getState().auth.token
+          },
+          body: {
+            'Stuff': 'STUFF!!'
+          }
+        }).then(response => {
+          console.log('SUCCESS', response);
+          return true;
+        }).catch(error => {
+          console.log('ERROR:', error);
+          return false;
+        });
+      }
+
     }
 
     cancel = () => {
         this.props.cancel();
-    }
-
-    setRedirect = () => {
-      // setting redirect to true
-      this.setState({
-        redirect: true
-      })
     }
 
     render() {
@@ -821,10 +830,9 @@ class EditProfile extends Component {
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>
                             <li>
-                                <button name="submit" type="submit" disabled={this.hasError} onClick={this.setRedirect}>
+                                <button name="submit" type="submit" disabled={this.hasError} >
                                     Save Profile
                                 </button>
-                                {this.state.redirect ? <Redirect to ="/" />: null}
                             </li>
                         </ul>
                     </div>
@@ -834,4 +842,4 @@ class EditProfile extends Component {
     }
 }
 
-export default withRouter(EditProfile);
+export default EditProfile;

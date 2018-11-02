@@ -25,12 +25,12 @@ app.get('/add', jwtAuth.authenticate('jwt', {
  * @api {get} /api/auth/fb Google
  * @apiGroup Authentication
  * @apiName AuthenticateGoogle
- * 
+ *
  * @apiVersion 1.0.0
- * 
+ *
  * @apiDescription API endpoint for Google OAuth. The user is redirected to Google's OAuth
  * screen.
- * 
+ *
  * On a successful authentication, the window will be redirected with a JSON Web Token in the url
  * parameters which the client uses for future authentication
  */
@@ -49,6 +49,7 @@ app.get('/callback', passport.authenticate('google', {
         if (err) {
             res.sendStatus(500);
         } else if (user) {
+            console.log('[Google Auth]')
             //sign new jwt
             //TODO: check if user is admin, issue admin token
             AdminList.findOne({}, (err, adminList) => {
@@ -56,7 +57,7 @@ app.get('/callback', passport.authenticate('google', {
                     user: {
                         _id: user._id
                     }
-                }, "banana horse laser muffin");
+                }, "banana horse laser muffin", { expiresIn: 3600 }); // expires in one hour - users will have to log back in
 
                 if (!err && adminList && adminList.adminIDs.indexOf(user._id) != -1) {
                     console.log("User is admin")
