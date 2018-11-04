@@ -96,6 +96,9 @@ class EditProfile extends Component {
         this.submissionSettingChanged = this
             .submissionSettingChanged
             .bind(this)
+        this.signOut = this
+            .signOut
+            .bind(this);
     }
 
     componentDidMount() {
@@ -388,17 +391,30 @@ class EditProfile extends Component {
       console.log('id:' , this.formData.id,  'JWT TOKEN', store.getState().auth.token);
 
       if(store.getState().auth.isSignedIn) {
+        console.log('Is user signed?', store.getState().auth.isSignedIn);
+        console.log('--------------------------------------------')
         axios.post('/api/edit-profile/delete-account', {
           'userId': this.formData.id
+        },{
+          headers: {
+            'Authorization': 'JWT ' + store.getState().auth.token
+          }
         }).then(response => {
           console.log('SUCCESS', response);
+          // if success then redirect back to home page and log user out
+          this.signOut();
           return true;
         }).catch(error => {
           console.log('ERROR:', error);
           return false;
         });
       }
+    }
 
+    signOut = () => {
+        this
+            .props
+            .signOut();
     }
 
     cancel = () => {

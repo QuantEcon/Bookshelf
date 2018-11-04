@@ -2,11 +2,15 @@
  * Created by tlyon on 5/26/17.
  */
 
+// import modules
 var mongoose = require('mongoose');
 var mongoosePaginate = require('mongoose-paginate');
+
+// create the schema object from mongoose
 var Schema = mongoose.Schema;
 var ObjectId = Schema.ObjectId;
 
+// user schema
 var userSchema = new Schema({
     // info
     name: String,
@@ -68,6 +72,7 @@ var userSchema = new Schema({
     // meta
     flagged: Boolean,
     flaggedReason: String,
+    // archive the user
     deleted: Boolean,
     new: Boolean,
 });

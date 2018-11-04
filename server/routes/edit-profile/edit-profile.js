@@ -3,6 +3,7 @@ var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 const bodyParser = require('body-parser');
 const passport = require('../../js/auth/jwt');
 const sprintf = require('sprintf')
+const appConfig = require('../../_config')
 
 const User = require('../../js/db/models/User');
 const Submission = require('../../js/db/models/Submission');
@@ -563,36 +564,35 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
  * @apiGroup Delete Profile
  * @apiName DeleteAccount
  */
-app.post('/delete-account', (req, res) => {
-  console.log('userid', req.body.userId, typeof req.body.userId);
-  Comment.remove({
-    author: req.body.userId
-  }, function(err, comment) {
-    if(err) {
-      res.status(500);
-      res.send({
-        error: true,
-        message: err
-      })
-    } else {
-      console.log(comment, 'REMOVED')
-    }
-  }); // end of removing all comments for the user
+app.post('/delete-account', passport.authenticate('jwt', {session: false}), (req, res) => {
+  console.log('user id: ', req.user._id);
+  // if the user id exists
+  if(req.user._id) {
+    // then find the user by their id
+    User.findById(req.user._id, (error, user) => {
+      // if there exists an error send a 500 status
+      if(error){
+        return res.status(500).json(error);
+      } else {
+        // set the 'deleted' as true to archive the user in db
+        user.deleted = true;
+        // save the set value in db
+        user.save(function(err, user) {
+          if(err) {
+            res.sendStatus(500);
+          } else {
+            console.log("user signed out!");
+            // destory the session
+            req.session.destroy();
+            // logout req.user
+            req.logout();
+            res.send({deletedUser: user.deleted});
+          }
+        }) // end of  saving user
 
-
-  User.findOne({
-      _id: req.body.userId
-  }, function(err, user) {
-    if(err) {
-      res.status(500);
-      res.send({
-        error: true,
-        message: err
-      })
-    } else {
-      console.log(user)
-    }
-  }); // end of finding User document
+      }
+    })
+  }
 });
 
 
