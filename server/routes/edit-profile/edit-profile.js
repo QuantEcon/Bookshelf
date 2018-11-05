@@ -581,10 +581,11 @@ app.post('/delete-account', passport.authenticate('jwt', {session: false}), (req
           if(err) {
             res.sendStatus(500);
           } else {
-            console.log("user signed out!");
-            // destory the session
+            // remove all cookies
+            req.session.cookie._expires = Date.now();
+            console.log(req.session.cookie._expires);
+            // // destory the session
             req.session.destroy();
-            // logout req.user
             req.logout();
             res.send({deletedUser: user.deleted});
           }
