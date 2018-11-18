@@ -54,7 +54,6 @@ class SubmissionPreview extends Component {
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
-        console.log(this.state.submission)
 
     }
 

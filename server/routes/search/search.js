@@ -251,7 +251,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
+    var commentAuthor;
 
+    var userDeleted;
     var notebookID = req.params.nbid;
 
     //get notebook information
@@ -363,7 +365,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     callback("Not found", null)
                 }
             },
-            //get author
+            //get submission author
             auth: function (callback) {
                 var select = "_id avatar name";
 
@@ -393,13 +395,12 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                         });
                         replyIDs = comments.map(function (comment) {
                             return comment.replies.map(function (reply) {
-                                console.log('\tReply: ', reply);
+                                // console.log('\tReply: ', reply);
                                 return reply;
                             });
                         });
                         mergedReplyIDs = [].concat.apply([], replyIDs);
-
-                        callback(null, comments)
+                        callback(null, comments);
                     }
                 })
             },
@@ -421,11 +422,13 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     }
                 });
             },
+
             //get comments/replies authors
             comAuth: function (callback) {
-                //only get name, id, and avatar from comment/reply authors
-                var select = "_id avatar name";
+                //only get name, id, avatar, & deleted from comment/reply authors
+                var select = "_id avatar name deleted";
                 var mergedAuthorIDs = [].concat(commentAuthorIDs).concat(replyAuthorIDs);
+
                 User.find({
                     _id: {
                         $in: mergedAuthorIDs
@@ -454,7 +457,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
 
             var nb = JSON.parse(JSON.stringify(results.nb))
             nb.notebookJSONString = null
-            console.log('[RESULTS!!!!!!!!!]', results)
             var data = {
                 notebook: nb,
                 html: results.nb.html,
@@ -464,9 +466,10 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 comments: results.coms,
                 replies: results.reps,
                 commentAuthors: results.comAuth,
-                nbLength: results.nb.nbLength
+                nbLength: results.nb.nbLength,
+                testing: 'ABC123',
+                userDeleted: userDeleted,
             };
-            // console.log("notebook data: ", data);
             if (req.user) {
                 data.currentUser = {
                     _id: req.user._id,

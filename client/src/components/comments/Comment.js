@@ -234,6 +234,7 @@ class Comment extends Component {
     }
 
     render() {
+        {console.log(this.props)}
         return (
             <div className='comment'>
                 <Modal
@@ -332,7 +333,7 @@ class Comment extends Component {
                    </Modal>
                     <div className='comment-header'>
                         <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.name}
+                            {this.state.author.deleted ? 'Anonymous' : this.state.author.name}
                         </a>
                         <span className='time'>
                             <Time value={this.state.comment.timestamp} relative/>
