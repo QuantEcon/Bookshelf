@@ -399,6 +399,21 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                 return reply;
                             });
                         });
+                        // comments.map(function (comment) {
+                        //   // find if comment author has been deleted
+                        //   User.findOne({_id: comment.author}, function (err, user){
+                        //     if(err) {
+                        //       return done(err);
+                        //     } else if (user) {
+                        //       // if user has been deleted, replace user name as `anonymous`
+                        //       if(user.deleted) {
+                        //         user.name = 'Anonymous';
+                        //         userDeleted = user.name;
+                        //       }
+                        //     }
+                        //   });
+                        // });
+
                         mergedReplyIDs = [].concat.apply([], replyIDs);
                         callback(null, comments);
                     }
@@ -467,7 +482,6 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                 replies: results.reps,
                 commentAuthors: results.comAuth,
                 nbLength: results.nb.nbLength,
-                testing: 'ABC123',
                 userDeleted: userDeleted,
             };
             if (req.user) {

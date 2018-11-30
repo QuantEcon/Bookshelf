@@ -10,6 +10,7 @@ import OAuthSignInButton from '../../containers/auth/OAuthSignInButton';
 import * as config from '../../_config'
 
 import HeadContainer from '../../containers/HeadContainer';
+import Modal from 'react-modal';
 
 // import Head from '../partials/Head';
 class SignIn extends Component {
@@ -17,7 +18,8 @@ class SignIn extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showErrorMessage: props.authError ? true : false
+            showErrorMessage: props.authError ? true : false,
+            modalOpen: false
         }
 
         this.onSignInEnd = this
@@ -36,42 +38,73 @@ class SignIn extends Component {
         if (didAuthenticate) {
             if (isNew) {
                 console.log('[SignIn] - brand new user. Move to registration page');
-                this
-                    .props
-                    .history
-                    .push('/user/my-profile/edit')
+                this.props.history.push('/user/my-profile/edit');
             } else {
-                this
-                    .props
-                    .history
-                    .push('/');
+                this.props.history.push('/');
             }
 
         } else {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner
             this.showErrorMessage = true;
+            // toggle restore profile modal window
+            // this.toggleOpenModal();
         }
+    }
 
+    toggleOpenModal = () => {
+      this.setState({
+        modalOpen: !this.state.modalOpen
+      });
     }
 
     componentWillReceiveProps(props) {
         console.log("props:" ,props)
         if (props.isSignedIn) {
-            this
-                .props
-                .history
-                .push('/')
+          this.props.history.push('/');
+
         }
         if (this.props.authError) {
             this.setState({showErrorMessage: true});
         }
     }
 
+    closeModal = () => {
+      this.setState({
+        modalOpen: false,
+      })
+    }
+
+    restoreProfile = () => {
+      // obtain current user data
+      console.log("[ Restoring Profile ]", this.props)
+    }
+
     render() {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
+              {/* Modal window for restore profile */}
+              <Modal isOpen={this.state.modalOpen} contentLabel="Restore" className="modal-alert">
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Restore Profile</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p><strong>Restoring...</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.closeModal}>Cancel</a>
+                        </li>
+                        <li>
+                          <a onClick={this.restoreProfile}>Restore</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleOpenModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+              </Modal>
+
                 {this.props.loading
                 ? "loading..."
                 :<div className='modal'>

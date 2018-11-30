@@ -584,7 +584,7 @@ app.post('/delete-account', passport.authenticate('jwt', {session: false}), (req
             // remove all cookies
             req.session.cookie._expires = Date.now();
             console.log(req.session.cookie._expires);
-            // // destory the session
+            // destory the session
             req.session.destroy();
             req.logout();
             res.send({deletedUser: user.deleted});

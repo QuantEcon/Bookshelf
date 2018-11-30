@@ -6,7 +6,8 @@ import Modal from 'react-modal'
 import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
 import ReplyList from './ReplyList';
-import {Link} from 'react-router-dom'
+import {Link} from 'react-router-dom';
+import avatarPlaceHolder from '../../assets/img/avatar/10.jpg';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
@@ -234,7 +235,7 @@ class Comment extends Component {
     }
 
     render() {
-        {console.log(this.props)}
+        {console.log('[IMAGE]', avatarPlaceHolder)}
         return (
             <div className='comment'>
                 <Modal
@@ -261,7 +262,8 @@ class Comment extends Component {
                 <div className='comment-side'>
                     <div className='comment-avatar'>
                         <a href={'/user/' + this.state.author._id}>
-                            <img src={this.state.author.avatar} alt="Author avatar"/>
+                            {this.state.author.deleted ? <img src={avatarPlaceHolder} alt="Author avatar"/> :
+                            <img src={this.state.author.avatar} alt="Author avatar"/>}
                         </a>
                     </div>
 
@@ -333,7 +335,7 @@ class Comment extends Component {
                    </Modal>
                     <div className='comment-header'>
                         <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? 'Anonymous' : this.state.author.name}
+                            {this.state.author.deleted ? 'deleted' : this.state.author.name}
                         </a>
                         <span className='time'>
                             <Time value={this.state.comment.timestamp} relative/>

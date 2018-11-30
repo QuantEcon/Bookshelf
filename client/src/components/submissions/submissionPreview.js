@@ -15,7 +15,7 @@ class SubmissionPreview extends Component {
             author: props.author,
             limitSummary: '',
         }
-        this.renderMathJax = this.renderMathJax.bind(this);
+        // this.renderMathJax = this.renderMathJax.bind(this);
         this.limitCharacter = this.limitCharacter.bind(this);
     }
 
@@ -40,22 +40,22 @@ class SubmissionPreview extends Component {
       }
     }
 
-    renderMathJax() {
-        if(window.MathJax){
-            console.log("Rendering math...")
-            typesetMath(this.rendered)
-        } else {
-            console.log("No mathjax")
-            this.renderMathJax()
-        }
-    }
+    // renderMathJax() {
+    //     if(window.MathJax){
+    //         console.log("Rendering math...")
+    //         typesetMath(this.rendered)
+    //     } else {
+    //         console.log("No mathjax")
+    //         this.renderMathJax()
+    //     }
+    // }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.renderMathJax()
-        }, 500);
-
-    }
+    // componentDidMount() {
+    //     setTimeout(() => {
+    //         this.renderMathJax()
+    //     }, 500);
+    //
+    // }
 
     componentDidUpdate() {
         setTimeout(() => {
