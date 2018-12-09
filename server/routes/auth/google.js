@@ -60,8 +60,7 @@ app.get('/callback', passport.authenticate('google', {
               } else {
                 // if user.deleted is true, then do not log user in
                 if(user.deleted) {
-                  const redirect = appConfig.redirectURL;
-                  res.redirect(redirect);
+                  res.send("User has been deleted.");
                 } else {
                   //sign new jwt
                   //TODO: check if user is admin, issue admin token
@@ -95,7 +94,6 @@ app.get('/callback', passport.authenticate('google', {
                               } else {
                                   const redirect = appConfig.redirectURL + "?" + queryString
                                   console.log("[Google Auth] - redirect: ", redirect);
-                                  console.log(appConfig, appConfig.redirectURL);
                                   res.redirect(redirect);
                               }
                           })
