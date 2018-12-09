@@ -2914,6 +2914,12 @@ button {
         .button-row li a.alt:hover, .button-row li a.alt.active, .button-row li button.alt:hover, .button-row li button.alt.active, .button-row li input.alt:hover, .button-row li input.alt.active {
           background: #444444;
           color: #fff; }
+      .button-row li a.delete-profile, .button-row li button.delete-profile, .button-row li input.delete-profile {
+        border-color: #BE2C27;
+        color: #BE2C27; }
+        .button-row li a.delete-profile:hover, .button-row li a.delete-profile.active, .button-row li button.delete-profile:hover, .button-row li button.delete-profile.active, .button-row li input.delete-profile:hover, .button-row li input.delete-profile.active {
+          background: #BE2C27;
+          color: #fff; }
 
 .callout {
   position: relative;

@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux'
 import {removeSocialAccount, setActiveAvatar, toggleSocial, editProfile} from '../../actions/auth/auth';
 import {mergeAccounts} from '../../actions/auth/signIn'
 import EditProfile from '../../components/user/EditProfile'
+import * as AuthActions from '../../actions/auth/signOut'
 
 class EditProfileContainer extends Component {
     saveProfile = ({name, website, summary, email, emailSettings}) => {
@@ -71,6 +72,7 @@ class EditProfileContainer extends Component {
                     editProfileError={this.props.editProfileError}
                     editProfileSuccess={this.props.editProfileSuccess}
                     mergeAccounts={this.mergeAccounts}
+                    signOut={this.props.actions.signOut}
                     history={this.props.history}/>}
             </div>
         )
@@ -94,7 +96,8 @@ function mapDispatchToProps(dispatch) {
             setActiveAvatar,
             toggleSocial,
             editProfile,
-            mergeAccounts
+            mergeAccounts,
+            ...AuthActions,
         }, dispatch)
     }
 }

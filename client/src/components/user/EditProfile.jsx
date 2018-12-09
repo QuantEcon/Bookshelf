@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import HeadContainer from '../../containers/HeadContainer';
-import MarkdownRender from '@nteract/markdown'
-import {withRouter} from 'react-router';
+import MarkdownRender from '@nteract/markdown';
 import Modal from 'react-modal';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -12,7 +11,9 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
-import { Redirect } from 'react-router-dom'
+
+import axios from 'axios'
+import store from '../../store/store'
 
 class EditProfile extends Component {
     constructor(props) {
@@ -20,7 +21,7 @@ class EditProfile extends Component {
 
         this.state = {
             showMergeModal: false,
-            redirect: false
+            customers: []
         }
         this.websiteChanged = this
             .websiteChanged
@@ -35,6 +36,9 @@ class EditProfile extends Component {
             .nameChanged
             .bind(this);
         this.validate = this
+            .validate
+            .bind(this);
+        this.deleteProfile = this
             .validate
             .bind(this);
 
@@ -92,10 +96,9 @@ class EditProfile extends Component {
         this.submissionSettingChanged = this
             .submissionSettingChanged
             .bind(this)
-        this.setRedirect = this
-            .setRedirect
-            .bind(this)
-
+        this.signOut = this
+            .signOut
+            .bind(this);
     }
 
     componentDidMount() {
@@ -113,6 +116,7 @@ class EditProfile extends Component {
     }
 
     formData = {
+        id: this.props.user._id,
         name: this.props.user.name,
         summary: this.props.user.summary,
         email: this.props.user.email,
@@ -383,17 +387,32 @@ class EditProfile extends Component {
         this.hasSaved = true;
     }
 
-    cancel = () => {
-        this
-            .props
-            .cancel();
+    delete = () => {
+      if(store.getState().auth.isSignedIn) {
+        axios.post('/api/edit-profile/delete-account', {
+          'userId': this.formData.id
+        },{
+          headers: {
+            'Authorization': 'JWT ' + store.getState().auth.token
+          }
+        }).then(response => {
+          console.log('[EditProfile - Success Delete User]', response);
+          // if success then redirect back to home page and log user out
+          this.signOut();
+          return true;
+        }).catch(error => {
+          console.log('[EditProfile - Errror Delete User]:', error);
+          return false;
+        });
+      }
     }
 
-    setRedirect = () => {
-      // setting redirect to true
-      this.setState({
-        redirect: true
-      })
+    signOut = () => {
+        this.props.signOut();
+    }
+
+    cancel = () => {
+        this.props.cancel();
     }
 
     render() {
@@ -810,13 +829,15 @@ class EditProfile extends Component {
                         </div>
                         <ul className="button-row">
                             <li>
+                              <a className="delete-profile" onClick={this.delete}>Delete</a>
+                            </li>
+                            <li>
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>
                             <li>
-                                <button name="submit" type="submit" disabled={this.hasError} onClick={this.setRedirect}>
+                                <button name="submit" type="submit" disabled={this.hasError} >
                                     Save Profile
                                 </button>
-                                {this.state.redirect ? <Redirect to ="/" />: null}
                             </li>
                         </ul>
                     </div>
@@ -826,4 +847,4 @@ class EditProfile extends Component {
     }
 }
 
-export default withRouter(EditProfile);
+export default EditProfile;

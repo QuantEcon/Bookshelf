@@ -17,8 +17,6 @@ import { processEnv } from '../utils/envPreProcessor'
 
 //notebook.comments
 const CommentsReducer = (comments = [], action) => {
-    console.log('[CommentsReducer] - comments: ', comments);
-    console.log('[CommentsReducer] - action: ', action);
     switch (action.type) {
         case POST_REPLY:
             for (var index = 0; index < comments.length; index++) {
@@ -115,7 +113,7 @@ const RepliesReducer = (replies = [], action) => {
 const DataReducer = (data = {}, action) => {
     switch (action.type) {
         case POST_COMMENT:
-
+            console.log('POST_COMMENT - ', data.commentAuthors);
             var authorExits = false
             for(var i=0; i<data.commentAuthors.length; i++){
                 if(data.commentAuthors[i]._id === action.author._id){
@@ -175,9 +173,7 @@ const DataReducer = (data = {}, action) => {
 }
 
 const SubmissionReducer = (state = {}, action) => {
-    // if (action.error) {
-    //     return state;
-    // }
+
     switch (action.type) {
         case REQUEST_NB_INFO:
             return Object.assign({}, state, {
@@ -188,6 +184,7 @@ const SubmissionReducer = (state = {}, action) => {
                 })
 
             });
+
         case RECEIVE_NB_INFO:
             if(action.error){
                 return Object.assign({}, state, {
@@ -212,6 +209,7 @@ const SubmissionReducer = (state = {}, action) => {
                     })
                 })
             }
+
         case REQUEST_NB:
             return Object.assign({}, state, {
                 [action.notebookID]: Object.assign({},state[action.notebookID], {
