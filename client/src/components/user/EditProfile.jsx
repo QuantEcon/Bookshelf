@@ -21,6 +21,7 @@ class EditProfile extends Component {
 
         this.state = {
             showMergeModal: false,
+            deleteModal: false,
             customers: []
         }
         this.websiteChanged = this
@@ -41,7 +42,6 @@ class EditProfile extends Component {
         this.deleteProfile = this
             .validate
             .bind(this);
-
         this.removeFacebook = this
             .removeFacebook
             .bind(this);
@@ -387,6 +387,16 @@ class EditProfile extends Component {
         this.hasSaved = true;
     }
 
+    toggleDeleteModal = (e) => {
+        this.setState({
+            deleteModal: !this.state.deleteModal
+        })
+    }
+
+    deleteWarning = () => {
+      this.toggleDeleteModal();
+    }
+
     delete = () => {
       if(store.getState().auth.isSignedIn) {
         axios.post('/api/edit-profile/delete-account', {
@@ -415,9 +425,39 @@ class EditProfile extends Component {
         this.props.cancel();
     }
 
+
+
+
+
     render() {
         return (
             <div>
+                {/* Modal window for delete button*/}
+                <Modal isOpen={this.state.deleteModal}
+                      onRequestClose={this.toggleDeleteModal}
+                      contentLabel="Delete Profile"
+                      className="modal-alert"
+                      shouldCloseOnOverlayClick={false} >
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Delete Profile</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p>You are about to delete your profile permanently and you won't be able to log back in. <br/><strong>Are  you sure you  want to continue?</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                        </li>
+                        <li>
+                          <a onClick={this.delete}>Yes</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+                </Modal>
+
+                {/* Modal window for merge accounts*/}
                 <Modal
                     isOpen={this.state.showMergeModal}
                     contentLabel='Merge Accounts'
@@ -829,7 +869,7 @@ class EditProfile extends Component {
                         </div>
                         <ul className="button-row">
                             <li>
-                              <a className="delete-profile" onClick={this.delete}>Delete</a>
+                              <a className="delete-profile" onClick={this.deleteWarning}>Delete</a>
                             </li>
                             <li>
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
