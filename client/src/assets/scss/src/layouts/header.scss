@@ -29,6 +29,11 @@
         align-items: center;
         justify-content: space-between;
         padding:1rem 0;
+        .sloan-logo {
+            width: 50px;
+            margin-left: 10px;
+        }
+        
         .qe-logo {
             font-family: $hd-font-family;
             font-weight:200;
@@ -79,7 +84,8 @@
             }
         }
         .site-tag {
-            font-size: 1.3em;
+            font-size: 1.2em;
+            margin-left: 10px;
         }
         .site-nav {
             display: flex;

@@ -2042,6 +2042,9 @@ button {
     -ms-flex-pack: justify;
         justify-content: space-between;
     padding: 1rem 0; }
+    .header .header-container .sloan-logo {
+      width: 50px;
+      margin-left: 10px; }
     .header .header-container .qe-logo {
       font-family: "Exo", sans-serif;
       font-weight: 200;
@@ -2083,7 +2086,8 @@ button {
         .header .header-container .site-title a > span > div {
           display: inline-block; }
     .header .header-container .site-tag {
-      font-size: 1.3em; }
+      font-size: 1.2em;
+      margin-left: 10px; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;

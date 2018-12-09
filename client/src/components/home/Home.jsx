@@ -55,13 +55,14 @@ class Home extends Component {
             <div>
                 <HeadContainer history={this.props.history}/>
 
-                <div className='landing-logos'>
+                {/* <div className='landing-logos'>
                       <div className='container'>
                           <ul>
                             {this.createImages(data.images)}
                           </ul>
                       </div>
-                </div>
+                </div> */}
+                
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>

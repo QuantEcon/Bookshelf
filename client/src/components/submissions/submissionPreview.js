@@ -108,7 +108,7 @@ class SubmissionPreview extends Component {
                         <img src={this.state.author.avatar} alt="Author avatar"/>
                     </Link>
                 </p>
-                <div className="stats">
+                {/* <div className="stats">
                     <ul>
                         <li className="views">
                             {this.state.submission.views > 1 || this.state.submission.views == 0?
@@ -129,7 +129,7 @@ class SubmissionPreview extends Component {
                           }
                         </li>
                     </ul>
-                </div>
+                </div> */}
             </div>
         )
     }
