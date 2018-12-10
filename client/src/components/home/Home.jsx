@@ -62,7 +62,9 @@ class Home extends Component {
                           </ul>
                       </div>
                 </div> */}
-                
+
+
+
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>
