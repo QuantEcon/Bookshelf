@@ -24,6 +24,7 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
+import MetaTags from '../partials/MetaTags.jsx'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import axios from 'axios'
@@ -332,6 +333,8 @@ class Submission extends Component {
     render() {
         return (
             <div>
+                {this.props.isLoading
+                ? null :<MetaTags description={this.props.submission.data.notebook.summary}/> }
                 <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
