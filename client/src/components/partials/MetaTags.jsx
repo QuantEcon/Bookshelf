@@ -1,7 +1,7 @@
-import React from 'react';
+import React, {Component} from 'react';
 import MetaTags from 'react-meta-tags';
  
-class MetaTagsComp extends React.Component {
+class MetaTag extends Component {
   render() {
     return (
         <div>
@@ -13,4 +13,4 @@ class MetaTagsComp extends React.Component {
   }
 }
 
-export default MetaTagsComp;
+export default MetaTag;
