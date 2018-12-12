@@ -24,11 +24,27 @@ class CommentContainer extends Component {
             currentUser: this.props.currentUser,
         }
     }
+    componentWillReceiveProps(nextProps) {
+        console.log(nextProps, "nextProps -------")
+        if (nextProps.editedComment._id == nextProps.comment._id) {
+            if (!this.props.editedComment && nextProps.editedComment) {
+            this.setState({
+                    comment: nextProps.editedComment
+            }) 
+            } else {
+                if (nextProps.editedComment.content != this.props.editedComment.content) {
+                    this.setState({
+                        comment: nextProps.editedComment
+                    })
+                }
+            }
+        }
+    }
     render(){
         return(
             <div>
                 <Comment
-                    comment={this.props.comment}
+                    comment={this.state.comment}
                     replies={this.state.replies}
                     author={this.state.author}
                     authors={this.state.authors}
@@ -45,6 +61,7 @@ class CommentContainer extends Component {
 const mapStateToProps = (state, props) => {
     return {
         isAdmin: state.auth.isAdmin,
+        editedComment: state.submissionByID.editedComment
     }
 }
 

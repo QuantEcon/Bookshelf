@@ -163,6 +163,16 @@ export function postComment({
     }
 }
 
+export const EDIT_COMMENT_SUCCESSFUL = 'EDIT_COMMENT_SUCCESSFULLY'
+export function editedComment({
+    editedComment
+}) {
+    return {
+        type: EDIT_COMMENT_SUCCESSFUL,
+        editedComment
+    }
+}
+
 export const POST_REPLY = 'POST_REPLY'
 export function postReply(submissionID, commentID, reply) {
     return {
