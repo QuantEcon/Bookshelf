@@ -15,7 +15,7 @@ class SubmissionPreview extends Component {
             author: props.author,
             limitSummary: '',
         }
-        this.renderMathJax = this.renderMathJax.bind(this);
+        // this.renderMathJax = this.renderMathJax.bind(this);
         this.limitCharacter = this.limitCharacter.bind(this);
     }
 
@@ -40,23 +40,22 @@ class SubmissionPreview extends Component {
       }
     }
 
-    renderMathJax() {
-        if(window.MathJax){
-            console.log("Rendering math...")
-            typesetMath(this.rendered)
-        } else {
-            console.log("No mathjax")
-            this.renderMathJax()
-        }
-    }
+    // renderMathJax() {
+    //     if(window.MathJax){
+    //         console.log("Rendering math...")
+    //         typesetMath(this.rendered)
+    //     } else {
+    //         console.log("No mathjax")
+    //         this.renderMathJax()
+    //     }
+    // }
 
-    componentDidMount() {
-        setTimeout(() => {
-            this.renderMathJax()
-        }, 500);
-        console.log(this.state.submission)
-
-    }
+    // componentDidMount() {
+    //     setTimeout(() => {
+    //         this.renderMathJax()
+    //     }, 500);
+    //
+    // }
 
     componentDidUpdate() {
         setTimeout(() => {
@@ -103,11 +102,11 @@ class SubmissionPreview extends Component {
                         className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
-                <p className="avatar">
+                {/* <p className="avatar">
                     <Link to={'/user/' + this.state.author._id}>
                         <img src={this.state.author.avatar} alt="Author avatar"/>
                     </Link>
-                </p>
+                </p> 
                 <div className="stats">
                     <ul>
                         <li className="views">
@@ -129,7 +128,7 @@ class SubmissionPreview extends Component {
                           }
                         </li>
                     </ul>
-                </div>
+                </div> */}
             </div>
         )
     }

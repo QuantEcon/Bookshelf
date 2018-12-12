@@ -2042,6 +2042,9 @@ button {
     -ms-flex-pack: justify;
         justify-content: space-between;
     padding: 1rem 0; }
+    .header .header-container .sloan-logo {
+      width: 50px;
+      margin-left: 10px; }
     .header .header-container .qe-logo {
       font-family: "Exo", sans-serif;
       font-weight: 200;
@@ -2082,8 +2085,6 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
-    .header .header-container .site-tag {
-      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2158,7 +2159,17 @@ button {
 
 .landing-logos {
   background: #fff;
-  border-bottom: 1px solid #c3c3c3; }
+  border-bottom: 1px solid #c3c3c3;
+  height: 80px; }
+  .landing-logos .sloan-logo {
+    float: right;
+    padding: 10px;
+    width: 60px; }
+  .landing-logos .site-tag {
+    float: left;
+    font-size: 1.1em;
+    color: #444444;
+    padding: 15px; }
   .landing-logos ul {
     list-style: none;
     margin: 0;
@@ -2909,6 +2920,12 @@ button {
         color: #444444; }
         .button-row li a.alt:hover, .button-row li a.alt.active, .button-row li button.alt:hover, .button-row li button.alt.active, .button-row li input.alt:hover, .button-row li input.alt.active {
           background: #444444;
+          color: #fff; }
+      .button-row li a.delete-profile, .button-row li button.delete-profile, .button-row li input.delete-profile {
+        border-color: #BE2C27;
+        color: #BE2C27; }
+        .button-row li a.delete-profile:hover, .button-row li a.delete-profile.active, .button-row li button.delete-profile:hover, .button-row li button.delete-profile.active, .button-row li input.delete-profile:hover, .button-row li input.delete-profile.active {
+          background: #BE2C27;
           color: #fff; }
 
 .callout {

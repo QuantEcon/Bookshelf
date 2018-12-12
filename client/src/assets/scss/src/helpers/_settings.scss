@@ -234,4 +234,12 @@ button {
             color: #fff;
         }
     }
+    &.delete-profile {
+        border-color: #BE2C27;
+        color: #BE2C27;
+        &:hover, &.active {
+            background: #BE2C27;
+            color: #fff;
+        }
+    }
 }

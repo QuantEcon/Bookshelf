@@ -1,7 +1,7 @@
 /**
  * @file Actions used for sigining in
  * @author Trevor Lyon
- * 
+ *
  * @module signInActions
  */
 
@@ -88,12 +88,12 @@ const endReauthentication = ({
 
 /**
  * @function reauthenticate
- * 
- * @description If there is a current JWT scored in local storage, this makes an api request 
+ *
+ * @description If there is a current JWT scored in local storage, this makes an api request
  * to revalidate the token.
- * 
+ *
  * If the token is valid, the user will be authenticated and signed in.
- * 
+ *
  * If the token is invalid, it will be removed local storage.
  */
 export const reauthenticate = (url) => {
@@ -130,14 +130,14 @@ export const reauthenticate = (url) => {
 
 /**
  * @function mergeAccounts
- * @description Sends an API request to merge two accounts. 
- * 
+ * @description Sends an API request to merge two accounts.
+ *
  * If the merge was successful, the API will return the social profile of the merged account,
  * and `next(true)` will be called
- * 
+ *
  * If the merge was unsucessful an error will be logged and `next(false)` will be called
- * 
- * @param {Object} param0 
+ *
+ * @param {Object} param0
  * @param {Object} param0.accountToMerge Account to merge into the current account
  * @param {func} next Callback after the API request returns
  */
@@ -176,14 +176,14 @@ export const mergeAccounts = ({accountToMerge, next}) => {
 
 /**
  * @function addSocial
- * @description Makes an API request to add a social account to the current one. 
- * 
+ * @description Makes an API request to add a social account to the current one.
+ *
  * If the add was successful, the API will return the updated user document and
  * `next(true)` will be called
- * 
+ *
  * If the add was unsuccessful, an error will be logged and `next(false)` will be
  * called
- * 
+ *
  * @param {String} provider Social to add (Github, Twitter, Facebook, Google)
  * @param {func} next Callback for after the API request returns
  */
@@ -201,7 +201,7 @@ export const addSocial = (provider, next) => {
                                 provider: 'github',
                                 existingUser: resp.data.user,
                                 existingProfile: true
-                                
+
                             }))
                             next(false, 'github')
                         }
@@ -230,7 +230,7 @@ export const addSocial = (provider, next) => {
                                 provider: 'twitter',
                                 existingUser: resp.data.user,
                                 existingProfile: true
-                                
+
                             }))
                             next(false, 'twitter')
                         }
@@ -287,12 +287,12 @@ export const addSocial = (provider, next) => {
 /**
  * @function signIn
  * @description Makes an api request to sign in with the `provider`.
- * 
+ *
  * On successful authentication, the `currentUser` will be set in the redux store and `next(true)`
  * will be called.
- * 
+ *
  * On unsuccessful authentication, an error will be logged and `next(false)` will be called
- * 
+ *
  * @param {String} provider Social provider to sign in with (Github, Twitter, Facebook, Google)
  * @param {func} next Callback to be called after API request
  */
