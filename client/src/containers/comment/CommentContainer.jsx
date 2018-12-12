@@ -25,24 +25,17 @@ class CommentContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps, "nextProps -------")
-        if (nextProps.editedComment._id == nextProps.comment._id) {
-            if (!this.props.editedComment && nextProps.editedComment) {
-            this.setState({
-                    comment: nextProps.editedComment
-            }) 
-            } else {
-                if (nextProps.editedComment.content != this.props.editedComment.content) {
-                    this.setState({
+        if (nextProps.editedComment && nextProps.editedComment._id == nextProps.comment._id) {
+                if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content != this.props.editedComment.content)) {
+                this.setState({
                         comment: nextProps.editedComment
-                    })
-                }
+                }) 
             }
         }
     }
     render(){
         return(
-            <div>
+            <div key={this.state.comment._id}>
                 <Comment
                     comment={this.state.comment}
                     replies={this.state.replies}

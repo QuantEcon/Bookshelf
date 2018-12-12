@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from "../../store/store"
 import {authPostReply} from '../auth/auth'
-import {postComment, editedComment} from '../submission'
+import {postComment, editCommentSuccess} from '../submission'
 
 /**
  * @file Actions for comments
@@ -33,7 +33,7 @@ export const editComment = ({
             }
         }).then(resp => {
             console.log('[AuthActions] - edit comment returned: ', resp);
-            dispatch(editedComment({
+            dispatch(editCommentSuccess({
                 editedComment: resp.data.comment
             }))
         }).catch(err => {

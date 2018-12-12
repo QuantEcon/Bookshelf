@@ -164,7 +164,7 @@ export function postComment({
 }
 
 export const EDIT_COMMENT_SUCCESSFUL = 'EDIT_COMMENT_SUCCESSFULLY'
-export function editedComment({
+export function editCommentSuccess({
     editedComment
 }) {
     return {
