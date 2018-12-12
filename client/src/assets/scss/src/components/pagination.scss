@@ -1,29 +1,18 @@
 //  Pagination styles
 
 .pagination {
-  margin-left: 0;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
   border-top:1px solid #e5e5e5;
   padding: 2rem 0 0 0;
   text-align: center;
-  &::before {
-    display: table;
-    content: ' ';
-  }
-  &::after {
-    display: table;
-    content: ' ';
-    clear: both;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  list-style: none;
   }
   li {
-    margin-right: 0.07812rem;
-    font-size: 1.09375rem;
-    display: none;
-    border-radius: 5px;
-    overflow: hidden;
-    &:last-child, &:first-child {
-      display: inline-block;
-    }
+    margin: 0 0.2rem;
+    padding:0;
   }
   a, button {
     display: block;
@@ -32,18 +21,16 @@
     color: #0a0a0a;
   }
   a:hover, button:hover {
-    background: #f1f1f1;
+    color: $color-primary;
   }
-  .current {
-    padding: 0.23438rem 0.78125rem;
-    color: #fefefe;
+  .current a {
     border:1px solid $color-primary;
     background: transparent;
     color: $color-primary;
     font-weight: bold;
+    border-radius: 5px;
   }
   .disabled {
-    padding: 0.23438rem 0.78125rem;
     color: #888;
     cursor: not-allowed;
     &:hover {
