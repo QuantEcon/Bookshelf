@@ -348,7 +348,7 @@ class Comment extends Component {
 
                     <div className='comment-body'>
                         {this.props.error ? <div className='error-div'>
-                            <p className='error-text'><AlertCircledIcon/> Comment Updation failed. Please try Again</p>
+                            <p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
                         </div>: ''}
                         <MarkdownRender
                           disallowedTypes={['heading']}
