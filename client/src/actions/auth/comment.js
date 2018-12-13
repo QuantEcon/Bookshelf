@@ -24,7 +24,7 @@ export const editComment = ({
     newCommentText
 }) => {
     return function (dispatch) {
-        axios.post('/api/submit/comment/edi', {
+        axios.post('/api/submit/comment/edit', {
             commentID,
             newCommentText
         }, {
