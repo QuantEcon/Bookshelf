@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import HeadContainer from '../../containers/HeadContainer';
-import MarkdownRender from '@nteract/markdown'
-import {withRouter} from 'react-router';
+import MarkdownRender from '@nteract/markdown';
 import Modal from 'react-modal';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
@@ -12,7 +11,9 @@ import TwitterIcon from 'react-icons/lib/fa/twitter'
 import GithubIcon from 'react-icons/lib/fa/github'
 import GoogleIcon from 'react-icons/lib/fa/google'
 import Breadcrumbs from '../partials/Breadcrumbs'
-import { Redirect } from 'react-router-dom'
+
+import axios from 'axios'
+import store from '../../store/store'
 
 class EditProfile extends Component {
     constructor(props) {
@@ -20,7 +21,8 @@ class EditProfile extends Component {
 
         this.state = {
             showMergeModal: false,
-            redirect: false
+            deleteModal: false,
+            customers: []
         }
         this.websiteChanged = this
             .websiteChanged
@@ -37,7 +39,9 @@ class EditProfile extends Component {
         this.validate = this
             .validate
             .bind(this);
-
+        this.deleteProfile = this
+            .validate
+            .bind(this);
         this.removeFacebook = this
             .removeFacebook
             .bind(this);
@@ -92,10 +96,9 @@ class EditProfile extends Component {
         this.submissionSettingChanged = this
             .submissionSettingChanged
             .bind(this)
-        this.setRedirect = this
-            .setRedirect
-            .bind(this)
-
+        this.signOut = this
+            .signOut
+            .bind(this);
     }
 
     componentDidMount() {
@@ -113,6 +116,7 @@ class EditProfile extends Component {
     }
 
     formData = {
+        id: this.props.user._id,
         name: this.props.user.name,
         summary: this.props.user.summary,
         email: this.props.user.email,
@@ -383,22 +387,77 @@ class EditProfile extends Component {
         this.hasSaved = true;
     }
 
-    cancel = () => {
-        this
-            .props
-            .cancel();
+    toggleDeleteModal = (e) => {
+        this.setState({
+            deleteModal: !this.state.deleteModal
+        })
     }
 
-    setRedirect = () => {
-      // setting redirect to true
-      this.setState({
-        redirect: true
-      })
+    deleteWarning = () => {
+      this.toggleDeleteModal();
     }
+
+    delete = () => {
+      if(store.getState().auth.isSignedIn) {
+        axios.post('/api/edit-profile/delete-account', {
+          'userId': this.formData.id
+        },{
+          headers: {
+            'Authorization': 'JWT ' + store.getState().auth.token
+          }
+        }).then(response => {
+          console.log('[EditProfile - Success Delete User]', response);
+          // if success then redirect back to home page and log user out
+          this.signOut();
+          return true;
+        }).catch(error => {
+          console.log('[EditProfile - Errror Delete User]:', error);
+          return false;
+        });
+      }
+    }
+
+    signOut = () => {
+        this.props.signOut();
+    }
+
+    cancel = () => {
+        this.props.cancel();
+    }
+
+
+
+
 
     render() {
         return (
             <div>
+                {/* Modal window for delete button*/}
+                <Modal isOpen={this.state.deleteModal}
+                      onRequestClose={this.toggleDeleteModal}
+                      contentLabel="Delete Profile"
+                      className="modal-alert"
+                      shouldCloseOnOverlayClick={false} >
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Delete Profile</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p>You are about to delete your profile permanently and you won't be able to log back in. <br/><strong>Are  you sure you  want to continue?</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                        </li>
+                        <li>
+                          <a onClick={this.delete}>Yes</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+                </Modal>
+
+                {/* Modal window for merge accounts*/}
                 <Modal
                     isOpen={this.state.showMergeModal}
                     contentLabel='Merge Accounts'
@@ -810,13 +869,15 @@ class EditProfile extends Component {
                         </div>
                         <ul className="button-row">
                             <li>
+                              <a className="delete-profile" onClick={this.deleteWarning}>Delete</a>
+                            </li>
+                            <li>
                                 <a className="alt" onClick={this.cancel}>Cancel</a>
                             </li>
                             <li>
-                                <button name="submit" type="submit" disabled={this.hasError} onClick={this.setRedirect}>
+                                <button name="submit" type="submit" disabled={this.hasError} >
                                     Save Profile
                                 </button>
-                                {this.state.redirect ? <Redirect to ="/" />: null}
                             </li>
                         </ul>
                     </div>
@@ -826,4 +887,4 @@ class EditProfile extends Component {
     }
 }
 
-export default withRouter(EditProfile);
+export default EditProfile;

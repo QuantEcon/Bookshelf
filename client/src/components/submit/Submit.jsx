@@ -470,6 +470,7 @@ class Submit extends Component {
                     </div>
                   </div>
                 </Modal>
+                
                 <Modal isOpen={this.state.summaryModal} contentLabel="Summary" className="modal-alert">
                     <div className="modal">
                       <div className="modal-header">

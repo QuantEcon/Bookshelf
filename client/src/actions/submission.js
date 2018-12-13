@@ -394,8 +394,8 @@ export const fetchNBInfo = ({
             axios.get('/api/search/notebook/' + notebookID).then(
                 resp => {
                     var sizeKB = sizeof(resp.data) / 1000;
-                    request.size = sizeKB
-
+                    request.size = sizeKB;
+                    console.log('[search/notebook/id] to client', resp.data);
                     //Used for network analysis
                     dispatch(logRequestSubmissionEndAction({
                         submissionID: request.submissionID,

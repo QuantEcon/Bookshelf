@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
-import Comment from '../../components/comments/Comment'
 
 import {editComment, submitReply} from '../../actions/auth/comment'
 import {flagComment} from '../../actions/submission'
+
+import Comment from '../../components/comments/Comment'
 
 var actions = {
     editComment,
@@ -15,7 +16,6 @@ var actions = {
 class CommentContainer extends Component {
     constructor(props){
         super(props);
-        // console.log("[CommentContainer] - constructor props: ", props)
         this.state = {
             comment: this.props.comment,
             replies: this.props.replies,
