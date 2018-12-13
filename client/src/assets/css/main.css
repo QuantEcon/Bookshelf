@@ -6,7 +6,7 @@
  * 2. Prevent adjustments of font size after orientation changes in
  *    IE on Windows Phone and in iOS.
  */
-html {
+ html {
   line-height: 1.15;
   /* 1 */
   -ms-text-size-adjust: 100%;
@@ -3077,48 +3077,50 @@ div.md-summary > p.input-hint {
     cursor: not-allowed; }
 
 .pagination {
-  margin: 0 0 1rem 0;
+  margin-left: 0;
+  margin-bottom: 1rem;
   border-top: 1px solid #e5e5e5;
   padding: 2rem 0 0 0;
-  text-align: center;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-pack: center;
-      justify-content: center;
-  -ms-flex-align: center;
-      align-items: center;
-  list-style: none; }
-
-li {
-  margin: 0 0.2rem;
-  padding: 0; }
-
-a, button {
-  display: block;
-  padding: 0.23438rem 0.78125rem;
-  border-radius: 0;
-  color: #0a0a0a; }
-
-a:hover, button:hover {
-  color: #d84d0a; }
-
-.current a {
-  border: 1px solid #d84d0a;
-  background: transparent;
-  color: #d84d0a;
-  font-weight: bold;
-  border-radius: 5px; }
-
-.disabled {
-  color: #888;
-  cursor: not-allowed; }
-  .disabled:hover {
-    background: transparent; }
-
-.ellipsis::after {
-  padding: 0.23438rem 0.78125rem;
-  content: '\2026';
-  color: #0a0a0a; }
+  text-align: center; }
+  .pagination::before {
+    display: table;
+    content: ' '; }
+  .pagination::after {
+    display: table;
+    content: ' ';
+    clear: both; }
+  .pagination li {
+    margin-right: 0.07812rem;
+    font-size: 1.09375rem;
+    display: none;
+    border-radius: 5px;
+    overflow: hidden; }
+    .pagination li:last-child, .pagination li:first-child {
+      display: inline-block; }
+  .pagination a, .pagination button {
+    display: block;
+    padding: 0.23438rem 0.78125rem;
+    border-radius: 0;
+    color: #0a0a0a; }
+  .pagination a:hover, .pagination button:hover {
+    background: #f1f1f1; }
+  .pagination .current {
+    padding: 0.23438rem 0.78125rem;
+    color: #fefefe;
+    border: 1px solid #d84d0a;
+    background: transparent;
+    color: #d84d0a;
+    font-weight: bold; }
+  .pagination .disabled {
+    padding: 0.23438rem 0.78125rem;
+    color: #888;
+    cursor: not-allowed; }
+    .pagination .disabled:hover {
+      background: transparent; }
+  .pagination .ellipsis::after {
+    padding: 0.23438rem 0.78125rem;
+    content: '\2026';
+    color: #0a0a0a; }
 
 @media print, screen and (min-width: 40em) {
   .pagination li {
@@ -3766,25 +3768,6 @@ div.my-modal {
           color: #cacaca; }
           .comments .comments-thread .comment .comment-main .comment-header .flag:hover, .comments .comments-thread .comment .comment-main .comment-header .delete:hover {
             color: #d84d0a; }
-      .comments .comments-thread .comment .comment-main .comment-body .error-div {
-        position: relative;
-        height: 10px;
-        background-color: #ff425d;
-        padding: 10px;
-        color: white;
-        width: 300px;
-        border-radius: 2px; }
-        .comments .comments-thread .comment .comment-main .comment-body .error-div svg {
-          font-size: 1.6rem; }
-      .comments .comments-thread .comment .comment-main .comment-body .error-text {
-        display: inline;
-        position: absolute;
-        margin: 0px;
-        top: 50%;
-        /* right: -50%; */
-        -ms-transform: translate(0%, -50%);
-            transform: translate(0%, -50%);
-        font-size: 1rem; }
       .comments .comments-thread .comment .comment-main .comment-footer {
         margin: 1rem 0 0 0;
         display: -ms-flexbox;
