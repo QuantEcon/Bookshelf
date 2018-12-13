@@ -164,9 +164,6 @@ class Submission extends Component {
 
 
     componentWillReceiveProps(props) {
-        if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
-        }
         this.setState({
             flipper: !this.state.flipper
         })
@@ -333,8 +330,8 @@ class Submission extends Component {
     render() {
         return (
             <div>
-                {this.props.isLoading
-                ? null :<MetaTags description={this.props.submission.data.notebook.summary}/> }
+                {!this.props.isLoading && this.props.submission.data && this.props.submission.data.notebook
+                ?<MetaTags description={this.props.submission.data.notebook.summary} title={this.props.submission.data.notebook.title + " - QuantEcon Notes"}/>: null }
                 <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
