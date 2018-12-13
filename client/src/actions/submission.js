@@ -163,13 +163,17 @@ export function postComment({
     }
 }
 
-export const EDIT_COMMENT_SUCCESSFUL = 'EDIT_COMMENT_SUCCESSFULLY'
+export const EDIT_COMMENT = 'EDIT_COMMENT'
 export function editCommentSuccess({
-    editedComment
+    editedComment,
+    commentID,
+    error
 }) {
     return {
-        type: EDIT_COMMENT_SUCCESSFUL,
-        editedComment
+        type: EDIT_COMMENT,
+        editedComment,
+        commentID,
+        error
     }
 }
 

@@ -11,7 +11,7 @@ import {
     REQUEST_NB,
     RECEIVE_NB,
     NB_PROGRESS,
-    EDIT_COMMENT_SUCCESSFUL
+    EDIT_COMMENT
 } from '../actions/submission';
 
 import { processEnv } from '../utils/envPreProcessor'
@@ -319,21 +319,18 @@ const SubmissionReducer = (state = {}, action) => {
                     didInvalidate: true
                 })
             })
-        case EDIT_COMMENT_SUCCESSFUL:
+        case EDIT_COMMENT:
             if (action.error) {
                 console.log('[SubmissionReducer] - error editing comment: ', action.error);
-                return state;
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
             }
-            /** This part changes the comments object successfully, but since we are not doing deep checking so won't work - have to handle in component level */
-            // let stateCopy = Object.assign({}, state);
-            // stateCopy[action.editedComment.submission].data.comments = stateCopy[action.editedComment.submission].data.comments.map((data) => {
-            //     if (data._id == action.editedComment._id) {
-            //         return action.editedComment;
-            //     }
-            //     return data;
-            // })
             return Object.assign({},state,{
-                editedComment: action.editedComment
+                editedComment: action.editedComment,
+                error: false,
+                commentID: action.commentID
             })
         default:
             return state;

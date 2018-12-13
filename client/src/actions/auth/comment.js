@@ -24,7 +24,7 @@ export const editComment = ({
     newCommentText
 }) => {
     return function (dispatch) {
-        axios.post('/api/submit/comment/edit', {
+        axios.post('/api/submit/comment/edi', {
             commentID,
             newCommentText
         }, {
@@ -33,11 +33,23 @@ export const editComment = ({
             }
         }).then(resp => {
             console.log('[AuthActions] - edit comment returned: ', resp);
+            if (resp.data.error) {
+                console.log('[AuthActions] - submit edit error in response: ', resp.data.error);
+                dispatch(editCommentSuccess({
+                    error: resp.data.error,
+                    commentID
+                }))
+            } else {
+                dispatch(editCommentSuccess({
+                    editedComment: resp.data.comment,
+                    commentID
+                }))
+            }
+        }).catch(error => {
             dispatch(editCommentSuccess({
-                editedComment: resp.data.comment
+                error,
+                commentID
             }))
-        }).catch(err => {
-
         })
     }
 }
