@@ -3088,37 +3088,31 @@ div.md-summary > p.input-hint {
   -ms-flex-align: center;
       align-items: center;
   list-style: none; }
-
-li {
-  margin: 0 0.2rem;
-  padding: 0; }
-
-a, button {
-  display: block;
-  padding: 0.23438rem 0.78125rem;
-  border-radius: 0;
-  color: #0a0a0a; }
-
-a:hover, button:hover {
-  color: #d84d0a; }
-
-.current a {
-  border: 1px solid #d84d0a;
-  background: transparent;
-  color: #d84d0a;
-  font-weight: bold;
-  border-radius: 5px; }
-
-.disabled {
-  color: #888;
-  cursor: not-allowed; }
-  .disabled:hover {
-    background: transparent; }
-
-.ellipsis::after {
-  padding: 0.23438rem 0.78125rem;
-  content: '\2026';
-  color: #0a0a0a; }
+  .pagination li {
+    margin: 0 0.2rem;
+    padding: 0; }
+  .pagination a, .pagination button {
+    display: block;
+    padding: 0.23438rem 0.78125rem;
+    border-radius: 0;
+    color: #0a0a0a; }
+  .pagination a:hover, .pagination button:hover {
+    color: #d84d0a; }
+  .pagination .current a {
+    border: 1px solid #d84d0a;
+    background: transparent;
+    color: #d84d0a;
+    font-weight: bold;
+    border-radius: 5px; }
+  .pagination .disabled {
+    color: #888;
+    cursor: not-allowed; }
+    .pagination .disabled:hover {
+      background: transparent; }
+  .pagination .ellipsis::after {
+    padding: 0.23438rem 0.78125rem;
+    content: '\2026';
+    color: #0a0a0a; }
 
 @media print, screen and (min-width: 40em) {
   .pagination li {
