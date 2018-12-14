@@ -10,6 +10,8 @@ import Image from '../Image.jsx';
 import data from '../../imageData.json';
 import uuid from 'uuid';
 
+import sloanLogo from '../../assets/img/logo/landing-sloan-logo.png';
+
 class Home extends Component {
     constructor(props){
         super(props);
@@ -57,11 +59,16 @@ class Home extends Component {
 
                 <div className='landing-logos'>
                       <div className='container'>
-                          <ul>
+                          <p className="site-tag">An open Jupyter notebook library for economics and finance</p>
+                          <img className="sloan-logo" src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/>
+                          {/* <ul>
                             {this.createImages(data.images)}
-                          </ul>
+                          </ul> */}
                       </div>
                 </div>
+
+
+
                 {/* <BetaBanner/> */}
                 <AnnouncementsContainer />
                 <SubmissionListContainer searchP={this.state.searchParams} resetSearch={this.state.reset}/>

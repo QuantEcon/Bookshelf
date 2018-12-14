@@ -2042,6 +2042,9 @@ button {
     -ms-flex-pack: justify;
         justify-content: space-between;
     padding: 1rem 0; }
+    .header .header-container .sloan-logo {
+      width: 50px;
+      margin-left: 10px; }
     .header .header-container .qe-logo {
       font-family: "Exo", sans-serif;
       font-weight: 200;
@@ -2082,8 +2085,6 @@ button {
         color: #fff; }
         .header .header-container .site-title a > span > div {
           display: inline-block; }
-    .header .header-container .site-tag {
-      font-size: 1.3em; }
     .header .header-container .site-nav {
       display: -ms-flexbox;
       display: flex;
@@ -2158,7 +2159,17 @@ button {
 
 .landing-logos {
   background: #fff;
-  border-bottom: 1px solid #c3c3c3; }
+  border-bottom: 1px solid #c3c3c3;
+  height: 80px; }
+  .landing-logos .sloan-logo {
+    float: right;
+    padding: 10px;
+    width: 60px; }
+  .landing-logos .site-tag {
+    float: left;
+    font-size: 1.1em;
+    color: #444444;
+    padding: 15px; }
   .landing-logos ul {
     list-style: none;
     margin: 0;
@@ -2910,6 +2921,12 @@ button {
         .button-row li a.alt:hover, .button-row li a.alt.active, .button-row li button.alt:hover, .button-row li button.alt.active, .button-row li input.alt:hover, .button-row li input.alt.active {
           background: #444444;
           color: #fff; }
+      .button-row li a.delete-profile, .button-row li button.delete-profile, .button-row li input.delete-profile {
+        border-color: #BE2C27;
+        color: #BE2C27; }
+        .button-row li a.delete-profile:hover, .button-row li a.delete-profile.active, .button-row li button.delete-profile:hover, .button-row li button.delete-profile.active, .button-row li input.delete-profile:hover, .button-row li input.delete-profile.active {
+          background: #BE2C27;
+          color: #fff; }
 
 .callout {
   position: relative;
@@ -3060,42 +3077,34 @@ div.md-summary > p.input-hint {
     cursor: not-allowed; }
 
 .pagination {
-  margin-left: 0;
-  margin-bottom: 1rem;
+  margin: 0 0 1rem 0;
   border-top: 1px solid #e5e5e5;
   padding: 2rem 0 0 0;
-  text-align: center; }
-  .pagination::before {
-    display: table;
-    content: ' '; }
-  .pagination::after {
-    display: table;
-    content: ' ';
-    clear: both; }
+  text-align: center;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: center;
+      justify-content: center;
+  -ms-flex-align: center;
+      align-items: center;
+  list-style: none; }
   .pagination li {
-    margin-right: 0.07812rem;
-    font-size: 1.09375rem;
-    display: none;
-    border-radius: 5px;
-    overflow: hidden; }
-    .pagination li:last-child, .pagination li:first-child {
-      display: inline-block; }
+    margin: 0 0.2rem;
+    padding: 0; }
   .pagination a, .pagination button {
     display: block;
     padding: 0.23438rem 0.78125rem;
     border-radius: 0;
     color: #0a0a0a; }
   .pagination a:hover, .pagination button:hover {
-    background: #f1f1f1; }
-  .pagination .current {
-    padding: 0.23438rem 0.78125rem;
-    color: #fefefe;
+    color: #d84d0a; }
+  .pagination .current a {
     border: 1px solid #d84d0a;
     background: transparent;
     color: #d84d0a;
-    font-weight: bold; }
+    font-weight: bold;
+    border-radius: 5px; }
   .pagination .disabled {
-    padding: 0.23438rem 0.78125rem;
     color: #888;
     cursor: not-allowed; }
     .pagination .disabled:hover {

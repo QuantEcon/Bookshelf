@@ -12,9 +12,10 @@ class MyProfileContainer extends Component {
     }
 
     render() {
+        console.log('[USER Container]',  this.props)
         return (
             <div>
-                {this.props.loading 
+                {this.props.loading
                 ? "loading..."
                 : <User
                     data={this.props.user}
@@ -29,10 +30,10 @@ class MyProfileContainer extends Component {
 
 const mapStateToProps = (state, props) => {
     return {
-        user: state.auth.user, 
-        loading: state.auth.loading, 
+        user: state.auth.user,
+        loading: state.auth.loading,
         isSignedIn: state.auth.isSignedIn
-    
+
     }
 }
 

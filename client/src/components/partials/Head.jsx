@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import notesLogo from '../../assets/img/notes-logo.png'
+import notesLogo from '../../assets/img/notes-logo.png';
+import sloanLogo from '../../assets/img/logo/landing-sloan-logo-inverted.png';
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
@@ -202,8 +203,10 @@ class Head extends Component {
                                 </a>
 
                             </div>
-
-                            <p className="site-tag">Open notebook library for economic modeling</p>
+{/* 
+                            <p className="site-tag">An open Jupyter notebook library for economics and finance
+                                <img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/>
+                            </p> */}
 
                             <div className="site-nav">
                                 <div className="site-links">
