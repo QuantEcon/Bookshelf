@@ -47,7 +47,7 @@ class CommentContainer extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         /** allows the component to render if there is any additional reply */
-        if (nextProps.replies && this.props.replies && (nextProps.replies.length !== this.props.replies.length)) {
+        if (nextProps.replies && (nextProps.replies.length !== this.props.replies.length)) {
             return true;
         }
         /** in case of editing comments, updates only the comment which has been edited*/

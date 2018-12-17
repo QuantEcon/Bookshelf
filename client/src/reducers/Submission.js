@@ -265,6 +265,12 @@ const SubmissionReducer = (state = {}, action) => {
             console.log('[SubmissionActions] - post reply action:', action);
             console.log('[SubmissionActions] - state: ', state);
             console.log('[SubmissionActions] - submission: ', state[action.submissionID]);
+            if (action.error) {
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
             return Object.assign({}, state, {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     data: DataReducer(state[action.submissionID].data, action),

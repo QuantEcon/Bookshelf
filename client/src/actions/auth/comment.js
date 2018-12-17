@@ -42,7 +42,8 @@ export const editComment = ({
             } else {
                 dispatch(editCommentSuccess({
                     editedComment: resp.data.comment,
-                    commentID
+                    commentID,
+                    error: null
                 }))
             }
         }).catch(error => {
@@ -122,18 +123,21 @@ export const submitReply = ({
             if (resp.data.error) {
                 console.log('[AuthActions] - submit reply error in response: ', resp.data.error);
                 dispatch(authPostReply({
-                    error: resp.data.error
+                    error: resp.data.error,
+                    commentID: resp.data.commentID,
                 }))
             } else {
                 dispatch(authPostReply({
                     submissionID: resp.data.submissionID,
                     commentID: resp.data.commentID,
-                    reply: resp.data.reply
+                    reply: resp.data.reply,
+                    error: null
                 }))
             }
         }).catch(error => {
             dispatch(authPostReply({
-                error
+                error,
+                commentID
             }))
         })
     }
