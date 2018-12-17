@@ -27,13 +27,13 @@ class CommentContainer extends Component {
     }
     componentWillReceiveProps(nextProps) {
         if (this.props.error != nextProps.error) {
-            /** updates the error */
+            // updates the error /
             this.setState({
                 error: nextProps.error
             })
         }
         if (nextProps.editedComment && nextProps.editedComment._id == nextProps.comment._id) {
-            /** updates the state of the comment if there is any editing */
+            // updates the state of the comment if there is any editing /
                 if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content != this.props.editedComment.content)) {
                 this.setState({
                         comment: nextProps.editedComment
@@ -41,18 +41,18 @@ class CommentContainer extends Component {
             }
         }
         if (nextProps.replies && this.props.replies && (nextProps.replies.length !== this.props.replies.length)) {
-            /** updates the replies array state if there is any addition */
+            // updates the replies array state if there is any addition /
             this.setState({
                 replies: nextProps.replies
             })
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
-        /** allows the component to render if there is any additional reply */
+        // allows the component to render if there is any additional reply
         if (nextProps.replies && (nextProps.replies.length !== this.props.replies.length)) {
             return true;
         }
-        /** in case of editing comments, updates only the comment which has been edited*/
+        // in case of editing comments, updates only the comment which has been edited
         if ((nextProps.editedComment || nextProps.error) && (nextProps.commentID !== nextState.comment._id)) {
             return false;
         }
