@@ -24,6 +24,7 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import NotebookFromHTML from '../NotebookFromHTML';
+import MetaTags from '../partials/MetaTags.jsx'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import axios from 'axios'
@@ -163,9 +164,6 @@ class Submission extends Component {
 
 
     componentWillReceiveProps(props) {
-        if (props.submission.data && props.submission.data.notebook) {
-            document.title = props.submission.data.notebook.title + " - QuantEcon Notes";
-        }
         this.setState({
             flipper: !this.state.flipper
         })
@@ -332,6 +330,8 @@ class Submission extends Component {
     render() {
         return (
             <div>
+                {!this.props.isLoading && this.props.submission.data && this.props.submission.data.notebook
+                ?<MetaTags description={this.props.submission.data.notebook.summary} title={this.props.submission.data.notebook.title + " - QuantEcon Notes"}/>: null }
                 <HeadContainer history={this.props.history}/>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
