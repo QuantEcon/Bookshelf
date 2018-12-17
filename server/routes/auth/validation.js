@@ -71,6 +71,8 @@ app.get('/', passport.authenticate('jwt', {
         }
 
     } else {
+        console.log('GET USER VALIDATE TOKEN /API ', req.user._id)
+
         console.log('[ValidateToken] - normal login');
         if(req.authInfo.isAdmin){
             AdminList.findOne({}, (err, adminList) => {
