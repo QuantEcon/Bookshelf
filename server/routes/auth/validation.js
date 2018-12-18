@@ -6,6 +6,7 @@ const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
 
+// Bodyparser middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
@@ -71,37 +72,60 @@ app.get('/', passport.authenticate('jwt', {
         }
 
     } else {
-        console.log('GET USER VALIDATE TOKEN /API ', req.user._id)
-
         console.log('[ValidateToken] - normal login');
-        if(req.authInfo.isAdmin){
-            AdminList.findOne({}, (err, adminList) => {
-                if(err){
-                    console.log("[ValidateToken] - error getting admin list: ", err)
-                } else if (adminList){
-                    if(adminList.adminIDs.indexOf(req.user._id) != -1){
-                        res.send({
-                            user: req.user,
-                            provider: req.user.currentProvider,
-                            uid: req.user._id,
-                            token: req.headers['access-token'],
-                            isAdmin: req.authInfo.isAdmin
-                        })
-                    } else {
-                        console.log("[ValidateToken] - user is no longer admin")
-                        res.sendStatus(401)
-                    }
+        if(req.user._id) {
+            // find if user has been deleted
+            User.findOne({'_id': req.user.id}, (err, user) => {
+                const userDeleted = user.deleted;
+                if(userDeleted){
+                    res.send({
+                        error: {
+                            message: 'deleted'
+                        },
+                        user
+                    })
+                } else {
+                    res.send({
+                        user: req.user,
+                        provider: req.user.currentProvider,
+                        uid: req.user._id,
+                        token: req.headers['access-token'],
+                        isAdmin: req.authInfo.isAdmin,
+                        error: {
+                            message: 'active'
+                        }
+                    })
                 }
-            })
-        } else {
-            res.send({
-                user: req.user,
-                provider: req.user.currentProvider,
-                uid: req.user._id,
-                token: req.headers['access-token'],
-                isAdmin: req.authInfo.isAdmin
-            })
+            });
         }
+        // if(req.authInfo.isAdmin){
+        //     AdminList.findOne({}, (err, adminList) => {
+        //         if(err){
+        //             console.log("[ValidateToken] - error getting admin list: ", err)
+        //         } else if (adminList){
+        //             if(adminList.adminIDs.indexOf(req.user._id) != -1){
+        //                 res.send({
+        //                     user: req.user,
+        //                     provider: req.user.currentProvider,
+        //                     uid: req.user._id,
+        //                     token: req.headers['access-token'],
+        //                     isAdmin: req.authInfo.isAdmin
+        //                 })
+        //             } else {
+        //                 console.log("[ValidateToken] - user is no longer admin")
+        //                 res.sendStatus(401)
+        //             }
+        //         }
+        //     })
+        // } else {
+        //     res.send({
+        //         user: req.user,
+        //         provider: req.user.currentProvider,
+        //         uid: req.user._id,
+        //         token: req.headers['access-token'],
+        //         isAdmin: req.authInfo.isAdmin
+        //     })
+        // }
 
     }
 

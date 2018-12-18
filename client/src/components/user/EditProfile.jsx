@@ -443,7 +443,7 @@ class EditProfile extends Component {
                       <h1 className='modal-title'>Delete Profile</h1>
                     </div>
                     <div className="modal-body">
-                      <p>You are about to delete your profile permanently and you won't be able to log back in. <br/><strong>Are  you sure you  want to continue?</strong></p>
+                      <p>You are about to delete your profile but you are able to restore your profile back. <br/><strong>Are you sure you want to continue?</strong></p>
                       <ul className="options">
                         <li>
                           <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
