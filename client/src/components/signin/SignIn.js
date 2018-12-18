@@ -47,8 +47,11 @@ class SignIn extends Component {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner
             this.showErrorMessage = true;
-            // toggle restore profile modal window
-            // this.toggleOpenModal();
+            console.log("props:" , this.props.authError.user)
+            if(this.props.authError.user.deleted) {
+                // toggle restore profile modal window
+                this.toggleOpenModal();
+            }
         }
     }
 
@@ -59,7 +62,6 @@ class SignIn extends Component {
     }
 
     componentWillReceiveProps(props) {
-        console.log("props:" ,props)
         if (props.isSignedIn) {
           this.props.history.push('/');
 
