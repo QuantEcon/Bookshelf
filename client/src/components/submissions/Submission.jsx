@@ -649,7 +649,7 @@ class Submission extends Component {
                                     <NavLink exact to={`/submission/${this.props.submissionID}`} activeClassName="active">Notebook</NavLink>
                                 </li>
                                 <li>
-                                    <NavLink exact to={`/submission/${this.props.submissionID}/comments`} activeClassName="active">Comments</NavLink>
+                                    <NavLink exact to={`/submission/${this.props.submissionID}/comments`} activeClassName="active">Comments { this.props.submission && this.props.submission.data && this.props.submission.data.comments && this.props.submission.data.comments.length ? <span>({this.props.submission.data.comments.length})</span>: ''}</NavLink>
                                 </li>
                                 <li>
                                     <a className='alt' onClick={this.download}>Download</a>
