@@ -6,6 +6,7 @@ const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
 
+// Bodyparser middlewares
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true

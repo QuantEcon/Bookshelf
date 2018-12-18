@@ -132,7 +132,6 @@ const listenForCredentials = ({
                 })
                 .then(parseResponse)
                 .then(data => {
-                    console.log('DATA', data, data.error);
                     if(isAdd && data.status === 4){
                         resolve({
                             data,
