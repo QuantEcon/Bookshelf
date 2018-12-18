@@ -339,7 +339,6 @@ export const signIn = (provider, next) => {
             case 'Google':
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    console.log(resp.data);
                     if(resp.data.error.message == 'deleted') {
                         console.log('[SignInActions] - error authenticating:')
                         console.log('\tprovider: ', provider);

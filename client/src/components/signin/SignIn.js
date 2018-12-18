@@ -22,6 +22,7 @@ class SignIn extends Component {
         this.state = {
             showErrorMessage: props.authError ? true : false,
             modalOpen: false,
+            successModal: false,
             user: null
         }
 
@@ -66,6 +67,12 @@ class SignIn extends Component {
       });
     }
 
+    successModalOpen = () => {
+        this.setState({
+            successModal: !this.state.successModal
+        })
+    }
+
     componentWillReceiveProps(props) {
         if (props.isSignedIn) {
           this.props.history.push('/');
@@ -78,6 +85,7 @@ class SignIn extends Component {
     closeModal = () => {
       this.setState({
         modalOpen: false,
+        successModal: false,
       })
     }
 
@@ -90,7 +98,9 @@ class SignIn extends Component {
           user: this.state.user
         }
       }).then((response) => {
-          this.setState({modalOpen: false});
+          // close the modal popup 
+          this.setState({modalOpen: false, successModal: true});
+            //TODO: reauthenticate user and direct them back to home page
       }).catch((error) => {
           console.log(error);
       })
@@ -107,13 +117,31 @@ class SignIn extends Component {
                       <h1 className='modal-title'>Restore Profile</h1>
                     </div>
                     <div className="modal-body">
-                      <p><strong>Restoring...</strong></p>
+                      <p><strong>Do you want to restore your profile?</strong></p>
                       <ul className="options">
                         <li>
                           <a className='alt' onClick={this.closeModal}>Cancel</a>
                         </li>
                         <li>
                           <a onClick={this.restoreProfile}>Restore</a>
+                        </li>
+                      </ul>
+                      <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleOpenModal}><span aria-hidden="true">×</span></button>
+                    </div>
+                  </div>
+              </Modal>
+
+              {/* Modal window for success restore profile */}
+              <Modal isOpen={this.state.successModal} contentLabel="Restore Success" className="modal-alert">
+                  <div className="modal">
+                    <div className="modal-header">
+                      <h1 className='modal-title'>Success</h1>
+                    </div>
+                    <div className="modal-body">
+                      <p><strong>You have successfully restored your profile. Please sign back in.</strong></p>
+                      <ul className="options">
+                        <li>
+                          <a className='alt' onClick={this.closeModal}>Okay</a>
                         </li>
                       </ul>
                       <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleOpenModal}><span aria-hidden="true">×</span></button>
