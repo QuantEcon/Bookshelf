@@ -110,12 +110,12 @@ class SubmissionPreview extends Component {
                         className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
-                {/* <p className="avatar">
+                <p className="avatar">
                     <Link to={'/user/' + this.state.author._id}>
                         <img src={this.state.author.avatar} alt="Author avatar"/>
                     </Link>
                 </p> 
-                <div className="stats">
+                {/* <div className="stats">
                     <ul>
                         <li className="views">
                             {this.state.submission.views > 1 || this.state.submission.views == 0?
