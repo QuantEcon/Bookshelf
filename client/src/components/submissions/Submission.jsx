@@ -355,7 +355,7 @@ class Submission extends Component {
                       </div>
                     </div>
                 </Modal>
-
+                {!this.props.isLoading ? <Breadcrumbs title={this.props.submission.data.notebook.title}/> : null }
                 {this.state.showDeletionError
                     ? <div className="alert callout">
                             <div className="container">
@@ -640,7 +640,6 @@ class Submission extends Component {
 
                         </div>
                     </div>
-                    {!this.props.isLoading ? <Breadcrumbs title={this.props.submission.data.notebook.title}/> : null }
                     <div className='tile'>
                     <div>
                         <div className='tile-header'>

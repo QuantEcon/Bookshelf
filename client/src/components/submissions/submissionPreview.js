@@ -97,7 +97,7 @@ class SubmissionPreview extends Component {
                             ? <span>
                                 <span className="dot"></span>
                                    { this.state.submission.views ? <span>{this.state.submission.views} {this.state.submission.views > 1?<span>views</span>:<span>view</span>}</span> : ''}
-                                   {this.state.submission.totalComments && this.state.submission.views ? <span style={{margin: '2px'}}>,</span>: ''}
+                                   {this.state.submission.totalComments && this.state.submission.views ? <span style={{margin: '2px'}}><span className="dot" style={{margin: "2px 3px"}}></span></span>: ''}
                                    { this.state.submission.totalComments ? <span>{this.state.submission.totalComments} {this.state.submission.totalComments > 1?<span>comments</span>:<span>comment</span>}</span> : ''} 
                             </span> : 
                         ''}
