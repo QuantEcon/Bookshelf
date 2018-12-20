@@ -4143,6 +4143,16 @@ li.link {
 ul.terms-and-conditions {
   list-style-type: none; }
 
+.dot {
+  width: 3px;
+  height: 3px;
+  background-color: #888888;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-left: 6px;
+  margin-right: 6px; }
+
 span.title {
   font-weight: bold; }
 

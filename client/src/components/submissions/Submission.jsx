@@ -4,11 +4,9 @@ import PropTypes from 'prop-types'
 // import {MarkdownRender} from '../MarkdownMathJax';
 import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
-import {Link} from 'react-router-dom'
+import {NavLink, Link, Route, Switch} from 'react-router-dom'
 import Modal from 'react-modal'
 import {typesetMath} from "mathjax-electron"
-
-import NotebookPreview from '@nteract/notebook-preview'
 
 import FileSaver from 'file-saver'
 
@@ -23,8 +21,8 @@ import FlagIcon from 'react-icons/lib/md/flag'
 import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
-import NotebookFromHTML from '../NotebookFromHTML';
-import MetaTags from '../partials/MetaTags.jsx'
+import MetaTags from '../partials/MetaTags.jsx';
+import Notebook from '../partials/Notebook.jsx'
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
 import axios from 'axios'
@@ -357,10 +355,7 @@ class Submission extends Component {
                       </div>
                     </div>
                 </Modal>
-                {this.props.isLoading
-                    ? null
-                    : <Breadcrumbs title={this.props.submission.data.notebook.title}/>}
-
+                {!this.props.isLoading ? <Breadcrumbs title={this.props.submission.data.notebook.title}/> : null }
                 {this.state.showDeletionError
                     ? <div className="alert callout">
                             <div className="container">
@@ -645,95 +640,39 @@ class Submission extends Component {
 
                         </div>
                     </div>
-
                     <div className='tile'>
-                        {this.state.showNotebook
-                        ? <div>
-                            {this.props.nbLoading
-                            ? <div>
-                                {/* TODO: display download progress */}
-                                <div className='tile-header'>
-                                    <ul className='tile-options'>
-                                        <li>
-                                            <a className='active'>Notebook</a>
-                                        </li>
-                                        <li>
-                                            <a onClick={this.toggleView}>Comments</a>
-                                        </li>
-                                        <li>
-                                            <a className='alt' onClick={this.download}>Download</a>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                                <div>
-                                    Loading... ({this.props.dataReceived} / {this.props.totalData})
-                                    <br/>
-                                    <progress value={this.props.dataReceived} max={this.props.totalData}></progress>
-                                </div>
-                            </div>
-                            : <div>
-                                <div>
-                                    <div className='tile-header'>
-                                        <ul className='tile-options'>
-                                            <li>
-                                                <a className='active'>Notebook</a>
-                                            </li>
-                                            <li>
-                                                <a onClick={this.toggleView}>Comments</a>
-                                            </li>
-                                            <li>
-                                                <a className='alt' onClick={this.download}>Download</a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    {this.props.submission.data.html
-                                        ? <div>
-                                            <p>(pre-rendered notebook)</p>
-                                            <NotebookFromHTML html={this.props.submission.data.html}/>
-                                        </div>
-                                        : <div id='notebook'>
-                                            <NotebookPreview notebook={this.props.submission.data.notebookJSON}/>
-                                        </div>}
-
-                                </div>
-                            </div>}
-
+                    <div>
+                        <div className='tile-header'>
+                            <ul className='tile-options'>
+                                <li>
+                                    <NavLink exact to={`/submission/${this.props.submissionID}`} activeClassName="active">Notebook</NavLink>
+                                </li>
+                                <li>
+                                    <NavLink exact to={`/submission/${this.props.submissionID}/comments`} activeClassName="active">Comments { this.props.submission && this.props.submission.data && this.props.submission.data.comments && this.props.submission.data.comments.length ? <span>({this.props.submission.data.comments.length + this.props.submission.data.replies.length})</span>: ''}</NavLink>
+                                </li>
+                                <li>
+                                    <a className='alt' onClick={this.download}>Download</a>
+                                </li>
+                            </ul>
                         </div>
-                        : <div>
-                            {this.props.isLoading
-                            ? <div>
-                                <h3>Loading...</h3>
-                            </div>
-                            : <div>
-                            <div className='tile-header'>
-                                <ul className='tile-options'>
-                                    <li>
-                                        <a onClick={this.toggleView}>Notebook</a>
-                                    </li>
-                                    <li>
-                                        <a className='active'>Comments</a>
-                                    </li>
-                                    <li>
-                                        <a className='alt' onClick={this.download}>Download</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <CommentsThread
+                        <Switch>
+                            <Route exact path='/submission/:submissionID' component={ () => {
+                                return  <Notebook submission={this.props.submission} nbLoading={this.props.nbLoading}/>
+                            }} />
+                            { this.props.submission && this.props.submission.data?
+                            <Route exact path='/submission/:submissionID/comments' component={ () => { return <CommentsThread 
                                 comments={this.props.submission.data.comments}
                                 replies={this.props.submission.data.replies}
                                 commentAuthors={this.props.submission.data.commentAuthors}
                                 postComment={this.onSubmitComment}
                                 postReply={this.submitReply}
                                 currentUser={this.props.currentUser}
-                                editComment={this.props.actions.editComment}/>
-                        </div>}
-                        </div>}
+                                editComment={this.props.actions.editComment}/>}}/>
+                                : <p>Loading</p> }
+                        </Switch></div> </div>
                     </div>
                     {/* TODO: extract to Component? */}
                 </div>
-            </div>
         )
     }
 }
