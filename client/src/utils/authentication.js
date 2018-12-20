@@ -138,7 +138,14 @@ const listenForCredentials = ({
                             credentials,
                             error: data.error
                         })
-                    } else {
+                    } else if(data.user.deleted) {
+                        resolve({
+                            data,
+                            credentials,
+                            error: data.user.deleted
+                        })
+                    }
+                    else {
                         resolve({
                             data,
                             credentials

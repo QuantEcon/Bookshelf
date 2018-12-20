@@ -42,10 +42,6 @@ app.use(bodyParser.urlencoded({
     parameterLimit: 50000
 }));
 
-// app.use(function(req, res, next){     // console.log('[Submit] - req.headers:
-// ', req.headers)     // console.log('[Submit] - req.body: ', req.body);
-// console.log('[Submit] - req: ', req);     next(); })
-
 app.post('/', passport.authenticate('jwt', {
     session: 'false'
 }), upload.single('file'), (req, res) => {

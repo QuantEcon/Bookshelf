@@ -46,7 +46,7 @@ If you would like to test a production build, run `npm run build` from inside th
 If you get an error `Error: ENOENT: no such file or directory, stat '.../Bookshelf/client/build/index.html'`, then you haven't built the React application. Run step 1 again and wait for it to finish before starting the Express server
 
 **UPDATE AS OF 17 DEC 2018:**
-* `nodemon` has been added to watch changes for the server. Run `npm start` on client and server folder.
+* `nodemon` has been added to watch changes for the server. Run `npm start` on client and `npm start-dev` on the server folder.
 * Running `nodemon` no longer require you to restart the server when you make changes. 
 
 #### Updating the Instance

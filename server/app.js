@@ -30,8 +30,10 @@ const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
 const deleteRoutes = require('./routes/delete');
 const inviteRoutes = require('./routes/invite');
-const adminRoutes = require("./routes/admin")
-const flagRoutes = require("./routes/flag/flag")
+const adminRoutes = require("./routes/admin");
+const flagRoutes = require("./routes/flag/flag");
+const restoreUser = require("./routes/restore/restore");
+
 // =============================================================================
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
@@ -180,6 +182,9 @@ app.get('/api/auth/popup/:provider', (req, res) => {
 });
 //submit
 app.use('/api/submit', submitRoutes);
+
+// restore 
+app.use('/api/restore', restoreUser)
 
 //vote
 app.use('/api/upvote', upvoteRoutes);
