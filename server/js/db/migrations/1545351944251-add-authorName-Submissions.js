@@ -1,8 +1,8 @@
 'use strict'
 // modules ==================================
 var mongoose = require('mongoose');
-var config = require('./../_config');
-var Submission = require('./../models/Submission');
+var config = require('../_config');
+var Submission = require('../models/Submission');
 
 // config ===================================
 const options = {
