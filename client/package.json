@@ -12,7 +12,9 @@
     "mathjax": "^2.7.1",
     "mathjax-electron": "^2.0.1",
     "moment": "^2.18.1",
+    "node-sass-chokidar": "^1.3.4",
     "normalize-css": "^2.3.1",
+    "npm-run-all": "^4.1.5",
     "object-sizeof": "^1.2.0",
     "react": "^16.2.0",
     "react-bootstrap": "^0.31.0",
@@ -46,10 +48,13 @@
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "build-css": "node-sass-chokidar src/assets/scss/src/main.scss -o src/assets/css --output-style compressed",
+    "watch-css": "npm run build-css && node-sass-chokidar src/assets/scss/src/main.scss -o src/assets/css --watch --recursive"
   },
   "proxy": "http://localhost:8080",
   "devDependencies": {
