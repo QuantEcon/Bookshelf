@@ -128,7 +128,7 @@ class CommentsThread extends Component {
                 <div className='comments-thread'>
                     <div>
                         {/*Render each comment*/}
-                        {this
+                        {this.state.comments && this
                             .state
                             .comments
                             .map((comment, index) => {
