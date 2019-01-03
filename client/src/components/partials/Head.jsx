@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 import notesLogo from '../../assets/img/notes-logo.png';
-import sloanLogo from '../../assets/img/logo/landing-sloan-logo-inverted.png';
 import Modal from 'react-modal';
 import axios from 'axios';
 import store from '../../store/store';
