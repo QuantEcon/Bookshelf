@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from "../../store/store"
 import {authPostReply} from '../auth/auth'
-import {postComment} from '../submission'
+import {postComment, editCommentSuccess} from '../submission'
 
 /**
  * @file Actions for comments
@@ -33,8 +33,24 @@ export const editComment = ({
             }
         }).then(resp => {
             console.log('[AuthActions] - edit comment returned: ', resp);
-        }).catch(err => {
-
+            if (resp.data.error) {
+                console.log('[AuthActions] - submit edit error in response: ', resp.data.error);
+                dispatch(editCommentSuccess({
+                    error: resp.data.error,
+                    commentID
+                }))
+            } else {
+                dispatch(editCommentSuccess({
+                    editedComment: resp.data.comment,
+                    commentID,
+                    error: null
+                }))
+            }
+        }).catch(error => {
+            dispatch(editCommentSuccess({
+                error,
+                commentID
+            }))
         })
     }
 }
@@ -107,18 +123,21 @@ export const submitReply = ({
             if (resp.data.error) {
                 console.log('[AuthActions] - submit reply error in response: ', resp.data.error);
                 dispatch(authPostReply({
-                    error: resp.data.error
+                    error: resp.data.error,
+                    commentID: resp.data.commentID,
                 }))
             } else {
                 dispatch(authPostReply({
                     submissionID: resp.data.submissionID,
                     commentID: resp.data.commentID,
-                    reply: resp.data.reply
+                    reply: resp.data.reply,
+                    error: null
                 }))
             }
         }).catch(error => {
             dispatch(authPostReply({
-                error
+                error,
+                commentID
             }))
         })
     }

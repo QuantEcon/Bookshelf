@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
+import AlertCircledIcon from 'react-icons/lib/io/alert-circled';
 import Modal from 'react-modal'
 import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
@@ -345,6 +346,9 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
+                        {this.props.error ? <div className='error-div'>
+                            <p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
+                        </div>: ''}
                         <MarkdownRender
                           disallowedTypes={['heading']}
                           source={this.state.comment.content

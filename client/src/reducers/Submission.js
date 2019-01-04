@@ -10,7 +10,8 @@ import {
     EDIT_SUBMISSION,
     REQUEST_NB,
     RECEIVE_NB,
-    NB_PROGRESS
+    NB_PROGRESS,
+    EDIT_COMMENT
 } from '../actions/submission';
 
 import { processEnv } from '../utils/envPreProcessor'
@@ -264,6 +265,12 @@ const SubmissionReducer = (state = {}, action) => {
             console.log('[SubmissionActions] - post reply action:', action);
             console.log('[SubmissionActions] - state: ', state);
             console.log('[SubmissionActions] - submission: ', state[action.submissionID]);
+            if (action.error) {
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
             return Object.assign({}, state, {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     data: DataReducer(state[action.submissionID].data, action),
@@ -315,6 +322,19 @@ const SubmissionReducer = (state = {}, action) => {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     didInvalidate: true
                 })
+            })
+        case EDIT_COMMENT:
+            if (action.error) {
+                console.log('[SubmissionReducer] - error editing comment: ', action.error);
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
+            return Object.assign({},state,{
+                editedComment: action.editedComment,
+                error: false,
+                commentID: action.commentID
             })
         default:
             return state;
