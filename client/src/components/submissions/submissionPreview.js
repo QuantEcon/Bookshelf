@@ -14,11 +14,13 @@ class SubmissionPreview extends Component {
             submission: props.submission,
             author: props.author,
             limitSummary: '',
+            maxStringLimit: null,
         }
         // this.renderMathJax = this.renderMathJax.bind(this);
         this.limitCharacter = this.limitCharacter.bind(this);
     }
 
+    // Limit the number of characters for each submission preview in home page
     limitCharacter() {
       const maxLength = 50;
       // Create an array storage to store the long summary
@@ -32,10 +34,11 @@ class SubmissionPreview extends Component {
         const maxString = eachWord.splice(0,maxLength).join(' ');
         // If the length of the summary is greater than maxLength, then add ... at the end
         if(arr[0].split(' ').length > maxLength) {
-          return maxString + ' ...'
+            const overMaxLimit = maxString + ' ...';
+            this.setState({limitSummary: overMaxLimit });
         }
         else {
-          return maxString;
+            this.setState({limitSummary: maxString });
         }
       }
     }
@@ -50,12 +53,10 @@ class SubmissionPreview extends Component {
     //     }
     // }
 
-    // componentDidMount() {
-    //     setTimeout(() => {
-    //         this.renderMathJax()
-    //     }, 500);
-    //
-    // }
+    componentDidMount() {
+        // Call limitCharacter to display each submission summary
+        this.limitCharacter();
+    }
 
     componentDidUpdate() {
         setTimeout(() => {
@@ -68,7 +69,8 @@ class SubmissionPreview extends Component {
     }
 
     render() {
-        {this.state.limitSummary = this.limitCharacter()}
+        // {this.state.limitSummary = this.limitCharacter()}
+   
         return (
             <div className="notebook-summary">
 
@@ -93,6 +95,14 @@ class SubmissionPreview extends Component {
                             {' (deleted '} <Time value={this.state.submission.deletedDate} relative/>{')'}
                         </span>
                         : null}
+                        {this.state.submission.totalComments || this.state.submission.views 
+                            ? <span>
+                                <span className="dot"></span>
+                                   { this.state.submission.views ? <span>{this.state.submission.views} {this.state.submission.views > 1?<span>views</span>:<span>view</span>}</span> : ''}
+                                   {this.state.submission.totalComments && this.state.submission.views ? <span style={{margin: '2px'}}><span className="dot" style={{margin: "2px 3px"}}></span></span>: ''}
+                                   { this.state.submission.totalComments ? <span>{this.state.submission.totalComments} {this.state.submission.totalComments > 1?<span>comments</span>:<span>comment</span>}</span> : ''} 
+                            </span> : 
+                        ''}
                     </p>
                     <MarkdownRender
                         disallowedTypes={['heading']}
@@ -102,12 +112,12 @@ class SubmissionPreview extends Component {
                         className='short'/> {/* This causes the original LaTex to remain */}
                 </div>
 
-                {/* <p className="avatar">
+                <p className="avatar">
                     <Link to={'/user/' + this.state.author._id}>
                         <img src={this.state.author.avatar} alt="Author avatar"/>
                     </Link>
                 </p> 
-                <div className="stats">
+                {/* <div className="stats">
                     <ul>
                         <li className="views">
                             {this.state.submission.views > 1 || this.state.submission.views == 0?

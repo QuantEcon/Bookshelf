@@ -236,7 +236,6 @@ class Comment extends Component {
     }
 
     render() {
-        {console.log('[IMAGE]', avatarPlaceHolder)}
         return (
             <div className='comment'>
                 <Modal

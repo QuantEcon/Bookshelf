@@ -9,6 +9,7 @@
     "start-server": "node app.js",
     "start-client": "cd client && npm start",
     "start:dev": "concurrently \"npm run start-server\" \"npm run start-client\"",
+    "start-dev": "nodemon app.js",
     "start": "node app.js",
     "install-all": "npm install && npm run install-client",
     "install-client": "cd client && npm install",

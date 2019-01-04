@@ -27,10 +27,7 @@ class ReplyList extends Component {
         return (
             <div>
                 {/*Render each reply*/}
-                {this
-                    .state
-                    .replies
-                    .map((reply, index) => {
+                {this.state.replies.map((reply, index) => {
                         if (reply) {
                             var author = this
                                 .state
@@ -43,6 +40,8 @@ class ReplyList extends Component {
                                 author={author[0]}
                                 key={index}
                                 currentUser={this.props.currentUser}/>
+                        } else {
+                            return null;
                         }
                     })}
             </div>

@@ -58,10 +58,6 @@ app.get('/callback', passport.authenticate('google', {
               if(error) {
                 return res.sendStatus(500)
               } else {
-                // if user.deleted is true, then do not log user in
-                if(user.deleted) {
-                  res.send("User has been deleted.");
-                } else {
                   //sign new jwt
                   //TODO: check if user is admin, issue admin token
                   AdminList.findOne({}, (err, adminList) => {
@@ -99,7 +95,6 @@ app.get('/callback', passport.authenticate('google', {
                           })
                   }) // end of logging in user & checking if user is admin via Google
                 }
-              }
             }); // end of findById
 
         } else {

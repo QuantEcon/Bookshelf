@@ -5,7 +5,7 @@
   "private": true,
   "main": "./server/app.js",
   "scripts": {
-    "start": "cd ./server && node app.js",
+    "start": "cd ./server && nodemon app.js",
     "start-client": "cd ./client && npm start",
     "dev": "concurrently \"npm run start\" \"npm run start-client\" \"cd ./client/src/assets/scss && gulp\"",
     "install-server": "cd ./server && npm install",
@@ -50,7 +50,8 @@
   },
   "devDependencies": {
     "concurrently": "^3.5.1",
-    "jsdoc-jsx": "^0.1.0"
+    "jsdoc-jsx": "^0.1.0",
+    "nodemon": "^1.18.9"
   },
   "dependencies": {
     "email-validator": "^2.0.4",
