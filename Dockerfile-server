@@ -2,6 +2,7 @@ FROM node:9.5.0
 
 RUN mkdir /server
 WORKDIR /server
+ENV NODE_ENV=production
 
 
 COPY server/package.json /server
