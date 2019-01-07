@@ -81,7 +81,7 @@ app.enable('trust proxy');
  */ 
  
 app.use (function (req, res, next) {
-    console.log(process.env.NODE_ENV, " what is process env")
+    if (process.env.NODE_ENV === 'production') {
         if (req.secure) {
                 // request was via https, so do no special handling
                 next();
@@ -89,6 +89,9 @@ app.use (function (req, res, next) {
                 // request was via http, so redirect to https
                 res.redirect('https://' + req.headers.host + req.url);
         }
+    } else {
+        next();
+    }
 });
 
 
@@ -171,6 +174,7 @@ app.use(function (req, res, next) {
             "ow-Credentials, Access-Control-Allow-Origin");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header('Access-Control-Request-Headers', 'access-token,authorization,if-modified-since,uid');
+    next();
 });
 
 app.use(session({secret: secret, resave: true, saveUninitialized: true}));
