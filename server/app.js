@@ -59,7 +59,7 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 const app = express();
-
+app.enable('trust proxy');
 app.use(compression())
 
 app.use(bodyParser.json({limit: '50mb'}))
@@ -144,7 +144,16 @@ app.use(function (req, res, next) {
             "ow-Credentials, Access-Control-Allow-Origin");
     res.header("Access-Control-Allow-Credentials", "true");
     res.header('Access-Control-Request-Headers', 'access-token,authorization,if-modified-since,uid');
-    next();
+    console.log(process.env.NODE_ENV, " what is process env")
+    if (process.env.NODE_ENV == 'production') {
+        if (req.secure) {
+            // request was via https, so do no special handling
+            next();
+        } else {
+                // request was via http, so redirect to https
+                res.redirect('https://' + req.headers.host + req.url);
+        }
+    }
 });
 
 app.use(session({secret: secret, resave: true, saveUninitialized: true}));
