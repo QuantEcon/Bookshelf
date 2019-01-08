@@ -600,7 +600,7 @@ class EditProfile extends Component {
                                     </label>
                                     <p className="input-hint">
                                         You can use{' '}
-                                        <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
+                                        <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer"><b>markdown</b></a>{' '}here.
                                     </p>
                                     <Tabs>
                                       <TabList>
