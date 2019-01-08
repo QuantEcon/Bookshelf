@@ -189,7 +189,7 @@ function oauth_config {
 		    github: {
 		        clientID: '${github_id}',
 		        clientSecret: '${github_secret}',
-		        callbackURL: appConfig.urlAndPort + '/api/auth/github/callback',
+		        callbackURL: "https://notes.quantecon.org:443" + '/api/auth/github/callback',
 		        addCallbackURL: appConfig.urlAndPort + '/api/auth/github/callback/add'
 		    },
 		    twitter: {
