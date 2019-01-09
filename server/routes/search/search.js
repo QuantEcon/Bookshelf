@@ -252,7 +252,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var mergedReplyIDs;
     var replyAuthorIDs;
     var commentAuthor;
-    var updateDate;
+    var updatedDate;
 
     var userDeleted;
     var notebookID = req.params.nbid;

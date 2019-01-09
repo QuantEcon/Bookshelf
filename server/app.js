@@ -86,7 +86,7 @@ app.use(function (req, res, next) {
     console.log('\tmethod: ', req.method);
     console.log('\tbody: ', req.body);
     console.log('\tauthorization: ', req.headers['authorization']);
-    console.log('\n');
+    console.log('\n ip address :', req.ip);
 
     res.header("Access-Control-Allow-Origin", "http://localhost:1000");
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
