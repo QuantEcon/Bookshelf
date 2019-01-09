@@ -59,7 +59,6 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 const app = express();
-app.enable('trust proxy');
 app.use(compression())
 
 app.use(bodyParser.json({limit: '50mb'}))
@@ -79,7 +78,29 @@ app.enable('trust proxy');
  *  Add a handler to inspect the req.secure flag This allows us 
  *  to know whether the request was via http or https.
  */ 
- 
+app.use(function (req, res, next) {
+    console.log('----------------------------------------------------------------\n')
+    console.log("Looking for URL : " + req.url);
+    console.log('\tmethod: ', req.method);
+    console.log('\tbody: ', req.body);
+    console.log('\tauthorization: ', req.headers['authorization']);
+    console.log('\n');
+
+    res.header("Access-Control-Allow-Origin", "http://localhost:1000");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization Access-Control-All" +
+            "ow-Credentials, Access-Control-Allow-Origin");
+    res.header("Access-Control-Allow-Credentials", "true");
+    res.header('Access-Control-Request-Headers', 'access-token,authorization,if-modified-since,uid');
+    next();
+});
+
+app.use(session({secret: secret, resave: true, saveUninitialized: true}));
+app.use(passport.initialize());
+app.use(passport.session());
+passportInit();
+
 app.use (function (req, res, next) {
     if (process.env.NODE_ENV === 'production') {
         if (req.secure) {
@@ -87,7 +108,7 @@ app.use (function (req, res, next) {
                 next();
         } else {
                 // request was via http, so redirect to https
-                res.redirect('https://' + req.headers.host + req.url);
+                res.redirect(301, 'https://' + req.headers.host + req.url);
         }
     } else {
         next();
@@ -159,28 +180,6 @@ app.post('/add-notify-email', (req, res) => {
         }
     })
 })
-
-app.use(function (req, res, next) {
-    console.log('----------------------------------------------------------------\n')
-    console.log("Looking for URL : " + req.url);
-    console.log('\tmethod: ', req.method);
-    console.log('\tbody: ', req.body);
-    console.log('\tauthorization: ', req.headers['authorization']);
-    console.log('\n');
-
-    res.header("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization Access-Control-All" +
-            "ow-Credentials, Access-Control-Allow-Origin");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header('Access-Control-Request-Headers', 'access-token,authorization,if-modified-since,uid');
-    next();
-});
-
-app.use(session({secret: secret, resave: true, saveUninitialized: true}));
-app.use(passport.initialize());
-app.use(passport.session());
-passportInit();
 
 // ROUTES
 // ==============================================================================
