@@ -13,6 +13,7 @@ const waterfall = require('async/waterfall');
 const path = require('path');
 const cors = require('cors');
 const compression = require('compression')
+const helmet = require('helmet')
 
 // routes
 // ==============================================================================
@@ -59,6 +60,7 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 const app = express();
+app.use(helmet())
 app.use(compression())
 
 app.use(bodyParser.json({limit: '50mb'}))
