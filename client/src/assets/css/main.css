@@ -3760,6 +3760,25 @@ div.my-modal {
           color: #cacaca; }
           .comments .comments-thread .comment .comment-main .comment-header .flag:hover, .comments .comments-thread .comment .comment-main .comment-header .delete:hover {
             color: #d84d0a; }
+      .comments .comments-thread .comment .comment-main .comment-body .error-div {
+        position: relative;
+        height: 10px;
+        background-color: #ff425d;
+        padding: 10px;
+        color: white;
+        width: 300px;
+        border-radius: 2px; }
+        .comments .comments-thread .comment .comment-main .comment-body .error-div svg {
+          font-size: 1.6rem; }
+      .comments .comments-thread .comment .comment-main .comment-body .error-text {
+        display: inline;
+        position: absolute;
+        margin: 0px;
+        top: 50%;
+        /* right: -50%; */
+        -ms-transform: translate(0%, -50%);
+            transform: translate(0%, -50%);
+        font-size: 1rem; }
       .comments .comments-thread .comment .comment-main .comment-footer {
         margin: 1rem 0 0 0;
         display: -ms-flexbox;
@@ -4142,6 +4161,16 @@ li.link {
 
 ul.terms-and-conditions {
   list-style-type: none; }
+
+.dot {
+  width: 3px;
+  height: 3px;
+  background-color: #888888;
+  border-radius: 50%;
+  display: inline-block;
+  margin-bottom: 2px;
+  margin-left: 6px;
+  margin-right: 6px; }
 
 span.title {
   font-weight: bold; }

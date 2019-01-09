@@ -339,7 +339,7 @@ export const signIn = (provider, next) => {
             case 'Google':
                 authenticate('google').then(resp => {
                     console.log('[SignIn] - resp: ', resp);
-                    if(resp.data.error.message == 'deleted') {
+                    if(resp.data.error.message === 'deleted') {
                         console.log('[SignInActions] - error authenticating:')
                         console.log('\tprovider: ', provider);
                         console.log('User', resp.data)
@@ -348,7 +348,7 @@ export const signIn = (provider, next) => {
                             user: resp.data.user
                         }))
                         next(false)
-                    } else if(resp.data.error.message == 'active') {
+                    } else if(resp.data.error.message === 'active') {
                         dispatch(endUserAuthentication('Google', resp.data.user, resp.credentials.token, null, resp.data.isAdmin))
                         saveState({
                             token: resp.credentials.token

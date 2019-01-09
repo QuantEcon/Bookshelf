@@ -59,11 +59,41 @@ const port = require('./_config').port;
 const secret = require('./_config').secret
 
 const app = express();
-
+app.enable('trust proxy');
 app.use(compression())
 
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
+
+
+/**
+ * Enable reverse proxy support in Express. This causes the
+ * the "X-Forwarded-Proto" header field to be trusted so its
+ * value can be used to determine the protocol. See 
+ * http://expressjs.com/api#app-settings for more details.
+ * 
+ */ 
+app.enable('trust proxy');
+
+/**
+ *  Add a handler to inspect the req.secure flag This allows us 
+ *  to know whether the request was via http or https.
+ */ 
+ 
+app.use (function (req, res, next) {
+    if (process.env.NODE_ENV === 'production') {
+        if (req.secure) {
+                // request was via https, so do no special handling
+                next();
+        } else {
+                // request was via http, so redirect to https
+                res.redirect('https://' + req.headers.host + req.url);
+        }
+    } else {
+        next();
+    }
+});
+
 
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 'client/build')));

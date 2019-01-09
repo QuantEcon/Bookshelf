@@ -38,7 +38,7 @@ class SubmissionContainer extends Component {
             .actions
             .fetchNBInfo({notebookID: props.match.params.id});
     }
-
+    
     render() {
         if(this.props.submission && this.props.submission.error){
             return (

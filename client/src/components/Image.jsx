@@ -1,4 +1,4 @@
-//Image Component requires from imageData.json file
+//Image Component requires from imageData.json file in client folder
 
 import React from 'react';
 
@@ -10,7 +10,7 @@ let Image = function statelessFunctionComponentClass(props) {
   let source = require(`../assets/img/logo/${imageName}`);
 
   return (
-    <li><a href={imageUrl}><img src={source} className={className}/></a></li>
+    <li><a href={imageUrl}><img src={source} className={className} alt={className}/></a></li>
   );
 };
 
