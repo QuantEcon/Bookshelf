@@ -21,7 +21,8 @@
     "build-docker-server": "docker build -t bookshelf-server:0.1 -f ./Dockerfile-server .",
     "docker": "docker-compose up",
     "stop-docker": "docker-compose stop",
-    "docker-daemon": "docker-compose up -d"
+    "docker-daemon": "docker-compose up -d",
+    "test": "mocha"
   },
   "repository": {
     "type": "git",
@@ -49,8 +50,10 @@
     ]
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "concurrently": "^3.5.1",
     "jsdoc-jsx": "^0.1.0",
+    "mocha": "^5.2.0",
     "nodemon": "^1.18.9"
   },
   "dependencies": {
