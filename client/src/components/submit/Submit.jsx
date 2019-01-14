@@ -237,34 +237,38 @@ class Submit extends Component {
      */
     submit = (e) => {
         if(e) {
-            e.preventDefault()
+            e.preventDefault();
         }
         this.setState({contentSaved : true}, () => {
 
-        if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit', this.props)
-            var file = this.state.accepted[0]
-              ? this.state.accepted[0]
-              : null
-            var notebookJSON = this.state.accepted[0]
-              ? null
-              : this.props.submission.data.notebookJSON
-          this.formData.score = this.props.submission.data.notebook.score
-          this.formData.views = this.props.submission.data.notebook.views
-          this.formData.published = this.props.submission.data.notebook.published
-          this.formData.lastUpdateDate = Date(Date.now())
-          this.props.save({formData: this.formData, file, notebookJSON})
-          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
-          ;
-      } else {
-          console.log('[EditSubmission] - not edit');
-          this.props.submit(this.formData, this.state.accepted[0]);
-      }
+            // Update language change from IPYNB meta data
+            this.langChanged();
+
+            // If notebook is being edited
+            if (this.props.isEdit) {
+                console.log('[EditSubmission] - submit edit', this.props)
+                var file = this.state.accepted[0]
+                ? this.state.accepted[0]
+                : null
+                var notebookJSON = this.state.accepted[0]
+                ? null
+                : this.props.submission.data.notebookJSON
+            this.formData.score = this.props.submission.data.notebook.score
+            this.formData.views = this.props.submission.data.notebook.views
+            this.formData.published = this.props.submission.data.notebook.published
+            this.formData.lastUpdateDate = Date(Date.now())
+            this.props.save({formData: this.formData, file, notebookJSON})
+            console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+            ;
+        } else {
+            console.log('[EditSubmission] - not edit');
+            this.props.submit(this.formData, this.state.accepted[0]);
+        }
      });
     }
 
-    langChanged = (event) => {
-        this.formData.lang = event.target.value
+    langChanged = () => {
+        this.state.noteookLanguage !== null ?  this.formData.lang = this.state.noteookLanguage : null;
     }
 
     titleChanged = (event) => {
@@ -326,7 +330,8 @@ class Submit extends Component {
                 // Parse drop file submission
                 let result = JSON.parse(event.target.result);
                 let submissionLanguage = result.metadata.kernelspec.language;
-                console.log('result:', result);
+                // TODO : Create a util text transformations file with all helper functions in it that's relates to text transformations.
+                let capitaliseFirst = submissionLanguage.charAt(0).toUpperCase() + submissionLanguage.slice(1);
                 this.setState({
                     notebookJSON: result,
                     notebookDataReady: true,
@@ -335,7 +340,7 @@ class Submit extends Component {
                     fileUploaded: true,
                     uploadError: false,
                     fileName: accepted[0].name,
-                    noteookLanguage: submissionLanguage,
+                    noteookLanguage: capitaliseFirst,
                 }, () => this.validate())
             }
         } else if (!this.state.fileUploaded) {

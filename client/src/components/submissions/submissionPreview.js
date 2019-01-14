@@ -56,7 +56,6 @@ class SubmissionPreview extends Component {
     componentDidMount() {
         // Call limitCharacter to display each submission summary
         this.limitCharacter();
-        console.log('[SUBMISSION]', this.state.submission)
     }
 
     componentDidUpdate() {

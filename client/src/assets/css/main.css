@@ -3943,9 +3943,6 @@ div.my-modal {
   padding-left: 0.5em;
   font-size: 14px; }
 
-.notebook-language:first-letter {
-  text-transform: capitalize; }
-
 .admin-content {
   padding: 1rem;
   margin: 1rem; }
