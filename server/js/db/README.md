@@ -16,4 +16,4 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 
 **TODO**
 
-[] - Integrating migration command to the build process
+- [ ] Integrating migration command to the build process
