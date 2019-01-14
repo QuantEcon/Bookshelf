@@ -11,7 +11,7 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 
 #### Running migrations
 
-* Type `npm run migrate` to run migrations. In case there is an error of  `migrate` command not found, then use `./../../node_modules/migrate/bin/migrate`in `server/js/db`.
+* Type `npm run migrate` to run migrations. In case there is an error of  `migrate` command not found, then use `./../../node_modules/migrate/bin/migrate`in `server/js/db`, or you can install the package globally with `npm install  migrate -g`.
 
 **TODO**
 
