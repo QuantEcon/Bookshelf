@@ -89,7 +89,8 @@ class Submit extends Component {
             pasteValue: false,
             textareaValue: 0,
             triggerOnKeyPress: false,
-            summary: ''
+            summary: '',
+            noteookLanguage: null
         }
 
         this.onOpenClick = this
@@ -256,11 +257,8 @@ class Submit extends Component {
           console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
           ;
       } else {
-          console.log('[EditSubmission] - not edit')
-
-          this
-              .props
-              .submit(this.formData, this.state.accepted[0]);
+          console.log('[EditSubmission] - not edit');
+          this.props.submit(this.formData, this.state.accepted[0]);
       }
      });
     }
@@ -325,14 +323,19 @@ class Submit extends Component {
             this.setState({notebookDataReady: false});
             reader.readAsText(accepted[0]);
             reader.onload = (event) => {
+                // Parse drop file submission
+                let result = JSON.parse(event.target.result);
+                let submissionLanguage = result.metadata.kernelspec.language;
+                console.log('result:', result);
                 this.setState({
-                    notebookJSON: JSON.parse(event.target.result),
+                    notebookJSON: result,
                     notebookDataReady: true,
                     accepted,
                     rejected,
                     fileUploaded: true,
                     uploadError: false,
-                    fileName: accepted[0].name
+                    fileName: accepted[0].name,
+                    noteookLanguage: submissionLanguage,
                 }, () => this.validate())
             }
         } else if (!this.state.fileUploaded) {
@@ -435,16 +438,14 @@ class Submit extends Component {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
-                <Breadcrumbs title='Submit'/>
-
-              {/* Modal window for preview button in the edit notebook submission */}
+                <Breadcrumbs title='Submit'/>                
+                {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
-
                 {/* Modal window for cancel button in the edit notebook submission */}
                 <Modal isOpen={this.state.cancelSubmissionModal}
                       onRequestClose={this.toggleCancelSubmissionModal}
@@ -670,19 +671,12 @@ class Submit extends Component {
                                     </ul>
                                 </div>
                                 <div className='submit-secondary-group2'>
-                                    <label className='section-title'>Language
-                                        <span className='mandatory'>*</span>
-                                    </label>
-                                    <select name="lang" defaultValue='python' onChange={this.langChanged}>
-                                        <option value="Python">Python</option>
-                                        <option value="Julia">Julia</option>
-                                        <option value="R">R</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-
+                                    <label className='section-title'>Detected Language</label>
+                                    <div className='detected-language'>
+                                        {this.state.noteookLanguage !== null ? <p className='notebook-language'>{this.state.noteookLanguage}</p> : null}
+                                    </div>
                                     <hr/>
-
-
+                                    
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">
                                         You can use{' '}
