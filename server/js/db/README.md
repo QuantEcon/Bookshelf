@@ -5,10 +5,10 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 #### Installation
 * Run `npm install` in server folder. 
 
-#### Creating migration file
+#### Creating files
 
-* Please use the existing template while creating migration files by running `migrate create test-migrate --template-file migrations/template.js` in `server/js/db`.
-
+* Install `npm install migrate -g` to run `migrate` command.
+* Please use the existing template while creating migration files by running `migrate create test-migrate --template-file migrations/template.js` in `server/js/db`. 
 
 #### Running migrations
 
