@@ -3105,6 +3105,7 @@ div.md-summary > p.input-hint {
     font-weight: bold;
     border-radius: 5px; }
   .pagination .disabled {
+    display: none;
     color: #888;
     cursor: not-allowed; }
     .pagination .disabled:hover {
