@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
+import DeleteIcon from 'react-icons/lib/md/delete';
 import AlertCircledIcon from 'react-icons/lib/io/alert-circled';
 import Modal from 'react-modal'
 import MarkdownRender from '@nteract/markdown'
@@ -33,6 +34,7 @@ class Comment extends Component {
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
+     * @prop {func} deleteComment Method called when the user clicks "Delete"
      * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to
      * this comment is disabled
      */
@@ -43,6 +45,7 @@ class Comment extends Component {
         authors: PropTypes.array,
         currentUser: PropTypes.object,
         editComment: PropTypes.func,
+        deleteComment: PropTypes.func,
         isReply: PropTypes.bool
     }
 
@@ -223,7 +226,11 @@ class Comment extends Component {
 
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
-        alert('This hasn\'t been implemented yet' )
+        console.log(this.props.comment._id, " comment ID")
+        this
+            .props
+            .actions
+            .deleteComment({commentID: this.props.comment._id})
         this.toggleDeleteModal();
     }
 
@@ -387,9 +394,9 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        {/* <a onClick={this.toggleDeleteModal}>
+                                        <a onClick={this.toggleDeleteModal}>
                                             <DeleteIcon/>
-                                        </a> */}
+                                        </a>
                                     </div>
                                 : null}
                         </ul>

@@ -177,6 +177,20 @@ export function editCommentSuccess({
     }
 }
 
+export const DELETE_COMMENT = 'DELETE_COMMENT'
+export function deleteCommentSuccess({
+    deletedComment,
+    commentID,
+    error
+}) {
+    return {
+        type: DELETE_COMMENT,
+        deletedComment,
+        commentID,
+        error
+    }
+}
+
 export const POST_REPLY = 'POST_REPLY'
 export function postReply(submissionID, commentID, reply) {
     return {

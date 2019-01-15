@@ -11,7 +11,8 @@ import {
     REQUEST_NB,
     RECEIVE_NB,
     NB_PROGRESS,
-    EDIT_COMMENT
+    EDIT_COMMENT,
+    DELETE_COMMENT
 } from '../actions/submission';
 
 import { processEnv } from '../utils/envPreProcessor'
@@ -333,6 +334,19 @@ const SubmissionReducer = (state = {}, action) => {
             }
             return Object.assign({},state,{
                 editedComment: action.editedComment,
+                error: false,
+                commentID: action.commentID
+            })
+        case DELETE_COMMENT:
+            if (action.error) {
+                console.log('[SubmissionReducer] - error deleting comment: ', action.error);
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
+            return Object.assign({},state,{
+                deletedComment: action.deletedComment,
                 error: false,
                 commentID: action.commentID
             })

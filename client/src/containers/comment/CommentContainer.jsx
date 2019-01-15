@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 
-import {editComment, submitReply} from '../../actions/auth/comment'
+import {editComment, submitReply, deleteComment} from '../../actions/auth/comment'
 import {flagComment} from '../../actions/submission'
 
 import Comment from '../../components/comments/Comment'
 
 var actions = {
     editComment,
+    deleteComment,
     flagComment,
     submitReply
 }
@@ -26,6 +27,7 @@ class CommentContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
+        console.log(nextProps, "nextProps is this or not");
         if (this.props.error != nextProps.error) {
             // updates the error /
             this.setState({
@@ -39,6 +41,12 @@ class CommentContainer extends Component {
                         comment: nextProps.editedComment
                 }) 
             }
+        }
+        if (nextProps.deletedComment && nextProps.deletedComment._id == nextProps.comment._id) {
+            // updates the state of the comment if there is any deleting
+                if (this.props.deletedComment && nextProps.deletedComment) {
+                    
+                }
         }
         if (nextProps.replies && this.props.replies && (nextProps.replies.length !== this.props.replies.length)) {
             // updates the replies array state if there is any addition /
@@ -81,6 +89,7 @@ const mapStateToProps = (state, props) => {
     return {
         isAdmin: state.auth.isAdmin,
         editedComment: state.submissionByID.editedComment,
+        deletedComment: state.submissionByID.deletedComment,
         error: state.submissionByID.error,
         commentID: state.submissionByID.commentID,
     }

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import store from "../../store/store"
 import {authPostReply} from '../auth/auth'
-import {postComment, editCommentSuccess} from '../submission'
+import {postComment, editCommentSuccess, deleteCommentSuccess } from '../submission'
 
 /**
  * @file Actions for comments
@@ -48,6 +48,49 @@ export const editComment = ({
             }
         }).catch(error => {
             dispatch(editCommentSuccess({
+                error,
+                commentID
+            }))
+        })
+    }
+}
+
+/**
+ * @function deleteComment
+ * @description Makes an API request to delete the `text` value in the Comment object
+ * in the database
+ * 
+ * @param {Object} param0 
+ * @param {String} param0.commentID ID of the comment being edited
+ * @param {String} param0.newCommentText New contents to replace the comment text
+ */
+export const deleteComment = ({
+    commentID
+}) => {
+    return function (dispatch) {
+        axios.post('/api/submit/comment/delete', {
+            commentID
+        }, {
+            headers: {
+                'Authorization': 'JWT ' + store.getState().auth.token
+            }
+        }).then(resp => {
+            console.log('[AuthActions] - delete comment returned: ', resp);
+            if (resp.data.error) {
+                console.log('[AuthActions] - submit delete error in response: ', resp.data.error);
+                dispatch(deleteCommentSuccess({
+                    error: resp.data.error,
+                    commentID
+                }))
+            } else {
+                dispatch(deleteCommentSuccess({
+                    deletedComment: true,
+                    commentID,
+                    error: null
+                }))
+            }
+        }).catch(error => {
+            dispatch(deleteCommentSuccess({
                 error,
                 commentID
             }))
