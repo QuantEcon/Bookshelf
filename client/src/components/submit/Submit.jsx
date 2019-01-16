@@ -676,7 +676,7 @@ class Submit extends Component {
                                     </ul>
                                 </div>
                                 <div className='submit-secondary-group2'>
-                                    <label className='section-title'>Detected Language</label>
+                                    <label className='section-title'>Language</label>
                                     <div className='detected-language'>
                                         {this.state.noteookLanguage !== null ? <p className='notebook-language'>{this.state.noteookLanguage}</p> : null}
                                     </div>
