@@ -3937,7 +3937,8 @@ div.my-modal {
   border: 1px solid #cacaca;
   background: #fff;
   border-radius: 5px;
-  padding-left: 0.5em; }
+  padding-left: 0.5em;
+  height: 45px; }
 
 .notebook-language {
   padding-left: 0.5em;
