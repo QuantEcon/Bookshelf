@@ -100,6 +100,9 @@ class Submission extends Component {
         this.download = this
             .download
             .bind(this);
+        this.share = this
+            .share
+            .bind(this);
         this.submitReply = this
             .submitReply
             .bind(this);
@@ -178,6 +181,12 @@ class Submission extends Component {
         FileSaver.saveAs(file)
     }
 
+    /** 
+     * Sharing notebook via social media
+     */
+    share() {
+        console.log('[Share Notebook]');
+    }
     /**
      * Dispatches an upvote submission action
      */
@@ -649,6 +658,9 @@ class Submission extends Component {
                                 </li>
                                 <li>
                                     <NavLink exact to={`/submission/${this.props.submissionID}/comments`} activeClassName="active">Comments { this.props.submission && this.props.submission.data && this.props.submission.data.comments && this.props.submission.data.comments.length ? <span>({this.props.submission.data.comments.length + this.props.submission.data.replies.length})</span>: ''}</NavLink>
+                                </li>
+                                <li>
+                                    <a activeClassName="active" onClick={this.share}>Share</a>
                                 </li>
                                 <li>
                                     <a className='alt' onClick={this.download}>Download</a>
