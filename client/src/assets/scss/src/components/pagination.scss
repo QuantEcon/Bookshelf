@@ -30,6 +30,7 @@
       border-radius: 5px;
     }
     .disabled {
+      display: none;
       color: #888;
       cursor: not-allowed;
       &:hover {
