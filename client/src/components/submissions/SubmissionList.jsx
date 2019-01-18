@@ -66,7 +66,7 @@ class SubmissionList extends Component {
                     </div>
                     <Paginate
                         onPageChange={this.onPageChange}
-                        pageCount={this.props.totalSubmissions/10}
+                        pageCount={Math.ceil(this.props.totalSubmissions/10)}
                         pageRangeDisplayed ={this.props.totalSubmissions/10}
                         marginPageDisplayed={3}
                         previousLabel='Prev'
