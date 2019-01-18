@@ -65,7 +65,8 @@ export const editComment = ({
  * @param {String} param0.newCommentText New contents to replace the comment text
  */
 export const deleteComment = ({
-    commentID
+    commentID,
+    submissionID
 }) => {
     return function (dispatch) {
         axios.post('/api/submit/comment/delete', {
@@ -80,19 +81,22 @@ export const deleteComment = ({
                 console.log('[AuthActions] - submit delete error in response: ', resp.data.error);
                 dispatch(deleteCommentSuccess({
                     error: resp.data.error,
-                    commentID
+                    commentID,
+                    submissionID
                 }))
             } else {
                 dispatch(deleteCommentSuccess({
-                    deletedComment: true,
+                    deletedComment: resp.data.comment,
                     commentID,
+                    submissionID,
                     error: null
                 }))
             }
         }).catch(error => {
             dispatch(deleteCommentSuccess({
                 error,
-                commentID
+                commentID,
+                submissionID
             }))
         })
     }

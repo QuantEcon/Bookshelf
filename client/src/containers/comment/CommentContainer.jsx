@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 
@@ -27,7 +27,6 @@ class CommentContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        console.log(nextProps, "nextProps is this or not");
         if (this.props.error != nextProps.error) {
             // updates the error /
             this.setState({
@@ -44,12 +43,12 @@ class CommentContainer extends Component {
         }
         if (nextProps.deletedComment && nextProps.deletedComment._id == nextProps.comment._id) {
             // updates the state of the comment if there is any deleting
-                if (this.props.deletedComment && nextProps.deletedComment) {
-                    
-                }
+            this.setState({
+                comment: nextProps.deletedComment
+            })
         }
         if (nextProps.replies && this.props.replies && (nextProps.replies.length !== this.props.replies.length)) {
-            // updates the replies array state if there is any addition /
+            // updates the replies array state if there is any addition/
             this.setState({
                 replies: nextProps.replies
             })
@@ -68,19 +67,24 @@ class CommentContainer extends Component {
     }
     render(){
         return(
-            <div key={this.state.comment._id}>
-                <Comment
-                    comment={this.state.comment}
-                    replies={this.state.replies}
-                    author={this.state.author}
-                    authors={this.state.authors}
-                    currentUser={this.state.currentUser}
-                    actions={this.props.actions}
-                    showAdmin={this.props.isAdmin}
-                    isReply={this.props.isReply}
-                    error={this.state.error}
-                />
-            </div>
+            <Fragment>
+                { this.state.comment.deleted ? '' :
+                <div key={this.state.comment._id}>
+                    <Comment
+                        location={this.props.location}
+                        comment={this.state.comment}
+                        replies={this.state.replies}
+                        author={this.state.author}
+                        authors={this.state.authors}
+                        currentUser={this.state.currentUser}
+                        actions={this.props.actions}
+                        showAdmin={this.props.isAdmin}
+                        isReply={this.props.isReply}
+                        error={this.state.error}
+                    />
+                </div>
+                }
+            </Fragment>
         )
     }
 }

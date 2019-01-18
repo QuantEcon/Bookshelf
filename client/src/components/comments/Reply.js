@@ -31,6 +31,7 @@ class Reply extends Component {
         return (
             <div className='comment-nested'>
                 <CommentContainer
+                    location={this.props.location}
                     comment={this.state.reply}
                     author={this.state.author}
                     isReply={true}

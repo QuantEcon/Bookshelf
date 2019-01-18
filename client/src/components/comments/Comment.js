@@ -226,11 +226,14 @@ class Comment extends Component {
 
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
-        console.log(this.props.comment._id, " comment ID")
+        let submissionID = this.props.comment.submission
+        if (!this.props.comment.submission) {
+            submissionID = this.props.location.pathname.split('/')[2];
+        }
         this
             .props
             .actions
-            .deleteComment({commentID: this.props.comment._id})
+            .deleteComment({commentID: this.props.comment._id, submissionID})
         this.toggleDeleteModal();
     }
 
@@ -446,6 +449,7 @@ class Comment extends Component {
                     {/*Render all replies for this comment*/}
                     {this.state.replies
                         ? <ReplyList
+                                location={this.props.location}
                                 replies={this.state.replies}
                                 authors={this.state.authors}
                                 currentUser={this.props.currentUser}

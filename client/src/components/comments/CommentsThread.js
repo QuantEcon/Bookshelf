@@ -146,6 +146,7 @@ class CommentsThread extends Component {
                                         })[0]);
                                     }, this);
                                 return <CommentContainer
+                                    location={this.props.location}
                                     comment={comment}
                                     replies={replies}
                                     author={author}

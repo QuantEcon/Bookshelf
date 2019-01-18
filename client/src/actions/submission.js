@@ -181,13 +181,15 @@ export const DELETE_COMMENT = 'DELETE_COMMENT'
 export function deleteCommentSuccess({
     deletedComment,
     commentID,
-    error
+    error,
+    submissionID
 }) {
     return {
         type: DELETE_COMMENT,
         deletedComment,
         commentID,
-        error
+        error,
+        submissionID
     }
 }
 

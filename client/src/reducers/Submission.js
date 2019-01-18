@@ -345,7 +345,24 @@ const SubmissionReducer = (state = {}, action) => {
                     commentID: action.commentID
                 });
             }
+            let submissionData;
+            if (state[action.submissionID] && state[action.submissionID].data ) {
+                submissionData =  JSON.parse(JSON.stringify(state[action.submissionID])); // since Object.assign does not do deep copy
+                submissionData.data.replies = submissionData.data.replies.map((reply) => {
+                    if (reply._id === action.deletedComment._id) {
+                        reply.deleted = true;
+                    }
+                    return reply;
+                })
+                submissionData.data.comments = submissionData.data.comments.map((comment) => {
+                    if (comment._id === action.deletedComment._id) {
+                        comment.deleted = true;
+                    }
+                    return comment;
+                })
+            }
             return Object.assign({},state,{
+                [action.submissionID]: submissionData,
                 deletedComment: action.deletedComment,
                 error: false,
                 commentID: action.commentID
