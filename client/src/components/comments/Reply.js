@@ -29,7 +29,7 @@ class Reply extends Component {
 
     render() {
         return (
-            <div className='comment-nested'>
+            <div className='comment-nested' key={this.state.reply._id}>
                 <CommentContainer
                     location={this.props.location}
                     comment={this.state.reply}

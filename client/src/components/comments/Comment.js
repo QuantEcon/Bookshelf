@@ -251,8 +251,9 @@ class Comment extends Component {
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Comment'
-                    className='overlay'>
-                    <div className='my-modal'>
+                    className='overlay'
+                    >
+                    <div className='my-modal' id="delete-comment-modal">
                         <div className='modal-header'>
                             <h1 className='modal-title'>Delete Comment</h1>
                         </div>
@@ -397,7 +398,7 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        <a onClick={this.toggleDeleteModal}>
+                                        <a onClick={this.toggleDeleteModal} className='ml-6'>
                                             <DeleteIcon/>
                                         </a>
                                     </div>
