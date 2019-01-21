@@ -16,7 +16,8 @@
     "build-client": "cd client && npm build",
     "api-docs": "apidoc -f \".*\\.js$\" -i ./routes -o ./docs",
     "client-docs": "jsdoc -r -d ./client/docs -c ./jsdoc-config.json",
-    "setup-css": "cd client/src/assets && npm install --global gulp-cli && npm install && gulp"
+    "setup-css": "cd client/src/assets && npm install --global gulp-cli && npm install && gulp",
+    "migrate": "cd ./js/db && migrate"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
     "fuzzy-time": "^1.0.7",
     "jsonwebtoken": "^8.x.x",
     "mailgun-js": "^0.13.1",
+    "migrate": "^1.6.2",
     "mongodb": "^2.2.33",
     "mongoose": "^5.0.12",
     "mongoose-paginate": "^5.0.3",

@@ -198,6 +198,7 @@ app.post('/confirm', passport.authenticate('jwt', {
 
     newSub.lang = req.body.submission.lang;
     newSub.summary = req.body.submission.summary;
+    newSub.authorName = req.body.submission.author.name;
 
     newSub.author = req.user._id;
 

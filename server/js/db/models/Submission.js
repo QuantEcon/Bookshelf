@@ -17,6 +17,7 @@ var submissionSchema = new Schema({
     ipynbFile: String,
 
     author: ObjectId,
+    authorName: String,
     coAuthors: Array,
     comments: [ObjectId],
     totalComments: Number,
@@ -41,7 +42,7 @@ var submissionSchema = new Schema({
 });
 
 submissionSchema.plugin(mongoosePaginate);
-submissionSchema.index({title: 'text', summary: 'text'});
+submissionSchema.index({title: 'text', summary: 'text', authorName: 'text'}, {"weights": {title: 2, authorName: 2, summary: 1}});
 
 
 module.exports = mongoose.model("Submission", submissionSchema);

@@ -16,4 +16,4 @@ docs
 
 docs/
 .ipynb_checkpoints/
-
+server/js/db/.migrate
