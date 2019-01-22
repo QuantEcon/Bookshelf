@@ -27,21 +27,21 @@ class CommentContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.error != nextProps.error) {
+        if (this.props.error !== nextProps.error) {
             // updates the error /
             this.setState({
                 error: nextProps.error
             })
         }
-        if (nextProps.editedComment && nextProps.editedComment._id == nextProps.comment._id) {
+        if (nextProps.editedComment && nextProps.editedComment._id === nextProps.comment._id) {
             // updates the state of the comment if there is any editing /
-                if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content != this.props.editedComment.content)) {
+                if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content !== this.props.editedComment.content)) {
                 this.setState({
                         comment: nextProps.editedComment
                 }) 
             }
         }
-        if (nextProps.deletedComment && nextProps.deletedComment._id == nextProps.comment._id) {
+        if (nextProps.deletedComment && nextProps.deletedComment._id === nextProps.comment._id) {
             // updates the state of the comment if there is any deleting
             this.setState({
                 comment: nextProps.deletedComment
