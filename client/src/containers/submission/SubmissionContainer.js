@@ -56,6 +56,7 @@ class SubmissionContainer extends Component {
                         currentUser={this.props.currentUser}
                         actions={this.props.actions}
                         history={this.props.history}
+                        location={this.props.location}
                         showAdmin={this.props.isAdmin}
                         nbLoading={this.props.nbLoading}
                         dataReceived={this.props.dataReceived}

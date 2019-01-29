@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux'
 
-import {editComment, submitReply} from '../../actions/auth/comment'
+import {editComment, submitReply, deleteComment} from '../../actions/auth/comment'
 import {flagComment} from '../../actions/submission'
 
 import Comment from '../../components/comments/Comment'
 
 var actions = {
     editComment,
+    deleteComment,
     flagComment,
     submitReply
 }
@@ -26,22 +27,28 @@ class CommentContainer extends Component {
         }
     }
     componentWillReceiveProps(nextProps) {
-        if (this.props.error != nextProps.error) {
+        if (this.props.error !== nextProps.error) {
             // updates the error /
             this.setState({
                 error: nextProps.error
             })
         }
-        if (nextProps.editedComment && nextProps.editedComment._id == nextProps.comment._id) {
+        if (nextProps.editedComment && nextProps.editedComment._id === nextProps.comment._id) {
             // updates the state of the comment if there is any editing /
-                if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content != this.props.editedComment.content)) {
+                if ((!this.props.editedComment && nextProps.editedComment) || (nextProps.editedComment.content !== this.props.editedComment.content)) {
                 this.setState({
                         comment: nextProps.editedComment
                 }) 
             }
         }
+        if (nextProps.deletedComment && nextProps.deletedComment._id === nextProps.comment._id) {
+            // updates the state of the comment if there is any deleting
+            this.setState({
+                comment: nextProps.deletedComment
+            })
+        }
         if (nextProps.replies && this.props.replies && (nextProps.replies.length !== this.props.replies.length)) {
-            // updates the replies array state if there is any addition /
+            // updates the replies array state if there is any addition/
             this.setState({
                 replies: nextProps.replies
             })
@@ -60,19 +67,24 @@ class CommentContainer extends Component {
     }
     render(){
         return(
-            <div key={this.state.comment._id}>
-                <Comment
-                    comment={this.state.comment}
-                    replies={this.state.replies}
-                    author={this.state.author}
-                    authors={this.state.authors}
-                    currentUser={this.state.currentUser}
-                    actions={this.props.actions}
-                    showAdmin={this.props.isAdmin}
-                    isReply={this.props.isReply}
-                    error={this.state.error}
-                />
-            </div>
+            <Fragment>
+                { this.state.comment.deleted ? '' :
+                <div key={this.state.comment._id}>
+                    <Comment
+                        location={this.props.location}
+                        comment={this.state.comment}
+                        replies={this.state.replies}
+                        author={this.state.author}
+                        authors={this.state.authors}
+                        currentUser={this.state.currentUser}
+                        actions={this.props.actions}
+                        showAdmin={this.props.isAdmin}
+                        isReply={this.props.isReply}
+                        error={this.state.error}
+                    />
+                </div>
+                }
+            </Fragment>
         )
     }
 }
@@ -81,6 +93,7 @@ const mapStateToProps = (state, props) => {
     return {
         isAdmin: state.auth.isAdmin,
         editedComment: state.submissionByID.editedComment,
+        deletedComment: state.submissionByID.deletedComment,
         error: state.submissionByID.error,
         commentID: state.submissionByID.commentID,
     }
