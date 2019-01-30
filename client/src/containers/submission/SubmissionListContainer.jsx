@@ -20,6 +20,7 @@ class SubmissionListContainer extends Component {
         this.props.actions.fetchSubmissions({searchParams, forced: true});
     }
     render() {
+        console.log(this.props.submissionPreviews)
         return (
             <div>
                 <SubmissionList

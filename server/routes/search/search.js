@@ -2,6 +2,7 @@ var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var series = require('async/series');
 var mdb = require('mongodb');
+var storage = require('node-persist');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -14,6 +15,19 @@ var app = express.Router();
 
 var config = require('../../_config');
 
+
+(async function initStorage(){
+    await storage.init( /* options ... */ );
+    await storage.removeItem('trendingSubmissions')
+}())
+
+async function getSoredData(key) {
+    return await storage.getItem(key)
+}
+
+async function storeData(key, value) {
+    return await storage.setItem(key, value)
+}
 /**
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
@@ -136,38 +150,118 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-    //todo: add select statement to only get required info
-    Submission.paginate(searchParams, options).then(function (result) {
-        var submissions = result.docs;
-        var err = null;
-        if (err) {
-            console.log("Error occurred finding submissions");
-            res.status(500);
-            res.send("Error occurred finding submissions")
+    let differentRandomNumber = (prob, currentNo, totalNo, visitedArray, data) => {
+        let randomNumber = Math.round(Math.random()*(totalNo - 1))
+        if (visitedArray.length < totalNo) {
+            while (visitedArray.includes(randomNumber)) {
+                randomNumber = Math.round(Math.random()*(totalNo - 1))
+            }
         } else {
-            //get users
-            var authorIds = submissions.map(function (submission) {
-                return submission.author;
-            });
-            User.find({
-                _id: {
-                    $in: authorIds
-                }
-            }, 'name avatar _id', function (err, authors) {
-                if (err) {
-                    console.log("Error occurred finding authors");
-                    res.status(500);
-                    res.send("Error occurred finding authors");
+            return;
+        }
+        let changeIndex = (Math.random() <= prob)
+        if (changeIndex) {
+            let temp = data[randomNumber]
+            data[randomNumber] = data[currentNo]
+            data[currentNo] = temp;
+            visitedArray.push(randomNumber);
+            visitedArray.push(currentNo);
+        } else {
+            if (!visitedArray.includes(currentNo)) {
+                visitedArray.push(currentNo)
+            }
+        }
+    }
+
+    if (req.query.sortBy == 'Trending') {
+        (() => {
+            let dataArray = []
+            let queryPromise = null;
+            let storedRandomCollection = getSoredData('trendingSubmissions')
+            storedRandomCollection.then((data) => {
+                if (!data) {
+                    console.log('calling query?')
+                    queryPromise = Submission.find().sort({'published': -1}).then((data) => {
+                                            let visitedArray = []
+                                            for (let i = 0; i < data.length; i++) {
+                                                differentRandomNumber(0.1, i, data.length, visitedArray, data)
+                                            }
+                                            storeData('trendingSubmissions', data)
+                                            return data
+                                        })
                 } else {
-                    res.send({
-                        submissions: submissions,
-                        totalSubmissions: result.total,
-                        authors: authors
+                    console.log('hooray')
+                    queryPromise = new Promise((resolve, reject) =>{
+                        resolve(storedRandomCollection)
+                    })
+                }
+                return queryPromise
+            }).then((shuffledData) => {
+                let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
+                var err = null;
+                if (err) {
+                    console.log("Error occurred finding submissions");
+                    res.status(500);
+                    res.send("Error occurred finding submissions")
+                } else {
+                    //get users
+                    var authorIds = submissions.map(function (submission) {
+                        return submission.author;
+                    });
+                    User.find({
+                        _id: {
+                            $in: authorIds
+                        }
+                    }, 'name avatar _id', function (err, authors) {
+                        if (err) {
+                            console.log("Error occurred finding authors");
+                            res.status(500);
+                            res.send("Error occurred finding authors");
+                        } else {
+                            res.send({
+                                submissions: submissions,
+                                totalSubmissions: shuffledData.length,
+                                authors: authors
+                            })
+                        }
                     })
                 }
             })
-        }
-    });
+        })()
+    } else {
+        //todo: add select statement to only get required info
+        Submission.paginate(searchParams, options).then(function (result) {
+            var submissions = result.docs;
+            var err = null;
+            if (err) {
+                console.log("Error occurred finding submissions");
+                res.status(500);
+                res.send("Error occurred finding submissions")
+            } else {
+                //get users
+                var authorIds = submissions.map(function (submission) {
+                    return submission.author;
+                });
+                User.find({
+                    _id: {
+                        $in: authorIds
+                    }
+                }, 'name avatar _id', function (err, authors) {
+                    if (err) {
+                        console.log("Error occurred finding authors");
+                        res.status(500);
+                        res.send("Error occurred finding authors");
+                    } else {
+                        res.send({
+                            submissions: submissions,
+                            totalSubmissions: result.total,
+                            authors: authors
+                        })
+                    }
+                })
+            }
+        });
+    }
 });
 
 // endpoint to get a list of all the existing users
