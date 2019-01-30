@@ -68,7 +68,7 @@ class CommentContainer extends Component {
     render(){
         return(
             <Fragment>
-                { this.state.comment.deleted || this.state.comment.content == "" ? '' :
+                { this.state.comment.deleted ? '' :
                 <div key={this.state.comment._id}>
                     <Comment
                         location={this.props.location}
