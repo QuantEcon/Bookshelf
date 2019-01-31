@@ -183,7 +183,8 @@ app.get('/all-submissions', function (req, res) {
             let queryPromise = null;
             let storedRandomCollection = getStoredData()
             storedRandomCollection.then((data) => {
-                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams))) {
+                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
+                    console.log('query change?')
                     queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
                         let visitedArray = []
                         for (let i = 0; i < data.length; i++) {
@@ -194,6 +195,7 @@ app.get('/all-submissions', function (req, res) {
                         return data
                     })
                 } else {
+                    console.log('same')
                     queryPromise = new Promise((resolve, reject) =>{
                         resolve(storedRandomCollection)
                     })
