@@ -15,7 +15,7 @@ class SubmissionListContainer extends Component {
 
     onSearch = (searchParams) => {
         this.setState({
-            searchParams: searchParams
+            searchParams: { ...searchParams, page: 1 }
         })
         this.props.actions.fetchSubmissions({searchParams, forced: true});
     }
@@ -37,7 +37,7 @@ class SubmissionListContainer extends Component {
                         author: '',
                         keywords: '',
                         page: 1,
-                        sortBy: 'Votes'
+                        sortBy: 'Discover'
                     }}
                     onPageChange={this.onPageChange}
                     authors={this.props.authors}
@@ -57,7 +57,7 @@ function mapStateToProps(state, props) {
             author: '',
             keywords: '',
             page: 1,
-            sortBy: 'Votes'
+            sortBy: 'Discover'
         }
     } else {
         searchParams = Object.assign({}, {
@@ -67,7 +67,7 @@ function mapStateToProps(state, props) {
             author: '',
             keywords: '',
             page: 1,
-            sortBy: 'Votes'
+            sortBy: 'Discover'
         }, state.submissionList.searchParams);
     }
     if (props.userID) {

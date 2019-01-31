@@ -16,17 +16,13 @@ var app = express.Router();
 var config = require('../../_config');
 
 
-(async function initStorage(){
-    await storage.init( /* options ... */ );
-    await storage.removeItem('trendingSubmissions')
-}())
 
-async function getSoredData(key) {
-    return await storage.getItem(key)
-}
+// variables and functions 
+let globallyStoredSearchParams = {}
+let globallyStoredCollections = {}
 
-async function storeData(key, value) {
-    return await storage.setItem(key, value)
+async function getStoredData() {
+    return await globallyStoredCollections;
 }
 /**
  * @api {get} /api/search/all-submissions Get Submissions
@@ -46,7 +42,7 @@ async function storeData(key, value) {
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Discover, Date).
  *
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
@@ -132,9 +128,6 @@ app.get('/all-submissions', function (req, res) {
                     'published': -1
                 };
                 break;
-            case 'Trending':
-                console.log("Trending Algorithm");
-                break;
             case 'Views':
                 options.sort = {
                     'views': -1,
@@ -150,7 +143,16 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-    let differentRandomNumber = (prob, currentNo, totalNo, visitedArray, data) => {
+    /**
+     *  Function to change the order of notebook randomly with a given probability
+     * 
+     * @param {probability with which you want to swap a notebook} prob 
+     * @param {the present index to operate on} currentIndex
+     * @param {total number of notebooks} totalNo 
+     * @param {which indexes have been visited and operated upon} visitedArray 
+     * @param {the notebook data} data 
+     */
+    function changeOrderRandomly(prob, currentIndex, totalNo, visitedArray, data) {
         let randomNumber = Math.round(Math.random()*(totalNo - 1))
         if (visitedArray.length < totalNo) {
             while (visitedArray.includes(randomNumber)) {
@@ -162,35 +164,36 @@ app.get('/all-submissions', function (req, res) {
         let changeIndex = (Math.random() <= prob)
         if (changeIndex) {
             let temp = data[randomNumber]
-            data[randomNumber] = data[currentNo]
-            data[currentNo] = temp;
+            data[randomNumber] = data[currentIndex]
+            data[currentIndex] = temp;
             visitedArray.push(randomNumber);
-            visitedArray.push(currentNo);
+            visitedArray.push(currentIndex);
         } else {
-            if (!visitedArray.includes(currentNo)) {
-                visitedArray.push(currentNo)
+            if (!visitedArray.includes(currentIndex)) {
+                visitedArray.push(currentIndex)
             }
         }
     }
 
-    if (req.query.sortBy == 'Trending') {
+    /**
+     * Present implementation of Discover algorithm
+     */
+    if (req.query.sortBy == 'Discover') {
         (() => {
-            let dataArray = []
             let queryPromise = null;
-            let storedRandomCollection = getSoredData('trendingSubmissions')
+            let storedRandomCollection = getStoredData()
             storedRandomCollection.then((data) => {
-                if (!data) {
-                    console.log('calling query?')
-                    queryPromise = Submission.find().sort({'published': -1}).then((data) => {
-                                            let visitedArray = []
-                                            for (let i = 0; i < data.length; i++) {
-                                                differentRandomNumber(0.1, i, data.length, visitedArray, data)
-                                            }
-                                            storeData('trendingSubmissions', data)
-                                            return data
-                                        })
+                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams))) {
+                    queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
+                        let visitedArray = []
+                        for (let i = 0; i < data.length; i++) {
+                          changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                        }
+                        globallyStoredCollections = data;
+                        globallyStoredSearchParams = searchParams;
+                        return data
+                    })
                 } else {
-                    console.log('hooray')
                     queryPromise = new Promise((resolve, reject) =>{
                         resolve(storedRandomCollection)
                     })
