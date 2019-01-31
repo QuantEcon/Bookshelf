@@ -22,9 +22,11 @@ the [Alfred P. Sloan Foundation](https://sloan.org/).
 # Project Team
 
 
-####  **Lead Developer**
+####  **Lead Developers**
 
 * Trevor Lyon
+
+* Aakash Gupta Choudhury
 
 ####  **Prototype and Front-end Design**
 
