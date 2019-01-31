@@ -2,6 +2,9 @@
 
 As QuantEcon evolves with time, so will its existing database. We are currently using `node-migrate` package for writing automatic migration scripts. It will run all the migrations which have not been run yet and skip the completed ones. Migration scripts are stored in migrations folder. 
 
+**NOTE :-**
+* In case there is an error of  `migrate` command not found, then use `./../../node_modules/migrate/bin/migrate`in `server/js/db`, or you can install the package globally with `npm install  migrate -g`.
+
 #### Installation
 * Run `npm install` in server folder. 
 
@@ -11,7 +14,7 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 
 #### Running migrations
 
-* Type `npm run migrate` to run migrations. In case there is an error of  `migrate` command not found, then use `./../../node_modules/migrate/bin/migrate`in `server/js/db`, or you can install the package globally with `npm install  migrate -g`.
+* Type `npm run migrate` to run migrations.
 
 **TODO**
 
