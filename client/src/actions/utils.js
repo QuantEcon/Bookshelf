@@ -68,3 +68,16 @@ export const logRenderEndAction = ({request}) => {
         id: request.id
     }
 }
+
+export const GTAG_EVENTS = 'GTAG_EVENTS'
+export const fireGtagEvents = ({payload}) => {
+    console.log(payload, "what is the request here?")
+    window.dataLayer.push({
+        event: 'last_updated_date',
+        payload
+    })
+    return {
+        type: GTAG_EVENTS,
+        payload: payload
+    }
+}

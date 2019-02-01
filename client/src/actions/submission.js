@@ -8,7 +8,8 @@ import axios from 'axios'
 import store from '../store/store'
 import {
     logRequestSubmissionEndAction,
-    logRequestSubmissionStartAction
+    logRequestSubmissionStartAction,
+    fireGtagEvents
 } from './utils'
 
 import sizeof from 'object-sizeof'
@@ -323,6 +324,10 @@ export const editSubmission = ({
                     dispatch(editSubmissionAction({
                         submission
                     }));
+                    console.log(submission, " a gtag event?")
+                    dispatch(fireGtagEvents({
+                        payload: { lastUpdated: submission.lastUpdated, title: submission.title }
+                    }))
                     callback(true)
                 }
             })
