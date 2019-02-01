@@ -69,7 +69,7 @@ class Submit extends Component {
 
         this.state = {
             accepted: [],
-            fileName: props.isEdit
+            fileName: props.isEdit && this.props.submission
                 ? this.props.submission.data.fileName
                 : '',
             rejected: [],
@@ -102,7 +102,7 @@ class Submit extends Component {
     }
 
     componentDidMount() {
-        if (this.props.isEdit) {
+        if (this.props.isEdit && this.props.submission) {
             document.title = 'Edit Submission - QuantEcon Notes';
             if (this.props.submission.data.notebook.summary.split(' ').length === 1 && this.props.submission.data.notebook.summary.split(' ')[0] === '') {
               this.setState({summary: '', count: 0})
@@ -127,22 +127,22 @@ class Submit extends Component {
 
     formData = {
         agreement: false,
-        title: this.props.isEdit
+        title: this.props.isEdit && this.props.submission
             ? this.props.submission.data.notebook.title
             : '',
-        summary: this.props.isEdit
+        summary: this.props.isEdit && this.props.submission
             ? this.props.submission.data.notebook.summary
             : '',
-        lang: this.props.isEdit
+        lang: this.props.isEdit && this.props.submission
             ? this.props.submission.data.notebook.lang
             : 'Python',
-        topics: this.props.isEdit
+        topics: this.props.isEdit && this.props.submission
             ? this.props.submission.data.notebook.topics
             : [],
-        coAuthors: this.props.isEdit
+        coAuthors: this.props.isEdit && this.props.submission
             ? this.props.submission.data.coAuthors
             : {},
-        lastUpdated: this.props.isEdit
+        lastUpdated: this.props.isEdit && this.props.submission
             ? this.props.submission.data.lastUpdated
             : ''
     }
@@ -634,14 +634,14 @@ class Submit extends Component {
                                     <div className='submit-user'>
                                         <div className='side'>
                                             <p className='avatar'>
-                                                <Link to={'/user/' + this.props.user._id}>
+                                                {this.props.user ?<Link to={'/user/' + this.props.user._id}>
                                                     <img src={this.props.user.avatar} alt="Your avatar"/>
-                                                </Link>
+                                                </Link>: ''}
                                             </p>
                                         </div>
                                         <div className='main'>
                                             <p>
-                                                <Link to={'/user/' + this.props.user._id}>{this.props.user.name}</Link>
+                                                {this.props.user ? <Link to={'/user/' + this.props.user._id}>{this.props.user.name}</Link>:''}
                                             </p>
                                         </div>
                                     </div>
@@ -686,7 +686,7 @@ class Submit extends Component {
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">
                                         You can use{' '}
-                                        <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
+                                        <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer"><b>markdown</b></a>{' '}here.
                                     </p>
                                     <Tabs>
                                       <TabList>

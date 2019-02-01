@@ -94,6 +94,27 @@
                     }
                 }
                 .comment-body {
+                    .error-div {
+                        position: relative;
+                        height: 10px;
+                        background-color: $color-error-comments;
+                        padding: 10px;
+                        color: white;
+                        width: 300px;
+                        border-radius: 2px;
+                        svg {
+                            font-size: 1.6rem;
+                        }
+                    }
+                    .error-text {
+                        display: inline;
+                        position: absolute;
+                        margin: 0px;
+                        top: 50%;
+                        /* right: -50%; */
+                        transform: translate(0%,-50%);
+                        font-size: 1rem;
+                    }
 
                 }
                 .comment-footer {

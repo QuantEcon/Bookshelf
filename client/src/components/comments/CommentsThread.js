@@ -1,12 +1,11 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types'
-import {Link} from 'react-router-dom'
-import MarkdownRender from '@nteract/markdown'
-import {typesetMath} from 'mathjax-electron'
-import CloseIcon from 'react-icons/lib/fa/close'
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
+import MarkdownRender from '@nteract/markdown';
+import {typesetMath} from 'mathjax-electron';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-import CommentContainer from "../../containers/comment/CommentContainer"
+import CommentContainer from "../../containers/comment/CommentContainer";
 
 /**
  * Contains and renders all comments for the submission
@@ -147,6 +146,7 @@ class CommentsThread extends Component {
                                         })[0]);
                                     }, this);
                                 return <CommentContainer
+                                    location={this.props.location}
                                     comment={comment}
                                     replies={replies}
                                     author={author}
@@ -161,7 +161,7 @@ class CommentsThread extends Component {
                         <label>Post a comment</label>
                         <p className="input-hint">
                             You can use{' '}
-                            <a href="http://commonmark.org/help/" target="_blank"><b>markdown</b></a>{' '}here.
+                            <a href="http://commonmark.org/help/" target="_blank" rel="noopener noreferrer"><b>markdown</b></a>{' '}here.
                         </p>
                         <Tabs>
                           <TabList>

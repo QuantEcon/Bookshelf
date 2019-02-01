@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
+import DeleteIcon from 'react-icons/lib/md/delete';
+import AlertCircledIcon from 'react-icons/lib/io/alert-circled';
 import Modal from 'react-modal'
 import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
@@ -32,6 +34,7 @@ class Comment extends Component {
      * @prop {Object} currentUser Data representing the current user. If no user is signed in,
      * this will be `null`
      * @prop {func} editComment Method called when the user clicks "Edit"
+     * @prop {func} deleteComment Method called when the user clicks "Delete"
      * @prop {bool} isReply Boolean flag if the comment is a reply or not. If true, replying to
      * this comment is disabled
      */
@@ -42,6 +45,7 @@ class Comment extends Component {
         authors: PropTypes.array,
         currentUser: PropTypes.object,
         editComment: PropTypes.func,
+        deleteComment: PropTypes.func,
         isReply: PropTypes.bool
     }
 
@@ -222,7 +226,14 @@ class Comment extends Component {
 
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
-        alert('This hasn\'t been implemented yet' )
+        let submissionID = this.props.comment.submission
+        if (!this.props.comment.submission) {
+            submissionID = this.props.location.pathname.split('/')[2];
+        }
+        this
+            .props
+            .actions
+            .deleteComment({commentID: this.props.comment._id, submissionID})
         this.toggleDeleteModal();
     }
 
@@ -235,14 +246,14 @@ class Comment extends Component {
     }
 
     render() {
-        {console.log('[IMAGE]', avatarPlaceHolder)}
         return (
             <div className='comment'>
                 <Modal
                     isOpen={this.state.deleteModalOpen}
                     contentLabel='Delete Comment'
-                    className='overlay'>
-                    <div className='my-modal'>
+                    className='overlay'
+                    >
+                    <div className='my-modal' id="delete-comment-modal">
                         <div className='modal-header'>
                             <h1 className='modal-title'>Delete Comment</h1>
                         </div>
@@ -346,6 +357,9 @@ class Comment extends Component {
                     </div>
 
                     <div className='comment-body'>
+                        {this.props.error ? <div className='error-div'>
+                            <p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
+                        </div>: ''}
                         <MarkdownRender
                           disallowedTypes={['heading']}
                           source={this.state.comment.content
@@ -384,9 +398,9 @@ class Comment extends Component {
                                         <a onClick={this.toggleShowEditComment}>
                                             <EditIcon/>
                                         </a>
-                                        {/* <a onClick={this.toggleDeleteModal}>
+                                        <a onClick={this.toggleDeleteModal} className='ml-6'>
                                             <DeleteIcon/>
-                                        </a> */}
+                                        </a>
                                     </div>
                                 : null}
                         </ul>
@@ -436,6 +450,7 @@ class Comment extends Component {
                     {/*Render all replies for this comment*/}
                     {this.state.replies
                         ? <ReplyList
+                                location={this.props.location}
                                 replies={this.state.replies}
                                 authors={this.state.authors}
                                 currentUser={this.props.currentUser}

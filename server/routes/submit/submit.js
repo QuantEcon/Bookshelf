@@ -450,6 +450,65 @@ app.post('/comment/edit', passport.authenticate('jwt', {
 });
 
 /**
+ * @api {post} /api/submit/comment/delete Comment
+ * @apiGroup Edit
+ * @apiName EditComment
+ *
+ * @apiVersion 1.0.0
+ *
+ * @apiDescription Edits a comment and replaces the data in the database with the information provided
+ * by the user. A valid JSON Web Token must be supplied in the "Authorization" header. The user ID of the
+ * token must match the comment.author.
+ *
+ * Note: This endpoint is also used to edit replies, as there is virtualy no difference between a reply
+ * and a comment
+ *
+ * @apiUse AuthorizationHeader
+ *
+ * @apiParam {ID}       commentID       ID of the comment being edited
+ * @apiParam {String}   newCommentText  Edited text of the comment
+ *
+ * @apiSuccess (200) {Object} data
+ * @apiSuccess (200) {Object} data.comment The saved comment database object
+ *
+ * @apiError (500) InternalServerError Error occurred finding, editing, or saving the comment
+ */
+app.post('/comment/delete', passport.authenticate('jwt', {
+    session: false
+}), function (req, res) {
+    Comment
+        .findOne({
+            _id: req.body.commentID
+        }, function (err, comment) {
+            if (err) {
+                res.status(500);
+            } else if (comment) {
+                //todo: need to save previous submissions for legal reasons?
+                console.log("Edit comment content: ", req.body);
+                comment.deleted = true;
+                comment.editedDate = Date.now()
+                comment.save(function (err, savedComment) {
+                    if (err) {
+                        res.status(500);
+                        res.send({
+                            error: err
+                        })
+                    } else {
+                        res.send({
+                            comment: savedComment
+                        });
+                    }
+                })
+            } else {
+                res.status(500);
+                res.send({
+                    error: "Couldn't find comment"
+                });
+            }
+        })
+});
+
+/**
  * @api {post} /api/submit/comment Comment
  * @apiGroup Submit
  * @apiName SubmitComment

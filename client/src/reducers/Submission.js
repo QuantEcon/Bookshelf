@@ -10,7 +10,9 @@ import {
     EDIT_SUBMISSION,
     REQUEST_NB,
     RECEIVE_NB,
-    NB_PROGRESS
+    NB_PROGRESS,
+    EDIT_COMMENT,
+    DELETE_COMMENT
 } from '../actions/submission';
 
 import { processEnv } from '../utils/envPreProcessor'
@@ -264,6 +266,12 @@ const SubmissionReducer = (state = {}, action) => {
             console.log('[SubmissionActions] - post reply action:', action);
             console.log('[SubmissionActions] - state: ', state);
             console.log('[SubmissionActions] - submission: ', state[action.submissionID]);
+            if (action.error) {
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
             return Object.assign({}, state, {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     data: DataReducer(state[action.submissionID].data, action),
@@ -315,6 +323,49 @@ const SubmissionReducer = (state = {}, action) => {
                 [action.submissionID]: Object.assign({}, state[action.submissionID], {
                     didInvalidate: true
                 })
+            })
+        case EDIT_COMMENT:
+            if (action.error) {
+                console.log('[SubmissionReducer] - error editing comment: ', action.error);
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
+            return Object.assign({},state,{
+                editedComment: action.editedComment,
+                error: false,
+                commentID: action.commentID
+            })
+        case DELETE_COMMENT:
+            if (action.error) {
+                console.log('[SubmissionReducer] - error deleting comment: ', action.error);
+                return Object.assign({}, state, {
+                    error: action.error,
+                    commentID: action.commentID
+                });
+            }
+            let submissionData;
+            if (state[action.submissionID] && state[action.submissionID].data ) {
+                submissionData =  JSON.parse(JSON.stringify(state[action.submissionID])); // since Object.assign does not do deep copy
+                submissionData.data.replies = submissionData.data.replies.map((reply) => {
+                    if (reply._id === action.deletedComment._id) {
+                        reply.deleted = true;
+                    }
+                    return reply;
+                })
+                submissionData.data.comments = submissionData.data.comments.map((comment) => {
+                    if (comment._id === action.deletedComment._id) {
+                        comment.deleted = true;
+                    }
+                    return comment;
+                })
+            }
+            return Object.assign({},state,{
+                [action.submissionID]: submissionData,
+                deletedComment: action.deletedComment,
+                error: false,
+                commentID: action.commentID
             })
         default:
             return state;
