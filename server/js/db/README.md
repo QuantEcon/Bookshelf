@@ -5,6 +5,9 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 **NOTE :-**
 * In case there is an error of  `migrate` command not found, then use `./../../node_modules/migrate/bin/migrate`in `server/js/db`, or you can install the package globally with `npm install  migrate -g`.
 
+* If you already have an existing database for this project in MongoDB, please drop the entire database before migration. 
+Inside of Mongo, run `show dbs` and `use  <Database Name>`, and finally `db.dropDatabase();`.
+
 #### Installation
 * Run `npm install` in server folder. 
 
@@ -14,7 +17,7 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 
 #### Running migrations
 
-* Type `npm run migrate` to run migrations.
+* Type `npm run migrate` to run migrations in `server/js/db`.
 
 **TODO**
 
