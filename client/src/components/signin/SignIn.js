@@ -44,9 +44,15 @@ class SignIn extends Component {
                 console.log('[SignIn] - brand new user. Move to registration page');
                 this.props.history.push('/user/my-profile/edit');
             } else {
-                this.props.history.push('/');
+                const sessionComment = JSON.parse(sessionStorage.getItem('sessionComment'));
+                if(sessionComment) {
+                    // redirect to the previous comment page
+                    this.props.history.push(`/submission/${sessionComment.submissionID}/comments`)
+                } else {
+                    // redirect to home page if there is no comment object in session
+                    this.props.history.push('/');
+                }
             }
-
         } else {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner

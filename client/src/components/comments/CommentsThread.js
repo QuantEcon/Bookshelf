@@ -4,6 +4,8 @@ import {Link} from 'react-router-dom';
 import MarkdownRender from '@nteract/markdown';
 import {typesetMath} from 'mathjax-electron';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Modal from 'react-modal';
+import  { Redirect } from 'react-router-dom';
 
 import CommentContainer from "../../containers/comment/CommentContainer";
 
@@ -42,11 +44,14 @@ class CommentsThread extends Component {
             .postReply
             .bind(this);
 
+        this.toggleOpenModal = this.toggleOpenModal.bind(this);
+
         this.state = {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
             replies: props.replies,
             submitDisabled: true,
+            modalOpen: false,
             showSummaryPreview: false,
             newCommentText: ''
         };
@@ -88,7 +93,8 @@ class CommentsThread extends Component {
         if(!this.props.currentUser){
 
             this.setState({
-                submitError: true
+                submitError: true,
+                modalOpen: !this.state.modalOpen
             })
         }
         console.log('submit new comment: ', this.newCommentText);
@@ -121,9 +127,41 @@ class CommentsThread extends Component {
         }, 20);
     }
 
+    toggleOpenModal = () => {
+        this.setState({
+          modalOpen: !this.state.modalOpen
+        });
+      }
+
+    redirectSignin = () => {
+        this.setState({
+            redirectSignin: !this.state.redirectSignin
+        })
+    }
+
     render() {
         return (
             <div className='comments'>
+                {/* Modal window for comment redirect if user not sign in */}
+                <Modal isOpen={this.state.modalOpen} contentLabel="Signin" className="modal-alert">
+                    <div className="modal">
+                        <div className="modal-header">
+                        <h1 className='modal-title'>Sign In</h1>
+                        </div>
+                        <div className="modal-body">
+                        <p><strong>Please sign in to comment on this submission.</strong></p>
+                        <ul className="options">
+                            <li>
+                            <a className='alt' onClick={this.toggleOpenModal}>Cancel</a>
+                            </li>
+                            <li>
+                            <a onClick={this.redirectSignin}>Sign In</a>
+                            </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleOpenModal}><span aria-hidden="true">×</span></button>
+                        </div>
+                    </div>
+                </Modal>
                 <div className='comments-thread'>
                     <div>
                         {/*Render each comment*/}
@@ -188,13 +226,7 @@ class CommentsThread extends Component {
                         <div className='submit-comment'>
                             <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
                         </div>
-                        {this.state.submitError && !this.props.currentUser
-                                    ? <p className="error-help-text">
-                                            You must
-                                            {' '}<Link to='/signin'>sign in</Link>{' '}
-                                            to comment
-                                        </p>
-                                    : null}
+                        {this.state.redirectSignin ?  <Redirect to='/signin'  /> : null }
                     </div>
                 </div>
             </div>

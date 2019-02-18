@@ -353,6 +353,8 @@ export const submitComment = (submissionID, comment) => {
                 }
             }))
         }).catch(error => {
+            const sessionComment = {commentUrl: error.response.data.commentUrl, submissionID: submissionID, content: comment}
+            sessionStorage.setItem('sessionComment', JSON.stringify(sessionComment));
             console.log('[AuthActions] - error submitting comment: ', error);
         })
     }
