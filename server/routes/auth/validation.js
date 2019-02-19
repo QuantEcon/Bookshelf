@@ -1,10 +1,12 @@
 const passport = require('../../js/auth/jwt');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require("fs");
 const User = require('../../js/db/models/User')
 const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
+const { sitemapPath, sitemapPromise } = require('../../sitemap')
 
 // Bodyparser middlewares
 app.use(bodyParser.json());
@@ -59,6 +61,10 @@ app.get('/', passport.authenticate('jwt', {
                     profile: req.user[profile]
                 })
             });
+            // updating the sitemap to have reflect the merging of accounts
+            sitemapPromise.then((resp) => {
+                fs.writeFileSync(sitemapPath, resp.toString());
+            })
         } else {
             // profile is not new, ask if user wants to merge
             console.log('[ValidateToken] - profile already exists')

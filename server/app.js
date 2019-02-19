@@ -55,8 +55,7 @@ const AdminList = require("./js/db/models/AdminList")
 const Announcement = require('./js/db/models/Announcement')
 
 // sitemap
-const sitemap = require('./sitemap')
-const SITEMAP_OUTPUT_FILE = path.join(__dirname, '/../client/public/sitemap.xml')
+const { sitemapPath, sitemapPromise } = require('./sitemap')
 
 
 // config
@@ -71,10 +70,6 @@ app.use(compression())
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
 
-app.get('/sitemap.xml', (req,res) => {
-    console.log('sitemap?')
-    res.send("what")
-})
 
 /**
  * Enable reverse proxy support in Express. This causes the
@@ -134,9 +129,9 @@ app.get('/api/about', (req, res) => {
     });
 })
 
-
-sitemap.then((resp) => {
-    fs.writeFileSync(SITEMAP_OUTPUT_FILE, resp.toString());
+// writing the sitemap generated to an xml file
+sitemapPromise.then((resp) => {
+    fs.writeFileSync(sitemapPath, resp.toString());
 })
 
 
