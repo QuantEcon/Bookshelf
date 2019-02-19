@@ -53,6 +53,12 @@ const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
 const AdminList = require("./js/db/models/AdminList")
 const Announcement = require('./js/db/models/Announcement')
+
+// sitemap
+const sitemap = require('./sitemap')
+const SITEMAP_OUTPUT_FILE = path.join(__dirname, '/../client/public/sitemap.xml')
+
+
 // config
 // ==============================================================================
 const port = require('./_config').port;
@@ -65,6 +71,10 @@ app.use(compression())
 app.use(bodyParser.json({limit: '50mb'}))
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
 
+app.get('/sitemap.xml', (req,res) => {
+    console.log('sitemap?')
+    res.send("what")
+})
 
 /**
  * Enable reverse proxy support in Express. This causes the
@@ -99,7 +109,6 @@ app.use (function (req, res, next) {
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
-
 /**
  * @api {get} /api/about Get About Page
  * @apiGroup Information
@@ -124,6 +133,12 @@ app.get('/api/about', (req, res) => {
         }
     });
 })
+
+
+sitemap.then((resp) => {
+    fs.writeFileSync(SITEMAP_OUTPUT_FILE, resp.toString());
+})
+
 
 app.post('/add-notify-email', (req, res) => {
     EmailList.findOne({
@@ -318,9 +333,9 @@ app.get("/temp", (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    console.log('Sending react app')
+    console.log('Sending react app' + req.url)
     try {
-        res.sendFile(path.join(__dirname, '/../client/build/index.html'))
+       res.sendFile(path.join(__dirname, '/../client/build/index.html'))
     } catch (ex) {
         //TODO send back html page with this info
         res.send("Server is down for maintenance")
