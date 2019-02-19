@@ -134,25 +134,16 @@ class Comment extends Component {
      */
     editComment(e) {
         e.preventDefault();
-        var newText = document
-            .getElementById('editCommentTextArea')
-            .value;
-        document
-            .getElementById('editCommentTextArea')
-            .value = '';
-        console.log('[Comment] - edit comment. new text: ', newText);
+        var newText = document.getElementById('editCommentTextArea').value;
+        document.getElementById('editCommentTextArea').value = '';
+
         this.toggleShowEditComment();
-        console.log("actions: " ,this.props)
-        this
-            .props
-            .actions
-            .editComment({commentID: this.props.comment._id, newCommentText: newText})
+        this.props.actions.editComment({commentID: this.props.comment._id, newCommentText: newText});
     }
 
     /* modal for flagging comments */
     openModal = () => {
       this.setState({modalIsOpen: true});
-      console.log('state: ', this.state)
     }
 
     closeModal = () => {
@@ -160,13 +151,13 @@ class Comment extends Component {
       this.setState({value:''});
     }
 
+    // flagged comment reason 
     flagComment(flaggedReason) {
-        console.log('[Comment] - flag comment clicked: ', flaggedReason);
         this.props.actions.flagComment({commentID: this.props.comment._id, flaggedReason: flaggedReason});
     }
 
+    // flagged comment click method
     flagClick = () => {
-        console.log('in flagged comment method');
         this.openModal();
     }
 
@@ -216,12 +207,11 @@ class Comment extends Component {
         })
       }
       else {
-        console.log('user not logged in')
+        // show error if user is not logged in
         this.setState({
           showError: true
         });
       }
-
     }
 
     deleteComment() {
@@ -237,7 +227,7 @@ class Comment extends Component {
         this.toggleDeleteModal();
     }
 
-    /**Toggles thi visibility of the comment deletion modal */
+    /**Toggles the visibility of the comment deletion modal */
     toggleDeleteModal() {
         console.log('[Comment] - toggle delete modal: ', this.state.deleteModalOpen);
         this.setState({
@@ -248,25 +238,26 @@ class Comment extends Component {
     render() {
         return (
             <div className='comment'>
-                <Modal
-                    isOpen={this.state.deleteModalOpen}
-                    contentLabel='Delete Comment'
-                    className='overlay'
-                    >
-                    <div className='my-modal' id="delete-comment-modal">
-                        <div className='modal-header'>
-                            <h1 className='modal-title'>Delete Comment</h1>
+                {/* Modal window for deleting comment */}
+                <Modal 
+                    isOpen={this.state.deleteModalOpen} 
+                    className="modal-alert" 
+                    contentLabel="Delete Comment">
+                    <div className="modal">
+                        <div className="modal-header">
+                        <h1 className='modal-title'>Delete Comment</h1>
                         </div>
-                        <div className='modal-body'>
-                            <p className='text-center'>Are you sure you want to delete this comment?</p>
-                            <ul className='button-row'>
-                                <li>
-                                    <button onClick={this.toggleDeleteModal} className='alt'>Cancel</button>
-                                </li>
-                                <li>
-                                    <button onClick={this.deleteComment}>Delete</button>
-                                </li>
-                            </ul>
+                        <div className="modal-body">
+                        <p><strong>Are you sure you want to delete this comment?</strong></p>
+                        <ul className="options">
+                            <li>
+                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+                            </li>
+                            <li>
+                            <a onClick={this.deleteComment}>Delete</a>
+                            </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.deleteComment}><span aria-hidden="true">×</span></button>
                         </div>
                     </div>
                 </Modal>
@@ -431,7 +422,6 @@ class Comment extends Component {
                             </div>
                         : null}
 
-
                     {this.state.showEditComment
                         ? <div className='comment-reply'>
                                 <form>
@@ -443,7 +433,6 @@ class Comment extends Component {
                                         </button>
                                     </div>
                                 </form>
-
                             </div>
                         : null}
 
