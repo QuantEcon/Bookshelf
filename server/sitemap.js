@@ -6,24 +6,26 @@ var User = require('./js/db/models/User');
 // sitemap
 const sitemapPath = path.join(__dirname, '/../client/public/sitemap.xml')
 
-let sitemapPromise = async function siteMap() {
-    let submissionsUrlObj = [];
-    let userUrls = {};
+let sitemapFunction = async function siteMap() {
+    let submissionsUrls = [];
+    let userUrls = [];
     const submissionPromise = Submission.find({},(err, submissionsList) => {
         if (err) {
             console.log("error getting submission urls for sitemap")
         } else {
             submissionsList.map(function(submission) {
-                submissionsUrlObj.push({
-                    url: '/submission/'+submission._id,
-                    changefreq: 'weekly',
-                    priority: 0.9
-                })
-                submissionsUrlObj.push({
-                    url: '/submission/'+submission._id + '/comments',
-                    changefreq: 'weekly',
-                    priority: 0.8
-                })
+                if (!submission.deleted) {
+                    submissionsUrls.push({
+                        url: '/submission/'+submission._id,
+                        changefreq: 'weekly',
+                        priority: 0.9
+                    })
+                    submissionsUrls.push({
+                        url: '/submission/'+submission._id + '/comments',
+                        changefreq: 'weekly',
+                        priority: 0.8
+                    })
+                }
             })
         }
     })
@@ -31,19 +33,19 @@ let sitemapPromise = async function siteMap() {
         if (err) {
             console.log("error getting user urls for sitemap")
         } else {
-            userUrls = usersList.map(function(user) {
-                return {
-                    url: '/user/'+user._id,
-                    changefreq: 'weekly',
-                    priority: 0.8
+            usersList.map(function(user) {
+                if (!user.deleted) {
+                    userUrls.push({
+                        url: '/user/'+user._id,
+                        changefreq: 'weekly',
+                        priority: 0.8
+                    })
                 }
             })
         }
     })
-
     await submissionPromise;
     await userPromise;
-    
     sitemap = sm.createSitemap({
         hostname: urlAndPort,
         cacheTime: 600000,        // 600 sec - cache purge period
@@ -51,15 +53,14 @@ let sitemapPromise = async function siteMap() {
             { url: '', priority: 0.9,  changefreq: 'daily' },
             { url: '/about/',  priority: 0.6, changefreq: 'monthly'},
             { url: '/contact/', priority: 0.6, changefreq: 'monthly'},
-            ...submissionsUrlObj,
+            ...submissionsUrls,
             ...userUrls
         ]
     });
-    console.log("sitemap created")
     return sitemap;
-}()
+}
 
 module.exports = {
-    sitemapPromise,
+    sitemapFunction,
     sitemapPath 
 }

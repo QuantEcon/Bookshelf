@@ -6,7 +6,7 @@ const User = require('../../js/db/models/User')
 const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
-const { sitemapPath, sitemapPromise } = require('../../sitemap')
+const { sitemapPath, sitemapFunction } = require('../../sitemap')
 
 // Bodyparser middlewares
 app.use(bodyParser.json());
@@ -61,8 +61,8 @@ app.get('/', passport.authenticate('jwt', {
                     profile: req.user[profile]
                 })
             });
-            // updating the sitemap to have reflect the merging of accounts
-            sitemapPromise.then((resp) => {
+            // updating the sitemap to reflect the addition of a user account
+            sitemapFunction().then((resp) => {
                 fs.writeFileSync(sitemapPath, resp.toString());
             })
         } else {

@@ -1,10 +1,12 @@
 var express = require('express');
+var fs = require('fs');
 var passport = require('../js/auth/jwt');
 const bodyParser = require('body-parser');
 
 var User = require('../js/db/models/User');
 var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
+const { sitemapPath, sitemapFunction } = require('../../sitemap')
 
 var app = express.Router();
 
@@ -65,6 +67,10 @@ app.post('/submission', passport.authenticate('jwt', {
                     })
                     user.deletedSubmissions.push(req.body.submissionID)
                     user.save()
+                    // updating the sitemap to reflect the deletion of a notebook
+                    sitemapFunction().then((resp) => {
+                        fs.writeFileSync(sitemapPath, resp.toString());
+                    })
                     res.sendStatus(200)
                 }
                 else {

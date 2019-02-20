@@ -9,7 +9,7 @@ const appConfig = require('../../_config')
 const User = require('../../js/db/models/User');
 const Submission = require('../../js/db/models/Submission');
 const Comment = require('../../js/db/models/Comment');
-const { sitemapPath, sitemapPromise } = require('../../sitemap')
+const { sitemapPath, sitemapFunction } = require('../../sitemap')
 
 var app = express.Router();
 
@@ -537,8 +537,8 @@ app.post('/merge-accounts', passport.authenticate('jwt', {
                                 } else {
                                     console.log('[MergeAccounts] - success')
                                     res.send({profile: addedSocial})
-                                    // updating the sitemap to have reflect the merging of accounts
-                                    sitemapPromise.then((resp) => {
+                                    // updating the sitemap to reflect the merging of accounts
+                                    sitemapFunction().then((resp) => {
                                         fs.writeFileSync(sitemapPath, resp.toString());
                                     })
                                 }
@@ -594,7 +594,8 @@ app.post('/delete-account', passport.authenticate('jwt', {session: false}), (req
             req.session.destroy();
             req.logout();
             res.send({deletedUser: user.deleted});
-            sitemapPromise.then((resp) => {
+            //updating the sitemap to reflect the deletion of user account
+            sitemapFunction().then((resp) => {
                 fs.writeFileSync(sitemapPath, resp.toString());
             })
           }
