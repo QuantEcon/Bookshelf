@@ -55,7 +55,7 @@ const AdminList = require("./js/db/models/AdminList")
 const Announcement = require('./js/db/models/Announcement')
 
 // sitemap
-const { sitemapPath, sitemapPromise } = require('./sitemap')
+const { sitemapPath, sitemapFunction } = require('./sitemap')
 
 
 // config
@@ -130,7 +130,7 @@ app.get('/api/about', (req, res) => {
 })
 
 // writing the sitemap generated to an xml file
-sitemapPromise.then((resp) => {
+sitemapFunction().then((resp) => {
     fs.writeFileSync(sitemapPath, resp.toString());
 })
 
