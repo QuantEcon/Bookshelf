@@ -1880,8 +1880,7 @@ body {
   font-size: 1rem;
   color: #0a0a0a;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-width: 1040px !important; }
+  -moz-osx-font-smoothing: grayscale; }
 
 a {
   line-height: inherit;
@@ -4035,8 +4034,6 @@ div.my-modal {
   margin: 10px; }
 
 @media only screen and (max-width: 768px) {
-  body {
-    min-width: auto !important; }
   .container {
     width: auto; }
   .landing-logos {

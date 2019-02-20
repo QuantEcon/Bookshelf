@@ -33,7 +33,7 @@
     "react-router": "^4.1.1",
     "react-router-dom": "^4.1.2",
     "react-router-redux": "^4.0.8",
-    "react-scripts": "^1.0.14",
+    "react-scripts": "^2.1.5",
     "react-tabs": "^2.3.0",
     "react-time": "^4.3.0",
     "redux": "^3.7.2",
@@ -60,6 +60,13 @@
     "docdash": "^0.4.0",
     "jsdoc-jsx": "^0.1.0",
     "minami": "^1.2.3",
-    "nodemon": "^1.18.9"
-  }
+    "nodemon": "^1.18.9",
+    "query-string": "^6.2.0"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
