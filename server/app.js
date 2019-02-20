@@ -55,7 +55,7 @@ const AdminList = require("./js/db/models/AdminList")
 const Announcement = require('./js/db/models/Announcement')
 
 // sitemap
-const { sitemapPath, sitemapFunction } = require('./sitemap')
+const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 
 
 // config
