@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 var User = require('../js/db/models/User');
 var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
-const { sitemapPath, sitemapFunction } = require('../sitemap')
+const { sitemapPath, sitemapFunction } = require('../js/sitemap')
 
 var app = express.Router();
 

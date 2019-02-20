@@ -9,7 +9,7 @@ const appConfig = require('../../_config')
 const User = require('../../js/db/models/User');
 const Submission = require('../../js/db/models/Submission');
 const Comment = require('../../js/db/models/Comment');
-const { sitemapPath, sitemapFunction } = require('../../sitemap')
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 var app = express.Router();
 

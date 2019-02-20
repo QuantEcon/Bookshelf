@@ -19,7 +19,7 @@ var path = require('path');
 
 var config = require('../../_config')
 var renderer = require('../../js/render');
-const { sitemapPath, sitemapFunction } = require('../../sitemap')
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 var multipartyMiddleware = multiparty();
 const storage = multer.diskStorage({

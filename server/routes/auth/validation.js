@@ -6,7 +6,7 @@ const User = require('../../js/db/models/User')
 const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
-const { sitemapPath, sitemapFunction } = require('../../sitemap')
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 // Bodyparser middlewares
 app.use(bodyParser.json());
