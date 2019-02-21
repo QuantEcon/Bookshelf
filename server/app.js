@@ -53,6 +53,11 @@ const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
 const AdminList = require("./js/db/models/AdminList")
 const Announcement = require('./js/db/models/Announcement')
+
+// sitemap
+const { sitemapPath, sitemapFunction } = require('./js/sitemap')
+
+
 // config
 // ==============================================================================
 const port = require('./_config').port;
@@ -99,7 +104,6 @@ app.use (function (req, res, next) {
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
-
 /**
  * @api {get} /api/about Get About Page
  * @apiGroup Information
@@ -124,6 +128,13 @@ app.get('/api/about', (req, res) => {
         }
     });
 })
+
+// writing the sitemap generated to an xml file
+sitemapFunction().then((resp) => {
+    console.log(sitemapPath, "sitemapPath")
+    fs.writeFileSync(sitemapPath, resp.toString());
+})
+
 
 app.post('/add-notify-email', (req, res) => {
     EmailList.findOne({
@@ -318,9 +329,9 @@ app.get("/temp", (req, res) => {
 })
 
 app.get('*', (req, res) => {
-    console.log('Sending react app')
+    console.log('Sending react app' + req.url)
     try {
-        res.sendFile(path.join(__dirname, '/../client/build/index.html'))
+       res.sendFile(path.join(__dirname, '/../client/build/index.html'))
     } catch (ex) {
         //TODO send back html page with this info
         res.send("Server is down for maintenance")
