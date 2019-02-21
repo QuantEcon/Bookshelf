@@ -360,3 +360,14 @@ div.my-modal {
 .ReactModal__Overlay {
   background-color: rgba(0, 0, 0, 0.75) !important;
 }
+
+#delete-comment-modal {
+  width: 500px;
+  border-radius: 3px;
+  .button-row {
+    margin-bottom: 0px;
+  }
+  .text-center {
+    margin-top: 0px;
+  }
+}

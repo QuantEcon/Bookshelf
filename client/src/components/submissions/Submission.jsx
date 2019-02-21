@@ -666,6 +666,7 @@ class Submission extends Component {
                                 commentAuthors={this.props.submission.data.commentAuthors}
                                 postComment={this.onSubmitComment}
                                 postReply={this.submitReply}
+                                location={this.props.location}
                                 currentUser={this.props.currentUser}
                                 editComment={this.props.actions.editComment}/>}}/>
                                 : <p>Loading</p> }

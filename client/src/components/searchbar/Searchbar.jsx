@@ -260,7 +260,6 @@ class Searchbar extends Component {
                                         }, this)}
                                     </select>
                                 </label>
-
                                 <label>Language:
                                     <select
                                         type="submit"
@@ -278,7 +277,6 @@ class Searchbar extends Component {
                                     <MagnifyingGlass onClick={this.toggleSearchBar}/>
                                 </button>
                             </div>}
-
                     </div>
 
                     {this.state.hasCurrentSearch

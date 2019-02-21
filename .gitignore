@@ -6,6 +6,7 @@ frontend
 data/
 files/
 client/src/assets/MathJax
+client/src/assets/css/
 
 #config
 _config.js
@@ -15,3 +16,4 @@ docs
 
 docs/
 .ipynb_checkpoints/
+server/js/db/.migrate

@@ -1906,6 +1906,9 @@ pre, code {
   white-space: pre-line;
   border: 0; }
 
+img {
+  max-width: 100%; }
+
 [type='text'], [type='password'], [type='date'], [type='datetime'], [type='datetime-local'], [type='month'], [type='week'], [type='email'], [type='number'], [type='search'], [type='tel'], [type='time'],
 [type='url'], [type='color'], textarea {
   display: block;
@@ -3359,6 +3362,14 @@ div.my-modal {
 .ReactModal__Overlay {
   background-color: rgba(0, 0, 0, 0.75) !important; }
 
+#delete-comment-modal {
+  width: 500px;
+  border-radius: 3px; }
+  #delete-comment-modal .button-row {
+    margin-bottom: 0px; }
+  #delete-comment-modal .text-center {
+    margin-top: 0px; }
+
 /*
  * The MIT License
  * Copyright (c) 2012 Matias Meno <m@tias.me>
@@ -4329,3 +4340,6 @@ img.loading-avatar {
 
 .notebook-preview .content-margin {
   padding-left: 40px !important; }
+
+.ml-6 {
+  margin-left: 6px; }

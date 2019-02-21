@@ -585,7 +585,6 @@ class Submit extends Component {
                                               onClick={this.onOpenClick}>
                                               Update Notebook
                                         </button>
-
                                     </li>
                                     <li>
                                         <button
@@ -595,7 +594,6 @@ class Submit extends Component {
                                         </button>
                                     </li>
                                 </ul>
-
                             </div>
 
                             <div className='submit-header'>
@@ -615,7 +613,6 @@ class Submit extends Component {
                                                 Title is required
                                             </p>
                                         : null}
-
                                 </div>
                             </div>
 
