@@ -329,12 +329,10 @@ app.get("/temp", (req, res) => {
 })
 
 app.get('/sitemap.xml', (req, res) => {
-    try {
-        res.sendFile(path.join(__dirname, '/../client/public/sitemap.xml'))
-     } catch (ex) {
-         //TODO send back html page with this info
-         res.send("Sitemap not found")
-     }
+    sitemapFunction().then((resp) => {
+        res.header('Content-Type', 'application/xml');
+        res.send(xml);
+    })
 })
 app.get('*', (req, res) => {
     console.log('Sending react app' + req.url)
