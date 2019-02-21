@@ -47,7 +47,7 @@ let sitemapFunction = async function siteMap() {
     await submissionPromise;
     await userPromise;
     sitemap = sm.createSitemap({
-        hostname: urlAndPort,
+        hostname: 'https://notes.quantecon.org',
         cacheTime: 600000,        // 600 sec - cache purge period
         urls: [
             { url: '', priority: 0.9,  changefreq: 'daily' },
