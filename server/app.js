@@ -328,6 +328,14 @@ app.get("/temp", (req, res) => {
     res.send("Loading...")
 })
 
+app.get('/sitemap.xml', (req, res) => {
+    try {
+        res.sendFile(path.join(__dirname, '/../client/public/sitemap.xml'))
+     } catch (ex) {
+         //TODO send back html page with this info
+         res.send("Sitemap not found")
+     }
+})
 app.get('*', (req, res) => {
     console.log('Sending react app' + req.url)
     try {
