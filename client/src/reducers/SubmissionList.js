@@ -12,7 +12,7 @@ const defaultSearchParams = {
     author: '',
     keywords: '',
     page: 1,
-    sortBy: 'Votes'
+    sortBy: 'Discover'
 }
 
 const SubmissionList = (state = {
