@@ -4,7 +4,7 @@ var { urlAndPort } = require('../_config');
 var Submission = require('./db/models/Submission');
 var User = require('./db/models/User');
 // sitemap
-const sitemapPath = path.join(__dirname, '/../../client/public/sitemap.xml')
+const sitemapPath = path.join(__dirname, '/../../client/build/sitemap.xml')
 
 let sitemapFunction = async function siteMap() {
     let submissionsUrls = [];
