@@ -35,7 +35,7 @@ passport.use('github', new GithubStrategy({
                         newUser.github.hidden = false;
                         newUser.activeAvatar = "github";
                         if (profile._json.avatar_url) {
-                            newUser.github.avatarURL = profile._json.avatar_url;
+                            newUser.github.avatarURL = profile._json.avatar_url + '&s=75';
                         } else {
                             newUser.github.avatarURL = '/assets/img/default-avatar.png';
                         }
@@ -66,7 +66,7 @@ passport.use('github', new GithubStrategy({
                             submission: true
                         }
                         if (profile._json.avatar_url) {
-                            newUser.avatar = profile._json.avatar_url;
+                            newUser.avatar = profile._json.avatar_url + '&s=75';
                         } else {
                             newUser.avatar = '/assets/img/default-avatar.png';
                         }
