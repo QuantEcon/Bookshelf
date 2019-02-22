@@ -328,12 +328,6 @@ app.get("/temp", (req, res) => {
     res.send("Loading...")
 })
 
-app.get('/sitemap.xml', (req, res) => {
-    sitemapFunction().then((resp) => {
-        res.header('Content-Type', 'application/xml');
-        res.send(xml);
-    })
-})
 app.get('*', (req, res) => {
     console.log('Sending react app' + req.url)
     try {
