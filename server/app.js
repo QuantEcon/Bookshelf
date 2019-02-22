@@ -131,6 +131,7 @@ app.get('/api/about', (req, res) => {
 
 // writing the sitemap generated to an xml file
 sitemapFunction().then((resp) => {
+    console.log(sitemapPath, "sitemapPath")
     fs.writeFileSync(sitemapPath, resp.toString());
 })
 

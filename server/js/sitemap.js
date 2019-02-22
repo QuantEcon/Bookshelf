@@ -4,7 +4,7 @@ var { urlAndPort } = require('../_config');
 var Submission = require('./db/models/Submission');
 var User = require('./db/models/User');
 // sitemap
-const sitemapPath = path.join(__dirname, '/../../client/public/sitemap.xml')
+const sitemapPath = path.join(__dirname, '/../../client/build/sitemap.xml')
 
 let sitemapFunction = async function siteMap() {
     let submissionsUrls = [];
@@ -47,7 +47,7 @@ let sitemapFunction = async function siteMap() {
     await submissionPromise;
     await userPromise;
     sitemap = sm.createSitemap({
-        hostname: urlAndPort,
+        hostname: 'https://notes.quantecon.org',
         cacheTime: 600000,        // 600 sec - cache purge period
         urls: [
             { url: '', priority: 0.9,  changefreq: 'daily' },
