@@ -9,7 +9,8 @@ class SubmissionList extends Component {
         super(props)
         this.state = {
             submissionPreviews: [],
-            searchParams: props.searchParams
+            searchParams: props.searchParams,
+            currentPage: 0
         }
     }
 
@@ -20,7 +21,8 @@ class SubmissionList extends Component {
 
     onSearch = (searchParams) => {
         this.setState({
-            searchParams
+            searchParams,
+            currentPage: (searchParams.page - 1)
         }, () => {
             this.props.onSearch(searchParams);
         })
@@ -72,6 +74,7 @@ class SubmissionList extends Component {
                         previousLabel='Prev'
                         nextLabel='Next'
                         breakLabel='...'
+                        forcePage={this.state.currentPage}
                         initialPage={this.props.searchParams.page? this.props.searchParams.page - 1 : 0}
                         containerClassName='pagination text-center'
                         activeClassName='current'
