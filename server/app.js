@@ -101,6 +101,10 @@ app.use (function (req, res, next) {
 
 
 // set location of assets
+app.use(express.static(path.join(__dirname, "..", 
+    "client/build/static"), {
+       maxAge: 31536000
+}))
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
