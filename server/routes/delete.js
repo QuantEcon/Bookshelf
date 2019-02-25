@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 var User = require('../js/db/models/User');
 var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
+const AdminList = require('../js/db/models/AdminList')
 
 var app = express.Router();
 
@@ -38,6 +39,15 @@ app.use(bodyParser.urlencoded({
 app.post('/submission', passport.authenticate('jwt', {
     session: 'false'
 }), (req, res) => {
+    let deleteSubmission = (submission, user) => {
+        submission.deleted = true;
+        submission.deletedDate = Date.now()
+        // go through and delete comments???
+        submission.save();
+        user.deletedSubmissions.push(req.body.submissionID)
+        user.save()
+        res.sendStatus(200)
+    }
     Submission.findById(req.body.submissionID, (err, submission) => {
         if (err) {
             res.status(500);
@@ -45,10 +55,6 @@ app.post('/submission', passport.authenticate('jwt', {
                 error: err
             });
         } else {
-            submission.deleted = true;
-            submission.deletedDate = Date.now()
-            // go through and delete comments???
-            submission.save();
             User.findOne({
                 _id: req.user._id
             }, (err, user) => {
@@ -58,14 +64,82 @@ app.post('/submission', passport.authenticate('jwt', {
                     res.send({
                         error: err
                     })
-                } else if (user){
-                    user.submissions = user.submissions.filter((id) => {
-                        console.log("Checking ", id, " against ", req.body.submissionID)
-                        return id != req.body.submissionID
-                    })
-                    user.deletedSubmissions.push(req.body.submissionID)
-                    user.save()
-                    res.sendStatus(200)
+                } else if (user) {
+                    let isAdmin = false;
+                    console.log(user.submissions, "user submissions are here")
+
+                    // submitted by user
+                    if (user.submissions.indexOf(req.body.submissionID) != -1) {
+                        console.log("submitted by user")
+                        user.submissions = user.submissions.filter((id) => {
+                            console.log("Checking ", id, " against ", req.body.submissionID)
+                            return id != req.body.submissionID
+                        })
+                        deleteSubmission(submission, user)
+                    } else {
+                        // check if the user is an Admin
+                        console.log("not submitted by user")
+                        AdminList.findOne({}, (err, adminList) => {
+                            if(err){
+                                res.status(500)
+                                res.send({
+                                    error: true,
+                                    message: err
+                                })
+                            } else {
+                                console.log(typeof(adminList['adminIDs'][0]))
+                                console.log(req.user._id)
+                                for (adminID of adminList['adminIDs'].toObject()) {
+                                    console.log(adminID)
+                                    if (String(adminID) === String(req.user._id)) {
+                                        isAdmin = true;
+                                        console.log(adminID, "matched")
+                                        break;
+                                    }
+                                }
+                                if (!isAdmin) {
+                                    res.sendStatus(401)
+                                    res.send({
+                                        error: true,
+                                        message: err
+                                    })
+                                } else {
+                                    deleteSubmission(submission, user)
+                                }
+                                // if (adminList['adminIDs'].includes(String(req.user._id))) {
+                                //     console.log('I am an admin')
+                                // } else {
+                                //     console.log('I am not')
+                                // }
+                                //res.sendStatus(401)
+                                // User.find({_id: {$in: adminList.adminIDs}}, (err, users) => {
+                                //     if(err){
+                                //         res.status(500)
+                                //         console.log("[Admin] - error: ", err)
+                                //         res.send({
+                                //             error: true,
+                                //             message: err
+                                //         })
+                                //     } else if(users){
+                                //         res.send(users)
+                                //     } else {
+                                //         res.status(401)
+                                //         res.send({
+                                //             error: true,
+                                //             message: "There are no admins in the database"
+                                //         })
+                                //     }
+                                // })
+                            }
+                        })
+                    }
+                    // submission.deleted = true;
+                    // submission.deletedDate = Date.now()
+                    // go through and delete comments???
+                    // submission.save();
+                    // user.deletedSubmissions.push(req.body.submissionID)
+                    // user.save()
+                    //res.sendStatus(200)
                 }
                 else {
                     console.warn("[DeleteSubmission] - couldn't find author")

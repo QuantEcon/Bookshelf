@@ -73,10 +73,25 @@ app.get('/', passport.authenticate('jwt', {
 
     } else {
         console.log('[ValidateToken] - normal login');
+        console.log(req.authInfo, "isAdmin")
+        let isAdmin = false;
         if(req.user._id) {
-            // find if user has been deleted
+            AdminList.findOne({}, (err, adminList) => {
+                if(err){
+                    console.log("[ValidateToken] - error getting admin list: ", err)
+                } else if (adminList){
+                    console.log(adminList.adminIDs)
+                    console.log(req.user._id)
+                    if(adminList.adminIDs.indexOf(req.user._id) != -1) {
+                        isAdmin = true;
+                    }
+                }
+            })
+            //find if user has been deleted
             User.findOne({'_id': req.user.id}, (err, user) => {
                 const userDeleted = user.deleted;
+                let userRequestObj = Object.assign({}, req.user.toObject(), { isAdmin: isAdmin})
+                console.log(userRequestObj, "here bro?")
                 if(userDeleted){
                     res.send({
                         error: {
@@ -86,11 +101,11 @@ app.get('/', passport.authenticate('jwt', {
                     })
                 } else {
                     res.send({
-                        user: req.user,
+                        user: userRequestObj,
                         provider: req.user.currentProvider,
-                        uid: req.user._id,
+                        uid: userRequestObj._id,
                         token: req.headers['access-token'],
-                        isAdmin: req.authInfo.isAdmin,
+                        isAdmin: isAdmin,
                         error: {
                             message: 'active'
                         }

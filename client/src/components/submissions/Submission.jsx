@@ -445,7 +445,6 @@ class Submission extends Component {
                                             {!this.props.isLoading && this.props.submission.data.flagged
                                             ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
                                             :  <a onClick={this.flagClick}><FlagIcon/></a>}
-
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onRequestClose={this.closeModal}
@@ -480,6 +479,11 @@ class Submission extends Component {
                                                 </div>
                                               </form>
                                             </Modal>
+                                        </li>
+                                        <li>
+                                            {this.props.currentUser && this.props.currentUser.isAdmin ? <div>{!this.props.isLoading && this.props.submission.data.deleted
+                                                ?  <a onClick={this.toggleDeleteModal} className="active"><DeleteIcon/></a>
+                                                :  <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>} </div> : false }
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
