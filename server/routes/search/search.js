@@ -44,7 +44,17 @@ app.get('/all-submissions', function (req, res) {
         deleted: false
     };
     if (req.query.lang !== 'All') {
+        console.log('req.query.lang', req.query.lang)
         searchParams.lang = req.query.lang
+        // returns an array of distinct languages saved from db 
+        Submission.distinct('lang', function(err, languages) {
+            if(err) {
+                console.log('[Search] error returning an array of distinct languages', err);
+            } else if(languages) {
+                console.log(languages);
+                // res.send({languageArray: languages})
+            }
+        })
     }
     if (req.query.topic !== 'All') {
         console.log('[Search] - topic: ', req.query.topic)
@@ -251,8 +261,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
-    var commentAuthor;
-    var updateDate;
+    var updatedDate;
 
     var userDeleted;
     var notebookID = req.params.nbid;
@@ -269,7 +278,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     console.log("[Search] error searching for submission by ID: ", err)
                     callback(err)
                   } else if (sub) {
-                    // intializing updatedDate
+                    // intialising updatedDate
                     updatedDate = sub.lastUpdated
                   }
                 });
@@ -323,9 +332,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                     console.error("Error getting comments: ", err)
                                 } else if(comments){
                                     comments.forEach((comment) => {
-                                        console.log("replies: ", comment.replies)
+                                        // console.log("replies: ", comment.replies)
                                         totalComments += comment.replies.length
-                                        console.log("total comments now at ", totalComments)
+                                        // console.log("total comments now at ", totalComments)
                                     })
                                     console.log("total comments: ", totalComments)
                                     submission.totalComments = totalComments

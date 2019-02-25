@@ -90,7 +90,7 @@ class Submit extends Component {
             textareaValue: 0,
             triggerOnKeyPress: false,
             summary: '',
-            noteookLanguage: null
+            notebookLanguage: null
         }
 
         this.onOpenClick = this
@@ -126,6 +126,7 @@ class Submit extends Component {
         })
     }
 
+    // set up formData object from props 
     formData = {
         agreement: false,
         title: this.props.isEdit && this.props.submission
@@ -268,7 +269,7 @@ class Submit extends Component {
     }
 
     langChanged = () => {
-        this.state.noteookLanguage !== null ?  this.formData.lang = this.state.noteookLanguage : null;
+        this.state.notebookLanguage !== null ?  this.formData.lang = this.state.notebookLanguage : null;
     }
 
     titleChanged = (event) => {
@@ -340,7 +341,7 @@ class Submit extends Component {
                     fileUploaded: true,
                     uploadError: false,
                     fileName: accepted[0].name,
-                    noteookLanguage: capitaliseFirst,
+                    notebookLanguage: capitaliseFirst,
                 }, () => this.validate())
             }
         } else if (!this.state.fileUploaded) {
@@ -440,6 +441,7 @@ class Submit extends Component {
     }
 
     render() {
+        {console.log('Language', this.formData.lang)}
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
@@ -673,11 +675,22 @@ class Submit extends Component {
                                     </ul>
                                 </div>
                                 <div className='submit-secondary-group2'>
-                                    <label className='section-title'>Language</label>
-                                    <div className='detected-language'>
-                                        {this.state.noteookLanguage !== null ? <p className='notebook-language'>{this.state.noteookLanguage}</p> : null}
-                                    </div>
-                                    <hr/>
+                                    {this.state.notebookLanguage !== null ? 
+                                        <React.Fragment> 
+                                            <label className='section-title'>Language</label>
+                                                <div className='detected-language'>
+                                                    <p className='notebook-language'>{this.state.notebookLanguage}</p> 
+                                                </div>
+                                        <hr/>
+                                        </React.Fragment>
+                                        : null}
+                                         
+                                    {/* <select name="lang" value={this.state.notebookLanguage} onChange={this.langChanged}>
+                                        <option value="Python">Python</option>
+                                        <option value="Julia">Julia</option>
+                                        <option value="R">R</option>
+                                        <option value="Other">Other</option>
+                                    </select> */}
                                     
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">
