@@ -269,7 +269,7 @@ class Submit extends Component {
     }
 
     langChanged = () => {
-        this.state.notebookLanguage !== null ?  this.formData.lang = this.state.notebookLanguage : null;
+        this.state.notebookLanguage && (this.formData.lang = this.state.notebookLanguage);
     }
 
     titleChanged = (event) => {
@@ -441,7 +441,6 @@ class Submit extends Component {
     }
 
     render() {
-        {console.log('Language', this.formData.lang)}
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
