@@ -41,6 +41,7 @@ class SubmissionList extends Component {
                         searchParams={this.props.searchParams}
                         totalSubmissions={this.props.totalSubmissions}
                         actions={this.props.actions}
+                        languages={this.props.languages}
                         onSearch={this.onSearch}/>
                     <div className="summaries">
                         {/*Repeat for each notebook*/}

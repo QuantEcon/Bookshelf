@@ -18,10 +18,11 @@ class Searchbar extends Component {
     }
     constructor(props) {
         super(props);
-
+        
         this.state = {
             searchParams: props.searchParams,
             totalSubmissions: props.totalSubmissions,
+            languages: props.languages,
             showSearchBar: false,
             hasCurrentSearch: props.searchParams.keywords !== '',
             previousSearch: props.searchParams.keywords
@@ -57,7 +58,7 @@ class Searchbar extends Component {
 
     componentWillReceiveProps(props) {
         // console.log('[SearchBar] - new props: ', props);
-        this.setState({searchParams: props.searchParams, totalSubmissions: props.totalSubmissions})
+        this.setState({searchParams: props.searchParams, totalSubmissions: props.totalSubmissions, languages: props.languages})
     }
 
     /**Toggles visibility of the searchbar */
@@ -266,10 +267,15 @@ class Searchbar extends Component {
                                         onChange={this.langChanged}
                                         value={this.state.searchParams.lang}>
                                         <option value="All">All</option>
-                                        <option value="Python">Python</option>
-                                        <option value="Julia">Julia</option>
-                                        <option value="R">R</option>
-                                        <option value='Other'>Other</option>
+                                        {this.state.languages ? 
+                                            this.state.languages.map((lang)=>{
+                                                return (
+                                                    <option value={lang}>
+                                                        {lang}
+                                                    </option>
+                                                )
+                                            })
+                                            : null}
                                     </select>
                                 </label>
 

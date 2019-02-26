@@ -32,6 +32,7 @@ export function receiveSubmissionPreviews(searchParams, json) {
         submissionList: json.submissions,
         authors: json.authors,
         totalSubmissions: json.totalSubmissions,
+        languages: json.languages,
         receivedAt: new Date()
     }
 }
@@ -81,9 +82,13 @@ export const fetchSubmissions = ({searchParams, forced}) => {
         if (forced || shouldFetchSummaries(store.getState(), sp)) {
             dispatch(requestSubmissionPreviews(sp));
             var qs = queryString.stringify(sp);
-            return fetch('/api/search/all-submissions/?' + qs).then(resp => resp.json(), error => console.log('An error occured: ', error)).then(json => {
-                dispatch(receiveSubmissionPreviews(sp, json));
-            });
+            fetch('/api/search/all-submissions/?' + qs)
+                .then((response) => {
+                    return response.json();
+                }, (error) => console.log('An error occurred: ', error))
+                .then(json => {
+                    dispatch(receiveSubmissionPreviews(sp, json));
+                })
         } else {
             console.log('[FetchSubmissions] - don\'t need to fetch');
         }

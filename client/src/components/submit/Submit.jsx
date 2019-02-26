@@ -14,7 +14,7 @@ import Breadcrumbs from '../partials/Breadcrumbs'
 import { Redirect } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-const maxWords = 251
+const maxWords = 251;
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},

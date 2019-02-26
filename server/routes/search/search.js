@@ -44,17 +44,7 @@ app.get('/all-submissions', function (req, res) {
         deleted: false
     };
     if (req.query.lang !== 'All') {
-        console.log('req.query.lang', req.query.lang)
-        searchParams.lang = req.query.lang
-        // returns an array of distinct languages saved from db 
-        Submission.distinct('lang', function(err, languages) {
-            if(err) {
-                console.log('[Search] error returning an array of distinct languages', err);
-            } else if(languages) {
-                console.log(languages);
-                // res.send({languageArray: languages})
-            }
-        })
+        searchParams.lang = req.query.lang;
     }
     if (req.query.topic !== 'All') {
         console.log('[Search] - topic: ', req.query.topic)
@@ -147,16 +137,17 @@ app.get('/all-submissions', function (req, res) {
     }
 
     //todo: add select statement to only get required info
-    Submission.paginate(searchParams, options).then(function (result) {
+    Submission.paginate(searchParams, options).then((result) => {
         var submissions = result.docs;
         var err = null;
+
         if (err) {
             console.log("Error occurred finding submissions");
             res.status(500);
             res.send("Error occurred finding submissions")
         } else {
-            //get users
-            var authorIds = submissions.map(function (submission) {
+            // get users that match search parameters
+            var authorIds = submissions.map((submission) => {
                 return submission.author;
             });
             User.find({
@@ -168,12 +159,20 @@ app.get('/all-submissions', function (req, res) {
                     console.log("Error occurred finding authors");
                     res.status(500);
                     res.send("Error occurred finding authors");
-                } else {
-                    res.send({
-                        submissions: submissions,
-                        totalSubmissions: result.total,
-                        authors: authors
-                    })
+                } else if(authors) {
+                    // returns an array of distinct languages saved from db 
+                    Submission.distinct('lang', (err, language) => {
+                        if(err) {
+                            console.log('[Search] error returning an array of distinct languages', err);
+                        } else if(language) {
+                            res.send({
+                                submissions: submissions,
+                                totalSubmissions: result.total,
+                                authors: authors,
+                                languages: language,
+                            });
+                        }
+                    });                
                 }
             })
         }
