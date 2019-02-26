@@ -169,7 +169,7 @@ app.get('/all-submissions', function (req, res) {
                                 submissions: submissions,
                                 totalSubmissions: result.total,
                                 authors: authors,
-                                languages: language,
+                                languages: language.sort(),
                             });
                         }
                     });                
