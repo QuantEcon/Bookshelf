@@ -82,8 +82,10 @@ app.get('/', passport.authenticate('jwt', {
                 } else if (adminList){
                     console.log(adminList.adminIDs)
                     console.log(req.user._id)
-                    if(adminList.adminIDs.indexOf(req.user._id) != -1) {
-                        isAdmin = true;
+                    for (adminID of adminList.adminIDs.toObject()) {
+                        if (String(adminID) == String(req.user._id)) {
+                            isAdmin = true;
+                        }
                     }
                 }
             })

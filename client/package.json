@@ -61,5 +61,11 @@
     "jsdoc-jsx": "^0.1.0",
     "minami": "^1.2.3",
     "nodemon": "^1.18.9"
-  }
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

@@ -39,10 +39,11 @@ app.use(bodyParser.urlencoded({
 app.post('/submission', passport.authenticate('jwt', {
     session: 'false'
 }), (req, res) => {
+
+    // function to set deleted flag in submission and save the information in the corresponding user object
     let deleteSubmission = (submission, user) => {
         submission.deleted = true;
         submission.deletedDate = Date.now()
-        // go through and delete comments???
         submission.save();
         user.deletedSubmissions.push(req.body.submissionID)
         user.save()
@@ -55,6 +56,7 @@ app.post('/submission', passport.authenticate('jwt', {
                 error: err
             });
         } else {
+            // find the user with the submission
             User.findOne({
                 _id: req.user._id
             }, (err, user) => {
@@ -77,8 +79,7 @@ app.post('/submission', passport.authenticate('jwt', {
                         })
                         deleteSubmission(submission, user)
                     } else {
-                        // check if the user is an Admin
-                        console.log("not submitted by user")
+                        // else check if the user is an Admin
                         AdminList.findOne({}, (err, adminList) => {
                             if(err){
                                 res.status(500)
@@ -87,10 +88,7 @@ app.post('/submission', passport.authenticate('jwt', {
                                     message: err
                                 })
                             } else {
-                                console.log(typeof(adminList['adminIDs'][0]))
-                                console.log(req.user._id)
                                 for (adminID of adminList['adminIDs'].toObject()) {
-                                    console.log(adminID)
                                     if (String(adminID) === String(req.user._id)) {
                                         isAdmin = true;
                                         console.log(adminID, "matched")
@@ -104,42 +102,15 @@ app.post('/submission', passport.authenticate('jwt', {
                                         message: err
                                     })
                                 } else {
-                                    deleteSubmission(submission, user)
+                                    User.findOne({
+                                        _id: submission.author
+                                    }, (err, user)=> {
+                                        deleteSubmission(submission, user)
+                                    })
                                 }
-                                // if (adminList['adminIDs'].includes(String(req.user._id))) {
-                                //     console.log('I am an admin')
-                                // } else {
-                                //     console.log('I am not')
-                                // }
-                                //res.sendStatus(401)
-                                // User.find({_id: {$in: adminList.adminIDs}}, (err, users) => {
-                                //     if(err){
-                                //         res.status(500)
-                                //         console.log("[Admin] - error: ", err)
-                                //         res.send({
-                                //             error: true,
-                                //             message: err
-                                //         })
-                                //     } else if(users){
-                                //         res.send(users)
-                                //     } else {
-                                //         res.status(401)
-                                //         res.send({
-                                //             error: true,
-                                //             message: "There are no admins in the database"
-                                //         })
-                                //     }
-                                // })
                             }
                         })
                     }
-                    // submission.deleted = true;
-                    // submission.deletedDate = Date.now()
-                    // go through and delete comments???
-                    // submission.save();
-                    // user.deletedSubmissions.push(req.body.submissionID)
-                    // user.save()
-                    //res.sendStatus(200)
                 }
                 else {
                     console.warn("[DeleteSubmission] - couldn't find author")
