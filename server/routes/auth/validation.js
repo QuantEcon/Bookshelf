@@ -73,15 +73,12 @@ app.get('/', passport.authenticate('jwt', {
 
     } else {
         console.log('[ValidateToken] - normal login');
-        console.log(req.authInfo, "isAdmin")
         let isAdmin = false;
         if(req.user._id) {
             AdminList.findOne({}, (err, adminList) => {
                 if(err){
                     console.log("[ValidateToken] - error getting admin list: ", err)
                 } else if (adminList){
-                    console.log(adminList.adminIDs)
-                    console.log(req.user._id)
                     for (adminID of adminList.adminIDs.toObject()) {
                         if (String(adminID) == String(req.user._id)) {
                             isAdmin = true;
@@ -93,7 +90,6 @@ app.get('/', passport.authenticate('jwt', {
             User.findOne({'_id': req.user.id}, (err, user) => {
                 const userDeleted = user.deleted;
                 let userRequestObj = Object.assign({}, req.user.toObject(), { isAdmin: isAdmin})
-                console.log(userRequestObj, "here bro?")
                 if(userDeleted){
                     res.send({
                         error: {
@@ -115,35 +111,6 @@ app.get('/', passport.authenticate('jwt', {
                 }
             });
         }
-        // if(req.authInfo.isAdmin){
-        //     AdminList.findOne({}, (err, adminList) => {
-        //         if(err){
-        //             console.log("[ValidateToken] - error getting admin list: ", err)
-        //         } else if (adminList){
-        //             if(adminList.adminIDs.indexOf(req.user._id) != -1){
-        //                 res.send({
-        //                     user: req.user,
-        //                     provider: req.user.currentProvider,
-        //                     uid: req.user._id,
-        //                     token: req.headers['access-token'],
-        //                     isAdmin: req.authInfo.isAdmin
-        //                 })
-        //             } else {
-        //                 console.log("[ValidateToken] - user is no longer admin")
-        //                 res.sendStatus(401)
-        //             }
-        //         }
-        //     })
-        // } else {
-        //     res.send({
-        //         user: req.user,
-        //         provider: req.user.currentProvider,
-        //         uid: req.user._id,
-        //         token: req.headers['access-token'],
-        //         isAdmin: req.authInfo.isAdmin
-        //     })
-        // }
-
     }
 
 })
