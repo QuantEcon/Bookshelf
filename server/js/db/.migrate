@@ -1,0 +1,17 @@
+{
+  "lastRun": "1547430906567-test-migrate.js",
+  "migrations": [
+    {
+      "title": "1545351944251-add-authorName-Submissions.js",
+      "timestamp": 1547430178063
+    },
+    {
+      "title": "1547430906567-test-migrate.js",
+      "timestamp": 1547430953686
+    },
+    {
+      "title": "template.js",
+      "timestamp": 1547430178072
+    }
+  ]
+}
