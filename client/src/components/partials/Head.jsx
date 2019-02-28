@@ -202,10 +202,6 @@ class Head extends Component {
                                 </a>
 
                             </div>
-{/* 
-                            <p className="site-tag">An open Jupyter notebook library for economics and finance
-                                <img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/>
-                            </p> */}
 
                             <div className="site-nav">
                                 <div className="site-links">
@@ -247,7 +243,7 @@ class Head extends Component {
                                                   onAfterOpen={this.afterOpenModal}
                                                   onRequestClose={this.closeModal}
                                                   className="modal-alert"
-                                                  contentLabel="Example Modal"
+                                                  contentLabel="Invite Modal"
                                                 >
                                                   <form onSubmit={this.handleSubmit}>
                                                     <div className="modal">
