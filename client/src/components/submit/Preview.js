@@ -3,6 +3,7 @@ import Markdown from 'react-markdown';
 import Time from 'react-time';
 // import Linkify from 'react-linkify';
 import NotebookPreview from '@nteract/notebook-preview';
+import LazyLoad from 'react-lazyload';
 //import '@nteract/notebook-preview/styles/main.css';
 //import '@nteract/notebook-preview/styles/theme-light.css';
 //import 'codemirror/lib/codemirror.css';
@@ -152,7 +153,8 @@ class Preview extends Component {
                                         <div className='side'>
                                             {!this.props.isLoading
                                                 ? <p className='avatar'>
-                                                        <a href={'/user/' + this.props.author._id}><img src={this.props.author.avatar} alt="Author avatar"/></a>
+                                                        <a href={'/user/' + this.props.author._id}>
+                                                        <LazyLoad width={50}><img src={this.props.author.avatar} alt="Author avatar"/></LazyLoad></a>
                                                     </p>
                                                 : <p>loading</p>}
                                         </div>

@@ -2,6 +2,7 @@ var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var series = require('async/series');
 var mdb = require('mongodb');
+var storage = require('node-persist');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -14,6 +15,15 @@ var app = express.Router();
 
 var config = require('../../_config');
 
+
+
+// variables and functions 
+let globallyStoredSearchParams = {}
+let globallyStoredCollections = {}
+
+async function getStoredData() {
+    return await globallyStoredCollections;
+}
 /**
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
@@ -32,7 +42,7 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Discover, Date).
  *
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
@@ -118,9 +128,6 @@ app.get('/all-submissions', function (req, res) {
                     'published': -1
                 };
                 break;
-            case 'Trending':
-                console.log("Trending Algorithm");
-                break;
             case 'Views':
                 options.sort = {
                     'views': -1,
@@ -136,38 +143,146 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-    //todo: add select statement to only get required info
-    Submission.paginate(searchParams, options).then(function (result) {
-        var submissions = result.docs;
-        var err = null;
-        if (err) {
-            console.log("Error occurred finding submissions");
-            res.status(500);
-            res.send("Error occurred finding submissions")
+    /**
+     *  Function to change the order of notebook randomly with a given probability
+     * 
+     * @param {probability with which you want to swap a notebook} prob 
+     * @param {the present index to operate on} currentIndex
+     * @param {total number of notebooks} totalNo 
+     * @param {which indexes have been visited and operated upon} visitedArray 
+     * @param {the notebook data} data 
+     */
+    function changeOrderRandomly(prob, currentIndex, totalNo, visitedArray, data) {
+        let randomNumber = Math.round(Math.random()*(totalNo - 1))
+        if (visitedArray.length < totalNo) {
+            while (visitedArray.includes(randomNumber)) {
+                randomNumber = Math.round(Math.random()*(totalNo - 1))
+            }
         } else {
-            //get users
-            var authorIds = submissions.map(function (submission) {
-                return submission.author;
-            });
-            User.find({
-                _id: {
-                    $in: authorIds
-                }
-            }, 'name avatar _id', function (err, authors) {
-                if (err) {
-                    console.log("Error occurred finding authors");
-                    res.status(500);
-                    res.send("Error occurred finding authors");
+            return;
+        }
+        let changeIndex = (Math.random() <= prob)
+        if (changeIndex) {
+            let temp = data[randomNumber]
+            data[randomNumber] = data[currentIndex]
+            data[currentIndex] = temp;
+            visitedArray.push(randomNumber);
+            visitedArray.push(currentIndex);
+        } else {
+            if (!visitedArray.includes(currentIndex)) {
+                visitedArray.push(currentIndex)
+            }
+        }
+    }
+
+    /**
+     * Present implementation of Discover algorithm
+     */
+    if (req.query.sortBy == 'Discover') {
+        (() => {
+            let queryPromise = null;
+            let storedRandomCollection = getStoredData()
+            storedRandomCollection.then((data) => {
+                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
+                    console.log('query change?')
+                    queryPromise = Submission.find(searchParams).sort({
+                        'score': -1,
+                        'published': -1
+                    }).then((data) => {
+                        let visitedArray = []
+                        for (let i = 0; i < data.length; i++) {
+                          changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                        }
+                        globallyStoredCollections = data;
+                        globallyStoredSearchParams = searchParams;
+                        return data
+                    })
                 } else {
-                    res.send({
-                        submissions: submissions,
-                        totalSubmissions: result.total,
-                        authors: authors
+                    console.log('same')
+                    queryPromise = new Promise((resolve, reject) =>{
+                        resolve(storedRandomCollection)
+                    })
+                }
+                return queryPromise
+            }).then((shuffledData) => {
+                let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
+                var err = null;
+                if (err) {
+                    console.log("Error occurred finding submissions");
+                    res.status(500);
+                    res.send("Error occurred finding submissions")
+                } else {
+                    //get users
+                    var authorIds = submissions.map(function (submission) {
+                        return submission.author;
+                    });
+                    submissions = submissions.map((data) => {
+                        return {
+                            "_id": data._id,
+                            "title": data.title,
+                            "lang": data.lang,
+                            "summary": data.summary,
+                            "author": data.author,
+                            "totalComments": data.totalComments,
+                            "views": data.views,
+                            "published": data.published,
+                            "flagged": data.flagged
+                        }
+                    })
+                    User.find({
+                        _id: {
+                            $in: authorIds
+                        }
+                    }, 'name avatar _id', function (err, authors) {
+                        if (err) {
+                            console.log("Error occurred finding authors");
+                            res.status(500);
+                            res.send("Error occurred finding authors");
+                        } else {
+                            res.send({
+                                submissions: submissions,
+                                totalSubmissions: shuffledData.length,
+                                authors: authors
+                            })
+                        }
                     })
                 }
             })
-        }
-    });
+        })()
+    } else {
+        //todo: add select statement to only get required info
+        Submission.paginate(searchParams, options).then(function (result) {
+            var submissions = result.docs;
+            var err = null;
+            if (err) {
+                console.log("Error occurred finding submissions");
+                res.status(500);
+                res.send("Error occurred finding submissions")
+            } else {
+                //get users
+                var authorIds = submissions.map(function (submission) {
+                    return submission.author;
+                });
+                User.find({
+                    _id: {
+                        $in: authorIds
+                    }
+                }, 'name avatar _id', function (err, authors) {
+                    if (err) {
+                        console.log("Error occurred finding authors");
+                        res.status(500);
+                        res.send("Error occurred finding authors");
+                    } else {
+                        res.send({
+                            submissions: submissions,
+                            totalSubmissions: result.total,
+                            authors: authors
+                        })
+                    }
+                })
+            }
+        });
+    }
 });
 
 // endpoint to get a list of all the existing users

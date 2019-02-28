@@ -1,9 +1,11 @@
 const express = require('express');
 const appConfig = require('../../_config')
 const bodyParser = require('body-parser');
+var fs = require('fs');
 
 // import model schemas
 const User = require('../../js/db/models/User');
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 // import an instance from express Router
 const app = express.Router();
@@ -43,6 +45,10 @@ app.post('/', (req, res) => {
                 if(err) {
                     res.sendStatus(500);
                 } else {
+                    // updating the sitemap to reflect the restoration of user
+                    sitemapFunction().then((resp) => {
+                        fs.writeFileSync(sitemapPath, resp.toString());
+                    })
                     res.send({message: 'Success'});
                 }
             })

@@ -7,6 +7,7 @@ import AlertCircledIcon from 'react-icons/lib/io/alert-circled';
 import Modal from 'react-modal'
 import MarkdownRender from '@nteract/markdown'
 import Time from 'react-time';
+import LazyLoad from 'react-lazyload';
 import ReplyList from './ReplyList';
 import {Link} from 'react-router-dom';
 import avatarPlaceHolder from '../../assets/img/avatar/10.jpg';
@@ -264,8 +265,8 @@ class Comment extends Component {
                 <div className='comment-side'>
                     <div className='comment-avatar'>
                         <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? <img src={avatarPlaceHolder} alt="Author avatar"/> :
-                            <img src={this.state.author.avatar} alt="Author avatar"/>}
+                            {this.state.author.deleted ? <LazyLoad width={50}><img src={avatarPlaceHolder} alt="Author avatar"/></LazyLoad> :
+                            <LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
                         </a>
                     </div>
 
