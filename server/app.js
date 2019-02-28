@@ -108,8 +108,16 @@ app.use(express.static(__dirname + "/public"));
 
 app.get('/robots.txt', function (req, res) {
     console.log("coming for this url??")
-    res.type('text/plain');
-    res.send("Sitemap: https://" + hostname + "/sitemap.xml");
+    fs.readFile('./robots.txt', 'utf8', (err, robotsContent) => {
+        if (err) {
+            res.status(500);
+            res.send({error: err});
+        } else {
+            res.type('text/plain');
+            let parsed = robotsContent.replace(/YOUR-HOSTNAME/g, hostname);
+            res.send(parsed);
+        }
+    });
 });
 
 /**
