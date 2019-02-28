@@ -62,12 +62,8 @@
     "docdash": "^0.4.0",
     "jsdoc-jsx": "^0.1.0",
     "minami": "^1.2.3",
-<<<<<<< HEAD
-    "nodemon": "^1.18.9"
-=======
     "nodemon": "^1.18.9",
     "query-string": "^6.2.0"
->>>>>>> master
   },
   "browserslist": [
     ">0.2%",
