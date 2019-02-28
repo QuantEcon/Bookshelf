@@ -62,6 +62,7 @@ const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 // ==============================================================================
 const port = require('./_config').port;
 const secret = require('./_config').secret
+const hostname = require('./_config').hostName;
 
 const app = express();
 app.enable('trust proxy');
@@ -107,6 +108,20 @@ app.use(express.static(path.join(__dirname, "..",
 }))
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
+
+
+app.get('/robots.txt', function (req, res) {
+    fs.readFile('./robots.txt', 'utf8', (err, robotsContent) => {
+        if (err) {
+            res.status(500);
+            res.send({error: err});
+        } else {
+            res.type('text/plain');
+            let parsed = robotsContent.replace(/YOUR-HOSTNAME/g, hostname);
+            res.send(parsed);
+        }
+    });
+});
 
 /**
  * @api {get} /api/about Get About Page

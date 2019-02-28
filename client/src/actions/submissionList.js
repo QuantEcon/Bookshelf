@@ -16,7 +16,7 @@ export function requestSubmissionPreviews(searchParams = {
     author: '',
     keywords: '',
     page: 1,
-    sortBy: 'Votes'
+    sortBy: 'Discover'
 }) {
     return {
         type: REQUEST_SUBMISSION_PREVIEWS,
@@ -74,7 +74,7 @@ export const fetchSubmissions = ({searchParams, forced}) => {
         author: '',
         keywords: '',
         page: 1,
-        sortBy: 'Votes'
+        sortBy: 'Discover'
     }, searchParams)
     console.log('[Search] - search params: ', sp);
     return function (dispatch) {
