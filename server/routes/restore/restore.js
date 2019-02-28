@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 
 // import model schemas
 const User = require('../../js/db/models/User');
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 // import an instance from express Router
 const app = express.Router();
@@ -43,6 +44,10 @@ app.post('/', (req, res) => {
                 if(err) {
                     res.sendStatus(500);
                 } else {
+                    // updating the sitemap to reflect the restoration of user
+                    sitemapFunction().then((resp) => {
+                        fs.writeFileSync(sitemapPath, resp.toString());
+                    })
                     res.send({message: 'Success'});
                 }
             })
