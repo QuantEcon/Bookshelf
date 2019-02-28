@@ -23,6 +23,7 @@
     "react-dropzone": "^4.2.0",
     "react-html-parser": "^2.0.1",
     "react-icons": "^2.2.5",
+    "react-lazyload": "^2.5.0",
     "react-markdown": "^3.1.4",
     "react-mathjax": "git+https://github.com/wko27/react-mathjax.git",
     "react-meta-tags": "^0.7.3",
