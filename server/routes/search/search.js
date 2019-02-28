@@ -216,6 +216,19 @@ app.get('/all-submissions', function (req, res) {
                     var authorIds = submissions.map(function (submission) {
                         return submission.author;
                     });
+                    submissions = submissions.map((data) => {
+                        return {
+                            "_id": data._id,
+                            "title": data.title,
+                            "lang": data.lang,
+                            "summary": data.summary,
+                            "author": data.author,
+                            "totalComments": data.totalComments,
+                            "views": data.views,
+                            "published": data.published,
+                            "flagged": data.flagged
+                        }
+                    })
                     User.find({
                         _id: {
                             $in: authorIds
