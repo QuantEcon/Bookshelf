@@ -109,6 +109,19 @@ app.use(express.static(path.join(__dirname, "..",
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
+if (process.env.NODE_ENV === 'production') {
+    app.get('/*', function(req,res) {
+        console.log('here')
+        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+            if (err) {
+                res.status(500);
+                res.send({error: err});
+            } else {
+                res.send(modalHtml);
+            }
+        });
+    })
+}
 
 app.get('/robots.txt', function (req, res) {
     fs.readFile('./robots.txt', 'utf8', (err, robotsContent) => {
