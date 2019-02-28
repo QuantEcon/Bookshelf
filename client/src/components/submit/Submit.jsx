@@ -14,7 +14,7 @@ import Breadcrumbs from '../partials/Breadcrumbs'
 import { Redirect } from 'react-router-dom'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
-const maxWords = 251
+const maxWords = 251;
 
 /**
  * Renders the form to submit a new notebook. It's parent container, {@link SubmitContainer},
@@ -89,7 +89,8 @@ class Submit extends Component {
             pasteValue: false,
             textareaValue: 0,
             triggerOnKeyPress: false,
-            summary: ''
+            summary: '',
+            notebookLanguage: null
         }
 
         this.onOpenClick = this
@@ -125,6 +126,7 @@ class Submit extends Component {
         })
     }
 
+    // set up formData object from props 
     formData = {
         agreement: false,
         title: this.props.isEdit && this.props.submission
@@ -236,37 +238,38 @@ class Submit extends Component {
      */
     submit = (e) => {
         if(e) {
-            e.preventDefault()
+            e.preventDefault();
         }
         this.setState({contentSaved : true}, () => {
 
-        if (this.props.isEdit) {
-            console.log('[EditSubmission] - submit edit', this.props)
-            var file = this.state.accepted[0]
-              ? this.state.accepted[0]
-              : null
-            var notebookJSON = this.state.accepted[0]
-              ? null
-              : this.props.submission.data.notebookJSON
-          this.formData.score = this.props.submission.data.notebook.score
-          this.formData.views = this.props.submission.data.notebook.views
-          this.formData.published = this.props.submission.data.notebook.published
-          this.formData.lastUpdateDate = Date(Date.now())
-          this.props.save({formData: this.formData, file, notebookJSON})
-          console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
-          ;
-      } else {
-          console.log('[EditSubmission] - not edit')
+            // Update language change from IPYNB meta data
+            this.langChanged();
 
-          this
-              .props
-              .submit(this.formData, this.state.accepted[0]);
-      }
+            // If notebook is being edited
+            if (this.props.isEdit) {
+                console.log('[EditSubmission] - submit edit', this.props)
+                var file = this.state.accepted[0]
+                ? this.state.accepted[0]
+                : null
+                var notebookJSON = this.state.accepted[0]
+                ? null
+                : this.props.submission.data.notebookJSON
+            this.formData.score = this.props.submission.data.notebook.score
+            this.formData.views = this.props.submission.data.notebook.views
+            this.formData.published = this.props.submission.data.notebook.published
+            this.formData.lastUpdateDate = Date(Date.now())
+            this.props.save({formData: this.formData, file, notebookJSON})
+            console.log("[FormData Saved after Edit] - ", this.formData.lastUpdateDate);
+            ;
+        } else {
+            console.log('[EditSubmission] - not edit');
+            this.props.submit(this.formData, this.state.accepted[0]);
+        }
      });
     }
 
-    langChanged = (event) => {
-        this.formData.lang = event.target.value
+    langChanged = () => {
+        this.state.notebookLanguage && (this.formData.lang = this.state.notebookLanguage);
     }
 
     titleChanged = (event) => {
@@ -325,14 +328,20 @@ class Submit extends Component {
             this.setState({notebookDataReady: false});
             reader.readAsText(accepted[0]);
             reader.onload = (event) => {
+                // Parse drop file submission
+                let result = JSON.parse(event.target.result);
+                let submissionLanguage = result.metadata.kernelspec.language;
+                // TODO : Create a util text transformations file with all helper functions in it that's relates to text transformations.
+                let capitaliseFirst = submissionLanguage.charAt(0).toUpperCase() + submissionLanguage.slice(1);
                 this.setState({
-                    notebookJSON: JSON.parse(event.target.result),
+                    notebookJSON: result,
                     notebookDataReady: true,
                     accepted,
                     rejected,
                     fileUploaded: true,
                     uploadError: false,
-                    fileName: accepted[0].name
+                    fileName: accepted[0].name,
+                    notebookLanguage: capitaliseFirst,
                 }, () => this.validate())
             }
         } else if (!this.state.fileUploaded) {
@@ -435,16 +444,14 @@ class Submit extends Component {
         return (
             <div>
                 <HeadContainer history={this.props.history}/>
-                <Breadcrumbs title='Submit'/>
-
-              {/* Modal window for preview button in the edit notebook submission */}
+                <Breadcrumbs title='Submit'/>                
+                {/* Modal window for preview button in the edit notebook submission */}
                 <Modal isOpen={this.state.modalOpen}
                        onRequestClose={this.closeModal}
                        contentLabel="Preview">
                     <CloseIcon onClick={this.toggleOpenModal}/>
                     <NotebookPreview notebook={this.state.notebookJSON}/>
                 </Modal>
-
                 {/* Modal window for cancel button in the edit notebook submission */}
                 <Modal isOpen={this.state.cancelSubmissionModal}
                       onRequestClose={this.toggleCancelSubmissionModal}
@@ -579,7 +586,6 @@ class Submit extends Component {
                                               onClick={this.onOpenClick}>
                                               Update Notebook
                                         </button>
-
                                     </li>
                                     <li>
                                         <button
@@ -589,7 +595,6 @@ class Submit extends Component {
                                         </button>
                                     </li>
                                 </ul>
-
                             </div>
 
                             <div className='submit-header'>
@@ -609,7 +614,6 @@ class Submit extends Component {
                                                 Title is required
                                             </p>
                                         : null}
-
                                 </div>
                             </div>
 
@@ -670,19 +674,23 @@ class Submit extends Component {
                                     </ul>
                                 </div>
                                 <div className='submit-secondary-group2'>
-                                    <label className='section-title'>Language
-                                        <span className='mandatory'>*</span>
-                                    </label>
-                                    <select name="lang" defaultValue='python' onChange={this.langChanged}>
+                                    {this.state.notebookLanguage !== null ? 
+                                        <React.Fragment> 
+                                            <label className='section-title'>Language</label>
+                                                <div className='detected-language'>
+                                                    <p className='notebook-language'>{this.state.notebookLanguage}</p> 
+                                                </div>
+                                        <hr/>
+                                        </React.Fragment>
+                                        : null}
+                                         
+                                    {/* <select name="lang" value={this.state.notebookLanguage} onChange={this.langChanged}>
                                         <option value="Python">Python</option>
                                         <option value="Julia">Julia</option>
                                         <option value="R">R</option>
                                         <option value="Other">Other</option>
-                                    </select>
-
-                                    <hr/>
-
-
+                                    </select> */}
+                                    
                                     <label htmlFor='summary' className='section-title'>Summary</label>
                                     <p className="input-hint">
                                         You can use{' '}
