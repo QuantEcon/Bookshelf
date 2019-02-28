@@ -12,6 +12,7 @@ RUN npm install
 COPY ./server/js /server/js
 COPY ./server/routes /server/routes
 COPY ./server/app.js /server
+COPY ./server/robots.txt /server
 COPY ./server/_config.js /server
 COPY ./server/assets /server/assets
 
