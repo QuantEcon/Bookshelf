@@ -62,7 +62,7 @@ const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 // ==============================================================================
 const port = require('./_config').port;
 const secret = require('./_config').secret
-const hostname = require('./_config').hostname;
+const hostname = require('./_config').hostName;
 
 const app = express();
 app.enable('trust proxy');
