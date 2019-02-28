@@ -22,6 +22,7 @@ import FAQ from '../FAQ';
 import About from '../About';
 import TempComponent from '../TempComponent'
 import NotFound from '../NotFound'
+import Sitemap from '../Sitemap'
 
 import '../../assets/css/main.css'
 //import '../../assets/css/app.css'
