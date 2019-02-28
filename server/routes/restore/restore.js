@@ -1,6 +1,7 @@
 const express = require('express');
 const appConfig = require('../../_config')
 const bodyParser = require('body-parser');
+var fs = require('fs');
 
 // import model schemas
 const User = require('../../js/db/models/User');
