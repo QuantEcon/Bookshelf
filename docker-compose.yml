@@ -10,7 +10,6 @@ services:
         - mongodb
       volumes:
         - ./client/build:/client/build
-        - ./client/public:/client/public
     mongodb:
       restart: always
       container_name: mongodb
