@@ -2,6 +2,7 @@ var express = require('express');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var series = require('async/series');
 var mdb = require('mongodb');
+var storage = require('node-persist');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
@@ -14,6 +15,15 @@ var app = express.Router();
 
 var config = require('../../_config');
 
+
+
+// variables and functions 
+let globallyStoredSearchParams = {}
+let globallyStoredCollections = {}
+
+async function getStoredData() {
+    return await globallyStoredCollections;
+}
 /**
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
@@ -32,7 +42,7 @@ var config = require('../../_config');
  * @apiParam {string}   time        time of the submit date (Today, This month, This year, All time).
  * @apiParam {string}   keywords    string of keywords to check against the submission summary.
  * @apiParam {num}      page        used for pagination. Searches for the current page number.
- * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Trending, Date).
+ * @apiParam {string}   sortBy      attribute to sort by (Votes, Comments, Viewers, Discover, Date).
  *
  *
  * @apiSuccess (200) {Object[]}    submissions         array of submission database objects.
@@ -118,9 +128,6 @@ app.get('/all-submissions', function (req, res) {
                     'published': -1
                 };
                 break;
-            case 'Trending':
-                console.log("Trending Algorithm");
-                break;
             case 'Views':
                 options.sort = {
                     'views': -1,
@@ -167,77 +174,42 @@ app.get('/all-submissions', function (req, res) {
             }
         }
     }
- /**
-         * Present implementation of Discover algorithm
-         */
-        if (req.query.sortBy == 'Discover') {
-            (() => {
-                let queryPromise = null;
-                let storedRandomCollection = getStoredData()
-                storedRandomCollection.then((data) => {
-                    if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
-                        console.log('query change?')
-                        queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
-                            let visitedArray = []
-                            for (let i = 0; i < data.length; i++) {
-                            changeOrderRandomly(0.25, i, data.length, visitedArray, data)
-                            }
-                            globallyStoredCollections = data;
-                            globallyStoredSearchParams = searchParams;
-                            return data
-                        })
-                    } else {
-                        console.log('same')
-                        queryPromise = new Promise((resolve, reject) =>{
-                            resolve(storedRandomCollection)
-                        })
-                    }
-                    return queryPromise
-                }).then((shuffledData) => {
-                    let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
-                    var err = null;
-                    if (err) {
-                        console.log("Error occurred finding submissions");
-                        res.status(500);
-                        res.send("Error occurred finding submissions")
-                    } else {
-                        //get users
-                        var authorIds = submissions.map(function (submission) {
-                            return submission.author;
-                        });
-                        User.find({
-                            _id: {
-                                $in: authorIds
-                            }
-                        }, 'name avatar _id', function (err, authors) {
-                            if (err) {
-                                console.log("Error occurred finding authors");
-                                res.status(500);
-                                res.send("Error occurred finding authors");
-                            } else {
-                                res.send({
-                                    submissions: submissions,
-                                    totalSubmissions: shuffledData.length,
-                                    authors: authors
-                                })
-                            }
-                        })
-                    }
-                })
-            })()
-        } else {
-            //todo: add select statement to only get required info
-            Submission.paginate(searchParams, options).then((result) => {
-                var submissions = result.docs;
+    /**
+     * Present implementation of Discover algorithm
+     */
+    if (req.query.sortBy == 'Discover') {
+        (() => {
+            let queryPromise = null;
+            let storedRandomCollection = getStoredData()
+            storedRandomCollection.then((data) => {
+                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
+                    console.log('query change?')
+                    queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
+                        let visitedArray = []
+                        for (let i = 0; i < data.length; i++) {
+                        changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                        }
+                        globallyStoredCollections = data;
+                        globallyStoredSearchParams = searchParams;
+                        return data
+                    })
+                } else {
+                    console.log('same')
+                    queryPromise = new Promise((resolve, reject) =>{
+                        resolve(storedRandomCollection)
+                    })
+                }
+                return queryPromise
+            }).then((shuffledData) => {
+                let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
                 var err = null;
-    
                 if (err) {
                     console.log("Error occurred finding submissions");
                     res.status(500);
                     res.send("Error occurred finding submissions")
                 } else {
-                    // get users that match search parameters
-                    var authorIds = submissions.map((submission) => {
+                    //get users
+                    var authorIds = submissions.map(function (submission) {
                         return submission.author;
                     });
                     User.find({
@@ -249,26 +221,61 @@ app.get('/all-submissions', function (req, res) {
                             console.log("Error occurred finding authors");
                             res.status(500);
                             res.send("Error occurred finding authors");
-                        } else if(authors) {
-                            // returns an array of distinct languages saved from db 
-                            Submission.distinct('lang', (err, language) => {
-                                if(err) {
-                                    console.log('[Search] error returning an array of distinct languages', err);
-                                } else if(language) {
-                                    res.send({
-                                        submissions: submissions,
-                                        totalSubmissions: result.total,
-                                        authors: authors,
-                                        languages: language.sort(),
-                                    });
-                                }
-                            });                
+                        } else {
+                            res.send({
+                                submissions: submissions,
+                                totalSubmissions: shuffledData.length,
+                                authors: authors
+                            })
                         }
                     })
                 }
+            })
+        })()
+    } else {
+    //todo: add select statement to only get required info
+    Submission.paginate(searchParams, options).then((result) => {
+        var submissions = result.docs;
+        var err = null;
+
+        if (err) {
+            console.log("Error occurred finding submissions");
+            res.status(500);
+            res.send("Error occurred finding submissions")
+        } else {
+            // get users that match search parameters
+            var authorIds = submissions.map((submission) => {
+                return submission.author;
             });
-        }
-    });
+            User.find({
+                _id: {
+                    $in: authorIds
+                }
+            }, 'name avatar _id', function (err, authors) {
+                if (err) {
+                    console.log("Error occurred finding authors");
+                    res.status(500);
+                    res.send("Error occurred finding authors");
+                    } else if(authors) {
+                        // returns an array of distinct languages saved from db 
+                        Submission.distinct('lang', (err, language) => {
+                            if(err) {
+                                console.log('[Search] error returning an array of distinct languages', err);
+                            } else if(language) {
+                                res.send({
+                                    submissions: submissions,
+                                    totalSubmissions: result.total,
+                                    authors: authors,
+                                    languages: language.sort(),
+                                });
+                            }
+                        });                
+                    }
+                })
+            }
+        });
+    }
+});
     
 
 // endpoint to get a list of all the existing users
@@ -289,10 +296,7 @@ app.get('/userList', (req, res) => {
         users.forEach(function(user) {
             if (user._id != req.query._id ) {
                 userMap[user._id] = user;
-
             }
-
-
         });
 
         res.send(userMap);
