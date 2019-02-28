@@ -109,20 +109,6 @@ app.use(express.static(path.join(__dirname, "..",
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
-if (process.env.NODE_ENV === 'production') {
-    app.get('/*', function(req,res) {
-        console.log('here')
-        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-            if (err) {
-                res.status(500);
-                res.send({error: err});
-            } else {
-                res.send(modalHtml);
-            }
-        });
-    })
-}
-
 app.get('/robots.txt', function (req, res) {
     fs.readFile('./robots.txt', 'utf8', (err, robotsContent) => {
         if (err) {
@@ -360,15 +346,30 @@ app.get("/temp", (req, res) => {
     res.send("Loading...")
 })
 
-app.get('*', (req, res) => {
-    console.log('Sending react app' + req.url)
-    try {
-       res.sendFile(path.join(__dirname, '/../client/build/index.html'))
-    } catch (ex) {
-        //TODO send back html page with this info
-        res.send("Server is down for maintenance")
-    }
-});
+if (process.env.NODE_ENV === 'production') {
+    app.get('*', function(req,res) {
+        console.log('here')
+        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+            if (err) {
+                res.status(500);
+                res.send({error: err});
+            } else {
+                res.send(modalHtml);
+                res.sendStatus(200)
+            }
+        });
+    })
+} else {
+    app.get('*', (req, res) => {
+        console.log('Sending react app' + req.url)
+        try {
+        res.sendFile(path.join(__dirname, '/../client/build/index.html'))
+        } catch (ex) {
+            //TODO send back html page with this info
+            res.send("Server is down for maintenance")
+        }
+    });
+}
 // =============================================================================
 // start server
 app.listen(port, function () {
