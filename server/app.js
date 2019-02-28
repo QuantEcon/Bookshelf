@@ -62,6 +62,7 @@ const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 // ==============================================================================
 const port = require('./_config').port;
 const secret = require('./_config').secret
+const hostname = require('./_config').hostname;
 
 const app = express();
 app.enable('trust proxy');
@@ -103,6 +104,13 @@ app.use (function (req, res, next) {
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
+
+
+app.get('/robots.txt', function (req, res) {
+    console.log("coming for this url??")
+    res.type('text/plain');
+    res.send("Sitemap: https://" + hostname + "/sitemap.xml");
+});
 
 /**
  * @api {get} /api/about Get About Page
