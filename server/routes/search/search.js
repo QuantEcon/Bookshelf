@@ -136,39 +136,38 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-        /**
-         *  Function to change the order of notebook randomly with a given probability
-         * 
-         * @param {probability with which you want to swap a notebook} prob 
-         * @param {the present index to operate on} currentIndex
-         * @param {total number of notebooks} totalNo 
-         * @param {which indexes have been visited and operated upon} visitedArray 
-         * @param {the notebook data} data 
-         */
-        function changeOrderRandomly(prob, currentIndex, totalNo, visitedArray, data) {
-            let randomNumber = Math.round(Math.random()*(totalNo - 1))
-            if (visitedArray.length < totalNo) {
-                while (visitedArray.includes(randomNumber)) {
-                    randomNumber = Math.round(Math.random()*(totalNo - 1))
-                }
-            } else {
-                return;
+     /**
+     *  Function to change the order of notebook randomly with a given probability
+     * 
+     * @param {probability with which you want to swap a notebook} prob 
+     * @param {the present index to operate on} currentIndex
+     * @param {total number of notebooks} totalNo 
+     * @param {which indexes have been visited and operated upon} visitedArray 
+     * @param {the notebook data} data 
+     */
+    function changeOrderRandomly(prob, currentIndex, totalNo, visitedArray, data) {
+        let randomNumber = Math.round(Math.random()*(totalNo - 1))
+        if (visitedArray.length < totalNo) {
+            while (visitedArray.includes(randomNumber)) {
+                randomNumber = Math.round(Math.random()*(totalNo - 1))
             }
-            let changeIndex = (Math.random() <= prob)
-            if (changeIndex) {
-                let temp = data[randomNumber]
-                data[randomNumber] = data[currentIndex]
-                data[currentIndex] = temp;
-                visitedArray.push(randomNumber);
-                visitedArray.push(currentIndex);
-            } else {
-                if (!visitedArray.includes(currentIndex)) {
-                    visitedArray.push(currentIndex)
-                }
+        } else {
+            return;
+        }
+        let changeIndex = (Math.random() <= prob)
+        if (changeIndex) {
+            let temp = data[randomNumber]
+            data[randomNumber] = data[currentIndex]
+            data[currentIndex] = temp;
+            visitedArray.push(randomNumber);
+            visitedArray.push(currentIndex);
+        } else {
+            if (!visitedArray.includes(currentIndex)) {
+                visitedArray.push(currentIndex)
             }
         }
-
-        /**
+    }
+ /**
          * Present implementation of Discover algorithm
          */
         if (req.query.sortBy == 'Discover') {
@@ -227,50 +226,50 @@ app.get('/all-submissions', function (req, res) {
                 })
             })()
         } else {
-
-        //todo: add select statement to only get required info
-        Submission.paginate(searchParams, options).then((result) => {
-            var submissions = result.docs;
-            var err = null;
-
-            if (err) {
-                console.log("Error occurred finding submissions");
-                res.status(500);
-                res.send("Error occurred finding submissions")
-            } else {
-                // get users that match search parameters
-                var authorIds = submissions.map((submission) => {
-                    return submission.author;
-                });
-                User.find({
-                    _id: {
-                        $in: authorIds
-                    }
-                }, 'name avatar _id', function (err, authors) {
-                    if (err) {
-                        console.log("Error occurred finding authors");
-                        res.status(500);
-                        res.send("Error occurred finding authors");
-                    } else if(authors) {
-                        // returns an array of distinct languages saved from db 
-                        Submission.distinct('lang', (err, language) => {
-                            if(err) {
-                                console.log('[Search] error returning an array of distinct languages', err);
-                            } else if(language) {
-                                res.send({
-                                    submissions: submissions,
-                                    totalSubmissions: result.total,
-                                    authors: authors,
-                                    languages: language.sort(),
-                                });
-                            }
-                        });                
-                    }
-                })
-            }
-        });
-    }
-});
+            //todo: add select statement to only get required info
+            Submission.paginate(searchParams, options).then((result) => {
+                var submissions = result.docs;
+                var err = null;
+    
+                if (err) {
+                    console.log("Error occurred finding submissions");
+                    res.status(500);
+                    res.send("Error occurred finding submissions")
+                } else {
+                    // get users that match search parameters
+                    var authorIds = submissions.map((submission) => {
+                        return submission.author;
+                    });
+                    User.find({
+                        _id: {
+                            $in: authorIds
+                        }
+                    }, 'name avatar _id', function (err, authors) {
+                        if (err) {
+                            console.log("Error occurred finding authors");
+                            res.status(500);
+                            res.send("Error occurred finding authors");
+                        } else if(authors) {
+                            // returns an array of distinct languages saved from db 
+                            Submission.distinct('lang', (err, language) => {
+                                if(err) {
+                                    console.log('[Search] error returning an array of distinct languages', err);
+                                } else if(language) {
+                                    res.send({
+                                        submissions: submissions,
+                                        totalSubmissions: result.total,
+                                        authors: authors,
+                                        languages: language.sort(),
+                                    });
+                                }
+                            });                
+                        }
+                    })
+                }
+            });
+        }
+    });
+    
 
 // endpoint to get a list of all the existing users
 app.get('/userList', (req, res) => {
