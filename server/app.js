@@ -100,6 +100,17 @@ app.use (function (req, res, next) {
     }
 });
 
+app.get('*', function(req, res) {
+    fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+        if (err) {
+            res.status(500);
+            res.send({error: err});
+        } else {
+            res.send(modalHtml);
+            res.sendStatus(200)
+        }
+    });
+})
 
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 
@@ -346,30 +357,16 @@ app.get("/temp", (req, res) => {
     res.send("Loading...")
 })
 
-if (process.env.NODE_ENV === 'production') {
-    app.get('*', function(req,res) {
-        console.log('here')
-        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-            if (err) {
-                res.status(500);
-                res.send({error: err});
-            } else {
-                //res.send(modalHtml);
-                res.sendStatus(200)
-            }
-        });
-    })
-} else {
-    app.get('*', (req, res) => {
-        console.log('Sending react app' + req.url)
-        try {
-        res.sendFile(path.join(__dirname, '/../client/build/index.html'))
-        } catch (ex) {
-            //TODO send back html page with this info
-            res.send("Server is down for maintenance")
-        }
-    });
-}
+app.get('*', (req, res) => {
+    console.log('Sending react app' + req.url)
+    try {
+    res.sendFile(path.join(__dirname, '/../client/build/index.html'))
+    } catch (ex) {
+        //TODO send back html page with this info
+        res.send("Server is down for maintenance")
+    }
+});
+
 // =============================================================================
 // start server
 app.listen(port, function () {
