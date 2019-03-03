@@ -354,7 +354,7 @@ if (process.env.NODE_ENV === 'production') {
                 res.status(500);
                 res.send({error: err});
             } else {
-                res.send(modalHtml);
+                //res.send(modalHtml);
                 res.sendStatus(200)
             }
         });
