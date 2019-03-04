@@ -101,18 +101,19 @@ app.use (function (req, res, next) {
     }
 });
 
+app.get('', function(req,res) {
+    console.log('here')
+    fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+        if (err) {
+            res.status(500);
+            res.send({error: err});
+        } else {
+            res.send(modalHtml);
+        }
+    });
+})
+
 app.use(function (req, res, next) {
-    app.get('/', function(req,res) {
-        console.log('here')
-        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-            if (err) {
-                res.status(500);
-                res.send({error: err});
-            } else {
-                res.send(modalHtml);
-            }
-        });
-    })
     isAuthenticated(req, res, next);
 })
 
