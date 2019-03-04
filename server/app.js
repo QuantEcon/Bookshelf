@@ -225,7 +225,7 @@ app.use(function (req, res, next) {
 app.use(session({secret: secret, resave: true, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
-passportInit();
+passportInit(passport);
 
 // ROUTES
 // ==============================================================================
@@ -242,7 +242,7 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
-app.use('/api/auth/devlogin', devLoginRoutes)
+app.use('/api/auth/devlogin', devLoginRoutes(passport))
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {

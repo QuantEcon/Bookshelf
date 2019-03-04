@@ -2,10 +2,9 @@
  * Created by tlyon on 5/26/17.
  */
 
-var passport = require('passport');
 var User = require('../db/models/User');
 
-module.exports = function () {
+module.exports = function (passport) {
     passport.serializeUser(function (user, done) {
         done(null, user.id);
     });
