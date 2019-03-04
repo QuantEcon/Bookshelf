@@ -100,26 +100,6 @@ app.use (function (req, res, next) {
     }
 });
 
-app.get('*', function(req, res) {
-    fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-        if (err) {
-            res.status(500);
-            res.send({error: err});
-        } else {
-            res.send(modalHtml);
-            res.sendStatus(200)
-        }
-    });
-})
-
-// set location of assets
-app.use(express.static(path.join(__dirname, "..", 
-    "client/build/static"), {
-       maxAge: 31536000
-}))
-app.use(express.static(path.join(__dirname, "..", 'client/build')));
-app.use(express.static(__dirname + "/public"));
-
 if (process.env.NODE_ENV === 'production') {
     app.post('/devauth', passport.authenticate('local', {
         session: 'false'
@@ -138,6 +118,15 @@ if (process.env.NODE_ENV === 'production') {
         });
     })
 }
+
+
+// set location of assets
+app.use(express.static(path.join(__dirname, "..", 
+    "client/build/static"), {
+       maxAge: 31536000
+}))
+app.use(express.static(path.join(__dirname, "..", 'client/build')));
+app.use(express.static(__dirname + "/public"));
 
 app.get('/robots.txt', function (req, res) {
     fs.readFile('./robots.txt', 'utf8', (err, robotsContent) => {

@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-facebook').Strategy;
 var User = require('../db/models/User');
 
-passport.use(new LocalStrategy(
+passport.use('dev', new LocalStrategy(
     function(password, done) {
        // User.findOne({ username: username }, function (err, user) {
         if (password == 'qwerty123') {
@@ -12,3 +12,5 @@ passport.use(new LocalStrategy(
         //});
     }
 ));
+
+module.exports = passport
