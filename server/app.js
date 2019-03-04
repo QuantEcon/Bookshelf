@@ -240,7 +240,7 @@ app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
 
-app.get('/api/auth/devlogin', (req, res) => {
+app.post('/api/auth/devlogin', (req, res) => {
     passport.authenticate('local', function (err, user, info) {  
         console.log("inside devlogin?")    
         if (err) {
@@ -254,7 +254,7 @@ app.get('/api/auth/devlogin', (req, res) => {
         } else {
             res.status(401).json(info);
         }
-    })
+    })(req,res, next)
 })
 
 app.get('/api/auth/popup/:provider', (req, res) => {
