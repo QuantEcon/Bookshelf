@@ -7,3 +7,5 @@ app.post('/', passport.authenticate('dev', {
 }), (req, res) => {
     console.log('authenticated')
 })
+
+module.exports = app;
