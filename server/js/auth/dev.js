@@ -3,7 +3,7 @@ const LocalStrategy = require('passport-local').Strategy
 
 module.exports = function(passport) {
     console.log('some local strategies')
-    passport.use('dev', new LocalStrategy(
+    passport.use(new LocalStrategy(
         function(username, password, done) {
             console.log('yaha aaya kya?')
         // User.findOne({ username: username }, function (err, user) {

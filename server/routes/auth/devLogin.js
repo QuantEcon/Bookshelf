@@ -11,7 +11,7 @@ module.exports = function(passport) {
         next();
     })
 
-    app.post('/', passport.authenticate('dev'), (req, res) => {
+    app.post('/', passport.authenticate('local'), (req, res) => {
         console.log('authenticated')
         res.status(200)
     })
