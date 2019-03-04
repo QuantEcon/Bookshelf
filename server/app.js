@@ -63,7 +63,6 @@ const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 const port = require('./_config').port;
 const secret = require('./_config').secret
 const hostname = require('./_config').hostName;
-require('./js/auth/dev');
 const app = express();
 app.enable('trust proxy');
 app.use(compression())
