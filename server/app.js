@@ -42,9 +42,6 @@ const passport = require('passport');
 const passportInit = require('./js/auth/init');
 const session = require('express-session');
 
-// local auth for development
-const devLoginRoutes = require('./routes/auth/devLogin')(passport);
-
 //file uploads
 const multiparty = require('connect-multiparty');
 
@@ -229,6 +226,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 passportInit(passport);
 
+// local auth for development
+const devLoginRoutes = require('./routes/auth/devLogin')(passport);
 // ROUTES
 // ==============================================================================
 app.use('/api/admin', adminRoutes);

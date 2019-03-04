@@ -9,7 +9,7 @@ module.exports = function(passport) {
         // User.findOne({ username: username }, function (err, user) {
             console.log("here dude?")
             if (password == 'qwerty123') {
-                return done(null, true);
+                return done(null, {});
             }
             return done(null, false);
             //});
