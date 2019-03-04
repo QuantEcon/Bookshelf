@@ -82,10 +82,7 @@
                 }
                 fetch('/api/auth/devlogin', {
                     method: "POST",
-                    mode: "cors",
-                    cache: "no-cache",
-                    credentials: "same-origin",
-                    body: JSON.stringify(obj)
+                    body: obj
                 }).then(function(response) {
                     console.log(response)
                 })
