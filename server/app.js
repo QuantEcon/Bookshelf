@@ -28,7 +28,6 @@ const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
-const devLoginRoutes = require('./routes/auth/devLogin');
 const deleteRoutes = require('./routes/delete');
 const inviteRoutes = require('./routes/invite');
 const adminRoutes = require("./routes/admin");
@@ -42,6 +41,9 @@ const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated
 const passport = require('passport');
 const passportInit = require('./js/auth/init');
 const session = require('express-session');
+
+// local auth for development
+const devLoginRoutes = require('./routes/auth/devLogin')(passport);
 
 //file uploads
 const multiparty = require('connect-multiparty');
@@ -242,7 +244,7 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
-app.use('/api/auth/devlogin', devLoginRoutes(passport))
+app.use('/api/auth/devlogin', devLoginRoutes)
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
