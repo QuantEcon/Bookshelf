@@ -2,6 +2,7 @@ var express = require('express');
 var app = express.Router();
 
 module.exports = function(passport) {
+    console.log('this is the first one')
     require('../../js/auth/dev')(passport);
     app.use(function (req, res, next) {
         console.log('[DevLogin] - req.url:', req.url)
