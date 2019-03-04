@@ -223,7 +223,7 @@ passportInit(passport);
 
 // local auth for development
 require('./js/auth/dev')(passport);
-const devLoginRoutes = require('./routes/auth/devLogin')(app, passport);
+//require('./routes/auth/devLogin')(app, passport)
 // ROUTES
 // ==============================================================================
 app.use('/api/admin', adminRoutes);
@@ -239,7 +239,15 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
-app.use('/api/auth/devlogin', devLoginRoutes)
+
+app.get('/api/auth/devlogin', passport.authenticate('local',{
+    successRedirect : '/profile', // redirect to the secure profile section
+    failureRedirect : '/login', // redirect back to the signup page if there is an error
+    failureFlash : false // allow flash messages
+}), (req, res) => {
+    console.log('authenticated')
+    res.status(200)
+})
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
