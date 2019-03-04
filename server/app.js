@@ -240,13 +240,21 @@ app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
 
-app.get('/api/auth/devlogin', passport.authenticate('local',{
-    successRedirect : '/profile', // redirect to the secure profile section
-    failureRedirect : '/login', // redirect back to the signup page if there is an error
-    failureFlash : false // allow flash messages
-}), (req, res) => {
-    console.log('authenticated')
-    res.status(200)
+app.get('/api/auth/devlogin', (req, res) => {
+    passport.authenticate('local', function (err, user, info) {  
+        console.log("inside devlogin?")    
+        if (err) {
+            return res.status(401).json(err);
+        }
+        if (user) {
+            const token = user.generateJwt();
+            return res.status(200).json({
+                "token": token
+            });
+        } else {
+            res.status(401).json(info);
+        }
+    })
 })
 
 app.get('/api/auth/popup/:provider', (req, res) => {
