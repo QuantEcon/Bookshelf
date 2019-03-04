@@ -8,11 +8,11 @@ app.use(function (req, res, next) {
     next();
 })
 
-app.post('', passport.authenticate('local', {
+app.post('/', passport.authenticate('local', {
     session: 'true'
 }), (req, res) => {
     console.log('authenticated')
-    res.sendStatus(200)
+    res.status(200)
 })
 
 module.exports = app;
