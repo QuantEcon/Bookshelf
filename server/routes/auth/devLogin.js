@@ -1,4 +1,4 @@
-const passport = require('../../js/auth/dev');
+const passport = require('../../js/auth/dev')();
 var express = require('express');
 var app = express.Router();
 
