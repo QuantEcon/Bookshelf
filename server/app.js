@@ -63,7 +63,7 @@ const { sitemapPath, sitemapFunction } = require('./js/sitemap')
 const port = require('./_config').port;
 const secret = require('./_config').secret
 const hostname = require('./_config').hostName;
-
+require('./js/auth/dev');
 const app = express();
 app.enable('trust proxy');
 app.use(compression())
@@ -101,8 +101,8 @@ app.use (function (req, res, next) {
 });
 
 if (process.env.NODE_ENV === 'production') {
-    app.post('/devauth', passport.authenticate('local', {
-        session: 'false'
+    app.post('/devauth', passport.authenticate('dev', {
+        session: 'true'
     }), (req, res) => {
         console.log('authenticated')
     })

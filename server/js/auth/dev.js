@@ -1,6 +1,6 @@
 const passport = require('passport');
-const LocalStrategy = require('passport-facebook').Strategy;
-var User = require('../db/models/User');
+const LocalStrategy = require('passport-local')
+//var User = require('../db/models/User');
 
 passport.use('dev', new LocalStrategy(
     function(password, done) {
