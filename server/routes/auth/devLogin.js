@@ -3,7 +3,6 @@ var app = express.Router();
 
 module.exports = function(passport) {
     console.log('this is the first one')
-    require('../../js/auth/dev')(passport);
     app.use(function (req, res, next) {
         console.log('[DevLogin] - req.url:', req.url)
         console.log('[DevLogin] - req.method:', req.url)
@@ -12,7 +11,11 @@ module.exports = function(passport) {
         next();
     })
 
-    app.post('/', passport.authenticate('local'), (req, res) => {
+    app.post('/', passport.authenticate('local',{
+		successRedirect : '/profile', // redirect to the secure profile section
+		failureRedirect : '/login', // redirect back to the signup page if there is an error
+		failureFlash : true // allow flash messages
+	}), (req, res) => {
         console.log('authenticated')
         res.status(200)
     })

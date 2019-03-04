@@ -226,6 +226,7 @@ app.use(passport.session());
 passportInit(passport);
 
 // local auth for development
+require('./js/auth/dev')(passport);
 const devLoginRoutes = require('./routes/auth/devLogin')(passport);
 // ROUTES
 // ==============================================================================
