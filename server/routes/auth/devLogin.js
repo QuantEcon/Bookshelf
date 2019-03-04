@@ -9,7 +9,7 @@ app.use(function (req, res, next) {
     next();
 })
 
-app.post('/api/auth/devlogin', passport.authenticate('local', {
+app.post('/', passport.authenticate('local', {
     session: 'true'
 }), (req, res) => {
     console.log('authenticated')
