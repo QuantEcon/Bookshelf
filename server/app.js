@@ -28,6 +28,7 @@ const upvoteRoutes = require('./routes/vote/upvote');
 const downvoteRoutes = require('./routes/vote/downvote');
 const validationRoutes = require('./routes/auth/validation');
 const signOutRoutes = require('./routes/auth/signOut');
+const devLoginRoutes = require('./routes/auth/devLogin');
 const deleteRoutes = require('./routes/delete');
 const inviteRoutes = require('./routes/invite');
 const adminRoutes = require("./routes/admin");
@@ -99,26 +100,6 @@ app.use (function (req, res, next) {
         next();
     }
 });
-
-if (process.env.NODE_ENV === 'production') {
-    app.post('/devauth', passport.authenticate('dev', {
-        session: 'true'
-    }), (req, res) => {
-        console.log('authenticated')
-    })
-    app.get('/*', function(req,res) {
-        console.log('here')
-        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-            if (err) {
-                res.status(500);
-                res.send({error: err});
-            } else {
-                res.send(modalHtml);
-            }
-        });
-    })
-}
-
 
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 
@@ -245,6 +226,22 @@ app.use('/api/auth/twitter', twitterAuthRoutes);
 app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
+app.use('/api/auth/devlogin', devLoginRoutes)
+
+if (process.env.NODE_ENV === 'production') {
+    app.get('/*', function(req,res) {
+        console.log('here')
+        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+            if (err) {
+                res.status(500);
+                res.send({error: err});
+            } else {
+                res.send(modalHtml);
+            }
+        });
+    })
+}
+
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
         root: __dirname
