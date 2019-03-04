@@ -18,5 +18,4 @@ module.exports = function(app, passport) {
         console.log('authenticated')
         res.status(200)
     })
-    return app;
 }
