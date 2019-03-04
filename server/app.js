@@ -91,6 +91,19 @@ app.use (function (req, res, next) {
     if (process.env.NODE_ENV === 'production') {
         if (req.secure) {
                 // request was via https, so do no special handling
+                if (process.env.NODE_ENV === 'production') {
+                    //app.get('/*', function(req,res) {
+                    console.log('here')
+                    fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
+                        if (err) {
+                            res.status(500);
+                            res.send({error: err});
+                        } else {
+                            res.send(modalHtml);
+                        }
+                    });
+                    //})
+                }
                 next();
         } else {
                 // request was via http, so redirect to https
@@ -227,20 +240,6 @@ app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
 app.use('/api/auth/devlogin', devLoginRoutes)
-
-if (process.env.NODE_ENV === 'production') {
-    app.get('/*', function(req,res) {
-        console.log('here')
-        fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
-            if (err) {
-                res.status(500);
-                res.send({error: err});
-            } else {
-                res.send(modalHtml);
-            }
-        });
-    })
-}
 
 app.get('/api/auth/popup/:provider', (req, res) => {
     res.sendFile('./views/partials/popup.html', {
