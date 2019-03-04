@@ -243,6 +243,9 @@ app.use('/api/auth/sign-out', signOutRoutes)
 app.post('/api/auth/devlogin', (req, res) => {
     passport.authenticate('local', function (err, user, info) {  
         console.log("inside devlogin?")    
+        console.log(err, 'err')
+        console.log(user, 'user')
+        console.log(info, 'info')  
         if (err) {
             return res.status(401).json(err);
         }
@@ -254,7 +257,7 @@ app.post('/api/auth/devlogin', (req, res) => {
         } else {
             res.status(401).json(info);
         }
-    })(req,res, next)
+    })(req,res)
 })
 
 app.get('/api/auth/popup/:provider', (req, res) => {
