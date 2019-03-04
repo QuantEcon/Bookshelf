@@ -111,10 +111,6 @@ app.get('', function(req,res) {
     });
 })
 
-app.use(function (req, res, next) {
-    isAuthenticated(req, res, next);
-})
-
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 
     "client/build/static"), {
@@ -227,7 +223,7 @@ passportInit(passport);
 
 // local auth for development
 require('./js/auth/dev')(passport);
-const devLoginRoutes = require('./routes/auth/devLogin')(passport);
+const devLoginRoutes = require('./routes/auth/devLogin')(app, passport);
 // ROUTES
 // ==============================================================================
 app.use('/api/admin', adminRoutes);
