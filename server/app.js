@@ -102,10 +102,7 @@ app.use (function (req, res, next) {
 });
 
 app.use(function (req, res, next) {
-    if (req.isAuthenticated()) {
-        next()
-    } else {
-        //app.get('/*', function(req,res) {
+    app.get('/', function(req,res) {
         console.log('here')
         fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
             if (err) {
@@ -115,8 +112,10 @@ app.use(function (req, res, next) {
                 res.send(modalHtml);
             }
         });
-    }
+    })
 })
+
+isAuthenticated();
 
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 
