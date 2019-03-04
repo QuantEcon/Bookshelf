@@ -45,7 +45,13 @@
         <div class="modal show-modal">
             <div class="modal-content">
                 <span class="close-button">&times;</span>
-                <h1>Hello, I am a modal!</h1>
+                <div>
+                    <form onsubmit="verifyCred()">
+                        <label for"password">Enter the password</label>
+                        <input name="password" id="password" />
+                        <input type="submit" value="submit" />
+                    </form>
+                </div>
             </div>
         </div>
         <script type="text/javascript">
@@ -65,6 +71,24 @@
             trigger.addEventListener("click", toggleModal);
             closeButton.addEventListener("click", toggleModal);
             window.addEventListener("click", windowOnClick);
+        </script>
+        <script src="https://unpkg.com/unfetch/polyfill"></script>
+        <script>
+            var verifyCred = function() {
+                var password = document.getElementById("password").value;
+                var obj = {
+                    password: password
+                }
+                fetch('/devauth', {
+                    method: "POST",
+                    mode: "cors",
+                    cache: "no-cache",
+                    credentials: "same-origin",
+                    body: JSON.stringify(obj)
+                }).then(function(response) {
+                    console.log(response)
+                })
+            }
         </script>
     </body>
 </html>

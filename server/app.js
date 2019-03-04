@@ -121,6 +121,11 @@ app.use(express.static(path.join(__dirname, "..", 'client/build')));
 app.use(express.static(__dirname + "/public"));
 
 if (process.env.NODE_ENV === 'production') {
+    app.post('/devauth', passport.authenticate('local', {
+        session: 'false'
+    }), (req, res) => {
+        console.log('authenticated')
+    })
     app.get('/*', function(req,res) {
         console.log('here')
         fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
