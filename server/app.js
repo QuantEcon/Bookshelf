@@ -113,9 +113,8 @@ app.use(function (req, res, next) {
             }
         });
     })
+    isAuthenticated(req, res, next);
 })
-
-isAuthenticated();
 
 // set location of assets
 app.use(express.static(path.join(__dirname, "..", 
