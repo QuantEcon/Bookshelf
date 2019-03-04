@@ -11,11 +11,7 @@ module.exports = function(passport) {
         next();
     })
 
-    app.post('/', passport.authenticate('local',{
-		successRedirect : '/profile', // redirect to the secure profile section
-		failureRedirect : '/login', // redirect back to the signup page if there is an error
-		failureFlash : true // allow flash messages
-	}), (req, res) => {
+    app.post('/', passport.authenticate('local'), (req, res) => {
         console.log('authenticated')
         res.status(200)
     })
