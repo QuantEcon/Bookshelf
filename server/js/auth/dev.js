@@ -2,7 +2,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local')
 //var User = require('../db/models/User');
 
-passport.use('dev', new LocalStrategy(
+passport.use(new LocalStrategy(
     function(password, done) {
        // User.findOne({ username: username }, function (err, user) {
         if (password == 'qwerty123') {
