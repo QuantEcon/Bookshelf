@@ -38,12 +38,14 @@ const restoreUser = require("./routes/restore/restore");
 const isAuthenticated = require('./routes/auth/isAuthenticated').isAuthenticated;
 
 // passport modules
-const passport = require('passport');
+const Passport = require('passport').Passport;
+const passport = new Passport();
 const passportInit = require('./js/auth/init');
 const session = require('express-session');
 
 // passport for dev auth
-const devPassport = require('passport');
+const devPassport = new Passport();
+const devPassportInit = require('./js/auth/devinit')
 
 //file uploads
 const multiparty = require('connect-multiparty');
@@ -231,7 +233,7 @@ passportInit(passport);
 app.use(devPassport.initialize());
 app.use(devPassport.session());
 
-passportInit(devPassport);
+devPassportInit(devPassport);
 require('./js/auth/dev')(devPassport);
 
 
