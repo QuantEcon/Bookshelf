@@ -7,14 +7,14 @@ module.exports = function(passport) {
         usernameField : 'username',
         passwordField : 'password',
     },function(username, password, done) {
-        User.findOne({ name: username }, function (err, user) {
-            console.log("here dude?")
-            if (password == 'qwerty123') {
-                console.log("password match")
-                return done(null, user);
-            }
-            return done(null, false);
-         });
+        //User.findOne({ name: username }, function (err, user) {
+        console.log("here?")
+        if (password == 'qwerty123') {
+            console.log("password match")
+            return done(null, {name: username, _id: 1});
+        }
+        return done(null, false);
+         //});
         }
     ));
 }

@@ -99,8 +99,9 @@ app.use (function (req, res, next) {
     }
 });
 
-app.get('', function(req,res) {
+app.get('', function(req,res, next) {
     console.log('here')
+    console.log(req.isAuthenticated())
     fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
         if (err) {
             res.status(500);
