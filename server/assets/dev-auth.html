@@ -82,7 +82,10 @@
                 }
                 fetch('/api/auth/devlogin', {
                     method: "POST",
-                    body: JSON.stringify(obj)
+                    body: JSON.stringify(obj),
+                    headers: {
+                       "Content-Type": "application/json"
+                    }
                 }).then(function(response) {
                     console.log(response)
                 })
