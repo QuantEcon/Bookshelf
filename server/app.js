@@ -44,6 +44,7 @@ const session = require('express-session');
 
 // passport for dev auth
 const devPassport = require('passport');
+const devPassportInit = require('./js/auth/devinit')
 
 //file uploads
 const multiparty = require('connect-multiparty');
@@ -231,7 +232,7 @@ passportInit(passport);
 app.use(devPassport.initialize());
 app.use(devPassport.session());
 
-passportInit(devPassport);
+devPassportInit(devPassport);
 require('./js/auth/dev')(devPassport);
 
 
