@@ -78,7 +78,10 @@
                 var password = document.getElementById("password").value;
                 var obj = {
                     username: 'Aakash',
-                    password: password
+                    password: password,
+                    headers: {
+                       "Content-Type": "application/json"
+                    }
                 }
                 fetch('/api/auth/devlogin', {
                     method: "POST",
