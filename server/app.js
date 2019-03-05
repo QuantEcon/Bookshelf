@@ -44,7 +44,11 @@ const passportInit = require('./js/auth/init');
 const session = require('express-session');
 
 // passport for dev auth
+<<<<<<< HEAD
 const devPassport = new Passport();
+=======
+const devPassport = require('passport');
+>>>>>>> 75b10713a6746bbc60c5b13877dae2c777bc4a83
 const devPassportInit = require('./js/auth/devinit')
 
 //file uploads
