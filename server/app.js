@@ -42,6 +42,9 @@ const passport = require('passport');
 const passportInit = require('./js/auth/init');
 const session = require('express-session');
 
+// passport for dev auth
+const devPassport = require('passport');
+
 //file uploads
 const multiparty = require('connect-multiparty');
 
@@ -220,10 +223,18 @@ app.use(function (req, res, next) {
 app.use(session({secret: secret, resave: true, saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
+
 passportInit(passport);
 
-// local auth for development
-require('./js/auth/dev')(passport);
+// for dev passport
+
+app.use(devPassport.initialize());
+app.use(devPassport.session());
+
+passportInit(devPassport);
+require('./js/auth/dev')(devPassport);
+
+
 //require('./routes/auth/devLogin')(app, passport)
 // ROUTES
 // ==============================================================================
@@ -241,7 +252,7 @@ app.use('/api/auth/validate-token', validationRoutes);
 app.use('/api/edit-profile', editProfileRoutes)
 app.use('/api/auth/sign-out', signOutRoutes)
 
-app.post('/api/auth/devlogin', passport.authenticate('local'), (req, res) => {
+app.post('/api/auth/devlogin', devPassport.authenticate('local'), (req, res) => {
     console.log("-----------AUTHENTICATED-----------")
     res.redirect('/')
     /*passport.authenticate('local', function (err, user, info) {  
