@@ -106,7 +106,7 @@ app.use (function (req, res, next) {
 
 app.get('', function(req,res, next) {
     console.log('here')
-    console.log(req.isAuthenticated())
+    console.log(req.cookies['connect.sid'], "session ids")
     fs.readFile('./assets/dev-auth.html', 'utf8', (err, modalHtml) => {
         if (err) {
             res.status(500);
@@ -256,6 +256,7 @@ app.use('/api/auth/sign-out', signOutRoutes)
 
 app.post('/api/auth/devlogin', devPassport.authenticate('local'), (req, res) => {
     console.log("-----------AUTHENTICATED-----------")
+    res.status(200)
     res.redirect('/')
     /*passport.authenticate('local', function (err, user, info) {  
         console.log("inside devlogin?")    
