@@ -1,13 +1,12 @@
-var express = require('express');
-var passport = require('../js/auth/jwt');
+const express = require('express');
+const passport = require('../js/auth/jwt');
 const bodyParser = require('body-parser');
 
-var User = require('../js/db/models/User');
-var Submission = require('../js/db/models/Submission');
-var Comment = require('../js/db/models/Comment');
+const User = require('../js/db/models/User');
+const Submission = require('../js/db/models/Submission');
 const AdminList = require('../js/db/models/AdminList')
 
-var app = express.Router();
+const app = express.Router();
 
 app.use(bodyParser.json({
     limit: '50mb'
@@ -68,7 +67,6 @@ app.post('/submission', passport.authenticate('jwt', {
                     })
                 } else if (user) {
                     let isAdmin = false;
-                    console.log(user.submissions, "user submissions are here")
 
                     // submitted by user
                     if (user.submissions.indexOf(req.body.submissionID) != -1) {
