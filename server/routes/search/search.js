@@ -174,7 +174,7 @@ app.get('/all-submissions', function (req, res) {
             }
         }
     }
-    /**
+   /**
      * Present implementation of Discover algorithm
      */
     if (req.query.sortBy == 'Discover') {
@@ -184,10 +184,13 @@ app.get('/all-submissions', function (req, res) {
             storedRandomCollection.then((data) => {
                 if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
                     console.log('query change?')
-                    queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
+                    queryPromise = Submission.find(searchParams).sort({
+                        'score': -1,
+                        'published': -1
+                    }).then((data) => {
                         let visitedArray = []
                         for (let i = 0; i < data.length; i++) {
-                        changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                          changeOrderRandomly(0.25, i, data.length, visitedArray, data)
                         }
                         globallyStoredCollections = data;
                         globallyStoredSearchParams = searchParams;
@@ -212,6 +215,19 @@ app.get('/all-submissions', function (req, res) {
                     var authorIds = submissions.map(function (submission) {
                         return submission.author;
                     });
+                    submissions = submissions.map((data) => {
+                        return {
+                            "_id": data._id,
+                            "title": data.title,
+                            "lang": data.lang,
+                            "summary": data.summary,
+                            "author": data.author,
+                            "totalComments": data.totalComments,
+                            "views": data.views,
+                            "published": data.published,
+                            "flagged": data.flagged
+                        }
+                    })
                     User.find({
                         _id: {
                             $in: authorIds
