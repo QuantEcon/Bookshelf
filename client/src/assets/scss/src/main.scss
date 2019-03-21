@@ -2,6 +2,7 @@
 
 @import './libraries/normalize.scss';  //  normalize.css v7.0.0
 @import './libraries/html5boilerplate.scss';   // HTML5 Boilerplate v6.0.1
+@import './helpers/_fonts.scss';   //  Load Google Fonts
 @import './helpers/_foundation-icons.scss';   //  Foundation Icons v 3.0
 @import './helpers/_qe-menubar.scss'; // QuantEcon menubar styles
 @import './helpers/_settings.scss';   //  Default element styles, variables, mixins
@@ -15,6 +16,8 @@
 @import './components/modals.scss';  // Modal styles
 @import './libraries/dropzone.scss';    // Dropzone file submission upload styles
 @import './components/comments.scss';    //  Submission commenting styles
+@import './components/submit.scss';    //  Submission styles
+
 //@import 'notebook-render.scss'; //  Notebook rendering styles
 @import './layouts/admin.scss';	// Admin area styles
 @import './helpers/_mobile.scss';   //  Mobile override styles

@@ -7,7 +7,7 @@ import Time from 'react-time';
 import {NavLink, Link, Route, Switch} from 'react-router-dom'
 import Modal from 'react-modal'
 import {typesetMath} from "mathjax-electron"
-
+import LazyLoad from 'react-lazyload';
 import FileSaver from 'file-saver'
 
 //Icons
@@ -568,7 +568,7 @@ class Submission extends Component {
                                     <div className='side'>
                                         {!this.props.isLoading
                                             ? <p className='avatar'>
-                                                    <Link to={'/user/' + this.props.submission.data.author._id}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></Link>
+                                                    <Link to={'/user/' + this.props.submission.data.author._id}><LazyLoad width={50}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></LazyLoad></Link>
                                                 </p>
                                             : <p>loading</p>}
                                     </div>

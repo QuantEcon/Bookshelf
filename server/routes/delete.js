@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const express = require('express');
 const passport = require('../js/auth/jwt');
 const bodyParser = require('body-parser');
@@ -5,6 +6,17 @@ const bodyParser = require('body-parser');
 const User = require('../js/db/models/User');
 const Submission = require('../js/db/models/Submission');
 const AdminList = require('../js/db/models/AdminList')
+=======
+var express = require('express');
+var fs = require('fs');
+var passport = require('../js/auth/jwt');
+const bodyParser = require('body-parser');
+
+var User = require('../js/db/models/User');
+var Submission = require('../js/db/models/Submission');
+var Comment = require('../js/db/models/Comment');
+const { sitemapPath, sitemapFunction } = require('../js/sitemap')
+>>>>>>> master
 
 const app = express.Router();
 
@@ -70,10 +82,13 @@ app.post('/submission', passport.authenticate('jwt', {
 
                     // submitted by user
                     if (user.submissions.indexOf(req.body.submissionID) != -1) {
-                        console.log("submitted by user")
                         user.submissions = user.submissions.filter((id) => {
                             console.log("Checking ", id, " against ", req.body.submissionID)
                             return id != req.body.submissionID
+                        })
+                        // updating the sitemap to reflect the deletion of a notebook
+                        sitemapFunction().then((resp) => {
+                            fs.writeFileSync(sitemapPath, resp.toString());
                         })
                         deleteSubmission(submission, user)
                     } else {

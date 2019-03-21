@@ -26,6 +26,7 @@ class SubmissionListContainer extends Component {
                 <SubmissionList
                     isLoading={this.props.isLoading}
                     submissionPreviews={this.props.submissionPreviews}
+                    languages={this.props.languages}
                     totalSubmissions={this.props.totalSubmissions}
                     onSearch={this.onSearch}
                     searchParams={this.state.searchParams
@@ -78,7 +79,7 @@ function mapStateToProps(state, props) {
         }
 
     }
-    return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
+    return {languages: state.submissionList.languages, searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
 }
 
 function mapDispatchToProps(dispatch) {

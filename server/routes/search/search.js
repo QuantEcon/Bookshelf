@@ -54,7 +54,7 @@ app.get('/all-submissions', function (req, res) {
         deleted: false
     };
     if (req.query.lang !== 'All') {
-        searchParams.lang = req.query.lang
+        searchParams.lang = req.query.lang;
     }
     if (req.query.topic !== 'All') {
         console.log('[Search] - topic: ', req.query.topic)
@@ -143,7 +143,7 @@ app.get('/all-submissions', function (req, res) {
 
     }
 
-    /**
+     /**
      *  Function to change the order of notebook randomly with a given probability
      * 
      * @param {probability with which you want to swap a notebook} prob 
@@ -174,7 +174,6 @@ app.get('/all-submissions', function (req, res) {
             }
         }
     }
-
     /**
      * Present implementation of Discover algorithm
      */
@@ -185,13 +184,10 @@ app.get('/all-submissions', function (req, res) {
             storedRandomCollection.then((data) => {
                 if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
                     console.log('query change?')
-                    queryPromise = Submission.find(searchParams).sort({
-                        'score': -1,
-                        'published': -1
-                    }).then((data) => {
+                    queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
                         let visitedArray = []
                         for (let i = 0; i < data.length; i++) {
-                          changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                        changeOrderRandomly(0.25, i, data.length, visitedArray, data)
                         }
                         globallyStoredCollections = data;
                         globallyStoredSearchParams = searchParams;
@@ -237,40 +233,50 @@ app.get('/all-submissions', function (req, res) {
             })
         })()
     } else {
-        //todo: add select statement to only get required info
-        Submission.paginate(searchParams, options).then(function (result) {
-            var submissions = result.docs;
-            var err = null;
-            if (err) {
-                console.log("Error occurred finding submissions");
-                res.status(500);
-                res.send("Error occurred finding submissions")
-            } else {
-                //get users
-                var authorIds = submissions.map(function (submission) {
-                    return submission.author;
-                });
-                User.find({
-                    _id: {
-                        $in: authorIds
-                    }
-                }, 'name avatar _id', function (err, authors) {
-                    if (err) {
-                        console.log("Error occurred finding authors");
-                        res.status(500);
-                        res.send("Error occurred finding authors");
-                    } else {
-                        res.send({
-                            submissions: submissions,
-                            totalSubmissions: result.total,
-                            authors: authors
-                        })
+    //todo: add select statement to only get required info
+    Submission.paginate(searchParams, options).then((result) => {
+        var submissions = result.docs;
+        var err = null;
+
+        if (err) {
+            console.log("Error occurred finding submissions");
+            res.status(500);
+            res.send("Error occurred finding submissions")
+        } else {
+            // get users that match search parameters
+            var authorIds = submissions.map((submission) => {
+                return submission.author;
+            });
+            User.find({
+                _id: {
+                    $in: authorIds
+                }
+            }, 'name avatar _id', function (err, authors) {
+                if (err) {
+                    console.log("Error occurred finding authors");
+                    res.status(500);
+                    res.send("Error occurred finding authors");
+                    } else if(authors) {
+                        // returns an array of distinct languages saved from db 
+                        Submission.distinct('lang', (err, language) => {
+                            if(err) {
+                                console.log('[Search] error returning an array of distinct languages', err);
+                            } else if(language) {
+                                res.send({
+                                    submissions: submissions,
+                                    totalSubmissions: result.total,
+                                    authors: authors,
+                                    languages: language.sort(),
+                                });
+                            }
+                        });                
                     }
                 })
             }
         });
     }
 });
+    
 
 // endpoint to get a list of all the existing users
 app.get('/userList', (req, res) => {
@@ -290,10 +296,7 @@ app.get('/userList', (req, res) => {
         users.forEach(function(user) {
             if (user._id != req.query._id ) {
                 userMap[user._id] = user;
-
             }
-
-
         });
 
         res.send(userMap);
@@ -353,8 +356,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
     var replyIDs;
     var mergedReplyIDs;
     var replyAuthorIDs;
-    var commentAuthor;
-    var updateDate;
+    var updatedDate;
 
     var userDeleted;
     var notebookID = req.params.nbid;
@@ -371,7 +373,7 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                     console.log("[Search] error searching for submission by ID: ", err)
                     callback(err)
                   } else if (sub) {
-                    // intializing updatedDate
+                    // intialising updatedDate
                     updatedDate = sub.lastUpdated
                   }
                 });
@@ -425,9 +427,9 @@ app.get('/notebook/:nbid', isAuthenticated, function (req, res) {
                                     console.error("Error getting comments: ", err)
                                 } else if(comments){
                                     comments.forEach((comment) => {
-                                        console.log("replies: ", comment.replies)
+                                        // console.log("replies: ", comment.replies)
                                         totalComments += comment.replies.length
-                                        console.log("total comments now at ", totalComments)
+                                        // console.log("total comments now at ", totalComments)
                                     })
                                     console.log("total comments: ", totalComments)
                                     submission.totalComments = totalComments
