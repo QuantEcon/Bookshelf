@@ -12,7 +12,7 @@ const defaultSearchParams = {
     author: '',
     keywords: '',
     page: 1,
-    sortBy: 'Votes'
+    sortBy: 'Discover'
 }
 
 const SubmissionList = (state = {
@@ -40,7 +40,7 @@ const SubmissionList = (state = {
                 searchParams: defaultSearchParams
             })
         case RECEIVE_SUBMISSION_PREVIEWS:
-            // console.log('[Middleware] - State: ', state);
+            // console.log('[Middleware ] - State: ', state);
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
@@ -48,6 +48,7 @@ const SubmissionList = (state = {
                     searchParams: action.searchParams,
                     totalSubmissions: action.totalSubmissions,
                     authors: action.authors,
+                languages: action.languages,
                 lastUpdated: action.receivedAt
             });
 

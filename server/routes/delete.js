@@ -1,12 +1,24 @@
+<<<<<<< HEAD
+const express = require('express');
+const passport = require('../js/auth/jwt');
+const bodyParser = require('body-parser');
+
+const User = require('../js/db/models/User');
+const Submission = require('../js/db/models/Submission');
+const AdminList = require('../js/db/models/AdminList')
+=======
 var express = require('express');
+var fs = require('fs');
 var passport = require('../js/auth/jwt');
 const bodyParser = require('body-parser');
 
 var User = require('../js/db/models/User');
 var Submission = require('../js/db/models/Submission');
 var Comment = require('../js/db/models/Comment');
+const { sitemapPath, sitemapFunction } = require('../js/sitemap')
+>>>>>>> master
 
-var app = express.Router();
+const app = express.Router();
 
 app.use(bodyParser.json({
     limit: '50mb'
@@ -38,6 +50,16 @@ app.use(bodyParser.urlencoded({
 app.post('/submission', passport.authenticate('jwt', {
     session: 'false'
 }), (req, res) => {
+
+    // function to set deleted flag in submission and save the information in the corresponding user object
+    let deleteSubmission = (submission, user) => {
+        submission.deleted = true;
+        submission.deletedDate = Date.now()
+        submission.save();
+        user.deletedSubmissions.push(req.body.submissionID)
+        user.save()
+        res.sendStatus(200)
+    }
     Submission.findById(req.body.submissionID, (err, submission) => {
         if (err) {
             res.status(500);
@@ -45,10 +67,7 @@ app.post('/submission', passport.authenticate('jwt', {
                 error: err
             });
         } else {
-            submission.deleted = true;
-            submission.deletedDate = Date.now()
-            // go through and delete comments???
-            submission.save();
+            // find the user with the submission
             User.findOne({
                 _id: req.user._id
             }, (err, user) => {
@@ -58,14 +77,53 @@ app.post('/submission', passport.authenticate('jwt', {
                     res.send({
                         error: err
                     })
-                } else if (user){
-                    user.submissions = user.submissions.filter((id) => {
-                        console.log("Checking ", id, " against ", req.body.submissionID)
-                        return id != req.body.submissionID
-                    })
-                    user.deletedSubmissions.push(req.body.submissionID)
-                    user.save()
-                    res.sendStatus(200)
+                } else if (user) {
+                    let isAdmin = false;
+
+                    // submitted by user
+                    if (user.submissions.indexOf(req.body.submissionID) != -1) {
+                        user.submissions = user.submissions.filter((id) => {
+                            console.log("Checking ", id, " against ", req.body.submissionID)
+                            return id != req.body.submissionID
+                        })
+                        // updating the sitemap to reflect the deletion of a notebook
+                        sitemapFunction().then((resp) => {
+                            fs.writeFileSync(sitemapPath, resp.toString());
+                        })
+                        deleteSubmission(submission, user)
+                    } else {
+                        // else check if the user is an Admin
+                        AdminList.findOne({}, (err, adminList) => {
+                            if(err){
+                                res.status(500)
+                                res.send({
+                                    error: true,
+                                    message: err
+                                })
+                            } else {
+                                for (adminID of adminList['adminIDs'].toObject()) {
+                                    if (String(adminID) === String(req.user._id)) {
+                                        isAdmin = true;
+                                        console.log(adminID, "matched")
+                                        break;
+                                    }
+                                }
+                                if (!isAdmin) {
+                                    res.sendStatus(401)
+                                    res.send({
+                                        error: true,
+                                        message: err
+                                    })
+                                } else {
+                                    User.findOne({
+                                        _id: submission.author
+                                    }, (err, user)=> {
+                                        deleteSubmission(submission, user)
+                                    })
+                                }
+                            }
+                        })
+                    }
                 }
                 else {
                     console.warn("[DeleteSubmission] - couldn't find author")

@@ -599,6 +599,96 @@ textarea {
   h3 {
     page-break-after: avoid; } }
 
+/* vietnamese */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 200;
+  src: local("Exo ExtraLight"), local("Exo-ExtraLight"), url(https://fonts.gstatic.com/s/exo/v7/4UaDrEtFpBIavF-2-BLjza_B4qN1.woff2) format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
+
+/* latin-ext */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 200;
+  src: local("Exo ExtraLight"), local("Exo-ExtraLight"), url(https://fonts.gstatic.com/s/exo/v7/4UaDrEtFpBIavF-2-RLjza_B4qN1.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* latin */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 200;
+  src: local("Exo ExtraLight"), local("Exo-ExtraLight"), url(https://fonts.gstatic.com/s/exo/v7/4UaDrEtFpBIavF-29xLjza_B4g.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* vietnamese */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Exo Regular"), local("Exo-Regular"), url(https://fonts.gstatic.com/s/exo/v7/4UaOrEtFpBISfH6j2jDu55XI.woff2) format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
+
+/* latin-ext */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Exo Regular"), local("Exo-Regular"), url(https://fonts.gstatic.com/s/exo/v7/4UaOrEtFpBISfX6j2jDu55XI.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* latin */
+@font-face {
+  font-family: 'Exo';
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Exo Regular"), local("Exo-Regular"), url(https://fonts.gstatic.com/s/exo/v7/4UaOrEtFpBISc36j2jDu5w.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* latin-ext */
+@font-face {
+  font-family: 'Raleway';
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Raleway"), local("Raleway-Regular"), url(https://fonts.gstatic.com/s/raleway/v12/1Ptug8zYS_SKggPNyCMIT4ttDfCmxA.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* latin */
+@font-face {
+  font-family: 'Raleway';
+  font-display: block;
+  font-style: normal;
+  font-weight: 400;
+  src: local("Raleway"), local("Raleway-Regular"), url(https://fonts.gstatic.com/s/raleway/v12/1Ptug8zYS_SKggPNyC0IT4ttDfA.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+/* latin-ext */
+@font-face {
+  font-family: 'Raleway';
+  font-display: block;
+  font-style: normal;
+  font-weight: 700;
+  src: local("Raleway Bold"), local("Raleway-Bold"), url(https://fonts.gstatic.com/s/raleway/v12/1Ptrg8zYS_SKggPNwJYtWqhPANqczVsq4A.woff2) format("woff2");
+  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+
+/* latin */
+@font-face {
+  font-family: 'Raleway';
+  font-display: block;
+  font-style: normal;
+  font-weight: 700;
+  src: local("Raleway Bold"), local("Raleway-Bold"), url(https://fonts.gstatic.com/s/raleway/v12/1Ptrg8zYS_SKggPNwJYtWqZPANqczVs.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
 /* 
  * Foundation Icons v 3.0
  * Made by ZURB 2013 http://zurb.com/playground/foundation-icon-fonts-3
@@ -1880,8 +1970,7 @@ body {
   font-size: 1rem;
   color: #0a0a0a;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  min-width: 1040px !important; }
+  -moz-osx-font-smoothing: grayscale; }
 
 a {
   line-height: inherit;
@@ -3943,6 +4032,18 @@ div.my-modal {
         .comments .comments-thread .comment .comment-main .comment-nested .comment:last-child {
           padding-bottom: 0; }
 
+.detected-language {
+  margin: 0;
+  border: 1px solid #cacaca;
+  background: #fff;
+  border-radius: 5px;
+  padding-left: 0.5em;
+  height: 45px; }
+
+.notebook-language {
+  padding-left: 0.5em;
+  font-size: 14px; }
+
 .admin-content {
   padding: 1rem;
   margin: 1rem; }
@@ -4035,8 +4136,6 @@ div.my-modal {
   margin: 10px; }
 
 @media only screen and (max-width: 768px) {
-  body {
-    min-width: auto !important; }
   .container {
     width: auto; }
   .landing-logos {

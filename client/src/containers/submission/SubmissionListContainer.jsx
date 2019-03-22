@@ -15,16 +15,18 @@ class SubmissionListContainer extends Component {
 
     onSearch = (searchParams) => {
         this.setState({
-            searchParams: searchParams
+            searchParams: { ...searchParams, page: 1 }
         })
         this.props.actions.fetchSubmissions({searchParams, forced: true});
     }
     render() {
+        console.log(this.props.submissionPreviews)
         return (
             <div>
                 <SubmissionList
                     isLoading={this.props.isLoading}
                     submissionPreviews={this.props.submissionPreviews}
+                    languages={this.props.languages}
                     totalSubmissions={this.props.totalSubmissions}
                     onSearch={this.onSearch}
                     searchParams={this.state.searchParams
@@ -36,7 +38,7 @@ class SubmissionListContainer extends Component {
                         author: '',
                         keywords: '',
                         page: 1,
-                        sortBy: 'Votes'
+                        sortBy: 'Discover'
                     }}
                     onPageChange={this.onPageChange}
                     authors={this.props.authors}
@@ -56,7 +58,7 @@ function mapStateToProps(state, props) {
             author: '',
             keywords: '',
             page: 1,
-            sortBy: 'Votes'
+            sortBy: 'Discover'
         }
     } else {
         searchParams = Object.assign({}, {
@@ -66,7 +68,7 @@ function mapStateToProps(state, props) {
             author: '',
             keywords: '',
             page: 1,
-            sortBy: 'Votes'
+            sortBy: 'Discover'
         }, state.submissionList.searchParams);
     }
     if (props.userID) {
@@ -77,7 +79,7 @@ function mapStateToProps(state, props) {
         }
 
     }
-    return {searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
+    return {languages: state.submissionList.languages, searchParams: searchParams, submissionPreviews: state.submissionList.previews, totalSubmissions: state.submissionList.totalSubmissions, authors: state.submissionList.authors, isLoading: state.submissionList.isFetching}
 }
 
 function mapDispatchToProps(dispatch) {

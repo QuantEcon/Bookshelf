@@ -14,7 +14,7 @@ As QuantEcon evolves with time, so will its existing database. We are currently 
 
 #### Running migrations
 
-* Type `npm run migrate` to run migrations.
+* Type `npm run migrate` to run migrations in `server/js/db`.
 
 **TODO**
 

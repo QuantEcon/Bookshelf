@@ -6,6 +6,7 @@ import Time from 'react-time';
 
 // import {MarkdownRender} from '../MarkdownMathJax';
 import MarkdownRender from '@nteract/markdown'
+import LazyLoad from 'react-lazyload';
 
 class SubmissionPreview extends Component {
     constructor(props) {
@@ -114,7 +115,9 @@ class SubmissionPreview extends Component {
 
                 <p className="avatar">
                     <Link to={'/user/' + this.state.author._id}>
-                        <img src={this.state.author.avatar} alt="Author avatar"/>
+                        <LazyLoad width={50}>
+                            <img src={this.state.author.avatar} alt="Author avatar"/>
+                        </LazyLoad>
                     </Link>
                 </p> 
                 {/* <div className="stats">

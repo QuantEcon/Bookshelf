@@ -1,10 +1,12 @@
 const passport = require('../../js/auth/jwt');
 const express = require('express');
 const bodyParser = require('body-parser');
+const fs = require("fs");
 const User = require('../../js/db/models/User')
 const url = require('url')
 var app = express.Router();
 const AdminList = require('../../js/db/models/AdminList')
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 // Bodyparser middlewares
 app.use(bodyParser.json());
@@ -59,6 +61,10 @@ app.get('/', passport.authenticate('jwt', {
                     profile: req.user[profile]
                 })
             });
+            // updating the sitemap to reflect the addition of a user account
+            sitemapFunction().then((resp) => {
+                fs.writeFileSync(sitemapPath, resp.toString());
+            })
         } else {
             // profile is not new, ask if user wants to merge
             console.log('[ValidateToken] - profile already exists')
@@ -73,10 +79,23 @@ app.get('/', passport.authenticate('jwt', {
 
     } else {
         console.log('[ValidateToken] - normal login');
+        let isAdmin = false;
         if(req.user._id) {
-            // find if user has been deleted
+            AdminList.findOne({}, (err, adminList) => {
+                if(err){
+                    console.log("[ValidateToken] - error getting admin list: ", err)
+                } else if (adminList){
+                    for (adminID of adminList.adminIDs.toObject()) {
+                        if (String(adminID) == String(req.user._id)) {
+                            isAdmin = true;
+                        }
+                    }
+                }
+            })
+            //find if user has been deleted
             User.findOne({'_id': req.user.id}, (err, user) => {
                 const userDeleted = user.deleted;
+                let userRequestObj = Object.assign({}, req.user.toObject(), { isAdmin: isAdmin})
                 if(userDeleted){
                     res.send({
                         error: {
@@ -86,11 +105,11 @@ app.get('/', passport.authenticate('jwt', {
                     })
                 } else {
                     res.send({
-                        user: req.user,
+                        user: userRequestObj,
                         provider: req.user.currentProvider,
-                        uid: req.user._id,
+                        uid: userRequestObj._id,
                         token: req.headers['access-token'],
-                        isAdmin: req.authInfo.isAdmin,
+                        isAdmin: isAdmin,
                         error: {
                             message: 'active'
                         }
@@ -98,35 +117,6 @@ app.get('/', passport.authenticate('jwt', {
                 }
             });
         }
-        // if(req.authInfo.isAdmin){
-        //     AdminList.findOne({}, (err, adminList) => {
-        //         if(err){
-        //             console.log("[ValidateToken] - error getting admin list: ", err)
-        //         } else if (adminList){
-        //             if(adminList.adminIDs.indexOf(req.user._id) != -1){
-        //                 res.send({
-        //                     user: req.user,
-        //                     provider: req.user.currentProvider,
-        //                     uid: req.user._id,
-        //                     token: req.headers['access-token'],
-        //                     isAdmin: req.authInfo.isAdmin
-        //                 })
-        //             } else {
-        //                 console.log("[ValidateToken] - user is no longer admin")
-        //                 res.sendStatus(401)
-        //             }
-        //         }
-        //     })
-        // } else {
-        //     res.send({
-        //         user: req.user,
-        //         provider: req.user.currentProvider,
-        //         uid: req.user._id,
-        //         token: req.headers['access-token'],
-        //         isAdmin: req.authInfo.isAdmin
-        //     })
-        // }
-
     }
 
 })

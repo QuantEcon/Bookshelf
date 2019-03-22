@@ -19,6 +19,7 @@ var path = require('path');
 
 var config = require('../../_config')
 var renderer = require('../../js/render');
+const { sitemapPath, sitemapFunction } = require('../../js/sitemap')
 
 var multipartyMiddleware = multiparty();
 const storage = multer.diskStorage({
@@ -186,11 +187,10 @@ app.post('/confirm', passport.authenticate('jwt', {
     session: false
 }), function (req, res) {
     var newSub = new Submission();
-    console.log("[Submit] - confirm. req.body: \n", req.body)
-    var coAuthors = req.body.submission.coAuthors
-    var updatedDate = req.body.submission.lastUpdated
+    console.log("[Submit] - confirm. req.body: \n", req.body);
+    var coAuthors = req.body.submission.coAuthors;
 
-    newSub.coAuthors = coAuthors
+    newSub.coAuthors = coAuthors;
 
     newSub.title = req.body.submission.title;
 
@@ -262,6 +262,10 @@ app.post('/confirm', passport.authenticate('jwt', {
                                     submissionID: submission._id
                                 })
                             }
+                            // updating the sitemap to reflect the addition of a notebook
+                            sitemapFunction().then((resp) => {
+                                fs.writeFileSync(sitemapPath, resp.toString());
+                            })
                         }
                     });
                     //TODO: Send email to co-authors asking for permission

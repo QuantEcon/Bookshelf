@@ -7,6 +7,7 @@ data/
 files/
 client/src/assets/MathJax
 client/src/assets/css/
+server/.node-persist/
 
 #config
 _config.js

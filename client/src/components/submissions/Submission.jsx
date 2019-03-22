@@ -7,7 +7,7 @@ import Time from 'react-time';
 import {NavLink, Link, Route, Switch} from 'react-router-dom'
 import Modal from 'react-modal'
 import {typesetMath} from "mathjax-electron"
-
+import LazyLoad from 'react-lazyload';
 import FileSaver from 'file-saver'
 
 //Icons
@@ -445,7 +445,6 @@ class Submission extends Component {
                                             {!this.props.isLoading && this.props.submission.data.flagged
                                             ?  <a onClick={this.flagClick} className="active"><FlagIcon/></a>
                                             :  <a onClick={this.flagClick}><FlagIcon/></a>}
-
                                              <Modal
                                               isOpen={this.state.modalIsOpen}
                                               onRequestClose={this.closeModal}
@@ -480,6 +479,11 @@ class Submission extends Component {
                                                 </div>
                                               </form>
                                             </Modal>
+                                        </li>
+                                        <li>
+                                            {this.props.currentUser && this.props.currentUser.isAdmin ? <div>{!this.props.isLoading && this.props.submission.data.deleted
+                                                ?  <a onClick={this.toggleDeleteModal} className="active"><DeleteIcon/></a>
+                                                :  <a onClick={this.toggleDeleteModal}><DeleteIcon/></a>} </div> : false }
                                         </li>
                                     </ul>
                                     {!this.props.isLoading
@@ -564,7 +568,7 @@ class Submission extends Component {
                                     <div className='side'>
                                         {!this.props.isLoading
                                             ? <p className='avatar'>
-                                                    <Link to={'/user/' + this.props.submission.data.author._id}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></Link>
+                                                    <Link to={'/user/' + this.props.submission.data.author._id}><LazyLoad width={50}><img src={this.props.submission.data.author.avatar} alt="Author avatar"/></LazyLoad></Link>
                                                 </p>
                                             : <p>loading</p>}
                                     </div>
