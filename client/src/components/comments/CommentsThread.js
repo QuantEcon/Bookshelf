@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
 import MarkdownRender from '@nteract/markdown';
 import {typesetMath} from 'mathjax-electron';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -14,6 +13,7 @@ import CommentContainer from "../../containers/comment/CommentContainer";
  *
  * Children: {@link Comment}
  */
+
 class CommentsThread extends Component {
     /**
      * @prop {Array} comments Array of Comment objects for all comments on the submission
@@ -30,30 +30,28 @@ class CommentsThread extends Component {
         postReply: PropTypes.func.isRequired
     }
 
+
+
     constructor(props) {
         super(props);
 
-        this.newCommentTextChange = this
-            .newCommentTextChange
-            .bind(this);
-
-        this.submitNewComment = this
-            .submitNewComment
-            .bind(this);
-        this.postReply = this
-            .postReply
-            .bind(this);
-
+        const currentSubmissionId = window.location.pathname.split('/')[2];
+        const sessionComment = sessionStorage.getItem('newSessionComment');
+        const sessionSubmissionId = sessionStorage.getItem('sessionSubmissionId');
+        console.log(sessionComment, currentSubmissionId ===sessionSubmissionId, sessionSubmissionId == currentSubmissionId)
+        this.newCommentTextChange = this.newCommentTextChange.bind(this);
+        this.submitNewComment = this.submitNewComment.bind(this);
+        this.postReply = this.postReply.bind(this);
         this.toggleOpenModal = this.toggleOpenModal.bind(this);
 
         this.state = {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
             replies: props.replies,
-            submitDisabled: true,
+            submitDisabled: sessionStorage.getItem('newSessionComment') ? false : true,
             modalOpen: false,
             showSummaryPreview: false,
-            newCommentText: ''
+            newCommentText: sessionComment && sessionSubmissionId == currentSubmissionId ? sessionComment : '',
         };
     }
 
@@ -68,6 +66,12 @@ class CommentsThread extends Component {
     newCommentTextChange = (e) => {
 
         if(e){
+            const sessionComment = e.target.value;
+            const submissionId = this.props.location.pathname.split('/')[2];
+            
+            sessionStorage.setItem('newSessionComment', sessionComment);
+            sessionStorage.setItem('sessionSubmissionId', submissionId);
+
             this.setState({newCommentText: e.target.value});
             e.preventDefault();
         }
@@ -88,21 +92,17 @@ class CommentsThread extends Component {
 
     /**Dispatches a postComment action  */
     submitNewComment() {
-        console.log("Inside of Props:", this.props);
         // if currentUser is null or do not exists, then display error message
         if(!this.props.currentUser){
-
             this.setState({
                 submitError: true,
                 modalOpen: !this.state.modalOpen
-            })
+            });
         }
-        console.log('submit new comment: ', this.newCommentText);
-        this
-            .props
-            .postComment(this.newCommentText);
-        this.newCommentText="";
-        document.getElementById('newCommentTextArea').value = '';
+        // call postComment action to post the comment authenticate the user
+        this.props.postComment(this.state.newCommentText);  
+        // this.newCommentText="";
+        // document.getElementById('newCommentTextArea').value = '';
     }
 
     /**
@@ -112,9 +112,7 @@ class CommentsThread extends Component {
      * @param {String} param0.commentID ID of the comment being replied to
      */
     postReply({reply, commentID}) {
-        this
-            .props
-            .postReply({reply, commentID});
+        this.props.postReply({reply, commentID});
     }
 
 
@@ -128,6 +126,11 @@ class CommentsThread extends Component {
     }
 
     toggleOpenModal = () => {
+        // clear current session storage
+        sessionStorage.clear();
+        // reset comment to empty
+        this.state.newCommentText='';
+
         this.setState({
           modalOpen: !this.state.modalOpen
         });
@@ -211,14 +214,14 @@ class CommentsThread extends Component {
                                 name="newCommentContent"
                                 id='newCommentTextArea'
                                 placeholder='You can use markdown here...'
-                                defaultValue={this.newCommentText}
+                                value={this.state.newCommentText}
                                 onChange={this.newCommentTextChange}></textarea>
                           </TabPanel>
                           <TabPanel>
                             <MarkdownRender
                                 disallowedTypes={['heading']}
-                                source={this.newCommentText
-                                ? this.newCommentText
+                                source={this.state.newCommentText
+                                ? this.state.newCommentText
                                 : '*No comment*'}/>
                           </TabPanel>
                         </Tabs>

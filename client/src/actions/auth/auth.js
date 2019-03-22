@@ -340,9 +340,10 @@ export const submitComment = (submissionID, comment) => {
             if (response.data.error) {
                 console.log('[AuthActions] - Server returned error submitting comment: ', response.data.error);
             }
+            // clear current session storage
+            sessionStorage.clear();
 
-            
-
+            // dispatch post comment submission action
             dispatch(SubmissionActions.postComment({
                 submissionID: response.data.submissionID,
                 comment: response.data.comment,
@@ -353,8 +354,8 @@ export const submitComment = (submissionID, comment) => {
                 }
             }))
         }).catch(error => {
-            const sessionComment = {commentUrl: error.response.data.commentUrl, submissionID: submissionID, content: comment}
-            sessionStorage.setItem('sessionComment', JSON.stringify(sessionComment));
+            const sessionSubmissionId = submissionID;
+            sessionStorage.setItem('sessionSubmissionId', JSON.stringify(sessionSubmissionId));
             console.log('[AuthActions] - error submitting comment: ', error);
         })
     }
