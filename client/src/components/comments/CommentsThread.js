@@ -37,7 +37,9 @@ class CommentsThread extends Component {
 
         const currentSubmissionId = window.location.pathname.split('/')[2];
         const sessionComment = sessionStorage.getItem('newSessionComment');
-        const sessionSubmissionId = sessionStorage.getItem('sessionSubmissionId');
+        const sessionSubmissionId = JSON.parse(sessionStorage.getItem('sessionSubmissionId'));
+        console.log('window location', currentSubmissionId);
+        console.log('session id', sessionSubmissionId)
         console.log(sessionComment, currentSubmissionId ===sessionSubmissionId, sessionSubmissionId == currentSubmissionId)
         this.newCommentTextChange = this.newCommentTextChange.bind(this);
         this.submitNewComment = this.submitNewComment.bind(this);
@@ -67,7 +69,7 @@ class CommentsThread extends Component {
 
         if(e){
             const sessionComment = e.target.value;
-            const submissionId = this.props.location.pathname.split('/')[2];
+            const submissionId = JSON.stringify(this.props.location.pathname.split('/')[2]);
             
             sessionStorage.setItem('newSessionComment', sessionComment);
             sessionStorage.setItem('sessionSubmissionId', submissionId);
