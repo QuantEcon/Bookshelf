@@ -30,8 +30,6 @@ class CommentsThread extends Component {
         postReply: PropTypes.func.isRequired
     }
 
-
-
     constructor(props) {
         super(props);
 
