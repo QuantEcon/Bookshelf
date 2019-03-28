@@ -44,7 +44,6 @@ async function getStoredData() {
  * @apiSuccess (200) {Object[]}     authors             the author database objects for each submission.
  */
 app.get('/all-submissions', function (req, res) {
-
     var searchParams = {
         deleted: false
     };
@@ -186,45 +185,52 @@ app.get('/all-submissions', function (req, res) {
     }
     //todo: add select statement to only get required info
     Submission.paginate(searchParams, options).then((result) => {
-        var submissions = result.docs;
-        var err = null;
-        if (err) {
-            console.log("Error occurred finding submissions");
-            res.status(500);
-            res.send("Error occurred finding submissions")
-        } else {
-            // get users that match search parameters
-            var authorIds = submissions.map((submission) => {
-                return submission.author;
-            });
-            User.find({
-                _id: {
-                    $in: authorIds
-                }
-            }, 'name avatar _id', function (err, authors) {
-                if (err) {
-                    console.log("Error occurred finding authors");
-                    res.status(500);
-                    res.send("Error occurred finding authors");
-                    } else if(authors) {
-                        // returns an array of distinct languages saved from db 
-                        Submission.distinct('lang', (err, language) => {
-                            console.log(language, 'inside of search.js');
-                            if(err) {
-                                console.log('[Search] error returning an array of distinct languages', err);
-                            } else if(language) {
-                                res.send({
-                                    submissions: submissions,
-                                    totalSubmissions: result.total,
-                                    authors: authors,
-                                    languages: language.sort(),
-                                });
-                            }
-                        });                
-                    }
+      var submissions = result.docs;
+      var err = null;
+      if (err) {
+          console.log("Error occurred finding submissions");
+          res.status(500);
+          res.send("Error occurred finding submissions")
+      } else {
+          // get users that match search parameters
+          var authorIds = submissions.map((submission) => {
+              return submission.author;
+          });
+          const availableLanguages = [];
+          Submission.find({ 'deleted': false
+          }, (err, submissions) => {
+                // save currently available languages from unarchived notebooks
+                submissions.map((submission) => {
+                    availableLanguages.push(submission.lang);
                 })
-            }
-        });
+                if(err) {
+                    console.log('Error occurred finding deleted submissions', err);
+                } 
+                User.find({
+                    _id: {
+                      $in: authorIds
+                  }
+                }, 'name avatar _id', function (err, authors) {
+                  if(err) {
+                    console.log("Error occurred finding authors");
+                  } else if (authors && submissions.length != 0) { // display available languages with non-archived notebooks.
+                      res.send({
+                        submissions: submissions,
+                        totalSubmissions: result.total,
+                        authors: authors,
+                        languages: availableLanguages.sort(),
+                    });
+                  } else { // notebooks have all been archived and return languages as to default 'All'
+                    res.send({
+                      submissions: submissions,
+                      totalSubmissions: result.total,
+                      authors: authors,
+                  });
+                }
+              });
+            });
+          }
+      });
 });
     
 
