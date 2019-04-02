@@ -135,102 +135,140 @@ app.get('/all-submissions', function (req, res) {
                 };
                 break;
         } 
-        if (req.query.sortBy == 'Discover') {
-            let queryPromise = null;
-            let storedRandomCollection = getStoredData();
-            storedRandomCollection.then((data) => {
-                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
-                    queryPromise = Submission.find(searchParams).sort({
-                        'score': -1,
-                        'published': -1
-                    }).then((data) => {
-                        let visitedArray = [];
-                        for (let i = 0; i < data.length; i++) {
-                          changeOrderRandomly(0.25, i, data.length, visitedArray, data)
-                        }
-                        globallyStoredCollections = data;
-                        globallyStoredSearchParams = searchParams;
-                        return data
-                    })
-                } else {
-                    queryPromise = new Promise((resolve) =>{
-                        resolve(storedRandomCollection)
-                    })
-                }
-                return queryPromise
-            }).then((shuffledData) => {
-                let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
-                var err = null;
-                if (err) {
-                    console.log("Error occurred finding submissions");
-                    res.status(500);
-                    res.send("Error occurred finding submissions")
-                } else {
-                    submissions = submissions.map((data) => {
-                        return {
-                            "_id": data._id,
-                            "title": data.title,
-                            "lang": data.lang,
-                            "summary": data.summary,
-                            "author": data.author,
-                            "totalComments": data.totalComments,
-                            "views": data.views,
-                            "published": data.published,
-                            "flagged": data.flagged
-                        }
-                    });
-                }
-            });
-        }
     }
-    //todo: add select statement to only get required info
-    Submission.paginate(searchParams, options).then((result) => {
-      var submissions = result.docs;
-      var err = null;
-      if (err) {
-          console.log("Error occurred finding submissions");
-          res.status(500);
-          res.send("Error occurred finding submissions")
-      } else {
-          // get users that match search parameters
-          var authorIds = submissions.map((submission) => {
-              return submission.author;
-          });
-          const availableLanguages = [];
-          Submission.find({ 'deleted': false
-          }, (err, submissions) => {
+    if (req.query.sortBy == 'Discover') {
+      let queryPromise = null;
+      let storedRandomCollection = getStoredData();
+      storedRandomCollection.then((data) => {
+          if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
+              queryPromise = Submission.find(searchParams).sort({
+                  'score': -1,
+                  'published': -1
+              }).then((data) => {
+                  let visitedArray = [];
+                  for (let i = 0; i < data.length; i++) {
+                    changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                  }
+                  globallyStoredCollections = data;
+                  globallyStoredSearchParams = searchParams;
+                  return data
+              })
+          } else {
+              queryPromise = new Promise((resolve) =>{
+                  resolve(storedRandomCollection)
+              })
+          }
+          return queryPromise
+      }).then((shuffledData) => {
+          let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
+          var err = null;
+          if (err) {
+              console.log("Error occurred finding submissions");
+              res.status(500);
+              res.send("Error occurred finding submissions")
+          } else {
+              // get users that match search parameters
+                var authorIds = submissions.map((submission) => {
+                  return submission.author;
+              });
+              const availableLanguages = [];
+              submissions = submissions.map((data) => {
+                  return {
+                      "_id": data._id,
+                      "title": data.title,
+                      "lang": data.lang,
+                      "summary": data.summary,
+                      "author": data.author,
+                      "totalComments": data.totalComments,
+                      "views": data.views,
+                      "published": data.published,
+                      "flagged": data.flagged
+                  }
+              })
+              Submission.find({'deleted': false}, (err, submissions) => {
                 // save currently available languages from unarchived notebooks
                 submissions.map((submission) => {
-                    availableLanguages.push(submission.lang);
+                  availableLanguages.push(submission.lang);
                 })
                 if(err) {
-                    console.log('Error occurred finding deleted submissions', err);
-                } 
+                  console.log('Error occurred finding deleted submissions', err);
+                }
                 User.find({
-                    _id: {
-                      $in: authorIds
+                  _id: {
+                    $in: authorIds
                   }
-                }, 'name avatar _id', function (err, authors) {
+                }, 'name avatar _id', (err, authors) => {
                   if(err) {
                     console.log("Error occurred finding authors");
-                  } else if (authors && submissions.length != 0) { // display available languages with non-archived notebooks.
+                  } else if( authors && submissions.length != 0) {
+                      res.send({
+                        submissions: submissions,
+                        totalSubmissions: shuffledData.length,
+                        authors: authors,
+                        languages: availableLanguages.sort(),
+                    });
+                  } else {
+                    res.send({
+                      submissions: submissions,
+                      totalSubmissions: shuffledData.length,
+                      authors: authors,
+                    });
+                  }
+                })
+              })
+          }
+      });
+    } else {
+      //todo: add select statement to only get required info
+      Submission.paginate(searchParams, options).then((result) => {
+        console.log(result)
+        var submissions = result.docs;
+        var err = null;
+        if (err) {
+            console.log("Error occurred finding submissions");
+            res.status(500);
+            res.send("Error occurred finding submissions")
+        } else {
+            // get users that match search parameters
+            var authorIds = submissions.map((submission) => {
+                return submission.author;
+            });
+            const availableLanguages = [];
+            Submission.find({ 'deleted': false
+            }, (err, submissions) => {
+                  // save currently available languages from unarchived notebooks
+                  submissions.map((submission) => {
+                      availableLanguages.push(submission.lang);
+                  })
+                  if(err) {
+                      console.log('Error occurred finding deleted submissions', err);
+                  } 
+                  User.find({
+                      _id: {
+                        $in: authorIds
+                    }
+                  }, 'name avatar _id', function (err, authors) {
+                    if(err) {
+                      console.log("Error occurred finding authors");
+                    } else if (authors && submissions.length != 0) { // display available languages with non-archived notebooks.
+                        res.send({
+                          submissions: submissions,
+                          totalSubmissions: result.total,
+                          authors: authors,
+                          languages: availableLanguages.sort(),
+                      });
+                    } else { // notebooks have all been archived and return languages as to default 'All'
                       res.send({
                         submissions: submissions,
                         totalSubmissions: result.total,
                         authors: authors,
-                        languages: availableLanguages.sort(),
                     });
-                  } else { // notebooks have all been archived and return languages as to default 'All'
-                    res.send({
-                      submissions: submissions,
-                      totalSubmissions: result.total,
-                      authors: authors,
-                  });
-                }
+                  }
+                });
               });
-            });
-          }
-      });
+            }
+        })  
+    }
 });
     
 
