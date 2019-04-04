@@ -1,22 +1,12 @@
-<<<<<<< HEAD
 const express = require('express');
+const fs = require('fs');
 const passport = require('../js/auth/jwt');
 const bodyParser = require('body-parser');
 
 const User = require('../js/db/models/User');
 const Submission = require('../js/db/models/Submission');
-const AdminList = require('../js/db/models/AdminList')
-=======
-var express = require('express');
-var fs = require('fs');
-var passport = require('../js/auth/jwt');
-const bodyParser = require('body-parser');
-
-var User = require('../js/db/models/User');
-var Submission = require('../js/db/models/Submission');
-var Comment = require('../js/db/models/Comment');
+const AdminList = require('../js/db/models/AdminList');
 const { sitemapPath, sitemapFunction } = require('../js/sitemap')
->>>>>>> master
 
 const app = express.Router();
 
