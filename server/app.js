@@ -51,24 +51,24 @@ const User = require('./js/db/models/User');
 const Submission = require('./js/db/models/Submission');
 const Comment = require('./js/db/models/Comment');
 const EmailList = require('./js/db/models/EmailList');
-const AdminList = require("./js/db/models/AdminList")
-const Announcement = require('./js/db/models/Announcement')
+const AdminList = require("./js/db/models/AdminList");
+const Announcement = require('./js/db/models/Announcement');
 
 // sitemap
-const { sitemapPath, sitemapFunction } = require('./js/sitemap')
+const { sitemapPath, sitemapFunction } = require('./js/sitemap');
 
 
 // config
 // ==============================================================================
 const port = require('./_config').port;
-const secret = require('./_config').secret
+const secret = require('./_config').secret;
 const hostname = require('./_config').hostName;
 
 const app = express();
 app.enable('trust proxy');
-app.use(compression())
+app.use(compression());
 
-app.use(bodyParser.json({limit: '50mb'}))
+app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({extended: true, limit: '50mb', parameterLimit: 50000}));
 
 
