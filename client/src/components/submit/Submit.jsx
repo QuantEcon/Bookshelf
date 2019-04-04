@@ -93,9 +93,11 @@ class Submit extends Component {
             notebookLanguage: null
         }
 
-        this.onOpenClick = this
-            .onOpenClick
-            .bind(this);
+        this.onOpenClick = this.onOpenClick.bind(this);
+				this.findImage = this.findImage.bind(this);
+				this.removeImage = this.removeImage.bind(this);
+				this.countImage = this.countImage.bind(this);
+
     }
 
     componentWillMount() {
@@ -234,11 +236,11 @@ class Submit extends Component {
     /**
      * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
-     * @param {Object} e Event passed from the `submit` listener
+     * @param {Object} event Event passed from the `submit` listener
      */
-    submit = (e) => {
-        if(e) {
-            e.preventDefault();
+    submit = (event) => {
+        if(event) {
+					event.preventDefault();
         }
         this.setState({contentSaved : true}, () => {
 
@@ -291,17 +293,49 @@ class Submit extends Component {
         setTimeout(() => {
             typesetMath(this.rendered)
         }, 20);
-    }
+		}
 
     summaryLimit = (event) => {
       event.preventDefault();
       //Display modal error to users
       this.toggleSummaryModal();
       this.forceUpdate();
-    }
+		}
+
+		findImage = (input) => {
+			if(input.match(/!\[.*?\]\((.*?)\)/)) {
+				const result = input.match(/!\[.*?\]\((.*?)\)/)[0];
+				return result;
+			}
+		}
+
+		removeImage = (input) => {
+			let removeImage = null;
+
+			const result = this.findImage(input);
+
+			// if(image) {
+			// 	removeImage = input.replace(image, '');
+			// 	return removeImage;
+			// }
+			// return input;
+		}
+
+		countImage = (input) => {
+			const imageCount = [];
+			const result = input.match(/!\[.*?\]\((.*?)\)/);
+			const splitResult = result.input.split("\n");
+			imageCount.push(splitResult);
+			// filter out empty strings
+			console.log(imageCount);
+		}
 
     summaryChanged = (event) => {
-      this.setCounts(event.target.value)
+
+			// const imageRemovedValue = this.removeImage(event.target.value);
+			this.countImage(event.target.value);
+		
+			this.setCounts(event.target.value)
       this.setState({summary: event.target.value})
 
       if (this.state.count < maxWords) {
@@ -315,7 +349,6 @@ class Submit extends Component {
       }
       this.forceUpdate();
     }
-
 
     /**
      * Listener for when a user drops files into the drop zone
@@ -357,10 +390,10 @@ class Submit extends Component {
 
     /**
      * Opens the submission preview modal
-     * @param {Object} e Event passed from the `onClick` listener
+     * @param {Object} event Event passed from the `onClick` listener
      */
-    toggleOpenModal = (e) => {
-        e.preventDefault()
+    toggleOpenModal = (event) => {
+        event.preventDefault()
         this.setState({
             modalOpen: !this.state.modalOpen,
         })
@@ -429,7 +462,7 @@ class Submit extends Component {
 
     setCounts = (value) => {
       const trimmedValue = value.trim();
-      const words = this.removeEmptyElements(trimmedValue.split(' '));
+			const words = this.removeEmptyElements(trimmedValue.split(' '));
       this.setState({
         count: value === '' ? 0 : words.length
       });
