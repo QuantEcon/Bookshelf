@@ -11,6 +11,7 @@ var Comment = require('../../js/db/models/Comment');
 var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var config = require('../../_config');
 var changeOrderRandomly = require('../../js/sorting').changeOrderRandomly;
+const {metaLanguages, resolveLanguagePromise} = require('../../js/languages');
 
 let globallyStoredSearchParams = {}
 let globallyStoredCollections = {}
@@ -195,51 +196,24 @@ app.get('/all-submissions', function (req, res) {
                   res.status(500);
                   res.send("Error occurred finding authors");
               } else if(authors) {
-                  const availableLanguages = [];
-                  const languagePromise = () => (
-                    new Promise((resolve, reject) => {
-                      Submission.find({'deleted': false}, (err, submissions) => { // find submissions that have not been archived.
-                          if(err) {
-                            console.log('Error occurred finding deleted submissions', err);
-                            reject(err);
-                          } 
-                          return submissions;
-                        }).then((submissions) => {
-                            // save currently available languages from unarchived notebooks
-                            submissions.map((submission) => {
-                            if(!availableLanguages.includes(submission.lang)) {
-                              availableLanguages.push(submission.lang);
-                            }
-                          })      
-                          return availableLanguages;
-                        }).then((result) => {
-                            resolve(result);
-                        });
-                    })
-                  );
-                  const resolveLanguagePromise = async () => {
-                    const result = await (languagePromise());
-                    return result;
-                  };
-                  resolveLanguagePromise().then((result) => {
+                  resolveLanguagePromise(submissions).then((result) => {
                     if(submissions.length != 0) { // display available languages with non-archived notebooks.
                       res.send({
                           submissions: submissions,
                           totalSubmissions: shuffledData.length,
                           authors: authors,
-                          languages: availableLanguages.sort(),
+                          languages: result.availableLanguages.sort(),
                       });  
                     } 
                   });
                 }
-              })
-          
+              });
           }
       });
-    } else {
+    } else { 
       //todo: add select statement to only get required info
       Submission.paginate(searchParams, options).then((result) => {
-        var submissions = result.docs;
+        const submissions = result.docs;
         var err = null;
         if (err) {
             console.log("Error occurred finding submissions");
@@ -260,39 +234,15 @@ app.get('/all-submissions', function (req, res) {
                 res.status(500);
                 res.send("Error occurred finding authors");
               } else if(authors) {
-                const availableLanguages = [];
-                const languagePromise = () => (
-                  new Promise((resolve, reject) => {
-                    Submission.find({'deleted': false}, (err, submissions) => { // find submissions that have not been archived.
-                        if(err) {
-                          console.log('Error occurred finding deleted submissions', err);
-                          reject(err);
-                        } 
-                        return submissions;
-                      }).then((submissions) => {
-                          // save currently available languages from unarchived notebooks
-                          submissions.map((submission) => {
-                          if(!availableLanguages.includes(submission.lang)) {
-                            availableLanguages.push(submission.lang);
-                          }
-                        })      
-                        return availableLanguages;
-                      }).then((result) => {
-                          resolve(result);
-                      });
-                  })
-                );
-                const resolveLanguagePromise = async () => {
-                    const result = await (languagePromise());
-                    return result;
-                };
-                resolveLanguagePromise().then((result) => {
+
+                // resolve meta languages promise
+                resolveLanguagePromise(submissions).then((result) => {
                   if(submissions.length != 0) { // display available languages with non-archived notebooks.
                     res.send({
                         submissions: submissions,
-                        totalSubmissions: result.total,
+                        totalSubmissions: result.totalSubmissions,
                         authors: authors,
-                        languages: availableLanguages.sort(),
+                        languages: result.availableLanguages.sort(),
                     });  
                   } 
                 });
