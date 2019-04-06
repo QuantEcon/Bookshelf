@@ -97,7 +97,6 @@ class Submit extends Component {
 				this.findImage = this.findImage.bind(this);
 				this.removeImage = this.removeImage.bind(this);
 				this.countImage = this.countImage.bind(this);
-
     }
 
     componentWillMount() {
@@ -303,47 +302,39 @@ class Submit extends Component {
 		}
 
 		findImage = (input) => {
-			if(input.match(/!\[.*?\]\((.*?)\)/)) {
-				const result = input.match(/!\[.*?\]\((.*?)\)/)[0];
-				return result;
-			}
+			let foundImages = input.match(/!\[.*?\]\((.*?)\)/g)
+			if(foundImages) {
+				return foundImages;
+			} 
+			return null;
 		}
 
 		removeImage = (input) => {
-			let removeImage = null;
+			let removeImageValue = input;
+			const returnImages = this.findImage(input);
 
-			const result = this.findImage(input);
-
-			// if(image) {
-			// 	removeImage = input.replace(image, '');
-			// 	return removeImage;
-			// }
-			// return input;
-		}
-
-		countImage = (input) => {
-			const imageCount = [];
-			const result = input.match(/!\[.*?\]\((.*?)\)/);
-			const splitResult = result.input.split("\n");
-			imageCount.push(splitResult);
-			// filter out empty strings
-			console.log(imageCount);
+			if(returnImages) {
+				returnImages.map((img) => {
+					removeImageValue = removeImageValue.replace(img, '');
+				});
+				return removeImageValue;
+			}
+			return input;
 		}
 
     summaryChanged = (event) => {
 
-			// const imageRemovedValue = this.removeImage(event.target.value);
-			this.countImage(event.target.value);
-		
+			const imageRemovedValue = this.removeImage(event.target.value);
+
 			this.setCounts(event.target.value)
       this.setState({summary: event.target.value})
 
       if (this.state.count < maxWords) {
-        this.formData.summary = event.target.value;
+        this.formData.summary = imageRemovedValue;
         this.setState({triggerOnKeyPress: false, pasteValue: false})
       }
-      if (this.state.count >= maxWords || event.target.value.split(' ').length >= maxWords) {
-        this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
+      if (this.state.count >= maxWords || imageRemovedValue.split(' ').length >= maxWords) {
+        this.formData.summary = imageRemovedValue.split(' ').slice(0, maxWords-1).join(' ');
         this.setState({summary: this.formData.summary, count: this.formData.summary.split(' ').length })
         this.setState({triggerOnKeyPress: true, pasteValue: true})
       }
@@ -458,13 +449,26 @@ class Submit extends Component {
         return arr;
       arr.splice(index, 1);
       return this.removeEmptyElements(arr)
-    };
+		};
+
+		countImage = (words) => {
+			let counter = 0;
+			words.forEach((word) => {
+				if(word.match(/!\[.*?\]\((.*?)\)/)){
+					counter += 1;
+				}
+			});
+			return counter;
+
+		}
 
     setCounts = (value) => {
-      const trimmedValue = value.trim();
+			const trimmedValue = value.trim();
 			const words = this.removeEmptyElements(trimmedValue.split(' '));
+			const totalImageCount = this.countImage(words);
+
       this.setState({
-        count: value === '' ? 0 : words.length
+        count: value === '' ? 0 : words.length - totalImageCount
       });
     }
 
