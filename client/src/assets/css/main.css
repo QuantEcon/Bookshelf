@@ -2758,6 +2758,8 @@ button {
     border-radius: 5px; }
   .submit-form p.textarea-hint {
     color: #d84d0a; }
+  .submit-form span.notebook-summary-hint {
+    color: #d84d0a; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {

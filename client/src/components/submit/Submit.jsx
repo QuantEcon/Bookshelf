@@ -748,7 +748,10 @@ class Submit extends Component {
                                             onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
-                                      <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      <ul>
+																				<li><span class="notebook-summary-hint">The maximum word count for summary is 250 words.</span></li>
+																				<li><span class="notebook-summary-hint">Images are disabled by default.</span></li>
+																			</ul>
                                       </TabPanel>
                                       <TabPanel>
                                         <MarkdownRender
