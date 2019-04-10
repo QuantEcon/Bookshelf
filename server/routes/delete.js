@@ -7,7 +7,6 @@ const { sitemapPath, sitemapFunction } = require('../js/sitemap');
 const User = require('../js/db/models/User');
 const Submission = require('../js/db/models/Submission');
 const AdminList = require('../js/db/models/AdminList');
-const { sitemapPath, sitemapFunction } = require('../js/sitemap')
 
 const app = express.Router();
 
