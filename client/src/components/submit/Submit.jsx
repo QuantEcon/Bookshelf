@@ -581,10 +581,10 @@ class Submit extends Component {
                                 </Dropzone>
                                 <ul className='button-row'>
                                     <li>
-                                        <button type="button"
-                                              disabled = {!this.props.isEdit}
-                                              onClick={this.onOpenClick}>
-                                              Update Notebook
+																				<button type="button"
+                                            disabled={this.props.isEdit ? !this.props.isEdit : !this.state.fileUploaded || !this.state.notebookDataReady}
+																						onClick={this.onOpenClick}>
+                                            Update Notebook
                                         </button>
                                     </li>
                                     <li>
