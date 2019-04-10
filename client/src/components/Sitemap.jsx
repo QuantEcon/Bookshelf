@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import axios from 'axios'
-import Markdown from 'react-markdown'
-
+import axios from 'axios';
 class Sitemap extends Component {
     constructor(props) {
         super(props);

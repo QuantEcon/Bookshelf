@@ -1,29 +1,25 @@
 var express = require('express');
-var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var series = require('async/series');
 var mdb = require('mongodb');
-var storage = require('node-persist');
+var app = express.Router();
+var fs = require('fs');
 
 var User = require('../../js/db/models/User');
 var Submission = require('../../js/db/models/Submission');
 var Comment = require('../../js/db/models/Comment');
 
-var fs = require('fs');
-var path = require('path');
-
-var app = express.Router();
-
+var isAuthenticated = require('../auth/isAuthenticated').isAuthenticated;
 var config = require('../../_config');
+var changeOrderRandomly = require('../../js/sorting').changeOrderRandomly;
+const {metaLanguages, resolveLanguagePromise} = require('../../js/languages');
 
-
-
-// variables and functions 
 let globallyStoredSearchParams = {}
 let globallyStoredCollections = {}
 
 async function getStoredData() {
     return await globallyStoredCollections;
 }
+
 /**
  * @api {get} /api/search/all-submissions Get Submissions
  * @apiGroup Search
@@ -132,112 +128,93 @@ app.get('/all-submissions', function (req, res) {
                 options.sort = {
                     'views': -1,
                     'published': -1
-                }
+                };
                 break;
             case 'Votes':
                 options.sort = {
                     'score': -1,
                     'published': -1
                 };
-        }
-
+                break;
+        } 
     }
-
-     /**
-     *  Function to change the order of notebook randomly with a given probability
-     * 
-     * @param {probability with which you want to swap a notebook} prob 
-     * @param {the present index to operate on} currentIndex
-     * @param {total number of notebooks} totalNo 
-     * @param {which indexes have been visited and operated upon} visitedArray 
-     * @param {the notebook data} data 
-     */
-    function changeOrderRandomly(prob, currentIndex, totalNo, visitedArray, data) {
-        let randomNumber = Math.round(Math.random()*(totalNo - 1))
-        if (visitedArray.length < totalNo) {
-            while (visitedArray.includes(randomNumber)) {
-                randomNumber = Math.round(Math.random()*(totalNo - 1))
-            }
-        } else {
-            return;
-        }
-        let changeIndex = (Math.random() <= prob)
-        if (changeIndex) {
-            let temp = data[randomNumber]
-            data[randomNumber] = data[currentIndex]
-            data[currentIndex] = temp;
-            visitedArray.push(randomNumber);
-            visitedArray.push(currentIndex);
-        } else {
-            if (!visitedArray.includes(currentIndex)) {
-                visitedArray.push(currentIndex)
-            }
-        }
-    }
-    /**
-     * Present implementation of Discover algorithm
-     */
     if (req.query.sortBy == 'Discover') {
-        (() => {
-            let queryPromise = null;
-            let storedRandomCollection = getStoredData()
-            storedRandomCollection.then((data) => {
-                if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
-                    console.log('query change?')
-                    queryPromise = Submission.find(searchParams).sort({'published': -1}).then((data) => {
-                        let visitedArray = []
-                        for (let i = 0; i < data.length; i++) {
-                        changeOrderRandomly(0.25, i, data.length, visitedArray, data)
-                        }
-                        globallyStoredCollections = data;
-                        globallyStoredSearchParams = searchParams;
-                        return data
-                    })
-                } else {
-                    console.log('same')
-                    queryPromise = new Promise((resolve, reject) =>{
-                        resolve(storedRandomCollection)
-                    })
+      let queryPromise = null;
+      let storedRandomCollection = getStoredData();
+      storedRandomCollection.then((data) => {
+          if (!data || (JSON.stringify(searchParams) != JSON.stringify(globallyStoredSearchParams)) || req.query.page == 1) {
+              queryPromise = Submission.find(searchParams).sort({
+                  'score': -1,
+                  'published': -1
+              }).then((data) => {
+                  let visitedArray = [];
+                  for (let i = 0; i < data.length; i++) {
+                    changeOrderRandomly(0.25, i, data.length, visitedArray, data)
+                  }
+                  globallyStoredCollections = data;
+                  globallyStoredSearchParams = searchParams;
+                  return data
+              })
+          } else {
+              queryPromise = new Promise((resolve) =>{
+                  resolve(storedRandomCollection)
+              })
+          }
+          return queryPromise
+      }).then((shuffledData) => {
+          let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
+          var err = null;
+          if (err) {
+              console.log("Error occurred finding submissions");
+              res.status(500);
+              res.send("Error occurred finding submissions")
+          } else {
+              // get users that match search parameters
+                var authorIds = submissions.map((submission) => {
+                  return submission.author;
+              });
+              submissions = submissions.map((data) => {
+                  return {
+                      "_id": data._id,
+                      "title": data.title,
+                      "lang": data.lang,
+                      "summary": data.summary,
+                      "author": data.author,
+                      "totalComments": data.totalComments,
+                      "views": data.views,
+                      "published": data.published,
+                      "flagged": data.flagged
+                  }
+              });
+              User.find({
+                _id: {
+                  $in: authorIds
                 }
-                return queryPromise
-            }).then((shuffledData) => {
-                let submissions = shuffledData.slice(10*(req.query.page - 1),req.query.page*10)
-                var err = null;
+              }, 'name avatar _id', (err, authors) => {
                 if (err) {
-                    console.log("Error occurred finding submissions");
-                    res.status(500);
-                    res.send("Error occurred finding submissions")
-                } else {
-                    //get users
-                    var authorIds = submissions.map(function (submission) {
-                        return submission.author;
-                    });
-                    User.find({
-                        _id: {
-                            $in: authorIds
-                        }
-                    }, 'name avatar _id', function (err, authors) {
-                        if (err) {
-                            console.log("Error occurred finding authors");
-                            res.status(500);
-                            res.send("Error occurred finding authors");
-                        } else {
-                            res.send({
-                                submissions: submissions,
-                                totalSubmissions: shuffledData.length,
-                                authors: authors
-                            })
-                        }
-                    })
+                  console.log("Error occurred finding authors");
+                  res.status(500);
+                  res.send("Error occurred finding authors");
+              } else if(authors) {
+                  resolveLanguagePromise(submissions).then((result) => {
+                    if(submissions.length != 0) { // display available languages with non-archived notebooks.
+                      res.send({
+                          submissions: submissions,
+                          totalSubmissions: shuffledData.length,
+                          authors: authors,
+                          languages: result.availableLanguages.sort(),
+                      });  
+                    } 
+                  });
                 }
-            })
-        })()
-    } else {
-    //todo: add select statement to only get required info
-    Submission.paginate(searchParams, options).then((result) => {
-        var submissions = result.docs;
+              });
+          }
+      });
+    } else { 
+      //todo: add select statement to only get required info
+      Submission.paginate(searchParams, options).then((result) => {
+        const submissions = result.docs;
         var err = null;
-
         if (err) {
             console.log("Error occurred finding submissions");
             res.status(500);
@@ -248,32 +225,31 @@ app.get('/all-submissions', function (req, res) {
                 return submission.author;
             });
             User.find({
-                _id: {
-                    $in: authorIds
-                }
-            }, 'name avatar _id', function (err, authors) {
-                if (err) {
-                    console.log("Error occurred finding authors");
-                    res.status(500);
-                    res.send("Error occurred finding authors");
-                    } else if(authors) {
-                        // returns an array of distinct languages saved from db 
-                        Submission.distinct('lang', (err, language) => {
-                            if(err) {
-                                console.log('[Search] error returning an array of distinct languages', err);
-                            } else if(language) {
-                                res.send({
-                                    submissions: submissions,
-                                    totalSubmissions: result.total,
-                                    authors: authors,
-                                    languages: language.sort(),
-                                });
-                            }
-                        });                
-                    }
-                })
-            }
-        });
+              _id: {
+                $in: authorIds
+              }
+            }, 'name avatar _id', (err, authors) => {
+              if (err) {
+                console.log("Error occurred finding authors");
+                res.status(500);
+                res.send("Error occurred finding authors");
+              } else if(authors) {
+
+                // resolve meta languages promise
+                resolveLanguagePromise(submissions).then((result) => {
+                  if(submissions.length != 0) { // display available languages with non-archived notebooks.
+                    res.send({
+                        submissions: submissions,
+                        totalSubmissions: result.totalSubmissions,
+                        authors: authors,
+                        languages: result.availableLanguages.sort(),
+                    });  
+                  } 
+                });
+              }
+            })
+          }
+        })  
     }
 });
     

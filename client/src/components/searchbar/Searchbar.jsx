@@ -262,6 +262,16 @@ class Searchbar extends Component {
                                     </select>
                                 </label>
                                 <label>Language:
+                                    {/* <select
+                                        type="submit"
+                                        onChange={this.langChanged}
+                                        value={this.state.searchParams.lang}>
+                                        <option value="All">All</option>
+                                        <option value="Python">Python</option>
+                                        <option value="Julia">Julia</option>
+                                        <option value="R">R</option>
+                                        <option value='Other'>Other</option>
+                                    </select> */}
                                     <select
                                         type="submit"
                                         onChange={this.langChanged}
