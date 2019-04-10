@@ -1,11 +1,11 @@
 import React, { Component, Fragment } from 'react';
 import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux'
+import {bindActionCreators} from 'redux';
 
-import {editComment, submitReply, deleteComment} from '../../actions/auth/comment'
-import {flagComment} from '../../actions/submission'
+import {editComment, submitReply, deleteComment} from '../../actions/auth/comment';
+import {flagComment} from '../../actions/submission';
 
-import Comment from '../../components/comments/Comment'
+import Comment from '../../components/comments/Comment';
 
 var actions = {
     editComment,

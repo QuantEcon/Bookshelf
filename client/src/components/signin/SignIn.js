@@ -39,14 +39,29 @@ class SignIn extends Component {
     showErrorMessage = true;
 
     onSignInEnd(didAuthenticate, isNew) {
-        if (didAuthenticate) {
-            if (isNew) {
-                console.log('[SignIn] - brand new user. Move to registration page');
-                this.props.history.push('/user/my-profile/edit');
-            } else {
-                this.props.history.push('/');
-            }
+        // save previous comment if exists before logged in
+        const sessionSubmissionId = JSON.parse(sessionStorage.getItem('sessionSubmissionId'));
 
+        if (didAuthenticate) {
+            // set session comment path
+            const sessionPath = `/submission/${sessionSubmissionId}/comments`;
+            if (isNew) {
+              if(sessionSubmissionId) {
+                 // redirect to the previous comment page
+                 this.props.history.push(sessionPath)
+              } else {
+                console.log('[SignIn] - brand new user. Move to profile page');
+                this.props.history.push('/user/my-profile/edit');
+              }
+            } else {
+                if(sessionSubmissionId) {
+                    // redirect to the previous comment page
+                    this.props.history.push(sessionPath)
+                } else {
+                    // redirect to home page if there is no comment object in session
+                    this.props.history.push('/');
+                }
+            }
         } else {
             console.log('[SignIn] - error authenticating');
             //TODO: display error banner
@@ -97,7 +112,7 @@ class SignIn extends Component {
         data: {
           user: this.state.user
         }
-      }).then((response) => {
+      }).then(() => {
           // close the modal popup 
           this.setState({modalOpen: false, successModal: true});
             //TODO: reauthenticate user and direct them back to home page

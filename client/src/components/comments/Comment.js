@@ -306,7 +306,7 @@ class Comment extends Component {
                      isOpen={this.state.modalIsOpen}
                      onRequestClose={this.closeModal}
                      className="modal-alert"
-                     contentLabel="Example Modal"
+                     contentLabel="Report Comment"
                      shouldCloseOnOverlayClick={false}>
                      <form onSubmit={this.handleSubmit}>
                        <div className="modal">

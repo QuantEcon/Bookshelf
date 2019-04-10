@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from 'react-router-dom';
 import MarkdownRender from '@nteract/markdown';
 import {typesetMath} from 'mathjax-electron';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
+import Modal from 'react-modal';
+import  { Redirect } from 'react-router-dom';
 
 import CommentContainer from "../../containers/comment/CommentContainer";
 
@@ -12,6 +13,7 @@ import CommentContainer from "../../containers/comment/CommentContainer";
  *
  * Children: {@link Comment}
  */
+
 class CommentsThread extends Component {
     /**
      * @prop {Array} comments Array of Comment objects for all comments on the submission
@@ -31,24 +33,23 @@ class CommentsThread extends Component {
     constructor(props) {
         super(props);
 
-        this.newCommentTextChange = this
-            .newCommentTextChange
-            .bind(this);
+        const currentSubmissionId = window.location.pathname.split('/')[2];
+        const sessionComment = sessionStorage.getItem('newSessionComment');
+        const sessionSubmissionId = JSON.parse(sessionStorage.getItem('sessionSubmissionId'));
 
-        this.submitNewComment = this
-            .submitNewComment
-            .bind(this);
-        this.postReply = this
-            .postReply
-            .bind(this);
+        this.newCommentTextChange = this.newCommentTextChange.bind(this);
+        this.submitNewComment = this.submitNewComment.bind(this);
+        this.postReply = this.postReply.bind(this);
+        this.toggleOpenModal = this.toggleOpenModal.bind(this);
 
         this.state = {
             comments: props.comments,
             commentAuthors: props.commentAuthors,
             replies: props.replies,
-            submitDisabled: true,
+            submitDisabled: sessionStorage.getItem('newSessionComment') ? false : true,
+            modalOpen: false,
             showSummaryPreview: false,
-            newCommentText: ''
+            newCommentText: sessionComment && sessionSubmissionId == currentSubmissionId ? sessionComment : '',
         };
     }
 
@@ -63,6 +64,12 @@ class CommentsThread extends Component {
     newCommentTextChange = (e) => {
 
         if(e){
+            const sessionComment = e.target.value;
+            const submissionId = JSON.stringify(this.props.location.pathname.split('/')[2]);
+            
+            sessionStorage.setItem('newSessionComment', sessionComment);
+            sessionStorage.setItem('sessionSubmissionId', submissionId);
+
             this.setState({newCommentText: e.target.value});
             e.preventDefault();
         }
@@ -83,20 +90,17 @@ class CommentsThread extends Component {
 
     /**Dispatches a postComment action  */
     submitNewComment() {
-        console.log("Inside of Props:", this.props);
         // if currentUser is null or do not exists, then display error message
         if(!this.props.currentUser){
-
             this.setState({
-                submitError: true
-            })
+                submitError: true,
+                modalOpen: !this.state.modalOpen
+            });
         }
-        console.log('submit new comment: ', this.newCommentText);
-        this
-            .props
-            .postComment(this.newCommentText);
-        this.newCommentText="";
-        document.getElementById('newCommentTextArea').value = '';
+        // call postComment action to post the comment authenticate the user
+        this.props.postComment(this.state.newCommentText);  
+        // this.newCommentText="";
+        // document.getElementById('newCommentTextArea').value = '';
     }
 
     /**
@@ -106,9 +110,7 @@ class CommentsThread extends Component {
      * @param {String} param0.commentID ID of the comment being replied to
      */
     postReply({reply, commentID}) {
-        this
-            .props
-            .postReply({reply, commentID});
+        this.props.postReply({reply, commentID});
     }
 
 
@@ -121,9 +123,46 @@ class CommentsThread extends Component {
         }, 20);
     }
 
+    toggleOpenModal = () => {
+        // clear current session storage
+        sessionStorage.clear();
+        // reset comment to empty
+        this.state.newCommentText='';
+
+        this.setState({
+          modalOpen: !this.state.modalOpen
+        });
+      }
+
+    redirectSignin = () => {
+        this.setState({
+            redirectSignin: !this.state.redirectSignin
+        })
+    }
+
     render() {
         return (
             <div className='comments'>
+                {/* Modal window for comment redirect if user not sign in */}
+                <Modal isOpen={this.state.modalOpen} contentLabel="Signin" className="modal-alert">
+                    <div className="modal">
+                        <div className="modal-header">
+                        <h1 className='modal-title'>Sign In</h1>
+                        </div>
+                        <div className="modal-body">
+                        <p><strong>Please sign in to comment on this submission.</strong></p>
+                        <ul className="options">
+                            <li>
+                            <a className='alt' onClick={this.toggleOpenModal}>Cancel</a>
+                            </li>
+                            <li>
+                            <a onClick={this.redirectSignin}>Sign In</a>
+                            </li>
+                        </ul>
+                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.toggleOpenModal}><span aria-hidden="true">×</span></button>
+                        </div>
+                    </div>
+                </Modal>
                 <div className='comments-thread'>
                     <div>
                         {/*Render each comment*/}
@@ -173,14 +212,14 @@ class CommentsThread extends Component {
                                 name="newCommentContent"
                                 id='newCommentTextArea'
                                 placeholder='You can use markdown here...'
-                                defaultValue={this.newCommentText}
+                                value={this.state.newCommentText}
                                 onChange={this.newCommentTextChange}></textarea>
                           </TabPanel>
                           <TabPanel>
                             <MarkdownRender
                                 disallowedTypes={['heading']}
-                                source={this.newCommentText
-                                ? this.newCommentText
+                                source={this.state.newCommentText
+                                ? this.state.newCommentText
                                 : '*No comment*'}/>
                           </TabPanel>
                         </Tabs>
@@ -188,13 +227,7 @@ class CommentsThread extends Component {
                         <div className='submit-comment'>
                             <button onClick={this.submitNewComment} disabled={this.state.submitDisabled}>Submit</button>
                         </div>
-                        {this.state.submitError && !this.props.currentUser
-                                    ? <p className="error-help-text">
-                                            You must
-                                            {' '}<Link to='/signin'>sign in</Link>{' '}
-                                            to comment
-                                        </p>
-                                    : null}
+                        {this.state.redirectSignin ?  <Redirect to='/signin'  /> : null }
                     </div>
                 </div>
             </div>
