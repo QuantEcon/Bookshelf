@@ -3944,6 +3944,24 @@ div.my-modal {
           color: #cacaca; }
           .comments .comments-thread .comment .comment-main .comment-header .flag:hover, .comments .comments-thread .comment .comment-main .comment-header .delete:hover {
             color: #d84d0a; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-target {
+        opacity: 0;
+        max-height: 0;
+        font-size: 0;
+        transition: .25s ease; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-target {
+        opacity: 1;
+        font-size: inherit;
+        max-height: 999em; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-trigger {
+        border: 1px solid #ddd;
+        color: #666;
+        padding: 0.1rem 0.5rem;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border-radius: 5px;
+        margin: 0 1rem 0 0;
+        padding: 0.5rem; }
       .comments .comments-thread .comment .comment-main .comment-body .error-div {
         position: relative;
         height: 10px;

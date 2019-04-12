@@ -94,6 +94,42 @@
                     }
                 }
                 .comment-body {
+							
+										.read-more-target {
+											opacity: 0;
+											max-height: 0;
+											font-size: 0;
+											transition: .25s ease;
+										}
+										
+										.read-more-target {
+											opacity: 1;
+											font-size: inherit;
+											max-height: 999em;
+										}
+										
+										.read-more-trigger {
+											border: 1px solid #ddd;
+											color: #666;
+											padding: 0.1rem 0.5rem;
+											font-weight: bold;
+											font-size: 0.9rem;
+											border-radius: 5px;
+											margin: 0 1rem 0 0;																			
+											padding: 0.5rem;
+											// margin-left: 680px;
+											// cursor: pointer;
+											// display: block;
+											// border: 1px solid #ddd;
+											// color: #666;											
+											// font-weight: bold;
+											// font-size: 0.9rem;
+											// border-radius: 5px;
+											// padding: 0.1rem 0.5rem;
+											// margin: 0 1rem 0 0;
+
+										}
+                      
                     .error-div {
                         position: relative;
                         height: 10px;
