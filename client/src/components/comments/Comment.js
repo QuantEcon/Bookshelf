@@ -190,8 +190,8 @@ class Comment extends Component {
           showError: true
         });
       }
-    }
-
+		}
+		
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
         let submissionID = this.props.comment.submission
@@ -245,217 +245,217 @@ class Comment extends Component {
 		}
 
     render() {
-        return (
-            <div className='comment'>
-                {/* Modal window for deleting comment */}
-                <Modal 
-                    isOpen={this.state.deleteModalOpen} 
-                    className="modal-alert" 
-                    contentLabel="Delete Comment">
-                    <div className="modal">
-                        <div className="modal-header">
-                        <h1 className='modal-title'>Delete Comment</h1>
-                        </div>
-                        <div className="modal-body">
-                        <p><strong>Are you sure you want to delete this comment?</strong></p>
-                        <ul className="options">
-                            <li>
-                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
-                            </li>
-                            <li>
-                            <a onClick={this.deleteComment}>Delete</a>
-                            </li>
-                        </ul>
-                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.deleteComment}><span aria-hidden="true">×</span></button>
-                        </div>
-                    </div>
-                </Modal>
-                <div className='comment-side'>
-                    <div className='comment-avatar'>
-                        <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? <LazyLoad width={50}><img src={avatarPlaceHolder} alt="Author avatar"/></LazyLoad> :
-                            <LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
-                        </a>
-                    </div>
-                </div>
+			return (
+					<div className='comment'>
+							{/* Modal window for deleting comment */}
+							<Modal 
+									isOpen={this.state.deleteModalOpen} 
+									className="modal-alert" 
+									contentLabel="Delete Comment">
+									<div className="modal">
+											<div className="modal-header">
+											<h1 className='modal-title'>Delete Comment</h1>
+											</div>
+											<div className="modal-body">
+											<p><strong>Are you sure you want to delete this comment?</strong></p>
+											<ul className="options">
+													<li>
+													<a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+													</li>
+													<li>
+													<a onClick={this.deleteComment}>Delete</a>
+													</li>
+											</ul>
+											<button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.deleteComment}><span aria-hidden="true">×</span></button>
+											</div>
+									</div>
+							</Modal>
+							<div className='comment-side'>
+									<div className='comment-avatar'>
+											<a href={'/user/' + this.state.author._id}>
+													{this.state.author.deleted ? <LazyLoad width={50}><img src={avatarPlaceHolder} alt="Author avatar"/></LazyLoad> :
+													<LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
+											</a>
+									</div>
+							</div>
 
-                <div className='comment-main'>
-                    <Modal
-                     isOpen={this.state.modalIsOpen}
-                     onRequestClose={this.closeModal}
-                     className="modal-alert"
-                     contentLabel="Report Comment"
-                     shouldCloseOnOverlayClick={false}>
-                     <form onSubmit={this.handleSubmit}>
-                       <div className="modal">
-                         <div className="modal-header">
-                           <h1 className='modal-title'>Report the Comment</h1>
-                         </div>
-                         <div className="modal-body">
-                           <p><strong>Why would you like to report the content ?</strong></p>
-                            <label>
-                              <select value={this.state.flaggedReason} onChange={this.handleChange} required>
-                                <option value="inappropriate" selected>Inappropriate Content</option>
-                                <option value="spam" >Spam</option>
-                                <option value="copyright">Violates Copyright</option>
-                                <option value="other">Other</option>
-                              </select>
-                            </label>
-                           <ul className="options">
-                             <li>
-                               <a className='alt' onClick={this.closeModal}>Cancel</a>
-                             </li>
-                             <li>
-                               <a onClick={this.handleSubmit}>Yes</a>
-                             </li>
-                           </ul>
-                           <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
-                         </div>
-                       </div>
-                     </form>
-                   </Modal>
-                    <div className='comment-header'>
-                        <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? 'deleted' : this.state.author.name}
-                        </a>
-                        <span className='time'>
-                            <Time value={this.state.comment.timestamp} relative/>
-                        </span>
-                        <a onClick={this.flagClick}>
-                            <FlagIcon/>
-                        </a>
-                    </div>
+							<div className='comment-main'>
+									<Modal
+										isOpen={this.state.modalIsOpen}
+										onRequestClose={this.closeModal}
+										className="modal-alert"
+										contentLabel="Report Comment"
+										shouldCloseOnOverlayClick={false}>
+										<form onSubmit={this.handleSubmit}>
+											<div className="modal">
+												<div className="modal-header">
+													<h1 className='modal-title'>Report the Comment</h1>
+												</div>
+												<div className="modal-body">
+													<p><strong>Why would you like to report the content ?</strong></p>
+													<label>
+														<select value={this.state.flaggedReason} onChange={this.handleChange} required>
+															<option value="inappropriate" selected>Inappropriate Content</option>
+															<option value="spam" >Spam</option>
+															<option value="copyright">Violates Copyright</option>
+															<option value="other">Other</option>
+														</select>
+													</label>
+													<ul className="options">
+														<li>
+															<a className='alt' onClick={this.closeModal}>Cancel</a>
+														</li>
+														<li>
+															<a onClick={this.handleSubmit}>Yes</a>
+														</li>
+													</ul>
+													<button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+												</div>
+											</div>
+										</form>
+									</Modal>
+									<div className='comment-header'>
+											<a href={'/user/' + this.state.author._id}>
+													{this.state.author.deleted ? 'deleted' : this.state.author.name}
+											</a>
+											<span className='time'>
+													<Time value={this.state.comment.timestamp} relative/>
+											</span>
+											<a onClick={this.flagClick}>
+													<FlagIcon/>
+											</a>
+									</div>
 
-                    <div className='comment-body'>
-                        {this.props.error ? <div className='error-div'>
-                            <p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
-                        </div>: ''}
-                        <div>
-													{this.state.comment.edited
-															? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
+									<div className='comment-body'>
+											{this.props.error ? <div className='error-div'>
+													<p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
+											</div>: ''}
+											<div>
+												{this.state.comment.edited
+														? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
+														: null}
+											</div>
+
+											<div>
+												{this.state.comment.content ? 
+													this.countCommentLength(this.state.comment.content) ? 
+														this.state.readMore ? 
+														
+														// show all the comment and show show less button
+														<div className="comment-more">
+															<MarkdownRender
+																className="read-more-wrap"
+																disallowedTypes={['heading']}
+																source={this.readBefore(this.state.comment.content)} />
+																<button class="read-more-trigger" onClick={this.toggleReadMore}>Show more</button>
+														</div>
+														: 
+														// show only first part of the comment and show show more button 
+														<Fragment>
+															<MarkdownRender
+															className="read-more-wrap"
+															disallowedTypes={['heading']}
+															source={this.state.comment.content} /> 
+															<button class="read-more-trigger" onClick={this.toggleReadMore}>Show less</button>
+														</Fragment>
+														: 
+														// hide read more button
+														<Fragment>
+															<MarkdownRender
+															className="read-more-wrap"
+															disallowedTypes={['heading']}
+															source={this.state.comment.content} /> 
+														</Fragment>
+													: <i>No comment</i>
+												}
+											</div>
+									</div>
+
+									<div className='comment-footer'>
+											<ul className='options'>
+													{!this.state.isReply
+															? <div>{this.state.showInsertReply
+																		? <div>
+																				<li>
+																						<a onClick={this.toggleInsertReply}>Close</a>
+																				</li>
+																			</div>
+																		:
+																			<div>
+																				<li>
+																						<a onClick={this.toggleInsertReply}>Reply</a>
+																				</li>
+																			</div>
+																		}
+																	</div>
 															: null}
-                        </div>
 
-                        <div>
-													{this.state.comment.content ? 
-														this.countCommentLength(this.state.comment.content) ? 
-															this.state.readMore ? 
-															
-															// show all the comment and show show less button
-															<div className="comment-more">
-																<MarkdownRender
-																	className="read-more-wrap"
-																	disallowedTypes={['heading']}
-																	source={this.readBefore(this.state.comment.content)} />
-																	<button class="read-more-trigger" onClick={this.toggleReadMore}>Show more</button>
-															</div>
-															: 
-															// show only first part of the comment and show show more button 
-															<Fragment>
-																<MarkdownRender
-																className="read-more-wrap"
-																disallowedTypes={['heading']}
-																source={this.state.comment.content} /> 
-																<button class="read-more-trigger" onClick={this.toggleReadMore}>Show less</button>
-															</Fragment>
-															: 
-															// hide read more button
-															<Fragment>
-																<MarkdownRender
-																className="read-more-wrap"
-																disallowedTypes={['heading']}
-																source={this.state.comment.content} /> 
-															</Fragment>
-														: <i>No comment</i>
-													}
-                        </div>
-                    </div>
+													{/* TODO: insert edit and delete options */}
+													{this.state.currentUser && this.state.currentUser._id === this.state.comment.author
+															? <div>
+																			<a onClick={this.toggleShowEditComment}>
+																					<EditIcon/>
+																			</a>
+																			<a onClick={this.toggleDeleteModal} className='ml-6'>
+																					<DeleteIcon/>
+																			</a>
+																	</div>
+															: null}
+											</ul>
 
-                    <div className='comment-footer'>
-                        <ul className='options'>
-                            {!this.state.isReply
-                                ? <div>{this.state.showInsertReply
-                                      ? <div>
-																					<li>
-																							<a onClick={this.toggleInsertReply}>Close</a>
-																					</li>
-                                        </div>
-                                      :
-																				<div>
-																					<li>
-																							<a onClick={this.toggleInsertReply}>Reply</a>
-																					</li>
-																				</div>
-                                      }
-                                    </div>
-                                : null}
+									</div>
+									{/*Display the sign in error message if user is not logged in*/}
+									{this.state.showError && !this.state.currentUser
+											? <p className="error-help-text">
+															You must
+															{' '}<Link to='/signin'>sign in</Link>{' '}
+															to reply
+													</p>
+											: null}
 
-                            {/* TODO: insert edit and delete options */}
-                            {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
-                                ? <div>
-                                        <a onClick={this.toggleShowEditComment}>
-                                            <EditIcon/>
-                                        </a>
-                                        <a onClick={this.toggleDeleteModal} className='ml-6'>
-                                            <DeleteIcon/>
-                                        </a>
-                                    </div>
-                                : null}
-                        </ul>
+									{this.state.showInsertReply && !this.state.isReply
+											? <div className='comment-reply'>
+															<form>
+																	<textarea
+																			placeholder='You can use markdown here...'
+																			onChange={this.replyTextChanged}></textarea>
 
-                    </div>
-                    {/*Display the sign in error message if user is not logged in*/}
-                    {this.state.showError && !this.state.currentUser
-                       ? <p className="error-help-text">
-                               You must
-                               {' '}<Link to='/signin'>sign in</Link>{' '}
-                               to reply
-                           </p>
-                       : null}
+																	<div className='post-reply'>
+																			<button onClick={this.submitResponse} disabled={this.state.replyText === ''}>
+																					Submit
+																			</button>
+																	</div>
+															</form>
+													</div>
+											: null}
 
-                    {this.state.showInsertReply && !this.state.isReply
-                        ? <div className='comment-reply'>
-                                <form>
-                                    <textarea
-                                        placeholder='You can use markdown here...'
-                                        onChange={this.replyTextChanged}></textarea>
+									{this.state.showEditComment
+											? <div className='comment-reply'>
+															<form>
+																	<textarea id='editCommentTextArea' placeholder='You can use markdown here...' defaultValue={this.state.comment.content}></textarea>
 
-                                    <div className='post-reply'>
-                                        <button onClick={this.submitResponse} disabled={this.state.replyText === ''}>
-                                            Submit
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        : null}
+																	<div className='post-reply'>
+																			<button onClick={this.editComment} disabled={this.state.replyText === ''}>
+																					Submit
+																			</button>
+																	</div>
+															</form>
+													</div>
+											: null}
 
-                    {this.state.showEditComment
-                        ? <div className='comment-reply'>
-                                <form>
-                                    <textarea id='editCommentTextArea' placeholder='You can use markdown here...' defaultValue={this.state.comment.content}></textarea>
-
-                                    <div className='post-reply'>
-                                        <button onClick={this.editComment} disabled={this.state.replyText === ''}>
-                                            Submit
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        : null}
-
-                    {/*Render all replies for this comment*/}
-                    {this.state.replies
-                        ? <ReplyList
-														location={this.props.location}
-														replies={this.state.replies}
-														authors={this.state.authors}
-														currentUser={this.props.currentUser}
-														upvote={this.props.upvoteReply}
-														downvote={this.props.downvoteReply}/>
-                        : null}
-                </div>
-            </div>
-        )
+									{/*Render all replies for this comment*/}
+									{this.state.replies
+											? <ReplyList
+													location={this.props.location}
+													replies={this.state.replies}
+													authors={this.state.authors}
+													currentUser={this.props.currentUser}
+													upvote={this.props.upvoteReply}
+													downvote={this.props.downvoteReply}/>
+											: null}
+							</div>
+					</div>
+			)
     }
 }
 
