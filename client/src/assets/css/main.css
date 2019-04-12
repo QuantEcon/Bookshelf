@@ -2760,6 +2760,16 @@ button {
     color: #d84d0a; }
   .submit-form span.notebook-summary-hint {
     color: #d84d0a; }
+  .submit-form #notebook-summary-hints {
+    list-style: none;
+    padding-left: 20px; }
+  .submit-form #notebook-summary-hints li::before {
+    content: "\2022";
+    color: #4d4d4d;
+    margin-left: -1em;
+    width: 1em;
+    font-weight: bold;
+    display: inline-block; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {

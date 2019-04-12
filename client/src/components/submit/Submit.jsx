@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types'
-import {Link} from 'react-router-dom'
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 // import {MarkdownRender} from '../MarkdownMathJax';
-import MarkdownRender from '@nteract/markdown'
+import MarkdownRender from '@nteract/markdown';
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
-import {typesetMath} from 'mathjax-electron'
-// import {transforms, displayOrder} from '@nteract/transforms-full';
-import CloseIcon from 'react-icons/lib/fa/close'
+import {typesetMath} from 'mathjax-electron';
+import CloseIcon from 'react-icons/lib/fa/close';
 import HeadContainer from '../../containers/HeadContainer';
-import Breadcrumbs from '../partials/Breadcrumbs'
-import { Redirect } from 'react-router-dom'
+import Breadcrumbs from '../partials/Breadcrumbs';
+import { Redirect } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const maxWords = 251;
@@ -66,7 +65,6 @@ class Submit extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             accepted: [],
             fileName: props.isEdit && this.props.submission
@@ -115,7 +113,6 @@ class Submit extends Component {
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
-
     }
 
     /**
@@ -564,7 +561,6 @@ class Submit extends Component {
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>
-
                         </label>
                     </div>
                 </Modal>
@@ -748,9 +744,9 @@ class Submit extends Component {
                                             onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
-                                      <ul>
-																				<li><span class="notebook-summary-hint">The maximum word count for summary is 250 words.</span></li>
-																				<li><span class="notebook-summary-hint">Images are disabled by default.</span></li>
+                                      <ul id="notebook-summary-hints">
+																				<li><span className="notebook-summary-hint">The maximum word count for summary is 250 words.</span></li>
+																				<li><span className="notebook-summary-hint">Images are disabled by default.</span></li>
 																			</ul>
                                       </TabPanel>
                                       <TabPanel>
