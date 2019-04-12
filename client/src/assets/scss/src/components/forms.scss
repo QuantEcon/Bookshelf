@@ -84,7 +84,11 @@
     input, textarea, select {
         border-radius: 5px;
     }
+
     p.textarea-hint {
+      color: #d84d0a;
+    }
+    span.notebook-summary-hint {
       color: #d84d0a;
     }
     .form-error {
