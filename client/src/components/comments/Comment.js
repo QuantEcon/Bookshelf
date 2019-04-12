@@ -69,42 +69,18 @@ class Comment extends Component {
 						showReadMore: false
         }
 
-        this.toggleInsertReply = this
-            .toggleInsertReply
-            .bind(this)
-        this.submitResponse = this
-            .submitResponse
-            .bind(this);
-        this.replyTextChanged = this
-            .replyTextChanged
-            .bind(this);
-        this.toggleShowEditComment = this
-            .toggleShowEditComment
-            .bind(this);
-        this.editComment = this
-            .editComment
-            .bind(this);
-        this.toggleDeleteModal = this
-            .toggleDeleteModal
-            .bind(this);
-        this.deleteComment = this
-            .deleteComment
-            .bind(this);
-        this.flagComment = this
-            .flagComment
-            .bind(this);
-        this.handleSubmit = this
-            .handleSubmit
-            .bind(this);
-        this.openModal = this
-            .openModal
-            .bind(this);
-        this.closeModal = this
-            .closeModal
-            .bind(this);
-        this.handleChange = this
-            .handleChange
-						.bind(this);
+        this.toggleInsertReply = this.toggleInsertReply.bind(this);
+        this.submitResponse = this.submitResponse.bind(this);
+        this.replyTextChanged = this.replyTextChanged.bind(this);
+        this.toggleShowEditComment = this.toggleShowEditComment.bind(this);
+        this.editComment = this.editComment.bind(this);
+        this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+        this.flagComment = this.flagComment.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleChange = this.handleChange.bind(this);
 				this.readBefore = this.readBefore.bind(this);
 				this.toggleReadMore = this.toggleReadMore.bind(this);
 				this.countCommentLength = this.countCommentLength.bind(this);
@@ -237,6 +213,12 @@ class Comment extends Component {
         });
 		}
 		
+		/**
+     * Display the first 100 characters of the comment for showing more and less feature
+     * @param {String} comment 
+		 * 
+		 * @return {String} first 100 characters of the comment 
+     */
 		readBefore = (comment) => {
 			let textArray = trimText(comment, 100, 200, 500);
 			return textArray[0];
@@ -248,6 +230,12 @@ class Comment extends Component {
 			});
 		}
 
+		/**
+     * Counts the length of comment length
+     * @param {String} comment 
+		 * 
+		 * @return {Boolean} true if the comment is more than 25 words 
+     */
 		countCommentLength = (comment) => {
 			const split = comment.split(' ');
 			if(split.length > 25) {
@@ -289,36 +277,6 @@ class Comment extends Component {
                             <LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
                         </a>
                     </div>
-
-                    {/* <div className='comment-score'>{this.state.comment.score}</div>
-                    <ul className='comment-vote'>
-                        <li>
-                            {this.props.currentUser && this
-                                .props
-                                .currentUser
-                                .upvotes
-                                .indexOf(this.props.comment._id) > -1
-                                ? <a onClick={this.upvote} className='active'>
-                                        <ThumbsUp/>
-                                    </a>
-                                : <a onClick={this.upvote}>
-                                    <ThumbsUp/>
-                                </a>}
-                        </li>
-                        <li>
-                            {this.props.currentUser && this
-                                .props
-                                .currentUser
-                                .downvotes
-                                .indexOf(this.props.comment._id) > -1
-                                ? <a onClick={this.downvote} className='active'>
-                                        <ThumbsDown/>
-                                    </a>
-                                : <a onClick={this.downvote}>
-                                    <ThumbsDown/>
-                                </a>}
-                        </li>
-                    </ul> */}
                 </div>
 
                 <div className='comment-main'>
@@ -385,18 +343,17 @@ class Comment extends Component {
 															
 															// show all the comment and show show less button
 															<div className="comment-more">
-										
 																<MarkdownRender
-																	class="read-more-wrap"
+																	className="read-more-wrap"
 																	disallowedTypes={['heading']}
-																	source={this.readBefore(this.state.comment.content)} /> 
+																	source={this.readBefore(this.state.comment.content)} />
 																	<button class="read-more-trigger" onClick={this.toggleReadMore}>Show more</button>
 															</div>
 															: 
 															// show only first part of the comment and show show more button 
 															<Fragment>
 																<MarkdownRender
-																class="read-more-wrap"
+																className="read-more-wrap"
 																disallowedTypes={['heading']}
 																source={this.state.comment.content} /> 
 																<button class="read-more-trigger" onClick={this.toggleReadMore}>Show less</button>
@@ -405,7 +362,7 @@ class Comment extends Component {
 															// hide read more button
 															<Fragment>
 																<MarkdownRender
-																class="read-more-wrap"
+																className="read-more-wrap"
 																disallowedTypes={['heading']}
 																source={this.state.comment.content} /> 
 															</Fragment>
@@ -489,15 +446,14 @@ class Comment extends Component {
                     {/*Render all replies for this comment*/}
                     {this.state.replies
                         ? <ReplyList
-                                location={this.props.location}
-                                replies={this.state.replies}
-                                authors={this.state.authors}
-                                currentUser={this.props.currentUser}
-                                upvote={this.props.upvoteReply}
-                                downvote={this.props.downvoteReply}/>
+														location={this.props.location}
+														replies={this.state.replies}
+														authors={this.state.authors}
+														currentUser={this.props.currentUser}
+														upvote={this.props.upvoteReply}
+														downvote={this.props.downvoteReply}/>
                         : null}
                 </div>
-
             </div>
         )
     }

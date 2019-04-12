@@ -1,3 +1,14 @@
+/**
+ * Author: Alexanders Manning
+ * Github source code: https://github.com/alexandersmanning/read-more-react#readme
+ * 
+ * trimText returns truncated text at appropriate point given a minimum, ideal, and maximum text length. 
+ * @param {String} text 
+ * @param {Number} minimum
+ * @param {Number} ideal
+ * @param {Number} maximum
+ * 
+ */
 const PUNCTUATION_LIST = [".",",","!","?","'","{","}","(",")","[","]", "/"];
 
 const trimText = (text, min = 80, ideal = 100, max = 200) => {

@@ -569,23 +569,14 @@ class Submission extends Component {
                             <div className='details-body'>
                                 <div className='details-primary'>
                                     {!this.props.isLoading && this.state.firstHalfSummary !== undefined
-                                        ? <Fragment>
-																						<MarkdownRender
-																									disallowedTypes={['heading']}
-																									source={this.props.submission.data.notebook.summary
-																									? this.readBefore(this.props.submission.data.notebook.summary)
-																									: '*No summary*'}/>	
-																						{this.state.readMore ? 
-																						<Fragment>
-																							<MarkdownRender
-																							disallowedTypes={['heading']}
-																							source={this.props.submission.data.notebook.summary
-																							? this.readAfter(this.props.submission.data.notebook.summary)
-																							: ''}/> <button className='readMore' onClick={this.toggleReadMore}>Read less</button>
-																						</Fragment> : <button className='readMore' onClick={this.toggleReadMore}>Read more</button>
-																						}
-																					</Fragment>
+                                        ? 	
+																				<MarkdownRender
+																					disallowedTypes={['heading']}
+																					source={this.props.submission.data.notebook.summary
+																					? this.props.submission.data.notebook.summary
+																					: '*No summary*'}/>	
                                         : <p>loading...</p>}
+
                                 </div>
                                 <div className='details-secondary'>
                                     <div className='side'>
