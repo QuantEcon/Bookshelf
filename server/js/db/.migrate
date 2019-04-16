@@ -1,5 +1,5 @@
 {
-  "lastRun": "1547430906567-test-migrate.js",
+  "lastRun": "1555396634463-resize-avatars-to-50px-github.js",
   "migrations": [
     {
       "title": "1545351944251-add-authorName-Submissions.js",
@@ -8,6 +8,22 @@
     {
       "title": "1547430906567-test-migrate.js",
       "timestamp": 1547430953686
+    },
+    {
+      "title": "1548822198972-delete-empty-comment.js",
+      "timestamp": 1554963027196
+    },
+    {
+      "title": "1555330744208-resize-avatars-to-50px-twitter.js",
+      "timestamp": 1555397056013
+    },
+    {
+      "title": "1555396627360-resize-avatars-to-50px-google.js",
+      "timestamp": 1555397056025
+    },
+    {
+      "title": "1555396634463-resize-avatars-to-50px-github.js",
+      "timestamp": 1555397056189
     },
     {
       "title": "template.js",

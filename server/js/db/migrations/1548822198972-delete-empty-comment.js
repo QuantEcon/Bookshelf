@@ -14,7 +14,7 @@ const options = {
 
 module.exports.up = function (next) {
     return mongoose.connect(config.url, options).then(db => {
-        Comments.findAndModify({
+        return Comments.findAndModify({
             query: { "content": "" },
             update: { $set: {"deleted": true }},
             upsert: true
@@ -29,7 +29,7 @@ module.exports.up = function (next) {
 
 module.exports.down = function (next) {
     return mongoose.connect(config.url, options).then(db => {
-        Comments.findAndModify({
+      return Comments.findAndModify({
             query: { "content": "" },
             update: { $set: {"deleted": false }},
             upsert: true
