@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types'
 import FlagIcon from 'react-icons/lib/md/flag';
 import EditIcon from 'react-icons/lib/md/edit';
@@ -11,6 +11,7 @@ import LazyLoad from 'react-lazyload';
 import ReplyList from './ReplyList';
 import {Link} from 'react-router-dom';
 import avatarPlaceHolder from '../../assets/img/avatar/10.jpg';
+import trimText from '../../utils/trimText';
 
 /**
  * Component to render all data for a Comment. The {@link CommentsThread} component passes
@@ -62,48 +63,27 @@ class Comment extends Component {
             authors: props.authors,
             currentUser: props.currentUser,
             isReply: props.isReply,
-            modalIsOpen: false,
+						modalIsOpen: false,
+						readMore: true,
+						readLess: false,
+						showReadMore: false
         }
 
-        this.toggleInsertReply = this
-            .toggleInsertReply
-            .bind(this)
-        this.submitRepsonse = this
-            .submitRepsonse
-            .bind(this);
-        this.replyTextChanged = this
-            .replyTextChanged
-            .bind(this);
-        this.submitRepsonse = this
-            .submitRepsonse
-            .bind(this);
-        this.toggleShowEditComment = this
-            .toggleShowEditComment
-            .bind(this);
-        this.editComment = this
-            .editComment
-            .bind(this);
-        this.toggleDeleteModal = this
-            .toggleDeleteModal
-            .bind(this);
-        this.deleteComment = this
-            .deleteComment
-            .bind(this);
-        this.flagComment = this
-            .flagComment
-            .bind(this);
-        this.handleSubmit = this
-            .handleSubmit
-            .bind(this);
-        this.openModal = this
-            .openModal
-            .bind(this);
-        this.closeModal = this
-            .closeModal
-            .bind(this);
-        this.handleChange = this
-            .handleChange
-            .bind(this);
+        this.toggleInsertReply = this.toggleInsertReply.bind(this);
+        this.submitResponse = this.submitResponse.bind(this);
+        this.replyTextChanged = this.replyTextChanged.bind(this);
+        this.toggleShowEditComment = this.toggleShowEditComment.bind(this);
+        this.editComment = this.editComment.bind(this);
+        this.toggleDeleteModal = this.toggleDeleteModal.bind(this);
+        this.deleteComment = this.deleteComment.bind(this);
+        this.flagComment = this.flagComment.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.openModal = this.openModal.bind(this);
+        this.closeModal = this.closeModal.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+				this.readBefore = this.readBefore.bind(this);
+				this.toggleReadMore = this.toggleReadMore.bind(this);
+				this.countCommentLength = this.countCommentLength.bind(this);
 
     }
 
@@ -180,16 +160,13 @@ class Comment extends Component {
      *
      * @param {Object} e Event object passed from the `onClick` listener
      */
-    submitRepsonse(e) {
+    submitResponse(e) {
         e.preventDefault();
         if (!this.state.currentUser) {
             this.setState({submitError: true});
             return;
         }
-        this
-            .props
-            .actions
-            .submitReply({reply: this.state.replyText, commentID: this.props.comment._id, submissionID: this.props.comment.submission});
+        this.props.actions.submitReply({reply: this.state.replyText, commentID: this.props.comment._id, submissionID: this.props.comment.submission});
     }
 
     /**
@@ -213,8 +190,8 @@ class Comment extends Component {
           showError: true
         });
       }
-    }
-
+		}
+		
     deleteComment() {
         console.log('[Comment] - delete comment clicked');
         let submissionID = this.props.comment.submission
@@ -234,223 +211,251 @@ class Comment extends Component {
         this.setState({
             deleteModalOpen: !this.state.deleteModalOpen
         });
-    }
+		}
+		
+		/**
+     * Display the first 100 characters of the comment for showing more and less feature
+     * @param {String} comment 
+		 * 
+		 * @return {String} first 100 characters of the comment 
+     */
+		readBefore = (comment) => {
+			let textArray = trimText(comment, 100, 200, 500);
+			return textArray[0];
+		} 
+
+		toggleReadMore = () => {
+			this.setState({
+				readMore: !this.state.readMore
+			});
+		}
+
+		/**
+     * Counts the length of comment length
+     * @param {String} comment 
+		 * 
+		 * @return {Boolean} true if the comment is more than 25 words 
+     */
+		countCommentLength = (comment) => {
+			const split = comment.split(' ');
+			if(split.length > 25) {
+				return true
+			} 
+			return false
+		}
 
     render() {
-        return (
-            <div className='comment'>
-                {/* Modal window for deleting comment */}
-                <Modal 
-                    isOpen={this.state.deleteModalOpen} 
-                    className="modal-alert" 
-                    contentLabel="Delete Comment">
-                    <div className="modal">
-                        <div className="modal-header">
-                        <h1 className='modal-title'>Delete Comment</h1>
-                        </div>
-                        <div className="modal-body">
-                        <p><strong>Are you sure you want to delete this comment?</strong></p>
-                        <ul className="options">
-                            <li>
-                            <a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
-                            </li>
-                            <li>
-                            <a onClick={this.deleteComment}>Delete</a>
-                            </li>
-                        </ul>
-                        <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.deleteComment}><span aria-hidden="true">×</span></button>
-                        </div>
-                    </div>
-                </Modal>
-                <div className='comment-side'>
-                    <div className='comment-avatar'>
-                        <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? <LazyLoad width={50}><img src={avatarPlaceHolder} alt="Author avatar"/></LazyLoad> :
-                            <LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
-                        </a>
-                    </div>
+			return (
+					<div className='comment'>
+							{/* Modal window for deleting comment */}
+							<Modal 
+									isOpen={this.state.deleteModalOpen} 
+									className="modal-alert" 
+									contentLabel="Delete Comment">
+									<div className="modal">
+											<div className="modal-header">
+											<h1 className='modal-title'>Delete Comment</h1>
+											</div>
+											<div className="modal-body">
+											<p><strong>Are you sure you want to delete this comment?</strong></p>
+											<ul className="options">
+													<li>
+													<a className='alt' onClick={this.toggleDeleteModal}>Cancel</a>
+													</li>
+													<li>
+													<a onClick={this.deleteComment}>Delete</a>
+													</li>
+											</ul>
+											<button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.deleteComment}><span aria-hidden="true">×</span></button>
+											</div>
+									</div>
+							</Modal>
+							<div className='comment-side'>
+									<div className='comment-avatar'>
+											<a href={'/user/' + this.state.author._id}>
+													{this.state.author.deleted ? <LazyLoad width={50}><img src={avatarPlaceHolder} alt="Author avatar"/></LazyLoad> :
+													<LazyLoad width={50}><img src={this.state.author.avatar} alt="Author avatar"/></LazyLoad>}
+											</a>
+									</div>
+							</div>
 
-                    {/* <div className='comment-score'>{this.state.comment.score}</div>
-                    <ul className='comment-vote'>
-                        <li>
-                            {this.props.currentUser && this
-                                .props
-                                .currentUser
-                                .upvotes
-                                .indexOf(this.props.comment._id) > -1
-                                ? <a onClick={this.upvote} className='active'>
-                                        <ThumbsUp/>
-                                    </a>
-                                : <a onClick={this.upvote}>
-                                    <ThumbsUp/>
-                                </a>}
-                        </li>
-                        <li>
-                            {this.props.currentUser && this
-                                .props
-                                .currentUser
-                                .downvotes
-                                .indexOf(this.props.comment._id) > -1
-                                ? <a onClick={this.downvote} className='active'>
-                                        <ThumbsDown/>
-                                    </a>
-                                : <a onClick={this.downvote}>
-                                    <ThumbsDown/>
-                                </a>}
-                        </li>
-                    </ul> */}
-                </div>
+							<div className='comment-main'>
+									<Modal
+										isOpen={this.state.modalIsOpen}
+										onRequestClose={this.closeModal}
+										className="modal-alert"
+										contentLabel="Report Comment"
+										shouldCloseOnOverlayClick={false}>
+										<form onSubmit={this.handleSubmit}>
+											<div className="modal">
+												<div className="modal-header">
+													<h1 className='modal-title'>Report the Comment</h1>
+												</div>
+												<div className="modal-body">
+													<p><strong>Why would you like to report the content ?</strong></p>
+													<label>
+														<select value={this.state.flaggedReason} onChange={this.handleChange} required>
+															<option value="inappropriate" selected>Inappropriate Content</option>
+															<option value="spam" >Spam</option>
+															<option value="copyright">Violates Copyright</option>
+															<option value="other">Other</option>
+														</select>
+													</label>
+													<ul className="options">
+														<li>
+															<a className='alt' onClick={this.closeModal}>Cancel</a>
+														</li>
+														<li>
+															<a onClick={this.handleSubmit}>Yes</a>
+														</li>
+													</ul>
+													<button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
+												</div>
+											</div>
+										</form>
+									</Modal>
+									<div className='comment-header'>
+											<a href={'/user/' + this.state.author._id}>
+													{this.state.author.deleted ? 'deleted' : this.state.author.name}
+											</a>
+											<span className='time'>
+													<Time value={this.state.comment.timestamp} relative/>
+											</span>
+											<a onClick={this.flagClick}>
+													<FlagIcon/>
+											</a>
+									</div>
 
-                <div className='comment-main'>
-                    <Modal
-                     isOpen={this.state.modalIsOpen}
-                     onRequestClose={this.closeModal}
-                     className="modal-alert"
-                     contentLabel="Report Comment"
-                     shouldCloseOnOverlayClick={false}>
-                     <form onSubmit={this.handleSubmit}>
-                       <div className="modal">
-                         <div className="modal-header">
-                           <h1 className='modal-title'>Report the Comment</h1>
-                         </div>
-                         <div className="modal-body">
-                           <p><strong>Why would you like to report the content ?</strong></p>
-                            <label>
-                              <select value={this.state.flaggedReason} onChange={this.handleChange} required>
-                                <option value="inappropriate" selected>Inappropriate Content</option>
-                                <option value="spam" >Spam</option>
-                                <option value="copyright">Violates Copyright</option>
-                                <option value="other">Other</option>
-                              </select>
-                            </label>
-                           <ul className="options">
-                             <li>
-                               <a className='alt' onClick={this.closeModal}>Cancel</a>
-                             </li>
-                             <li>
-                               <a onClick={this.handleSubmit}>Yes</a>
-                             </li>
-                           </ul>
-                           <button className="close-button" data-close="" aria-label="Close modal" type="button" onClick={this.closeModal}><span aria-hidden="true">×</span></button>
-                         </div>
-                       </div>
-                     </form>
-                   </Modal>
-                    <div className='comment-header'>
-                        <a href={'/user/' + this.state.author._id}>
-                            {this.state.author.deleted ? 'deleted' : this.state.author.name}
-                        </a>
-                        <span className='time'>
-                            <Time value={this.state.comment.timestamp} relative/>
-                        </span>
-                        <a onClick={this.flagClick}>
-                            <FlagIcon/>
-                        </a>
-                    </div>
+									<div className='comment-body'>
+											{this.props.error ? <div className='error-div'>
+													<p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
+											</div>: ''}
+											<div>
+												{this.state.comment.edited
+														? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
+														: null}
+											</div>
 
-                    <div className='comment-body'>
-                        {this.props.error ? <div className='error-div'>
-                            <p className='error-text'><AlertCircledIcon/> Comment update failed. Please try again</p>
-                        </div>: ''}
-                        <MarkdownRender
-                          disallowedTypes={['heading']}
-                          source={this.state.comment.content
-                          ? this.state.comment.content
-                          : '*No comment*'}/>
-                        <div>
-                            {this.state.comment.edited
-                                ? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
-                                : null}
-                        </div>
-                    </div>
+											<div>
+												{this.state.comment.content ? 
+													this.countCommentLength(this.state.comment.content) ? 
+														this.state.readMore ? 
+														
+														// show all the comment and show show less button
+														<div className="comment-more">
+															<MarkdownRender
+																className="read-more-wrap"
+																disallowedTypes={['heading']}
+																source={this.readBefore(this.state.comment.content)} />
+																<button class="read-more-trigger" onClick={this.toggleReadMore}>Show more</button>
+														</div>
+														: 
+														// show only first part of the comment and show show more button 
+														<Fragment>
+															<MarkdownRender
+															className="read-more-wrap"
+															disallowedTypes={['heading']}
+															source={this.state.comment.content} /> 
+															<button class="read-more-trigger" onClick={this.toggleReadMore}>Show less</button>
+														</Fragment>
+														: 
+														// hide read more button
+														<Fragment>
+															<MarkdownRender
+															className="read-more-wrap"
+															disallowedTypes={['heading']}
+															source={this.state.comment.content} /> 
+														</Fragment>
+													: <i>No comment</i>
+												}
+											</div>
+									</div>
 
-                    <div className='comment-footer'>
-                        <ul className='options'>
-                            {!this.state.isReply
-                                ? <div>{this.state.showInsertReply
-                                      ? <div>
-                                              <li>
-                                                  <a onClick={this.toggleInsertReply}>Close</a>
-                                              </li>
-                                          </div>
+									<div className='comment-footer'>
+											<ul className='options'>
+													{!this.state.isReply
+															? <div>{this.state.showInsertReply
+																		? <div>
+																				<li>
+																						<a onClick={this.toggleInsertReply}>Close</a>
+																				</li>
+																			</div>
+																		:
+																			<div>
+																				<li>
+																						<a onClick={this.toggleInsertReply}>Reply</a>
+																				</li>
+																			</div>
+																		}
+																	</div>
+															: null}
 
-                                      :
-                                          <div>
-                                              <li>
-                                                  <a onClick={this.toggleInsertReply}>Reply</a>
-                                              </li>
-                                          </div>
-                                      }
-                                    </div>
-                                : null}
+													{/* TODO: insert edit and delete options */}
+													{this.state.currentUser && this.state.currentUser._id === this.state.comment.author
+															? <div>
+																			<a onClick={this.toggleShowEditComment}>
+																					<EditIcon/>
+																			</a>
+																			<a onClick={this.toggleDeleteModal} className='ml-6'>
+																					<DeleteIcon/>
+																			</a>
+																	</div>
+															: null}
+											</ul>
 
-                            {/* TODO: insert edit and delete options */}
-                            {this.state.currentUser && this.state.currentUser._id === this.state.comment.author
-                                ? <div>
-                                        <a onClick={this.toggleShowEditComment}>
-                                            <EditIcon/>
-                                        </a>
-                                        <a onClick={this.toggleDeleteModal} className='ml-6'>
-                                            <DeleteIcon/>
-                                        </a>
-                                    </div>
-                                : null}
-                        </ul>
+									</div>
+									{/*Display the sign in error message if user is not logged in*/}
+									{this.state.showError && !this.state.currentUser
+											? <p className="error-help-text">
+															You must
+															{' '}<Link to='/signin'>sign in</Link>{' '}
+															to reply
+													</p>
+											: null}
 
-                    </div>
-                    {/*Display the sign in error message if user is not logged in*/}
-                    {this.state.showError && !this.state.currentUser
-                       ? <p className="error-help-text">
-                               You must
-                               {' '}<Link to='/signin'>sign in</Link>{' '}
-                               to reply
-                           </p>
-                       : null}
+									{this.state.showInsertReply && !this.state.isReply
+											? <div className='comment-reply'>
+															<form>
+																	<textarea
+																			placeholder='You can use markdown here...'
+																			onChange={this.replyTextChanged}></textarea>
 
-                    {this.state.showInsertReply && !this.state.isReply
-                        ? <div className='comment-reply'>
-                                <form>
-                                    <textarea
-                                        placeholder='You can use markdown here...'
-                                        onChange={this.replyTextChanged}></textarea>
+																	<div className='post-reply'>
+																			<button onClick={this.submitResponse} disabled={this.state.replyText === ''}>
+																					Submit
+																			</button>
+																	</div>
+															</form>
+													</div>
+											: null}
 
-                                    <div className='post-reply'>
-                                        <button onClick={this.submitRepsonse} disabled={this.state.replyText === ''}>
-                                            Submit
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        : null}
+									{this.state.showEditComment
+											? <div className='comment-reply'>
+															<form>
+																	<textarea id='editCommentTextArea' placeholder='You can use markdown here...' defaultValue={this.state.comment.content}></textarea>
 
-                    {this.state.showEditComment
-                        ? <div className='comment-reply'>
-                                <form>
-                                    <textarea id='editCommentTextArea' placeholder='You can use markdown here...' defaultValue={this.state.comment.content}></textarea>
+																	<div className='post-reply'>
+																			<button onClick={this.editComment} disabled={this.state.replyText === ''}>
+																					Submit
+																			</button>
+																	</div>
+															</form>
+													</div>
+											: null}
 
-                                    <div className='post-reply'>
-                                        <button onClick={this.editComment} disabled={this.state.replyText === ''}>
-                                            Submit
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                        : null}
-
-                    {/*Render all replies for this comment*/}
-                    {this.state.replies
-                        ? <ReplyList
-                                location={this.props.location}
-                                replies={this.state.replies}
-                                authors={this.state.authors}
-                                currentUser={this.props.currentUser}
-                                upvote={this.props.upvoteReply}
-                                downvote={this.props.downvoteReply}/>
-                        : null}
-                </div>
-
-            </div>
-        )
+									{/*Render all replies for this comment*/}
+									{this.state.replies
+											? <ReplyList
+													location={this.props.location}
+													replies={this.state.replies}
+													authors={this.state.authors}
+													currentUser={this.props.currentUser}
+													upvote={this.props.upvoteReply}
+													downvote={this.props.downvoteReply}/>
+											: null}
+							</div>
+					</div>
+			)
     }
 }
 

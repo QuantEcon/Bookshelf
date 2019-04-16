@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
-import PropTypes from 'prop-types'
-import {Link} from 'react-router-dom'
+import PropTypes from 'prop-types';
+import {Link} from 'react-router-dom';
 import Dropzone from 'react-dropzone';
 // import {MarkdownRender} from '../MarkdownMathJax';
-import MarkdownRender from '@nteract/markdown'
+import MarkdownRender from '@nteract/markdown';
 import Modal from 'react-modal';
 import NotebookPreview from '@nteract/notebook-preview';
-import {typesetMath} from 'mathjax-electron'
-// import {transforms, displayOrder} from '@nteract/transforms-full';
-import CloseIcon from 'react-icons/lib/fa/close'
+import {typesetMath} from 'mathjax-electron';
+import CloseIcon from 'react-icons/lib/fa/close';
 import HeadContainer from '../../containers/HeadContainer';
-import Breadcrumbs from '../partials/Breadcrumbs'
-import { Redirect } from 'react-router-dom'
+import Breadcrumbs from '../partials/Breadcrumbs';
+import { Redirect } from 'react-router-dom';
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 
 const maxWords = 251;
@@ -66,7 +65,6 @@ class Submit extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             accepted: [],
             fileName: props.isEdit && this.props.submission
@@ -93,9 +91,10 @@ class Submit extends Component {
             notebookLanguage: null
         }
 
-        this.onOpenClick = this
-            .onOpenClick
-            .bind(this);
+        this.onOpenClick = this.onOpenClick.bind(this);
+				this.findImage = this.findImage.bind(this);
+				this.removeImage = this.removeImage.bind(this);
+				this.countImage = this.countImage.bind(this);
     }
 
     componentWillMount() {
@@ -114,7 +113,6 @@ class Submit extends Component {
         } else {
             document.title = 'Submit - QuantEcon Notes'
         }
-
     }
 
     /**
@@ -234,11 +232,11 @@ class Submit extends Component {
     /**
      * Calls the prop action `submit` if this is a new submission or the prop action `save` if
      * the submission is being edited
-     * @param {Object} e Event passed from the `submit` listener
+     * @param {Object} event Event passed from the `submit` listener
      */
-    submit = (e) => {
-        if(e) {
-            e.preventDefault();
+    submit = (event) => {
+        if(event) {
+					event.preventDefault();
         }
         this.setState({contentSaved : true}, () => {
 
@@ -291,31 +289,54 @@ class Submit extends Component {
         setTimeout(() => {
             typesetMath(this.rendered)
         }, 20);
-    }
+		}
 
     summaryLimit = (event) => {
       event.preventDefault();
       //Display modal error to users
       this.toggleSummaryModal();
       this.forceUpdate();
-    }
+		}
+
+		findImage = (input) => {
+			let foundImages = input.match(/!\[.*?\]\((.*?)\)/g)
+			if(foundImages) {
+				return foundImages;
+			} 
+			return null;
+		}
+
+		removeImage = (input) => {
+			let removeImageValue = input;
+			const returnImages = this.findImage(input);
+
+			if(returnImages) {
+				returnImages.map((img) => {
+					removeImageValue = removeImageValue.replace(img, '');
+				});
+				return removeImageValue;
+			}
+			return input;
+		}
 
     summaryChanged = (event) => {
-      this.setCounts(event.target.value)
+
+			const imageRemovedValue = this.removeImage(event.target.value);
+
+			this.setCounts(event.target.value)
       this.setState({summary: event.target.value})
 
       if (this.state.count < maxWords) {
-        this.formData.summary = event.target.value;
+        this.formData.summary = imageRemovedValue;
         this.setState({triggerOnKeyPress: false, pasteValue: false})
       }
-      if (this.state.count >= maxWords || event.target.value.split(' ').length >= maxWords) {
-        this.formData.summary = event.target.value.split(' ').slice(0, maxWords-1).join(' ');
+      if (this.state.count >= maxWords || imageRemovedValue.split(' ').length >= maxWords) {
+        this.formData.summary = imageRemovedValue.split(' ').slice(0, maxWords-1).join(' ');
         this.setState({summary: this.formData.summary, count: this.formData.summary.split(' ').length })
         this.setState({triggerOnKeyPress: true, pasteValue: true})
       }
       this.forceUpdate();
     }
-
 
     /**
      * Listener for when a user drops files into the drop zone
@@ -357,10 +378,10 @@ class Submit extends Component {
 
     /**
      * Opens the submission preview modal
-     * @param {Object} e Event passed from the `onClick` listener
+     * @param {Object} event Event passed from the `onClick` listener
      */
-    toggleOpenModal = (e) => {
-        e.preventDefault()
+    toggleOpenModal = (event) => {
+        event.preventDefault()
         this.setState({
             modalOpen: !this.state.modalOpen,
         })
@@ -425,13 +446,26 @@ class Submit extends Component {
         return arr;
       arr.splice(index, 1);
       return this.removeEmptyElements(arr)
-    };
+		};
+
+		countImage = (words) => {
+			let counter = 0;
+			words.forEach((word) => {
+				if(word.match(/!\[.*?\]\((.*?)\)/)){
+					counter += 1;
+				}
+			});
+			return counter;
+
+		}
 
     setCounts = (value) => {
-      const trimmedValue = value.trim();
-      const words = this.removeEmptyElements(trimmedValue.split(' '));
+			const trimmedValue = value.trim();
+			const words = this.removeEmptyElements(trimmedValue.split(' '));
+			const totalImageCount = this.countImage(words);
+
       this.setState({
-        count: value === '' ? 0 : words.length
+        count: value === '' ? 0 : words.length - totalImageCount
       });
     }
 
@@ -527,7 +561,6 @@ class Submit extends Component {
                                     remain listed on the forum and in any backups required to maintain the site.
                                 </li>
                             </ul>
-
                         </label>
                     </div>
                 </Modal>
@@ -711,7 +744,10 @@ class Submit extends Component {
                                             onKeyPress={this.state.triggerOnKeyPress ? this.summaryLimit: null}
                                             onPaste={this.state.pasteValue ? this.pasting : null}
                                             value = {this.state.summary}></textarea>
-                                      <p class="textarea-hint">The maximum word count for summary is 250 words.</p>
+                                      <ul id="notebook-summary-hints">
+																				<li><span className="notebook-summary-hint">The maximum word count for summary is 250 words.</span></li>
+																				<li><span className="notebook-summary-hint">Images are disabled by default.</span></li>
+																			</ul>
                                       </TabPanel>
                                       <TabPanel>
                                         <MarkdownRender

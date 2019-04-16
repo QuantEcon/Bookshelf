@@ -25,9 +25,6 @@
             }
         }
     }
-    .comments-signin {
-
-    }
 
     .comments-thread {
         .comment {
@@ -94,6 +91,18 @@
                     }
                 }
                 .comment-body {
+										.read-more-trigger {
+											border: 1px solid #ddd;
+											color: #666;
+											padding: 0.1rem 0.5rem;
+											font-weight: bold;
+											font-size: 0.9rem;
+											border-radius: 5px;
+											margin: 0 1rem 0 0;																			
+											padding: 0.5rem;
+											float: right;
+										}
+                      
                     .error-div {
                         position: relative;
                         height: 10px;

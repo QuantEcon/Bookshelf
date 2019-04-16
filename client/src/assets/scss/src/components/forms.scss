@@ -82,34 +82,52 @@
     margin: 2rem 0;
     //div {border:2px solid red;}
     input, textarea, select {
-        border-radius: 5px;
+      border-radius: 5px;
     }
+
     p.textarea-hint {
       color: #d84d0a;
     }
+    span.notebook-summary-hint {
+      color: #d84d0a;
+    }
+
+    #notebook-summary-hints {
+			list-style: none;
+			padding-left: 20px;
+    }
+    #notebook-summary-hints li::before {
+			content: "\2022";
+			color: #4d4d4d;
+			margin-left: -1em;
+			width: 1em;
+			font-weight: bold;
+			display: inline-block;
+    }
+
     .form-error {
-        margin:0.5rem 0;
+      margin:0.5rem 0;
     }
     .page-title {
-        font-size: 2rem;
-        margin: 0 0 1rem 0;
-        padding:0 2rem;
+			font-size: 2rem;
+			margin: 0 0 1rem 0;
+			padding:0 2rem;
     }
     .section-title {
-        display: inline-block;
-        font-size: 1.4rem;
-        font-weight: bold;
-        margin:0 0 1rem 0;
-        line-height: 1;
-        position: relative;
-        .mandatory {
-            position: absolute;
-            top:0;
-            right:-1.5rem;
-            line-height: 1;
-            font-size:3rem;
-            color: $color-primary;
-        }
+			display: inline-block;
+			font-size: 1.4rem;
+			font-weight: bold;
+			margin:0 0 1rem 0;
+			line-height: 1;
+			position: relative;
+			.mandatory {
+				position: absolute;
+				top:0;
+				right:-1.5rem;
+				line-height: 1;
+				font-size:3rem;
+				color: $color-primary;
+			}
     }
     .input-hint {
         a {

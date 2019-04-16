@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, Fragment} from 'react';
 import PropTypes from 'prop-types'
 
 // import {MarkdownRender} from '../MarkdownMathJax';
@@ -22,10 +22,11 @@ import HeadContainer from '../../containers/HeadContainer';
 import CommentsThread from '../comments/CommentsThread'
 import Breadcrumbs from '../partials/Breadcrumbs'
 import MetaTags from '../partials/MetaTags.jsx';
-import Notebook from '../partials/Notebook.jsx'
+import Notebook from '../partials/Notebook.jsx';
 // import { confirmAlert } from 'react-confirm-alert'; // Import
 // import 'react-confirm-alert/src/react-confirm-alert.css' // Import css
-import axios from 'axios'
+import axios from 'axios';
+import trimText from '../../utils/trimText';
 
 const editStyle = {
   paddingTop:'2.5px',
@@ -70,6 +71,10 @@ class Submission extends Component {
             deleteModalOpen: false,
             flaggedReason: 'inappropriate',
             modalIsOpen: false,
+						summary: null,
+						firstHalfSummary: null,
+						readMore: false,
+						readLess: false,
             testing: [],
         }
 
@@ -129,22 +134,40 @@ class Submission extends Component {
             .bind(this);
         this.handleSubmit = this
             .handleSubmit
-            .bind(this);
+						.bind(this);
+				this.readBefore = this.readBefore.bind(this);
+				this.readAfter = this.readAfter.bind(this);
+				this.toggleReadMore = this.toggleReadMore.bind(this);
     }
 
     componentDidMount() {
 
-        // console.log();
         this.forceUpdate();
         // Wait half a second for things to load, then render mathjax
         console.log('[Submission] - props: ', this.props);
-
+    
         setTimeout(() => {
             this.renderMathJax()
         }, 500);
 
         Modal.setAppElement('body');
     }
+
+		readBefore = (summary) => {
+			let textArray = trimText(summary, 100, 200, 500);
+			return textArray[0];
+		} 
+
+		readAfter = (summary) => {
+			let textArray = trimText(summary, 100, 200, 500);
+			return textArray[1];
+		} 
+
+		toggleReadMore = () => {
+			this.setState({
+				readMore: !this.state.readMore
+			});
+		}
 
     renderMathJax(numTimes) {
         if(window.MathJax){
@@ -192,10 +215,7 @@ class Submission extends Component {
      * Dispatches a downvote submission action
      */
     downvote() {
-        this
-            .props
-            .actions
-            .downvoteSubmission({submissionID: this.props.submissionID});
+        this.props.actions.downvoteSubmission({submissionID: this.props.submissionID});
         //TODO: unfocus button after click : changes on line 253 solves the problem
     }
 
@@ -231,10 +251,7 @@ class Submission extends Component {
      * @param {String} param0.commentID ID of the comment being replied to
      */
     submitReply({reply, commentID}) {
-        this
-            .props
-            .actions
-            .submitReply({reply, commentID, submissionID: this.props.submissionID})
+        this.props.actions.submitReply({reply, commentID, submissionID: this.props.submissionID})
     }
 
     /**
@@ -279,10 +296,7 @@ class Submission extends Component {
         if (successful) {
             console.log("Deletion successful")
             this.setState({showDeletionError: false})
-            this
-                .props
-                .history
-                .replace("/")
+            this.props.history.replace("/")
 
         } else { // display error message if unsuccessful
             console.error("Error deleting submission")
@@ -321,7 +335,6 @@ class Submission extends Component {
         this.setState({value:''}); //Reset state of modal
 
         this.flagSubmission(flaggedReason)
-
 
     }
 
@@ -555,12 +568,13 @@ class Submission extends Component {
 
                             <div className='details-body'>
                                 <div className='details-primary'>
-                                    {!this.props.isLoading
-                                        ? <MarkdownRender
-                                                disallowedTypes={['heading']}
-                                                source={this.props.submission.data.notebook.summary
-                                                ? this.props.submission.data.notebook.summary
-                                                : '*No summary*'}/>
+                                    {!this.props.isLoading && this.state.firstHalfSummary !== undefined
+                                        ? 	
+																				<MarkdownRender
+																					disallowedTypes={['heading']}
+																					source={this.props.submission.data.notebook.summary
+																					? this.props.submission.data.notebook.summary
+																					: '*No summary*'}/>	
                                         : <p>loading...</p>}
 
                                 </div>

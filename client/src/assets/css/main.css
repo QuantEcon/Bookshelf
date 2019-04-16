@@ -2758,6 +2758,18 @@ button {
     border-radius: 5px; }
   .submit-form p.textarea-hint {
     color: #d84d0a; }
+  .submit-form span.notebook-summary-hint {
+    color: #d84d0a; }
+  .submit-form #notebook-summary-hints {
+    list-style: none;
+    padding-left: 20px; }
+  .submit-form #notebook-summary-hints li::before {
+    content: "\2022";
+    color: #4d4d4d;
+    margin-left: -1em;
+    width: 1em;
+    font-weight: bold;
+    display: inline-block; }
   .submit-form .form-error {
     margin: 0.5rem 0; }
   .submit-form .page-title {
@@ -3944,6 +3956,16 @@ div.my-modal {
           color: #cacaca; }
           .comments .comments-thread .comment .comment-main .comment-header .flag:hover, .comments .comments-thread .comment .comment-main .comment-header .delete:hover {
             color: #d84d0a; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-trigger {
+        border: 1px solid #ddd;
+        color: #666;
+        padding: 0.1rem 0.5rem;
+        font-weight: bold;
+        font-size: 0.9rem;
+        border-radius: 5px;
+        margin: 0 1rem 0 0;
+        padding: 0.5rem;
+        float: right; }
       .comments .comments-thread .comment .comment-main .comment-body .error-div {
         position: relative;
         height: 10px;
