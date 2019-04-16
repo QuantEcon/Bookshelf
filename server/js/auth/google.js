@@ -27,7 +27,7 @@ passport.use('google', new GoogleStrategy({
 
                         //set up google info
                         newUser.google.id = profile.id;
-                        newUser.google.avatarURL = profile._json.image.url;
+                        newUser.google.avatarURL = profile._json.image.url + '?sz=50';
                         newUser.google.hidden = false;
                         newUser.google.displayName = profile.displayName;
                         newUser.google.access_token = accessToken;
@@ -46,7 +46,7 @@ passport.use('google', new GoogleStrategy({
                         newUser.downvotes = [];
 
                         newUser.email = profile.email;
-                        newUser.avatar = profile._json.image.url;
+                        newUser.avatar = profile._json.image.url + '?sz=50';
                         newUser.name = profile.displayName;
 
                         newUser.website = '';
@@ -90,7 +90,7 @@ passport.use('addGoogle', new GoogleStrategy({
                     return done(err);
                 } else if(user){
                     user.google.id = profile.id;
-                    user.google.avatarURL = profile._json.image.url;
+                    user.google.avatarURL = profile._json.image.url + '?sz=50';
                     user.google.hidden = false;
                     user.google.displayName = profile.displayName;
                     user.google.access_token = accessToken;

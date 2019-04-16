@@ -35,7 +35,7 @@ passport.use('github', new GithubStrategy({
                         newUser.github.hidden = false;
                         newUser.activeAvatar = "github";
                         if (profile._json.avatar_url) {
-                            newUser.github.avatarURL = profile._json.avatar_url + '&s=75';
+                            newUser.github.avatarURL = profile._json.avatar_url + '&s=50';
                         } else {
                             newUser.github.avatarURL = '/assets/img/default-avatar.png';
                         }
@@ -66,7 +66,7 @@ passport.use('github', new GithubStrategy({
                             submission: true
                         }
                         if (profile._json.avatar_url) {
-                            newUser.avatar = profile._json.avatar_url + '&s=75';
+                            newUser.avatar = profile._json.avatar_url + '&s=50';
                         } else {
                             newUser.avatar = '/assets/img/default-avatar.png';
                         }
@@ -127,7 +127,7 @@ passport.use('addGithub', new GithubStrategy({
                         user.github.hidden = false;
                         user.github.avatarActive = false;
                         if (profile._json.avatar_url) {
-                            user.github.avatarURL = profile._json.avatar_url;
+                            user.github.avatarURL = profile._json.avatar_url + '&s=50';
                         } else {
                             user.github.avatarURL = '/assets/img/default-avatar.png';
                         }

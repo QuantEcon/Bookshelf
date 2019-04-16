@@ -32,7 +32,7 @@ passport.use('twitter', new TwitterStrategy({
 
                         newUser.activeAvatar = 'twitter';
                         if (profile._json.profile_image_url) {
-                            newUser.twitter.avatarURL = profile._json.profile_image_url.replace('_normal','');
+                            //newUser.twitter.avatarURL = profile._json.profile_image_url.replace('_normal','');
                         } else {
                             newUser.twitter.avatarURL = '/assets/img/default-avatar.png';
                         }
@@ -61,7 +61,7 @@ passport.use('twitter', new TwitterStrategy({
                         }
 
                         if (profile._json.profile_image_url) {
-                            newUser.avatar = profile._json.profile_image_url.replace('_normal','');
+                            //newUser.avatar = profile._json.profile_image_url.replace('_normal','');
                         } else {
                             newUser.avatar = '/assets/img/default-avatar.png';
                         }
