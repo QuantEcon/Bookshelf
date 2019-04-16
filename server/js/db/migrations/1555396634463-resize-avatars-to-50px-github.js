@@ -14,7 +14,7 @@ const options = {
 
 module.exports.up = function (next) {
     return mongoose.connect(config.url, options).then(db => {
-      return Users.find({ $and: [{ currentProvider: "Github" }, { avatar: { $regex: /^.*[^s=75]$/ } }] }, function(err, docs) { 
+      return Users.find({ $and: [{ currentProvider: "Github" }, { avatar: { $regex: /^.*[^s=75|^s=50]$/ } }] }, function(err, docs) { 
         for (let e in docs) {
           let doc = docs[e];
           doc.avatar = doc.avatar + '&s=50';
