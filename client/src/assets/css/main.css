@@ -3908,6 +3908,20 @@ div.my-modal {
           .comments .comments-post .submit-comment a.alt:hover, .comments .comments-post .submit-comment a.alt.active {
             background: #444444;
             color: #fff; }
+  .comments .read-more-wrap {
+    display: block;
+    overflow: hidden;
+    position: relative;
+    background: #fff; }
+  .comments .read-more-wrap:after {
+    position: absolute;
+    bottom: 0;
+    height: 90%;
+    width: 100%;
+    content: "";
+    background: linear-gradient(to top, white 20%, rgba(255, 255, 255, 0) 80%);
+    pointer-events: none;
+    /* so the text is still selectable */ }
   .comments .comments-thread .comment {
     border-top: 1px solid #cacaca;
     padding: 2rem 0;
@@ -3956,8 +3970,8 @@ div.my-modal {
           color: #cacaca; }
           .comments .comments-thread .comment .comment-main .comment-header .flag:hover, .comments .comments-thread .comment .comment-main .comment-header .delete:hover {
             color: #d84d0a; }
-      .comments .comments-thread .comment .comment-main .comment-body .read-more-trigger {
-        border: 1px solid #ddd;
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-trigger, .comments .comments-thread .comment .comment-main .comment-body .read-less-trigger {
+        text-decoration: underline;
         color: #666;
         padding: 0.1rem 0.5rem;
         font-weight: bold;
@@ -3965,7 +3979,14 @@ div.my-modal {
         border-radius: 5px;
         margin: 0 1rem 0 0;
         padding: 0.5rem;
-        float: right; }
+        float: right;
+        position: relative; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-more-trigger {
+        bottom: 38px;
+        right: 50px; }
+      .comments .comments-thread .comment .comment-main .comment-body .read-less-trigger {
+        bottom: 40px;
+        right: 0px; }
       .comments .comments-thread .comment .comment-main .comment-body .error-div {
         position: relative;
         height: 10px;
@@ -4370,6 +4391,9 @@ ul.terms-and-conditions {
 
 span.title {
   font-weight: bold; }
+
+.edited-tag {
+  margin-bottom: 0px; }
 
 .comment-body .edited-tag {
   color: #888; }

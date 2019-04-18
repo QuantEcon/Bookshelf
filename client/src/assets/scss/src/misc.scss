@@ -74,6 +74,10 @@ span.title {
     font-weight: bold;
 }
 
+.edited-tag {
+    margin-bottom: 0px;
+}
+
 .comment-body .edited-tag {
     color: #888;
 }
@@ -160,17 +164,17 @@ img.loading-avatar {
 /* Notebook rendering */
 
 .notebook-preview .cell .outputs code {
-    font-family: monospace !important;
+	font-family: monospace !important;
 }
 
 .notebook-preview .cell .prompt {
-    width: 30px !important;
+  width: 30px !important;
 }
 
 .notebook-preview .content-margin {
-    padding-left: 40px !important;
+  padding-left: 40px !important;
 }
 
 .ml-6 {
-    margin-left: 6px;
+  margin-left: 6px;
 }

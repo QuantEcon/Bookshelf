@@ -24,7 +24,27 @@
                 margin:1rem 0 0 0;
             }
         }
-    }
+		}
+		
+		.read-more-wrap {
+		  display: block;
+			overflow: hidden;
+			position: relative;
+			background: #fff;
+		}
+			
+		.read-more-wrap:after {
+			position: absolute;
+			bottom: 0;  
+			height: 90%;
+			width: 100%;
+			content: "";
+			background: linear-gradient(to top,
+					rgba(255,255,255, 1) 20%, 
+					rgba(255,255,255, 0) 80%
+			);
+			pointer-events: none; /* so the text is still selectable */
+		}
 
     .comments-thread {
         .comment {
@@ -91,8 +111,9 @@
                     }
                 }
                 .comment-body {
-										.read-more-trigger {
-											border: 1px solid #ddd;
+										.read-more-trigger, .read-less-trigger {
+											text-decoration: underline;
+											// border: 1px solid #ddd;
 											color: #666;
 											padding: 0.1rem 0.5rem;
 											font-weight: bold;
@@ -101,6 +122,17 @@
 											margin: 0 1rem 0 0;																			
 											padding: 0.5rem;
 											float: right;
+											position: relative;
+										}
+
+										.read-more-trigger {
+											bottom: 38px;
+											right: 50px;
+										}
+
+										.read-less-trigger {
+											bottom: 40px;
+											right: 0px;
 										}
                       
                     .error-div {
