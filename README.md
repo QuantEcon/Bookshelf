@@ -1,5 +1,4 @@
-# QuantEcon Notes
-
+<h1><img src="client/src/assets/img/notes-logo.png" width="100" height="100" />&nbsp;&nbsp;&nbsp;QuantEcon Notes</h1>
 Code for the QuantEcon Notes Project
 
 ### Contributing
