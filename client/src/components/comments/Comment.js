@@ -220,8 +220,8 @@ class Comment extends Component {
 		 * @return {String} first 100 characters of the comment 
      */
 		readBefore = (comment) => {
-			let textArray = trimText(comment, 100, 200, 500);
-			return textArray[0];
+			let textArray = trimText(comment, 200, 300, 600);
+			return textArray[0] + '....';
 		} 
 
 		toggleReadMore = () => {
@@ -335,34 +335,32 @@ class Comment extends Component {
 														? <p className='edited-tag'>Edited {' '}<Time value={this.state.comment.editedDate} relative/></p>
 														: null}
 											</div>
-
 											<div>
 												{this.state.comment.content ? 
 													this.countCommentLength(this.state.comment.content) ? 
 														this.state.readMore ? 
-														
 														// show all the comment and show show less button
 														<div className="comment-more">
 															<MarkdownRender
 																className="read-more-wrap"
 																disallowedTypes={['heading']}
 																source={this.readBefore(this.state.comment.content)} />
-																<button class="read-more-trigger" onClick={this.toggleReadMore}>Show more</button>
+																<a class="read-more-trigger" onClick={this.toggleReadMore}>Show more</a>
 														</div>
 														: 
 														// show only first part of the comment and show show more button 
 														<Fragment>
 															<MarkdownRender
-															className="read-more-wrap"
+															className="read-less-wrap"
 															disallowedTypes={['heading']}
 															source={this.state.comment.content} /> 
-															<button class="read-more-trigger" onClick={this.toggleReadMore}>Show less</button>
+															<a class="read-less-trigger" onClick={this.toggleReadMore}>Show less</a>
 														</Fragment>
 														: 
 														// hide read more button
 														<Fragment>
 															<MarkdownRender
-															className="read-more-wrap"
+															className="read-wrap"
 															disallowedTypes={['heading']}
 															source={this.state.comment.content} /> 
 														</Fragment>
