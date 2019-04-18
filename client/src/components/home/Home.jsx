@@ -60,7 +60,7 @@ class Home extends Component {
                 <div className='landing-logos'>
                       <div className='container'>
                           <p className="site-tag">An open Jupyter notebook library for economics and finance</p>
-                          <img className="sloan-logo" src={sloanLogo} alt="Sloan Logo"/>
+                          <a href="https://sloan.org/"><img className="sloan-logo" src={sloanLogo} alt="Sloan Logo"/></a>
                           {/* <ul>
                             {this.createImages(data.images)}
                           </ul> */}
@@ -80,7 +80,6 @@ class Home extends Component {
                               <li><a href="https://sloan.org/"><img src={sloanLogo} alt="Sloan Logo" className="sloan-logo"/></a></li>
                           </ul>
                       </div>
-
                 </footer> */}
             </div>
 
