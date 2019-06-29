@@ -351,9 +351,16 @@ class Submit extends Component {
             reader.onload = (event) => {
                 // Parse drop file submission
                 let result = JSON.parse(event.target.result);
-                let submissionLanguage = result.metadata.kernelspec.language;
+                let submissionLanguage = result.metadata.kernelspec.language || result.metadata.kernelspec.name;
                 // TODO : Create a util text transformations file with all helper functions in it that's relates to text transformations.
+
                 let capitaliseFirst = submissionLanguage.charAt(0).toUpperCase() + submissionLanguage.slice(1);
+
+                // check if last digit is a version number, then remove it
+                let lastDigitIsVersion = Number.isInteger(Number(capitaliseFirst[capitaliseFirst.length - 1]))
+                if (lastDigitIsVersion) {
+                    capitaliseFirst = capitaliseFirst.slice(0,-1)
+                }
                 this.setState({
                     notebookJSON: result,
                     notebookDataReady: true,
