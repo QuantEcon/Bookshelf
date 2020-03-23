@@ -20,4 +20,4 @@ docs/
 server/js/db/.migrate
 
 #python files
-*.pyc
+scripts/config/*.pyc
