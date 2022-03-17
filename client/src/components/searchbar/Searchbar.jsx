@@ -202,8 +202,8 @@ class Searchbar extends Component {
                                     onChange={this.sortByChanged}
                                     value={this.state.searchParams.sortBy}>
                                     <option value="Comments">Comments</option>
-                                    <option value="Date">Date</option>
-                                    <option value="Discover" selected>Discover</option>
+                                    <option value="Date" selected>Date</option>
+                                    <option value="Discover">Discover</option>
                                     <option value="Views">Views</option>
                                     <option value="Votes">Votes</option>
                                 </select>
